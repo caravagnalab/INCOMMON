@@ -8,8 +8,13 @@
 [![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of TAPACLOTH is to classify somatic mutations from targeted
-panel sequencing as subclonal, clonal heterozygous or clonal LOH.
+TAPACLOTH is a tool that classifies somatic mutation calls from
+targeted-panel sequencing as either subclonal, clonal heterozygous or
+clonal LOH, thorugh a statistical hypothesis test based on a Binomial or
+Beta-Binomial modeling of the sequencing read count process.
+Additionally, TAPACLOTH can be used to infer sample purity. Since the
+two processes are independent, one can first estimate sample purity and
+then use it as input for the classification task.
 
 ## Installation
 
@@ -23,7 +28,7 @@ devtools::install_github("caravagnalab/TAPACLOTH")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example of running the classification:
 
 ``` r
 library(TAPACLOTH)
