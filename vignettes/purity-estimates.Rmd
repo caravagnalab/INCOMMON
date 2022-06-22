@@ -1,0 +1,72 @@
+---
+title: "Purity estimates"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{purity-estimates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+`TAPACLOTH` can be used to estimate the purity of a sample from the VAF spectrum 
+of somatic mutations.
+First, make sure that input data is in the requested form. It should be a tibble
+with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
+with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
+(sample purity) columns. 
+
+```{r setup}
+library(TAPACLOTH)
+```
+
+
+In the following example, the input purity is underestimated as 0.4, whereas the
+true one is 1:
+
+```{r}
+data = dplyr::tibble(sample = "test",
+           gene = paste0("test gene ", 1:10),
+           nv = c(50, 60, 100, 250, 225, 270, 35, 375, 400, 450),
+           dp = 500,
+           VAF = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)/100,
+           purity = 0.4
+)
+
+data
+```
+
+TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations
+with a mixture of Binomial or Beta-Binomial distributions. In this example, we
+use a Binomial model:
+
+```{r}
+purity_bmix = estimate_purity(data = data,
+                sample_name = "test",
+                model = "Binomial",
+                purity = data$purity[1],
+                eps = 0.01)
+purity_bmix
+```
+The parameter `eps` is used to compare peaks of the mixture distributions with
+the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
+distributions, it is hard to determine which one to use for purity estimation. In
+these cases the distribution that gives the most similar estimate to the input purity is
+chosen, given that its peak is not further then `eps` from the input estimate.
+
+TAPACLOTH purity estimate can be used as a preliminar step to the classification
+task. First we replace the input purity with the new estimate
+
+```{r}
+data$purity = purity_bmix$purity
+data
+```
+Then we run the classification task
+```{r}
+classified_data = analyse_sample(
+  data = data,
+  sample_name = "test",
+  alpha_level = 1e-3,
+  model = "Beta-Binomial",
+  rho = 0.01
+)
+
+classified_data$fit
+```

@@ -29,6 +29,12 @@ estimate_purity = function(data,
 
   sample_data = data %>%
     filter(sample == sample_name)
+  
+  # Prepare data for BMix
+  nvs = sample_data$nv
+  coverage = sample_data$dp
+  input = data.frame(successes = nvs,
+                     trials = coverage)
 
   # Return NA if NVs are less than 3
   if (length(nvs) <= 3)
@@ -38,12 +44,6 @@ estimate_purity = function(data,
       purity = NA,
       plot_bmix = NA
     ))
-
-  # Prepare data for BMix
-  nvs = sample_data$nv
-  coverage = sample_data$dp
-  input = data.frame(successes = nvs,
-                    trials = coverage)
 
   # Fit data with a mixture of 3 Binomials or BetaBinomials
   if (model == 'Binomial') {
