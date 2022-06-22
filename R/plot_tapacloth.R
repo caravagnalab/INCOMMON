@@ -14,7 +14,7 @@ plot_tapacloth = function(fit, target_gene){
   fit_plot = plot_fit(fit = fit$fit, target_gene = target_gene)
   
   target_data = fit$fit %>% 
-    filter(gene == target_gene)
+    dplyr::filter(gene == target_gene)
   
   target_plots = lapply(1:(target_data %>% nrow), function(i){
     

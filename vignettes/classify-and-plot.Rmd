@@ -1,0 +1,49 @@
+---
+title: "Classify mutations and plot results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup}
+library(TAPACLOTH)
+```
+
+`TAPACLOTH` can be used to classify mutations from targeted panel seqeuncing data.
+First, make sure that input data is in the requested form. It should be a tibble
+with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
+with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
+(sample purity) columns. For example:
+
+```{r}
+data = dplyr::tibble(sample = "test",
+           gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
+           nv = c(10, 50, 90, 120),
+           dp = c(100, 100, 100, 200),
+           VAF = c(0.1, 0.5, 0.9, 0.6),
+           purity = 1
+)
+```
+Then, you can run the classification on a sample using:
+```{r}
+classified_data = analyse_sample(
+  data = data,
+  sample_name = "test",
+  alpha_level = 1e-3,
+  model = "Beta-Binomial",
+  rho = 0.01
+)
+```
+The object `classified_data` now contains a `fit` object that is basically the same
+input table with the additional column `class`
+```{r}
+classified_data$fit
+```
+plus the input parameters of the used test. 
+
+Now you can plot the classification results for the gene you are interested in:
+```{r}
+plot_tapacloth(fit = classified_data, target_gene = "target gene")
+```
+
