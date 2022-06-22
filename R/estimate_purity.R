@@ -13,9 +13,14 @@
 #' than the value of this parameter. If both distributions satisfy this condition,
 #' the one which is closest to the input purity estimate is used for the new estimate.
 #'
-#' @return A list containing the input table reduced to the selected sample,
-#' an object of class `bmix` that represents a fit mixture, the estimated sample
-#' purity and a cowplot figure showing the results.
+#' @return A list containing:
+#' -the input table reduced to the selected sample, with
+#' additional columns `purity_bmix` for the inferred purity and `purity_error` for
+#' the relative error between the inferred and the input purity, assuming the 
+#' inferred value is correct.
+#' -an object of class `bmix` that represents a fit mixtur
+#' -the inferred sample purity and 
+#' -a cowplot figure showing results.
 #' @export
 #'
 #' @examples
@@ -73,6 +78,8 @@ estimate_purity = function(data,
   # Prepare output
   fit$data = input
   plot_bmix = BMix::plot.bmix(fit, fit$data)
+  sample_data$purity_bmix = bmix_best_purity
+  sample_data$purity_error = sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2)
 
   return(list(
     data = sample_data,

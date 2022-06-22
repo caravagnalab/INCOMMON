@@ -34,8 +34,13 @@ data
 ```
 
 TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations
-with a mixture of Binomial or Beta-Binomial distributions. In this example, we
-use a Binomial model:
+with a mixture of Binomial or Beta-Binomial distributions. The parameter `eps` 
+is used to compare peaks of the mixture distributions with
+the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
+distributions, it is hard to determine which one to use for purity estimation. In
+these cases the distribution that gives the most similar estimate to the input purity is
+chosen, given that its peak is not further then `eps` from the input estimate.
+In this example, we use a Binomial model:
 
 ```{r}
 purity_bmix = estimate_purity(data = data,
@@ -43,19 +48,16 @@ purity_bmix = estimate_purity(data = data,
                 model = "Binomial",
                 purity = data$purity[1],
                 eps = 0.01)
-purity_bmix
+purity_bmix$data
 ```
-The parameter `eps` is used to compare peaks of the mixture distributions with
-the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
-distributions, it is hard to determine which one to use for purity estimation. In
-these cases the distribution that gives the most similar estimate to the input purity is
-chosen, given that its peak is not further then `eps` from the input estimate.
 
 TAPACLOTH purity estimate can be used as a preliminar step to the classification
 task. First we replace the input purity with the new estimate
 
 ```{r}
-data$purity = purity_bmix$purity
+data = dplyr::rename(purity_bmix$data, 
+                     input_purity = purity, 
+                     purity = purity_bmix) 
 data
 ```
 Then we run the classification task
