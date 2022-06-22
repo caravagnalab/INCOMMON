@@ -4,10 +4,10 @@ Version: 0.0.0.9000
 Author: Nicola Calonaci
 Maintainer: Nicola Calonaci <nicola.calonaci@gmail.com>
 Authors@R: 
-    person("Nicola", "Calonaci", , "nicola.calonaci@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-2721-4888"))
-    person("Giulio", "Caravagna", , "giulio.caravagna@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = ""))
+    c(person("Nicola", "Calonaci", , "nicola.calonaci@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-2721-4888")),
+    person("Giulio", "Caravagna", , "gcaravag@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "")))
 Description: TAPACLOTH is a tool that classifies somatic mutation calls from
     targeted-panel sequencing as either subclonal, clonal heterozygous or clonal 
     LOH thorugh a statistical hypothesis test based on a Binomial or Beta-Binomial 

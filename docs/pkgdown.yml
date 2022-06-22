@@ -3,7 +3,7 @@ pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   classify-and-plot: classify-and-plot.html
-last_built: 2022-06-22T14:25Z
+last_built: 2022-06-22T14:48Z
 urls:
   reference: caravagnalab.github.io/TAPACLOTH/reference
   article: caravagnalab.github.io/TAPACLOTH/articles
