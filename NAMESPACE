@@ -2,4 +2,5 @@
 
 export(analyse_sample)
 export(estimate_purity)
+export(plot_tapacloth)
 import(dplyr)

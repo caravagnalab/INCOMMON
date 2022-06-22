@@ -19,9 +19,9 @@ plot_test_power = function(null_model)
   col_subclonal = 'indianred3'
   col_clonal = 'forestgreen'
 
-  ggplot() +
+  ggplot2::ggplot() +
     CNAqc:::my_ggplot_theme() +
-    geom_rect(
+    ggplot2::geom_rect(
       data = data.frame(
         xmin = 0,
         xmax = nvs[l_a],
@@ -37,7 +37,7 @@ plot_test_power = function(null_model)
       fill = col_subclonal,
       alpha = .2
     ) +
-    geom_rect(
+    ggplot2::geom_rect(
       data = data.frame(
         xmax = coverage,
         xmin = nvs[r_a],
@@ -53,7 +53,7 @@ plot_test_power = function(null_model)
       fill = col_loh,
       alpha = .2
     ) +
-    geom_rect(
+    ggplot2::geom_rect(
       data = data.frame(
         xmax = nvs[l_a],
         xmin = nvs[r_a],
@@ -69,38 +69,38 @@ plot_test_power = function(null_model)
       fill = col_clonal,
       alpha = .2
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs %>% filter(nv < nvs[l_a]),
       aes(x = nv, y = p),
       size = .6,
       color = col_subclonal
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs %>% filter(nv > nvs[r_a]),
       aes(x = nv, y = p),
       size = .6,
       color = col_loh
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs %>% filter(nv >= nvs[l_a], nv <= nvs[r_a]),
       aes(x = nv, y = p),
       size = 1,
       color = col_clonal
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs,
       aes(x = nv, y = VAF),
       size = .6,
       shape = 3,
       color = 'gray'
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs %>% filter(nv == nvs[l_a]),
       aes(x = nv, y = VAF),
       size = 3,
       color = col_subclonal
     ) +
-    geom_segment(
+    ggplot2::geom_segment(
       data = inputs %>% filter(nv == nvs[l_a]),
       aes(
         x = nvs[l_a],
@@ -111,7 +111,7 @@ plot_test_power = function(null_model)
       linetype = 'dashed',
       color = col_subclonal
     ) +
-    geom_segment(
+    ggplot2::geom_segment(
       data = inputs %>% filter(nv == nvs[l_a]),
       aes(
         x = nvs[l_a],
@@ -122,13 +122,13 @@ plot_test_power = function(null_model)
       linetype = 'dashed',
       color = col_subclonal
     ) +
-    geom_point(
+    ggplot2::geom_point(
       data = inputs %>% filter(nv == nvs[r_a]),
       aes(x = nv, y = VAF),
       size = 3,
       color = col_loh
     ) +
-    geom_segment(
+    ggplot2::geom_segment(
       data = inputs %>% filter(nv == nvs[r_a]),
       aes(
         x = nvs[r_a],
@@ -139,7 +139,7 @@ plot_test_power = function(null_model)
       linetype = 'dashed',
       color = col_loh
     ) +
-    geom_segment(
+    ggplot2::geom_segment(
       data = inputs %>% filter(nv == nvs[r_a]),
       aes(
         x = nvs[r_a],
@@ -150,7 +150,7 @@ plot_test_power = function(null_model)
       linetype = 'dashed',
       color = col_loh
     ) +
-    geom_text(
+    ggplot2::geom_text(
       x = nvs[l_a] - 5,
       y = 1,
       label = 'subclonal',
@@ -158,7 +158,7 @@ plot_test_power = function(null_model)
       size = 3,
       color = col_subclonal
     ) +
-    geom_text(
+    ggplot2::geom_text(
       x = nvs[r_a] + 5,
       y = 0,
       label = 'clonal LOH',
@@ -166,24 +166,24 @@ plot_test_power = function(null_model)
       size = 3,
       color = col_loh
     ) +
-    labs(
+    ggplot2::labs(
       x = 'NV',
       y = "1 - P(X > NV)",
       caption = model_string,
       title = paste0("Coverage ", coverage, ' with purity ', p*2),
       subtitle = paste0('Alpha-level: ', alpha_level)
     ) +
-    coord_cartesian(clip = 'off') +
-    scale_y_continuous(sec.axis = sec_axis(~ ., name = 'VAF | coverage')) +
-    theme(axis.line.y.right = element_line(color = "gray")) +
-    annotation_custom(
+    ggplot2::coord_cartesian(clip = 'off') +
+    ggplot2::scale_y_continuous(sec.axis = sec_axis(~ ., name = 'VAF | coverage')) +
+    ggplot2::theme(axis.line.y.right = element_line(color = "gray")) +
+    ggplot2::annotation_custom(
       grid::textGrob(paste('>', round(r_v, 2)), gp = grid::gpar(col = col_loh, fontsize = 8)),
       xmin = coverage,
       xmax = coverage,
       ymin = r_v + .03,
       ymax = r_v + .03
     ) +
-    annotation_custom(
+    ggplot2::annotation_custom(
       grid::textGrob(
         paste('<', round(l_v, 2)),
         gp = grid::gpar(col = col_subclonal, fontsize = 8)
@@ -193,7 +193,7 @@ plot_test_power = function(null_model)
       ymin = l_v - .03,
       ymax = l_v - .03
     ) +
-    annotate(
+    ggplot2::annotate(
       "text",
       x = 0,
       y = .95,
@@ -202,7 +202,7 @@ plot_test_power = function(null_model)
       size = 3,
       color = col_subclonal
     ) +
-    annotate(
+    ggplot2::annotate(
       "text",
       x = coverage,
       y = .95,
@@ -211,7 +211,7 @@ plot_test_power = function(null_model)
       size = 3,
       color = col_loh
     ) +
-    annotate(
+    ggplot2::annotate(
       "text",
       x = coverage * p,
       y = .95,
