@@ -75,7 +75,7 @@
 <div class="page-header"><h1 id="tapacloth">TAPACLOTH<a class="anchor" aria-label="anchor" href="#tapacloth"></a>
 </h1></div>
 <!-- badges: start -->
-<p>The goal of TAPACLOTH is to classify somatic mutations from targeted panel sequencing as subclonal, clonal heterozygous or clonal LOH.</p>
+<p>TAPACLOTH is a tool that classifies somatic mutation calls from targeted-panel sequencing as either subclonal, clonal heterozygous or clonal LOH, thorugh a statistical hypothesis test based on a Binomial or Beta-Binomial modeling of the sequencing read count process. Additionally, TAPACLOTH can be used to infer sample purity. Since the two processes are independent, one can first estimate sample purity and then use it as input for the classification task.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -87,7 +87,7 @@
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
+<p>This is a basic example of running the classification:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nicola-calonaci/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span>
 <span class="co">## basic example code</span>
