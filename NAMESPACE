@@ -2,3 +2,4 @@
 
 export(analyse_sample)
 export(estimate_purity)
+import(dplyr)

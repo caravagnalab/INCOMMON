@@ -4,6 +4,8 @@
 # TAPACLOTH
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of TAPACLOTH is to classify somatic mutations from targeted

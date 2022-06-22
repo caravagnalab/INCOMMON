@@ -16,6 +16,8 @@
 #' model, over-dispersion parameter (NA if the model is not Beta-Binomial) and
 #' significance level used in the test.
 #' @export
+#' 
+#' @import dplyr
 #'
 #' @examples
 analyse_sample = function(data,
