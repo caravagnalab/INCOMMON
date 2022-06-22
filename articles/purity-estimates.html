@@ -105,7 +105,7 @@
 <span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75    0.4</span>
 <span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8     0.4</span>
 <span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9     0.4</span></code></pre>
-<p>TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations with a mixture of Binomial or Beta-Binomial distributions. In this example, we use a Binomial model:</p>
+<p>TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations with a mixture of Binomial or Beta-Binomial distributions. The parameter <code>eps</code> is used to compare peaks of the mixture distributions with the input purity. In cases when the VAF spectrum is fitted with a mixture of 2 distributions, it is hard to determine which one to use for purity estimation. In these cases the distribution that gives the most similar estimate to the input purity is chosen, given that its peak is not further then <code>eps</code> from the input estimate. In this example, we use a Binomial model:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">purity_bmix</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_purity.html">estimate_purity</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">data</span>,
                 sample_name <span class="op">=</span> <span class="st">"test"</span>,
@@ -126,66 +126,52 @@
 <span class="co">## 'crayon::num_ansi_colors' when loading 'easypar'</span></code></pre>
 <pre><code><span class="co">## <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0 mins</span></code></pre>
 <pre><code><span class="co">## ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 10 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">3</span> + <span style="color: #00BB00;">0</span>) ───────────────</span></code></pre>
-<pre><code><span class="co">## • Clusters: π = 40% [<span style="color: #BBBB00;">Bin 3</span>], 30% [<span style="color: #BBBB00;">Bin 1</span>], and 30% [<span style="color: #BBBB00;">Bin 2</span>], with π &gt; 0.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.816666666666667.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.496666666666667.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.1225.</span></code></pre>
-<pre><code><span class="co">## <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 194.27.</span></code></pre>
+<pre><code><span class="co">## • Clusters: π = 40% [<span style="color: #BBBB00;">Bin 1</span>], 30% [<span style="color: #BBBB00;">Bin 2</span>], and 30% [<span style="color: #BBBB00;">Bin 3</span>], with π &gt; 0.</span></code></pre>
+<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.1225.</span></code></pre>
+<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.816666666666667.</span></code></pre>
+<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.496666666666667.</span></code></pre>
+<pre><code><span class="co">## <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 192.7.</span></code></pre>
 <pre><code><span class="co">## Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span>
 <span class="co">## "none")` instead.</span></code></pre>
 <pre><code><span class="co">## Warning: Removed 6 rows containing missing values (geom_bar).</span></code></pre>
 <pre><code><span class="co">## Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span>
 <span class="co">## Placing graphs unaligned.</span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">purity_bmix</span></code></pre></div>
-<pre><code><span class="co">## $data</span>
-<span class="co">## <span style="color: #949494;"># A tibble: 10 × 6</span></span>
-<span class="co">##    sample gene            nv    dp   VAF purity</span>
-<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1     0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12    0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2     0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5     0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45    0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54    0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61    0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75    0.4</span>
-<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8     0.4</span>
-<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9     0.4</span>
-<span class="co">## </span>
-<span class="co">## $fit</span></code></pre>
-<pre><code><span class="co">## ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 10 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">3</span> + <span style="color: #00BB00;">0</span>) ───────────────</span></code></pre>
-<pre><code><span class="co">## • Clusters: π = 40% [<span style="color: #BBBB00;">Bin 3</span>], 30% [<span style="color: #BBBB00;">Bin 1</span>], and 30% [<span style="color: #BBBB00;">Bin 2</span>], with π &gt; 0.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.816666666666667.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.496666666666667.</span></code></pre>
-<pre><code><span class="co">## • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.1225.</span></code></pre>
-<pre><code><span class="co">## <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 194.27.</span></code></pre>
-<pre><code><span class="co">## </span>
-<span class="co">## $purity</span>
-<span class="co">##      &lt;NA&gt; </span>
-<span class="co">## 0.9933333 </span>
-<span class="co">## </span>
-<span class="co">## $plot_bmix</span></code></pre>
-<p><img src="purity-estimates_files/figure-html/unnamed-chunk-2-1.png" width="700"> The parameter <code>eps</code> is used to compare peaks of the mixture distributions with the input purity. In cases when the VAF spectrum is fitted with a mixture of 2 distributions, it is hard to determine which one to use for purity estimation. In these cases the distribution that gives the most similar estimate to the input purity is chosen, given that its peak is not further then <code>eps</code> from the input estimate.</p>
+<code class="sourceCode R"><span class="va">purity_bmix</span><span class="op">$</span><span class="va">data</span></code></pre></div>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 8</span></span>
+<span class="co">##    sample gene            nv    dp   VAF purity purity_bmix purity_error</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1     0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12    0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2     0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5     0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45    0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54    0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61    0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75    0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8     0.4       0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9     0.4       0.993        0.597</span></code></pre>
 <p>TAPACLOTH purity estimate can be used as a preliminar step to the classification task. First we replace the input purity with the new estimate</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span><span class="op">$</span><span class="va">purity</span> <span class="op">=</span> <span class="va">purity_bmix</span><span class="op">$</span><span class="va">purity</span>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">purity_bmix</span><span class="op">$</span><span class="va">data</span>, 
+                     input_purity <span class="op">=</span> <span class="va">purity</span>, 
+                     purity <span class="op">=</span> <span class="va">purity_bmix</span><span class="op">)</span> 
 <span class="va">data</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 6</span></span>
-<span class="co">##    sample gene            nv    dp   VAF purity</span>
-<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1   0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12  0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2   0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5   0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45  0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54  0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61  0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75  0.993</span>
-<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8   0.993</span>
-<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9   0.993</span></code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 8</span></span>
+<span class="co">##    sample gene            nv    dp   VAF input_purity purity purity_error</span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1           0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12          0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2           0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5           0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45          0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54          0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61          0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75          0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8           0.4  0.993        0.597</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9           0.4  0.993        0.597</span></code></pre>
 <p>Then we run the classification task</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">classified_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/analyse_sample.html">analyse_sample</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">data</span>,
   sample_name <span class="op">=</span> <span class="st">"test"</span>,
@@ -195,21 +181,21 @@
 <span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## </span></code></pre>
 <pre><code><span class="co">## <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">test</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></code></pre>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">classified_data</span><span class="op">$</span><span class="va">fit</span></code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 7</span></span>
-<span class="co">##    sample gene            nv    dp   VAF purity class     </span>
-<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
-<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1   0.993 Subclonal </span>
-<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12  0.993 Subclonal </span>
-<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2   0.993 Subclonal </span>
-<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5   0.993 Clonal    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45  0.993 Clonal    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54  0.993 Clonal    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61  0.993 Subclonal </span>
-<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75  0.993 Clonal LOH</span>
-<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8   0.993 Clonal LOH</span>
-<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9   0.993 Clonal LOH</span></code></pre>
+<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 10 × 9</span></span>
+<span class="co">##    sample gene            nv    dp   VAF input_purity purity purity_error class </span>
+<span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
+<span class="co">## <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1           0.4  0.993        0.597 Subcl…</span>
+<span class="co">## <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12          0.4  0.993        0.597 Subcl…</span>
+<span class="co">## <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2           0.4  0.993        0.597 Subcl…</span>
+<span class="co">## <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5           0.4  0.993        0.597 Clonal</span>
+<span class="co">## <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45          0.4  0.993        0.597 Clonal</span>
+<span class="co">## <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54          0.4  0.993        0.597 Clonal</span>
+<span class="co">## <span style="color: #BCBCBC;"> 7</span> test   test gene 7     35   500  0.61          0.4  0.993        0.597 Subcl…</span>
+<span class="co">## <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75          0.4  0.993        0.597 Clona…</span>
+<span class="co">## <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8           0.4  0.993        0.597 Clona…</span>
+<span class="co">## <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9           0.4  0.993        0.597 Clona…</span></code></pre>
   </main>
 </div>
 
