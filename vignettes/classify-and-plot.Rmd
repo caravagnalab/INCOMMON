@@ -6,6 +6,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=F)
+```
+
 ```{r setup}
 library(TAPACLOTH)
 ```
@@ -42,7 +51,7 @@ classified_data$fit
 plus the input parameters of the used test. 
 
 Now you can plot the classification results for the gene you are interested in:
-```{r}
+```{r fig.height=6, fig.width=5, dpi=300}
 plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test")
 ```
 The classification can also be run per gene using a terzile test. Suppose we have
@@ -67,6 +76,6 @@ classified_data$fit
 ```
 Now you can plot the classification results for the gene and the sample you are interested in:
 
-```{r}
+```{r dpi=300}
 plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test 1")
 ```

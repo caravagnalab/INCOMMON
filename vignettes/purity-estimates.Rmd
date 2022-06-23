@@ -6,6 +6,16 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=F)
+```
+
 `TAPACLOTH` can be used to estimate the purity of a sample from the VAF spectrum 
 of somatic mutations.
 First, make sure that input data is in the requested form. It should be a tibble
@@ -18,9 +28,43 @@ library(TAPACLOTH)
 ```
 
 
-In the following example, the input purity is underestimated as 0.4, whereas the
-true one is 1:
+In the following example, the input purity is estimated correctly as 1:
 
+```{r}
+data = dplyr::tibble(sample = "test",
+           gene = paste0("test gene ", 1:10),
+           nv = c(50, 60, 100, 250, 225, 270, 35, 375, 400, 450),
+           dp = 500,
+           VAF = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)/100,
+           purity = 1
+)
+
+data
+```
+
+TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations
+with a mixture of Binomial or Beta-Binomial distributions. 
+
+The parameter `eps` 
+is used to compare peaks of the mixture distributions with
+the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
+distributions, it is hard to determine which one to use for purity estimation. In
+these cases the distribution that gives the most similar estimate to the input purity is
+chosen, given that its peak is not further then `eps` from the input estimate.
+
+In this example, we use a Binomial mixture model:
+
+```{r}
+purity_bmix = estimate_purity(data = data,
+                sample_name = "test",
+                model = "Binomial",
+                purity = data$purity[1],
+                eps = 0.01)
+purity_bmix$data
+```
+
+The inferred purity matches the true value and TAPACLOTH reports a ~0 purity error.
+If for example an uderestimate of the purity is given in input:
 ```{r}
 data = dplyr::tibble(sample = "test",
            gene = paste0("test gene ", 1:10),
@@ -32,16 +76,7 @@ data = dplyr::tibble(sample = "test",
 
 data
 ```
-
-TAPACLOTH infers sample purity by fitting the VAF spectrum of somatic mutations
-with a mixture of Binomial or Beta-Binomial distributions. The parameter `eps` 
-is used to compare peaks of the mixture distributions with
-the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
-distributions, it is hard to determine which one to use for purity estimation. In
-these cases the distribution that gives the most similar estimate to the input purity is
-chosen, given that its peak is not further then `eps` from the input estimate.
-In this example, we use a Binomial model:
-
+and TAPACLOTH is used to infer purity from the data:
 ```{r}
 purity_bmix = estimate_purity(data = data,
                 sample_name = "test",
@@ -50,8 +85,11 @@ purity_bmix = estimate_purity(data = data,
                 eps = 0.01)
 purity_bmix$data
 ```
+TAPACLOTh recovers the correct purity estimate and reports an error of ~60%.
+
+
 The object `purity_bmix` also contains a plot showing results of the mixture fit:
-```{r}
+```{r fig.height=4, fig.width=8, dpi=300}
 purity_bmix$plot_bmix
 ```
 

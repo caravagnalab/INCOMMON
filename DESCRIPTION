@@ -1,6 +1,6 @@
 Package: TAPACLOTH
 Title: Targeted panel-oriented test for clonality and heterozygosity
-Version: 1.0
+Version: 0.0.1
 Author: Nicola Calonaci
 Maintainer: Nicola Calonaci <nicola.calonaci@gmail.com>
 Authors@R: 
@@ -13,15 +13,13 @@ Description: TAPACLOTH is a tool that classifies somatic mutation calls from
     LOH thorugh a statistical hypothesis test based on a Binomial or Beta-Binomial 
     modelling of the sequencing read count process. As an additional feature, 
     TAPACLOTH can be used to infer sample purity.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
 Imports:
     CNAqc,
     BMix,
