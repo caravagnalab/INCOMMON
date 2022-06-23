@@ -28,6 +28,6 @@ Imports:
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
-URL: https://github.com/nicola-calonaci/TAPACLOTH
-BugReports: https://github.com/nicola-calonaci/TAPACLOTH/issues
+URL: https://github.com/caravagnalab/TAPACLOTH
+BugReports: https://github.com/caravagnalab/TAPACLOTH/issues
 VignetteBuilder: knitr

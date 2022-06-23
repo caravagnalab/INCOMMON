@@ -59,7 +59,7 @@
 
       <ul class="navbar-nav">
 <li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/nicola-calonaci/TAPACLOTH/" aria-label="github">
+  <a class="external-link nav-link" href="https://github.com/caravagnalab/TAPACLOTH/" aria-label="github">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -79,21 +79,56 @@
       <img src="../logo.png" class="logo" alt=""><h1>Classify mutations and plot results</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/nicola-calonaci/TAPACLOTH/blob/HEAD/vignettes/classify-and-plot.Rmd" class="external-link"><code>vignettes/classify-and-plot.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/TAPACLOTH/blob/HEAD/vignettes/classify-and-plot.Rmd" class="external-link"><code>vignettes/classify-and-plot.Rmd</code></a></small>
       <div class="d-none name"><code>classify-and-plot.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/nicola-calonaci/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></code></pre></div>
-<p><code>TAPACLOTH</code> can be used to classify mutations from
-targeted panel sequencing data. First, make sure that input data is in
-the requested form. It should be a tibble with
-<code>sample</code>(sample name), <code>gene</code>(name of the target
-gene), <code>nv</code> (number of reads with variant), <code>dp</code>
-(coverage), <code>vaf</code> (variant allele frequency) and
-<code>purity</code> (sample purity) columns. For example:</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
+</h2>
+<p>TAPACLOTH can be used to classify the clonality and zygosity of
+somatic mutations detected from targeted panel sequencing of a cancer
+sample.</p>
+<blockquote>
+<p>Practically, the TAPACLOTH model can also be used with other gene
+sequencing assays. However, if one has access to more advanced data such
+as high-resolution whole-genome sequening, we suggest using <a href="https://caravagnalab.github.io/mobster" class="external-link">other deconvolution
+methodologies</a>.</p>
+</blockquote>
+<p>TAPACLOTH will assess, for every mutation, any of the following
+statuses:</p>
+<ul>
+<li>subclonal mutation;</li>
+<li>heterozygous clonal mutation within a diploid heterozygous tumour
+genome;</li>
+<li>homozygous clonal mutation within a loss of heterozygosity of the
+tumour genome.</li>
+</ul>
+<p>TAPACLOTH implements two type of statistical tests; the required
+inputs for <code>TAPACLOTH</code> are:</p>
+<ul>
+<li>read/counts or variant allele frequencies from the panel assay</li>
+<li>tumour sample purity <span class="math inline">\(\pi\)</span>
+</li>
+</ul>
+<blockquote>
+<p>Note: tumour sample purity <span class="math inline">\(\pi\)</span>
+can be estimated by copy number assessment, pathology assessment, or in
+general any other approach outside the scope of TAPACLOTH.</p>
+</blockquote>
+<div class="section level3">
+<h3 id="inputs-format">Inputs format<a class="anchor" aria-label="anchor" href="#inputs-format"></a>
+</h3>
+<p>It should be a tibble with <code>sample</code>(sample name),
+<code>gene</code>(name of the target gene), <code>nv</code> (number of
+reads with variant), <code>dp</code> (coverage), <code>vaf</code>
+(variant allele frequency) and <code>purity</code> (sample purity)
+columns.</p>
+<p>For example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,
            gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"test gene 1"</span>, <span class="st">"test gene 2"</span>, <span class="st">"test gene 3"</span>, <span class="st">"target gene"</span><span class="op">)</span>,
@@ -101,7 +136,22 @@ gene), <code>nv</code> (number of reads with variant), <code>dp</code>
            dp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span>,
            VAF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="fl">0.6</span><span class="op">)</span>,
            purity <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span>
+<span class="co">#&gt;   sample gene           nv    dp   VAF purity</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1      1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1</span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="read-counts-based-test">Read-counts based test<a class="anchor" aria-label="anchor" href="#read-counts-based-test"></a>
+</h2>
+<p>This test is based on …</p>
 <p>Then, you can run the classification on a sample using the
 Beta-Binomial model:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -189,7 +239,9 @@ sample you are interested in:</p>
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tapacloth.html">plot_tapacloth</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test 1"</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></code></pre></div>
 <p><img src="classify-and-plot_files/figure-html/unnamed-chunk-8-1.png" width="2187.5"></p>
-  </main>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
