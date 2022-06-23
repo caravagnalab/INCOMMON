@@ -50,6 +50,10 @@ purity_bmix = estimate_purity(data = data,
                 eps = 0.01)
 purity_bmix$data
 ```
+The object `purity_bmix` also contains a plot showing results of the mixture fit:
+```{r}
+purity_bmix$plot_bmix
+```
 
 TAPACLOTH purity estimate can be used as a preliminar step to the classification
 task. First we replace the input purity with the new estimate
@@ -62,9 +66,8 @@ data
 ```
 Then we run the classification task
 ```{r}
-classified_data = analyse_sample(
+classified_data = run_classifier(
   data = data,
-  sample_name = "test",
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01

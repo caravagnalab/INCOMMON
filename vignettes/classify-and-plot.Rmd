@@ -10,7 +10,7 @@ vignette: >
 library(TAPACLOTH)
 ```
 
-`TAPACLOTH` can be used to classify mutations from targeted panel seqeuncing data.
+`TAPACLOTH` can be used to classify mutations from targeted panel sequencing data.
 First, make sure that input data is in the requested form. It should be a tibble
 with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
 with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
@@ -25,18 +25,17 @@ data = dplyr::tibble(sample = "test",
            purity = 1
 )
 ```
-Then, you can run the classification on a sample using:
+Then, you can run the classification on a sample using the Beta-Binomial model:
 ```{r}
-classified_data = analyse_sample(
+classified_data = run_classifier(
   data = data,
-  sample_name = "test",
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
 )
 ```
 The object `classified_data` now contains a `fit` object that is basically the same
-input table with the additional column `class`
+input table with the additional column `class_binom`
 ```{r}
 classified_data$fit
 ```
@@ -44,6 +43,30 @@ plus the input parameters of the used test.
 
 Now you can plot the classification results for the gene you are interested in:
 ```{r}
-plot_tapacloth(fit = classified_data, target_gene = "target gene")
+plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test")
+```
+The classification can also be run per gene using a terzile test. Suppose we have
+calls for the same target gene across different samples:
+```{r}
+data = dplyr::tibble(sample = paste0("test ", seq(1:20)),
+           gene = "target gene",
+           nv = seq(10,100,4.6) %>% round(0),
+           dp = 100,
+           VAF = (seq(10,100,4.6) %>% round(0))/100,
+           purity = 1
+)
 ```
 
+```{r}
+classified_data = run_classifier(
+  data = data,
+  model = "terzile"
+)
+
+classified_data$fit
+```
+Now you can plot the classification results for the gene and the sample you are interested in:
+
+```{r}
+plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test 1")
+```

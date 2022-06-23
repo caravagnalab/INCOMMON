@@ -37,24 +37,23 @@ x = dplyr::tibble(sample = "test",
            gene = "test gene",
            nv = 50,
            dp = 100,
-           vaf = 0.5,
+           VAF = 0.5,
            purity = 1
 )
 
-analyse_sample(
+run_classifier(
   data = x,
-  sample_name = "test",
   alpha_level = 1e-3,
   model = "BetaBinomial",
   rho = 0.01
 )
 #> 
-#> ── test ────────────────────────────────────────────────────────────────────────
+#> ── test gene ───────────────────────────────────────────────────────────────────
 #> $fit
 #> # A tibble: 1 × 7
-#>   sample gene         nv    dp   vaf purity class 
-#>   <chr>  <chr>     <dbl> <dbl> <dbl>  <dbl> <chr> 
-#> 1 test   test gene    50   100   0.5      1 Clonal
+#>   sample gene         nv    dp   VAF purity class_terzile
+#>   <chr>  <chr>     <dbl> <dbl> <dbl>  <dbl> <chr>        
+#> 1 test   test gene    50   100   0.5      1 Clonal LOH   
 #> 
 #> $model
 #> [1] "BetaBinomial"

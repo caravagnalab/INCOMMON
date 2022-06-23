@@ -47,13 +47,12 @@ x = dplyr::tibble(sample = "test",
            gene = "test gene",
            nv = 50,
            dp = 100,
-           vaf = 0.5,
+           VAF = 0.5,
            purity = 1
 )
 
-analyse_sample(
+run_classifier(
   data = x,
-  sample_name = "test",
   alpha_level = 1e-3,
   model = "BetaBinomial",
   rho = 0.01

@@ -25,9 +25,14 @@ than the value of this parameter. If both distributions satisfy this condition,
 the one which is closest to the input purity estimate is used for the new estimate.}
 }
 \value{
-A list containing the input table reduced to the selected sample,
-an object of class \code{bmix} that represents a fit mixture, the estimated sample
-purity and a cowplot figure showing the results.
+A list containing:
+-the input table reduced to the selected sample, with
+additional columns \code{purity_bmix} for the inferred purity and \code{purity_error} for
+the relative error between the inferred and the input purity, assuming the
+inferred value is correct.
+-an object of class \code{bmix} that represents a fit mixtur
+-the inferred sample purity and
+-a cowplot figure showing results.
 }
 \description{
 Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.

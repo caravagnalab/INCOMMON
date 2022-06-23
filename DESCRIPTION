@@ -1,6 +1,6 @@
 Package: TAPACLOTH
 Title: Targeted panel-oriented test for clonality and heterozygosity
-Version: 0.0.0.9000
+Version: 1.0
 Author: Nicola Calonaci
 Maintainer: Nicola Calonaci <nicola.calonaci@gmail.com>
 Authors@R: 

@@ -1,23 +1,32 @@
-plot_fit = function(fit, target_gene) {
+plot_fit = function(fit, target_gene, sample_name) {
+  if(fit$model == "terzile") {
+    fit$fit = fit$fit %>% 
+      dplyr::mutate(class = class_terzile)
+  } else {
+    fit$fit = fit$fit %>% 
+      dplyr::mutate(class = class_binom)
+  }
+  
+  # Select sample
+  fit$fit = fit$fit %>% 
+    dplyr::filter(sample == sample_name)
+
   # Get class of mutations on target gene
-  gene_status = fit %>%
+  gene_status = fit$fit %>%
     dplyr::filter(gene == target_gene) %>%
     dplyr::mutate(class = paste0(class, ' (', nv, '/', dp, ')')) %>%
     dplyr::pull(class) %>%
     paste(collapse = ', ')
   
   # Get VAF of mutations on target gene
-  gene_vafs = fit %>%
+  gene_vafs = fit$fit %>%
     dplyr::filter(gene == target_gene) %>%
     dplyr::pull(VAF)
-  
-  # Get sample name
-  sample_name = fit$sample[1]
   
   # Fit plot
   colormap = ggsci::pal_jama("default")(7)[1:3]
   names(colormap) = c("Clonal", "Clonal LOH", "Subclonal")
-  fit_plot = fit %>%
+  fit_plot = fit$fit %>%
     ggplot2::ggplot() +
     CNAqc:::my_ggplot_theme() +
     ggplot2::geom_histogram(binwidth = 0.01, aes(VAF, fill = class)) +
@@ -33,12 +42,12 @@ plot_fit = function(fit, target_gene) {
                    color = "Target VAF"),
                linetype = 6) +
     ggplot2::geom_vline(
-      aes(xintercept = fit$purity[1],
+      aes(xintercept = fit$fit$purity[1],
           color = "Purity"),
       linetype = 'dashed',
       size = .6
     ) +
-    ggplot2::geom_vline(aes(xintercept = fit$purity[1] / 2,
+    ggplot2::geom_vline(aes(xintercept = fit$fit$purity[1] / 2,
                    color = "Clonal peak"),
                linetype = 'dashed') +
     ggplot2::scale_color_manual(

@@ -4,16 +4,20 @@
 \alias{plot_tapacloth}
 \title{Plot results of classification and statistical test.}
 \usage{
-plot_tapacloth(fit, target_gene)
+plot_tapacloth(fit, target_gene, sample_name)
 }
 \arguments{
-\item{fit}{A fit object as output from \code{analyse_sample()} function.}
+\item{fit}{A fit object as output from \code{run_classifier} function, using the Binomial or Beta-Binomial model.}
 
 \item{target_gene}{The target gene for which classification of mutation calls is wanted.}
+
+\item{sample_name}{The name of the sample to be analysed.}
 }
 \value{
-A figure assembly including (top) the VAF spectrum calls with expected clonal
-peak, purity and VAF of mutations affecting the target gene are highlighted; and (bottom)
+If the terzile model is used, a histogram of the VAF spectrum is plotted,
+with expected clonal peak, purity and VAF of mutations affecting the target gene
+highlighted. If the Binomial or Beta-Binomial model is used, this function returns
+a figure assembly including (top) the plot described above and (bottom)
 a plot showing details of the used statistical test.
 }
 \description{
