@@ -1,7 +1,5 @@
-#' Classify mutations. The classification task can be run either per sample,
-#' using either a Binomial or Beta-Binomial model-based statistical test, or
-#' per gene, in which case the classification is based on a terzile test across
-#' all samples.
+#' Classify mutations per sample using a (Beta-)Binomial model-based test, or
+#' per gene using a 3-quantile test.
 #'
 #' @param data A tibble containing mutations with sample name (sample), gene name
 #' (gene), number of reads with variant (nv), coverage (dp), variant allele

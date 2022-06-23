@@ -2,10 +2,8 @@
 % Please edit documentation in R/run_classifier.R
 \name{run_classifier}
 \alias{run_classifier}
-\title{Classify mutations. The classification task can be run either per sample,
-using either a Binomial or Beta-Binomial model-based statistical test, or
-per gene, in which case the classification is based on a terzile test across
-all samples.}
+\title{Classify mutations per sample using a (Beta-)Binomial model-based test, or
+per gene using a 3-quantile test.}
 \usage{
 run_classifier(data, alpha_level = 0.01, model = "Binomial", rho = NA)
 }
@@ -32,8 +30,6 @@ model, over-dispersion parameter (NA if the model is not Beta-Binomial) and
 significance level used in the test.
 }
 \description{
-Classify mutations. The classification task can be run either per sample,
-using either a Binomial or Beta-Binomial model-based statistical test, or
-per gene, in which case the classification is based on a terzile test across
-all samples.
+Classify mutations per sample using a (Beta-)Binomial model-based test, or
+per gene using a 3-quantile test.
 }

@@ -42,7 +42,7 @@ TAPACLOTH implements two type of statistical tests; the required inputs for `TAP
 ##  Inputs format
 
 It should be a tibble with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
-with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
+with variant), `dp` (coverage), `VAF` (variant allele frequency) and `purity`
 (sample purity) columns. 
 
 For example:
@@ -60,12 +60,25 @@ print(data)
 
 # Read-counts based test
 
+This test is based on a model of the sequencing outcome as a Binomial 
+process in which the number of reads with a variant represents the number of 
+successes over a total number of trials that corresponds to coverage. 
+Since a clonal variant within a diploid heterozygous tumour genome affects one
+out of two alleles of all the tumour cells, the success probability of the 
+counting process corresponds to half of the tumour sample purity. Sub-clonal and
+clonal mutations are expected to have smaller and larger success
+probabilities, respectively. Given coverage and sample purity, a variant is thus
+classified as either sub-clonal if the number of reads supporting it falls outside
+left of the chosen confidence interval of the distribution, clonal LOH if it falls
+outside right, or heterozygous clonal if it falls inside the confidence interval.
+A Beta-Binomial distribution can be used to take into account the over-dispersion
+affecting sequencing. 
 
-This test is based on ...
+In the following example, the classification task is run using the Beta-Binomial 
+model. The output contains a `fit` object that is basically the same
+input table with the additional column `class_binom`, plus the input parameters 
+of the used test. 
 
-
-
-Then, you can run the classification on a sample using the Beta-Binomial model:
 ```{r}
 classified_data = run_classifier(
   data = data,
@@ -73,20 +86,26 @@ classified_data = run_classifier(
   model = "Beta-Binomial",
   rho = 0.01
 )
-```
-The object `classified_data` now contains a `fit` object that is basically the same
-input table with the additional column `class_binom`
-```{r}
-classified_data$fit
-```
-plus the input parameters of the used test. 
 
-Now you can plot the classification results for the gene you are interested in:
+print(classified_data)
+```
+
+Results of the classification task for a target gene can be plotted using function
+`plot_tapacloth`.
+
 ```{r fig.height=6, fig.width=5, dpi=300}
 plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test")
 ```
-The classification can also be run per gene using a terzile test. Suppose we have
-calls for the same target gene across different samples:
+
+# VAF/$\pi$ based test
+
+This test is a working alternative to the Binomial test when number of reads with
+variant and coverage are not known, and only VAF and sample purity are provided. 
+The test is based on the 3-quantiles splitting of the distribution of VAF/$\pi$
+ratios for a target gene, across the whole provided dataset. Variants of the gene
+are classified either as Subclonal/CLonal (heterozygous) if their VAF/$\pi$ ratio
+is lower than the second 3-quantile or as Clonal LOH if it is larger.
+
 ```{r}
 data = dplyr::tibble(sample = paste0("test ", seq(1:20)),
            gene = "target gene",
@@ -105,7 +124,6 @@ classified_data = run_classifier(
 
 classified_data$fit
 ```
-Now you can plot the classification results for the gene and the sample you are interested in:
 
 ```{r dpi=300}
 plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test 1")
