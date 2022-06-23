@@ -19,11 +19,33 @@ options(crayon.enabled=F)
 library(TAPACLOTH)
 ```
 
-`TAPACLOTH` can be used to classify mutations from targeted panel sequencing data.
-First, make sure that input data is in the requested form. It should be a tibble
-with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
+# Requirements
+
+TAPACLOTH can be used to classify the clonality and zygosity of somatic mutations detected from targeted panel sequencing of a cancer sample. 
+
+> Practically, the TAPACLOTH model can also be used with other gene sequencing assays. However, if one has access to more advanced data such as high-resolution whole-genome sequening, we suggest using [other deconvolution methodologies](https://caravagnalab.github.io/mobster). 
+
+TAPACLOTH will assess, for every mutation, any of the following statuses:
+
+- subclonal mutation;
+- heterozygous clonal mutation within a diploid heterozygous tumour genome;
+- homozygous clonal mutation within a loss of heterozygosity of the tumour genome.
+
+TAPACLOTH implements two type of statistical tests; the required inputs for `TAPACLOTH` are:
+
+- read/counts or variant allele frequencies from the panel assay 
+- tumour sample purity $\pi$
+
+> Note: tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other approach outside the scope of TAPACLOTH.
+
+
+##  Inputs format
+
+It should be a tibble with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
 with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
-(sample purity) columns. For example:
+(sample purity) columns. 
+
+For example:
 ```{r}
 data = dplyr::tibble(sample = "test",
            gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
@@ -32,7 +54,17 @@ data = dplyr::tibble(sample = "test",
            VAF = c(0.1, 0.5, 0.9, 0.6),
            purity = 1
 )
+
+print(data)
 ```
+
+# Read-counts based test
+
+
+This test is based on ...
+
+
+
 Then, you can run the classification on a sample using the Beta-Binomial model:
 ```{r}
 classified_data = run_classifier(
