@@ -135,11 +135,11 @@ print(betabinomial_model)
 Results of the classification task for a target gene can be plot.
 
 ```{r fig.height=6, fig.width=5}
-plot_tapacloth(
-  fit = classified_data, 
-  target_gene = "target gene", # genet target name
-  sample_name = "test" # sample, if many
-  )
+# plot_tapacloth(
+#   fit = classified_data, 
+#   target_gene = "target gene", # genet target name
+#   sample_name = "test" # sample, if many
+#   )
 ```
 
 The test shows the following information:
