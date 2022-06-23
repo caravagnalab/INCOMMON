@@ -92,7 +92,7 @@
 </h2>
 <p>TAPACLOTH can be used to classify the clonality and zygosity of somatic mutations detected from targeted panel sequencing of a cancer sample.</p>
 <blockquote>
-<p>Practically, the TAPACLOTH model can also be used with other gene sequencing assays. However, if one has access to more advanced data such as high-resolution whole-genome sequening, we suggest using <a href="https://caravagnalab.github.io/mobster" class="external-link">other deconvolution methodologies</a>.</p>
+<p>The TAPACLOTH model can be used with any sequencing assay. However, if one can access higher-resolution data such as whole-exome/genome sequencing, we suggest specific <a href="https://caravagnalab.github.io/mobster" class="external-link">other deconvolution methodologies</a>.</p>
 </blockquote>
 <p>TAPACLOTH will assess, for every mutation, any of the following statuses:</p>
 <ul>
@@ -100,20 +100,20 @@
 <li>heterozygous clonal mutation within a diploid heterozygous tumour genome;</li>
 <li>homozygous clonal mutation within a loss of heterozygosity of the tumour genome.</li>
 </ul>
-<p>TAPACLOTH implements two type of statistical tests; the required inputs for <code>TAPACLOTH</code> are:</p>
+<p>TAPACLOTH implements two type of statistical tests; the required inputs are:</p>
 <ul>
 <li>read/counts or variant allele frequencies from the panel assay</li>
-<li>tumour sample purity <span class="math inline">\(\pi\)</span>
+<li>tumour sample purity <span class="math inline">\(\pi &gt; 0\)</span>
 </li>
 </ul>
 <blockquote>
-<p>Note: tumour sample purity <span class="math inline">\(\pi\)</span> can be estimated by copy number assessment, pathology assessment, or in general any other approach outside the scope of TAPACLOTH.</p>
+<p>Tumour sample purity <span class="math inline">\(\pi\)</span> can be estimated by copy number assessment, pathology assessment, or in general any other approach outside the scope of TAPACLOTH.</p>
 </blockquote>
+<p>We assume in TAPACLOTH that the provided input purity is correct, and provide functions to assess purity reliability (see Articles).</p>
 <div class="section level3">
 <h3 id="inputs-format">Inputs format<a class="anchor" aria-label="anchor" href="#inputs-format"></a>
 </h3>
 <p>It should be a tibble with <code>sample</code>(sample name), <code>gene</code>(name of the target gene), <code>nv</code> (number of reads with variant), <code>dp</code> (coverage), <code>VAF</code> (variant allele frequency) and <code>purity</code> (sample purity) columns.</p>
-<p>For example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,
            gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"test gene 1"</span>, <span class="st">"test gene 2"</span>, <span class="st">"test gene 3"</span>, <span class="st">"target gene"</span><span class="op">)</span>,
@@ -136,8 +136,35 @@
 <div class="section level2">
 <h2 id="read-counts-based-test">Read-counts based test<a class="anchor" aria-label="anchor" href="#read-counts-based-test"></a>
 </h2>
-<p>This test is based on a model of the sequencing outcome as a Binomial process in which the number of reads with a variant represents the number of successes over a total number of trials that corresponds to coverage. Since a clonal variant within a diploid heterozygous tumour genome affects one out of two alleles of all the tumour cells, the success probability of the counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations are expected to have smaller and larger success probabilities, respectively. Given coverage and sample purity, a variant is thus classified as either sub-clonal if the number of reads supporting it falls outside left of the chosen confidence interval of the distribution, clonal LOH if it falls outside right, or heterozygous clonal if it falls inside the confidence interval. A Beta-Binomial distribution can be used to take into account the over-dispersion affecting sequencing.</p>
-<p>In the following example, the classification task is run using the Beta-Binomial model. The output contains a <code>fit</code> object that is basically the same input table with the additional column <code>class_binom</code>, plus the input parameters of the used test.</p>
+<p>TAPACLOTH provides an exact test (with a p-value) to assess clonality and zygosity from read-count data.</p>
+<p>This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to coverage.</p>
+<p>Since a clonal variant within a diploid heterozygous tumour genome affects one out of two alleles of all the tumour cells, the success probability of the counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations with heterozygosity are expected to have repsectively smaller and larger success probabilities, respectively. Therefore, if we assume as null model clonality, and consider for every input mutation</p>
+<p>-<span class="math inline">\(n_v\)</span> reads with the variant at the locus; -<span class="math inline">\(n_r\)</span> reads with the reference at the locus; - sample purity <span class="math inline">\(pi\)</span>;</p>
+<p>then the expected number of reads with the variant follow <span class="math display">\[
+X_B \sim Bin(\cdot \mid c, \pi/2)
+\]</span> and therefore <span class="math display">\[
+P(X_B \leq x) \sim \sum_{k = 0}^x Bin(x \mid c, \pi/2).
+\]</span> &gt; The Beta-Binomial case simply follows $P(X_{BB} x) _{k = 0}^x Beta-Bin(x c, /2, ). $ for some overdipsersion <span class="math inline">\(\rho\)</span>. A Beta-Binomial distribution can be used to take into account the overdispersion of the sequencing assay.</p>
+<p>We can take an <span class="math inline">\(\alpha\)</span>-level (e.g., <span class="math inline">\(10^{-3}\)</span>) and invert the function to determine</p>
+<p><span class="math display">\[
+m^{\text{(sub)}} = \inf\{x \mid P(X \leq x) \leq \alpha}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+m^{\text{(loh)}} = \ing\{x \mid P(X \leq x) &gt; 1 - \alpha} \, .
+\]</span></p>
+<p>so to determine that:</p>
+<ul>
+<li>if <span class="math inline">\(n_v \leq m^{\text{(sub)}}\)</span> then the mutation is likely subclonal;</li>
+<li>if <span class="math inline">\(n_v \leq m^{\text{(loh)}}\)</span> then the mutation is likely clonal with loss of heterozygosity (LOH) associated;</li>
+</ul>
+<p>In the latter case the mutation has also high multiplicity, meaning that there could ne no wildtypes alleles. For a tumour suppressor gene this might imply total inactivation.</p>
+<p>Therefore the intuition is that a variant is classified as subclonal if <span class="math inline">\(n_v\)</span> falls to the left of the confidence interval of the distribution, while it is clonal with LOH if it falls to the right, or heterozygous otherwise (i.e., inside the confidence interval).</p>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h3>
+<p>In the following example, the classification task is run using the Beta-Binomial model.</p>
+<p>The output contains a <code>fit</code> object that is basically the same input table with the additional column <code>class_binom</code>, plus the input parameters of the used test.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">classified_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">data</span>,
@@ -179,6 +206,7 @@
 <span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span>
 <span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></code></pre></div>
 <p><img src="classify-and-plot_files/figure-html/unnamed-chunk-4-1.png" width="1500"></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="vafpi-based-test">VAF/<span class="math inline">\(\pi\)</span> based test<a class="anchor" aria-label="anchor" href="#vafpi-based-test"></a>
