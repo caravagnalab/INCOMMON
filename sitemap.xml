@@ -25,9 +25,6 @@
     <loc>caravagnalab.github.io/TAPACLOTH/index.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/TAPACLOTH/reference/analyse_sample.html</loc>
-  </url>
-  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/estimate_purity.html</loc>
   </url>
   <url>
@@ -35,5 +32,8 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_tapacloth.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/run_classifier.html</loc>
   </url>
 </urlset>

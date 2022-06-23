@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">TAPACLOTH</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,9 +91,14 @@ the one which is closest to the input purity estimate is used for the new estima
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list containing the input table reduced to the selected sample,
-an object of class <code>bmix</code> that represents a fit mixture, the estimated sample
-purity and a cowplot figure showing the results.</p>
+<p>A list containing:
+-the input table reduced to the selected sample, with
+additional columns <code>purity_bmix</code> for the inferred purity and <code>purity_error</code> for
+the relative error between the inferred and the input purity, assuming the
+inferred value is correct.
+-an object of class <code>bmix</code> that represents a fit mixtur
+-the inferred sample purity and
+-a cowplot figure showing results.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
