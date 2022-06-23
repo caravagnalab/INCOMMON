@@ -16,6 +16,10 @@ Additionally, TAPACLOTH can be used to infer sample purity. Since the
 two processes are independent, one can first estimate sample purity and
 then use it as input for the classification task.
 
+#### Help and support
+
+## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/TAPACLOTH/-yellow.svg)](https://caravagnalab.github.io/TAPACLOTH)
+
 ## Installation
 
 You can install the development version of TAPACLOTH from
