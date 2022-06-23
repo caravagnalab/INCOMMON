@@ -87,7 +87,6 @@ purity_bmix$data
 ```
 TAPACLOTh recovers the correct purity estimate and reports an error of ~60%.
 
-
 The object `purity_bmix` also contains a plot showing results of the mixture fit:
 ```{r fig.height=4, fig.width=8, dpi=300}
 purity_bmix$plot_bmix

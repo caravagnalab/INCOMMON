@@ -24,7 +24,6 @@ First, make sure that input data is in the requested form. It should be a tibble
 with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
 with variant), `dp` (coverage), `vaf` (variant allele frequency) and `purity`
 (sample purity) columns. For example:
-
 ```{r}
 data = dplyr::tibble(sample = "test",
            gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
