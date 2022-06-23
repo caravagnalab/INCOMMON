@@ -109,31 +109,44 @@ to the right, or heterozygous otherwise (i.e., inside the confidence interval).
 
 ## Example 
 
-In the following example, the classification task is run using the Beta-Binomial 
-model. 
+In the following example, the classification task is run using both the Binomial and Beta-Binomial models - do appreciate the difference across the width of the acceptance regions of each class. 
 
 The output contains a `fit` object that is basically the same input table with the additional column `class_binom`, plus the input parameters 
 of the used test. 
 
 ```{r}
-classified_data = run_classifier(
+binomial_model = run_classifier(
+  data = data,
+  alpha_level = 1e-3,
+  model = "Binomial"
+)
+
+betabinomial_model = run_classifier(
   data = data,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
-print(classified_data)
+print(binomial_model)
+print(betabinomial_model)
 ```
 
-Results of the classification task for a target gene can be plotted using function
-`plot_tapacloth`.
+Results of the classification task for a target gene can be plot.
 
-```{r fig.height=6, fig.width=5, dpi=300}
-plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test")
+```{r fig.height=6, fig.width=5}
+plot_tapacloth(
+  fit = classified_data, 
+  target_gene = "target gene", # genet target name
+  sample_name = "test" # sample, if many
+  )
 ```
 
-# VAF/$\pi$ based test
+The test shows the following information:
+
+- ....
+
+# Approximate frequency-based test
 
 This test is a working alternative to the Binomial test when number of reads with
 variant and coverage are not known, and only VAF and sample purity are provided. 
