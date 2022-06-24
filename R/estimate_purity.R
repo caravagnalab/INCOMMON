@@ -14,13 +14,12 @@
 #' the one which is closest to the input purity estimate is used for the new estimate.
 #'
 #' @return A list containing:
-#' -the input table reduced to the selected sample, with
-#' additional columns `purity_bmix` for the inferred purity and `purity_error` for
-#' the relative error between the inferred and the input purity, assuming the 
-#' inferred value is correct.
-#' -an object of class `bmix` that represents a fit mixtur
-#' -the inferred sample purity and 
-#' -a cowplot figure showing results.
+#' - the input table reduced to the selected sample, with
+#' additional columns `purity_bmix` for the inferred purity and `reliability` for
+#' the reliability score of the input purity (if available)
+#' - an object of class `bmix` that represents a fit mixtur
+#' - the inferred sample purity and 
+#' - a figure showing results of the fit.
 #' @export
 #'
 #' @examples
@@ -38,6 +37,11 @@ estimate_purity = function(data,
   sample_data = data %>%
     filter(sample == sample_name)
   
+  if(is.na(purity)){
+    cli::cli_alert("Input purity not available, reliability score will not be computed.")
+    purity = 0.0
+  }
+  
   # Prepare data for BMix
   nvs = sample_data$nv
   coverage = sample_data$dp
@@ -45,13 +49,13 @@ estimate_purity = function(data,
                      trials = coverage)
 
   # Return NA if NVs are less than 3
-  if (length(nvs) <= 3)
-    return(list(
-      data = sample_data,
-      fit = NA,
-      purity = NA,
-      plot_bmix = NA
-    ))
+  if (length(nvs) <= 3) {
+    test$data = sample_data
+    test$fit = NA
+    test$purity = NA
+    test$plot_bmix = NA
+    return(test)
+  }
 
   # Fit data with a mixture of 3 Binomials or BetaBinomials
   if (model == 'Binomial') {
@@ -77,12 +81,16 @@ estimate_purity = function(data,
     TRUE ~ NA %>% as.double()
 
   )
+  
+  if(is.na(bmix_best_purity)){
+    cli::cli_alert("Purity could not be estimated reliably. Check results of the fit in the output figure")
+  }
 
   # Prepare output
   fit$data = input
   plot_bmix = BMix::plot.bmix(fit, fit$data)
-  sample_data$purity_bmix = bmix_best_purity
-  sample_data$purity_error = sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2)
+  sample_data$purity_bmix = min(bmix_best_purity, 1) %>% round(2)
+  sample_data$reliability = ifelse(purity == 0.0, NA, 1-sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2))
 
   test$data = sample_data
   test$fit = fit

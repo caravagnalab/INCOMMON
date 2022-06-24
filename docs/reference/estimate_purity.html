@@ -80,15 +80,13 @@ the one which is closest to the input purity estimate is used for the new estima
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing:
--the input table reduced to the selected sample, with
-additional columns <code>purity_bmix</code> for the inferred purity and <code>purity_error</code> for
-the relative error between the inferred and the input purity, assuming the
-inferred value is correct.
--an object of class <code>bmix</code> that represents a fit mixtur
--the inferred sample purity and
--a cowplot figure showing results.</p>
-    </div>
+    <p>A list containing:</p><ul><li><p>the input table reduced to the selected sample, with
+additional columns <code>purity_bmix</code> for the inferred purity and <code>reliability</code> for
+the reliability score of the input purity (if available)</p></li>
+<li><p>an object of class <code>bmix</code> that represents a fit mixtur</p></li>
+<li><p>the inferred sample purity and</p></li>
+<li><p>a figure showing results of the fit.</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

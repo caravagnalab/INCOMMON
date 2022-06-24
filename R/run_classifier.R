@@ -66,7 +66,7 @@ run_classifier = function(data,
         dplyr::filter(gene == g)
       
       terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
-        round(1)
+        round(2)
       
       gene_data = gene_data %>%
         dplyr::mutate(
