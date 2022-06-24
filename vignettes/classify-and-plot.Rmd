@@ -67,42 +67,42 @@ TAPACLOTH provides an exact test (with a p-value) to assess clonality and zygosi
 This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to coverage. 
 
 Since a clonal variant within a diploid heterozygous tumour genome affects one out of two alleles of all the tumour cells, the success probability of the 
-counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations with heterozygosity are expected to have repsectively smaller and larger success probabilities, respectively. Therefore, if we assume as null model clonality, and consider for every input mutation
+counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations with loss of heterozygosity are expected to have repsectively smaller and larger success probabilities, respectively. Therefore, if we assume as null model clonality, and consider for every input mutation
 
--$n_v$ reads with the variant   at the locus;
--$n_r$ reads with the reference   at the locus;
-- sample purity $pi$;
+- $n_v$ reads with the variant   at the locus;
+- $n_r$ reads with the reference   at the locus;
+- sample purity $\pi$;
 
-then the expected number of reads with the variant follow
+then the expected number of reads with the variant follows
 \[
 X_B \sim Bin(\cdot \mid c, \pi/2)
 \] 
 and therefore
 \[
-P(X_B \leq x) \sim \sum_{k = 0}^x Bin(x \mid c, \pi/2).
+P(X_B \leq x) = \sum_{k = 0}^x Bin(x \mid c, \pi/2).
 \] 
-> The Beta-Binomial case simply follows $P(X_{BB} \leq x) \sim \sum_{k = 0}^x Beta-Bin(x \mid c, \pi/2, \rho).
-$ for some overdipsersion $\rho$. A Beta-Binomial distribution can be used to take into account the overdispersion of the sequencing assay. 
+
+> The Beta-Binomial case simply follows $P(X_{BB} \leq x) = \sum_{k = 0}^x \textit{Beta-Bin}(x \mid c, \pi/2, \rho)$ for some over-dipsersion $\rho$. A Beta-Binomial distribution can be used to take into account the over-dispersion of the sequencing assay. 
 
 
 We can take an $\alpha$-level (e.g., $10^{-3}$) and invert the function to determine 
 
 \[
-m^{\text{(sub)}} = \inf\{x \mid P(X \leq x) \leq \alpha}
+m^{\text{sub}} = \inf\left\{x\mid P(X \leq x) \leq \alpha\right\}
 \]
 
 and
 
 \[
-m^{\text{(loh)}} = \ing\{x \mid P(X \leq x) > 1 - \alpha} \, .
+m^{\text{loh}} = \inf\left\{x \mid P(X \leq x) > 1 - \alpha\right\} \, .
 \]
 
 so to determine that:
 
 - if $n_v \leq m^{\text{(sub)}}$ then the mutation is likely subclonal;
-- if $n_v \leq m^{\text{(loh)}}$ then the mutation is likely clonal with loss of heterozygosity (LOH) associated;
+- if $n_v > m^{\text{(loh)}}$ then the mutation is likely clonal with loss of heterozygosity (LOH) associated;
 
-In the latter case the mutation has also high multiplicity, meaning that there could ne no wildtypes alleles. For a tumour suppressor gene this might imply total inactivation.
+In the latter case the mutation has also high multiplicity, meaning that there could be no wildtype alleles. For a tumour suppressor gene this might imply total inactivation.
 
 Therefore the intuition is that a variant is
 classified as subclonal if $n_v$  falls to the left of the confidence interval of the distribution, while it is clonal with LOH if it falls
@@ -132,26 +132,63 @@ betabinomial_model = run_classifier(
 print(binomial_model)
 print(betabinomial_model)
 ```
-The test shows the following information:
-
-- ....
+The test shows that at fixed $\alpha$-level, including over-dispersion results in 
+a narrower confidence interval on $n_v$, so that the null hypothesis of heterozygosity 
+is more likely to be rejected, in favor of sub-clonality or LOH alternatives.
 
 # Approximate frequency-based test
 
-This test is a working alternative to the Binomial test when number of reads with
-variant and coverage are not known, and only VAF and sample purity are provided. 
-The test is based on the 3-quantiles splitting of the distribution of VAF/$\pi$
-ratios for a target gene, across the whole provided dataset. Variants of the gene
-are classified either as Subclonal/CLonal (heterozygous) if their VAF/$\pi$ ratio
-is lower than the second 3-quantile or as Clonal LOH if it is larger.
+TAPACLOTH also provides an approximate test that turns useful when the number of reads with
+variant and coverage are not known, while VAF and sample purity only are provided.
 
+This test is based on an adjustment of the observed VAF for the confounding sample
+purity. Since a clonal variant within a diploid heterozygous tumour genome affects 
+one out of two alleles of all the tumour cells, we expect its VAF/$\pi$ ratio to
+be close to 0.5. Analogously, for sub-clonal and clonal mutations with loss of 
+heterozygosity we expect the ratio to be close to 0 and 1, respectively. 
+
+If we assume that each of the $N$ observed values of $X=\text{VAF}/\pi$ for a target gene across the dataset
+has equal probability
+
+\[
+Pr(X_k) = \frac{1}{N}
+\]
+
+and therefore 
+
+\[
+Pr(X \leq X_k) = \sum\limits_{i=0}^k\frac{1}{N}
+\]
+
+we can partition the distribution of the observed values into 3
+subsets of nearly equal sizes, where the cut points are the terziles defined as
+
+\[
+q^{\text{sub}} = \sup\left\{x \in [x_1,\dots,x_N] \mid Pr(X\leq x)\leq \frac{1}{3}\right\}
+\]
+
+\[
+q^{\text{loh}} = \inf\left\{x \in [x_1,\dots,x_N] \mid Pr(X\leq x)\geq \frac{2}{3}\right\}
+\]
+
+and determine that:
+
+- if $\text{VAF}/\pi \leq q^{\text{(sub)}}$ then the mutation is likely subclonal;
+- if $\text{VAF}/\pi > q^{\text{(loh)}}$ then the mutation is likely clonal with loss of heterozygosity (LOH) associated.
+
+## Example 
+
+In the following example, the classification task is run using the terzile model.
+
+The output contains a `fit` object that is basically the same input table with the additional column `class_terzile`, plus the input parameters 
+of the used test. 
 ```{r}
 data = dplyr::tibble(sample = paste0("test ", seq(1:20)),
            gene = "target gene",
            nv = seq(10,100,4.6) %>% round(0),
            dp = 100,
            VAF = (seq(10,100,4.6) %>% round(0))/100,
-           purity = 1
+           purity = exp(log(10)*seq(-0.5, 0, length.out=20)) %>% round(1)
 )
 ```
 
@@ -165,5 +202,11 @@ print(classified_data)
 ```
 
 ```{r dpi=300}
-plot(classified_data, target_gene = "target gene", sample_name = "test 1")
+plot(classified_data, target_gene = "target gene", sample_name = "test 6")
+plot(classified_data, target_gene = "target gene", sample_name = "test 7")
 ```
+The test shows how TAPACLOTH classification using the terzile model allows to take
+into account the confounding effect of sample purity we would have by classifying mutations
+based only on VAF: the variant observed in sample "test 7" has a larger VAF than
+the one in sample "test 6", but is not classified too as Clonal LOH due to the adjustment
+of VAF for the larger sample purity.
