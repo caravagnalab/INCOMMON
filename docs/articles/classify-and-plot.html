@@ -86,7 +86,16 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'dplyr'</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter, lag</span>
+<span class="co">#&gt; The following objects are masked from 'package:base':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     intersect, setdiff, setequal, union</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></code></pre></div>
 <div class="section level2">
 <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
 </h2>
@@ -94,9 +103,9 @@
 somatic mutations detected from targeted panel sequencing of a cancer
 sample.</p>
 <blockquote>
-<p>Practically, the TAPACLOTH model can also be used with other gene
-sequencing assays. However, if one has access to more advanced data such
-as high-resolution whole-genome sequening, we suggest using <a href="https://caravagnalab.github.io/mobster" class="external-link">other deconvolution
+<p>The TAPACLOTH model can be used with any sequencing assay. However,
+if one can access higher-resolution data such as whole-exome/genome
+sequencing, we suggest specific <a href="https://caravagnalab.github.io/mobster" class="external-link">other deconvolution
 methodologies</a>.</p>
 </blockquote>
 <p>TAPACLOTH will assess, for every mutation, any of the following
@@ -109,17 +118,20 @@ genome;</li>
 tumour genome.</li>
 </ul>
 <p>TAPACLOTH implements two type of statistical tests; the required
-inputs for <code>TAPACLOTH</code> are:</p>
+inputs are:</p>
 <ul>
 <li>read/counts or variant allele frequencies from the panel assay</li>
-<li>tumour sample purity <span class="math inline">\(\pi\)</span>
+<li>tumour sample purity <span class="math inline">\(\pi &gt;
+0\)</span>
 </li>
 </ul>
 <blockquote>
-<p>Note: tumour sample purity <span class="math inline">\(\pi\)</span>
-can be estimated by copy number assessment, pathology assessment, or in
-general any other approach outside the scope of TAPACLOTH.</p>
+<p>Tumour sample purity <span class="math inline">\(\pi\)</span> can be
+estimated by copy number assessment, pathology assessment, or in general
+any other approach outside the scope of TAPACLOTH.</p>
 </blockquote>
+<p>We assume in TAPACLOTH that the provided input purity is correct, and
+provide functions to assess purity reliability (see Articles).</p>
 <div class="section level3">
 <h3 id="inputs-format">Inputs format<a class="anchor" aria-label="anchor" href="#inputs-format"></a>
 </h3>
@@ -128,7 +140,6 @@ general any other approach outside the scope of TAPACLOTH.</p>
 reads with variant), <code>dp</code> (coverage), <code>VAF</code>
 (variant allele frequency) and <code>purity</code> (sample purity)
 columns.</p>
-<p>For example:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,
            gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"test gene 1"</span>, <span class="st">"test gene 2"</span>, <span class="st">"test gene 3"</span>, <span class="st">"target gene"</span><span class="op">)</span>,
@@ -151,27 +162,83 @@ columns.</p>
 <div class="section level2">
 <h2 id="read-counts-based-test">Read-counts based test<a class="anchor" aria-label="anchor" href="#read-counts-based-test"></a>
 </h2>
-<p>This test is based on a model of the sequencing outcome as a Binomial
-process in which the number of reads with a variant represents the
-number of successes over a total number of trials that corresponds to
-coverage. Since a clonal variant within a diploid heterozygous tumour
-genome affects one out of two alleles of all the tumour cells, the
-success probability of the counting process corresponds to half of the
-tumour sample purity. Sub-clonal and clonal mutations are expected to
-have smaller and larger success probabilities, respectively. Given
-coverage and sample purity, a variant is thus classified as either
-sub-clonal if the number of reads supporting it falls outside left of
-the chosen confidence interval of the distribution, clonal LOH if it
-falls outside right, or heterozygous clonal if it falls inside the
-confidence interval. A Beta-Binomial distribution can be used to take
-into account the over-dispersion affecting sequencing.</p>
-<p>In the following example, the classification task is run using the
-Beta-Binomial model. The output contains a <code>fit</code> object that
-is basically the same input table with the additional column
-<code>class_binom</code>, plus the input parameters of the used
-test.</p>
+<p>TAPACLOTH provides an exact test (with a p-value) to assess clonality
+and zygosity from read-count data.</p>
+<p>This test is based on a model of the sequencing outcome following
+either a Binomial or a Beta-Binomial process, in which the number of
+reads with a variant represents the number of successes over a total
+number of trials corresponding to coverage.</p>
+<p>Since a clonal variant within a diploid heterozygous tumour genome
+affects one out of two alleles of all the tumour cells, the success
+probability of the counting process corresponds to half of the tumour
+sample purity. Sub-clonal and clonal mutations with heterozygosity are
+expected to have repsectively smaller and larger success probabilities,
+respectively. Therefore, if we assume as null model clonality, and
+consider for every input mutation</p>
+<p>-<span class="math inline">\(n_v\)</span> reads with the variant at
+the locus; -<span class="math inline">\(n_r\)</span> reads with the
+reference at the locus; - sample purity <span class="math inline">\(pi\)</span>;</p>
+<p>then the expected number of reads with the variant follow <span class="math display">\[
+X_B \sim Bin(\cdot \mid c, \pi/2)
+\]</span> and therefore <span class="math display">\[
+P(X_B \leq x) \sim \sum_{k = 0}^x Bin(x \mid c, \pi/2).
+\]</span> &gt; The Beta-Binomial case simply follows $P(X_{BB} x) _{k =
+0}^x Beta-Bin(x c, /2, ). $ for some overdipsersion <span class="math inline">\(\rho\)</span>. A Beta-Binomial distribution can be
+used to take into account the overdispersion of the sequencing
+assay.</p>
+<p>We can take an <span class="math inline">\(\alpha\)</span>-level
+(e.g., <span class="math inline">\(10^{-3}\)</span>) and invert the
+function to determine</p>
+<p><span class="math display">\[
+m^{\text{(sub)}} = \inf\{x \mid P(X \leq x) \leq \alpha}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+m^{\text{(loh)}} = \ing\{x \mid P(X \leq x) &gt; 1 - \alpha} \, .
+\]</span></p>
+<p>so to determine that:</p>
+<ul>
+<li>if <span class="math inline">\(n_v \leq m^{\text{(sub)}}\)</span>
+then the mutation is likely subclonal;</li>
+<li>if <span class="math inline">\(n_v \leq m^{\text{(loh)}}\)</span>
+then the mutation is likely clonal with loss of heterozygosity (LOH)
+associated;</li>
+</ul>
+<p>In the latter case the mutation has also high multiplicity, meaning
+that there could ne no wildtypes alleles. For a tumour suppressor gene
+this might imply total inactivation.</p>
+<p>Therefore the intuition is that a variant is classified as subclonal
+if <span class="math inline">\(n_v\)</span> falls to the left of the
+confidence interval of the distribution, while it is clonal with LOH if
+it falls to the right, or heterozygous otherwise (i.e., inside the
+confidence interval).</p>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h3>
+<p>In the following example, the classification task is run using both
+the Binomial and Beta-Binomial models - do appreciate the difference
+across the width of the acceptance regions of each class.</p>
+<p>The output contains a <code>fit</code> object that is basically the
+same input table with the additional column <code>class_binom</code>,
+plus the input parameters of the used test.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">classified_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">binomial_model</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span>
+  data <span class="op">=</span> <span class="va">data</span>,
+  alpha_level <span class="op">=</span> <span class="fl">1e-3</span>,
+  model <span class="op">=</span> <span class="st">"Binomial"</span>
+<span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">test</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span>
+<span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span>
+<span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span>
+<span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span>
+<span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span>
+<span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span>
+<span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span>
+<span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span>
+<span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span>
+
+<span class="va">betabinomial_model</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">data</span>,
   alpha_level <span class="op">=</span> <span class="fl">1e-3</span>,
   model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,
@@ -180,7 +247,16 @@ test.</p>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">test</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_data</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">binomial_model</span><span class="op">)</span>
+<span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">Binomial</span> model, with significance level <span style="color: #00BB00;">0.001</span> ─────</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span>
+<span class="co">#&gt;   sample gene           nv    dp   VAF purity class_binom</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1      1 Clonal     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1 Clonal     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1 Clonal     </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1 Clonal</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">betabinomial_model</span><span class="op">)</span>
 <span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">Beta-Binomial</span> model, with overdispersion parameter</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span>
 <span class="co">#&gt;   sample gene           nv    dp   VAF purity class_binom</span>
@@ -189,23 +265,14 @@ test.</p>
 <span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1 Clonal     </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1 Clonal LOH </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1 Clonal</span></code></pre></div>
-<p>Results of the classification task for a target gene can be
-plotted:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span>
-<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
-<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
-<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
-<span class="co">#&gt; 'BMix'</span>
-<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">BMix</span>, <span style="font-style: italic;">'Binomial and Beta-Binomial univariate mixtures'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagnalab.github.io/BMix/&gt;</span></span>
-<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
-<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span>
-<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span>
-<span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-4-1.png" width="1500"></p>
+<p>The test shows the following information:</p>
+<ul>
+<li>….</li>
+</ul>
+</div>
 </div>
 <div class="section level2">
-<h2 id="vafpi-based-test">VAF/<span class="math inline">\(\pi\)</span> based test<a class="anchor" aria-label="anchor" href="#vafpi-based-test"></a>
+<h2 id="approximate-frequency-based-test">Approximate frequency-based test<a class="anchor" aria-label="anchor" href="#approximate-frequency-based-test"></a>
 </h2>
 <p>This test is a working alternative to the Binomial test when number
 of reads with variant and coverage are not known, and only VAF and
@@ -214,15 +281,15 @@ splitting of the distribution of VAF/<span class="math inline">\(\pi\)</span> ra
 whole provided dataset. Variants of the gene are classified either as
 Subclonal/CLonal (heterozygous) if their VAF/<span class="math inline">\(\pi\)</span> ratio is lower than the second
 3-quantile or as Clonal LOH if it is larger.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"test "</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>,
            gene <span class="op">=</span> <span class="st">"target gene"</span>,
-           nv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,
+           nv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,
            dp <span class="op">=</span> <span class="fl">100</span>,
-           VAF <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>,
+           VAF <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>,
            purity <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">classified_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">data</span>,
   model <span class="op">=</span> <span class="st">"terzile"</span>
@@ -255,10 +322,18 @@ Subclonal/CLonal (heterozygous) if their VAF/<span class="math inline">\(\pi\)</
 <span class="co">#&gt; <span style="color: #BCBCBC;">18</span> test 18 target gene    88   100  0.88      1 Clonal LOH      </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">19</span> test 19 target gene    93   100  0.93      1 Clonal LOH      </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">20</span> test 20 target gene    97   100  0.97      1 Clonal LOH</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test 1"</span><span class="op">)</span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
+<span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
+<span class="co">#&gt; 'BMix'</span>
+<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">BMix</span>, <span style="font-style: italic;">'Binomial and Beta-Binomial univariate mixtures'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagnalab.github.io/BMix/&gt;</span></span>
+<span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
+<span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span>
+<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-7-1.png" width="2187.5"></p>
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-6-1.png" width="2187.5"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

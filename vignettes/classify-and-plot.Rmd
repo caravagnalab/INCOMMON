@@ -16,6 +16,7 @@ options(crayon.enabled=F)
 ```
 
 ```{r setup}
+library(dplyr)
 library(TAPACLOTH)
 ```
 
