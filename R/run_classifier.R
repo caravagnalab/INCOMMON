@@ -27,6 +27,11 @@ run_classifier = function(data,
                           model = "Binomial",
                           rho = NA)
 {
+  
+  # Output
+  test = list()
+  class(test) = "TAPACLOTH"
+  
   if (model %in% c("Binomial", "Beta-Binomial")) {
     data = lapply(unique(data$sample), function(s) {
       cli::cli_h1(s)
@@ -74,11 +79,11 @@ run_classifier = function(data,
       do.call(rbind, .)
   } 
   
-  return(list(
-    fit = data,
-    model = model,
-    rho = rho,
-    alpha_level = alpha_level
-  ))
+  test$fit = data
+  test$model = model
+  test$rho = rho
+  test$alpha_level = alpha_level
+  
+  return(test)
   
 }

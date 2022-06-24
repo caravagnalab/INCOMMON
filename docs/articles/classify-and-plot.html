@@ -181,27 +181,18 @@ test.</p>
 <span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">test</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_data</span><span class="op">)</span>
-<span class="co">#&gt; $fit</span>
+<span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">Beta-Binomial</span> model, with overdispersion parameter</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span>
 <span class="co">#&gt;   sample gene           nv    dp   VAF purity class_binom</span>
 <span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1      1 Subclonal  </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1 Clonal     </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1 Clonal LOH </span>
-<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1 Clonal     </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $model</span>
-<span class="co">#&gt; [1] "Beta-Binomial"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $rho</span>
-<span class="co">#&gt; [1] 0.01</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $alpha_level</span>
-<span class="co">#&gt; [1] 0.001</span></code></pre></div>
-<p>Results of the classification task for a target gene can be plotted
-using function <code>plot_tapacloth</code>.</p>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1 Clonal</span></code></pre></div>
+<p>Results of the classification task for a target gene can be
+plotted:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tapacloth.html">plot_tapacloth</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span>
 <span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span>
 <span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span>
 <span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span>
@@ -239,7 +230,8 @@ Subclonal/CLonal (heterozygous) if their VAF/<span class="math inline">\(\pi\)</
 <span class="co">#&gt; </span>
 <span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">target gene</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────────</span></span>
 
-<span class="va">classified_data</span><span class="op">$</span><span class="va">fit</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_data</span><span class="op">)</span>
+<span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">terzile</span> model, with significance level <span style="color: #00BB00;">0.01</span> ───────</span>
 <span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 7</span></span>
 <span class="co">#&gt;    sample  gene           nv    dp   VAF purity class_terzile   </span>
 <span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
@@ -264,7 +256,7 @@ Subclonal/CLonal (heterozygous) if their VAF/<span class="math inline">\(\pi\)</
 <span class="co">#&gt; <span style="color: #BCBCBC;">19</span> test 19 target gene    93   100  0.93      1 Clonal LOH      </span>
 <span class="co">#&gt; <span style="color: #BCBCBC;">20</span> test 20 target gene    97   100  0.97      1 Clonal LOH</span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_tapacloth.html">plot_tapacloth</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test 1"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">classified_data</span>, target_gene <span class="op">=</span> <span class="st">"target gene"</span>, sample_name <span class="op">=</span> <span class="st">"test 1"</span><span class="op">)</span>
 <span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></code></pre></div>
 <p><img src="classify-and-plot_files/figure-html/unnamed-chunk-7-1.png" width="2187.5"></p>
 </div>

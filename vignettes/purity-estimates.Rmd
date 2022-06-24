@@ -59,7 +59,7 @@ purity_bmix = estimate_purity(data = data,
                 model = "Binomial",
                 purity = data$purity[1],
                 eps = 0.01)
-print(purity_bmix$data)
+print(purity_bmix)
 ```
 The parameter `eps` is used to compare peaks of the mixture distributions with
 the input purity. In cases when the VAF spectrum is fitted with a mixture of 2
@@ -89,7 +89,7 @@ purity_bmix = estimate_purity(data = data,
                 model = "Binomial",
                 purity = data$purity[1],
                 eps = 0.01)
-print(purity_bmix$data)
+print(purity_bmix)
 ```
 The object `purity_bmix` also contains a plot showing results of the mixture fit:
 ```{r fig.height=4, fig.width=8, dpi=300}
@@ -114,10 +114,10 @@ classified_data = run_classifier(
   rho = 0.01
 )
 
-print(classified_data$fit)
+print(classified_data)
 ```
 
 ```{r fig.height=6, fig.width=5, dpi=300}
-plot_tapacloth(fit = classified_data, target_gene = "test gene 5", sample_name = "test")
+plot(classified_data, target_gene = "test gene 5", sample_name = "test")
 ```
 ```

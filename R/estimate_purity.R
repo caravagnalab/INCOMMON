@@ -29,7 +29,10 @@ estimate_purity = function(data,
                            model = "Binomial",
                            purity = 1.0,
                            eps = 0.01) {
-
+  # Output
+  test = list()
+  class(test) = "TAPACLOTH"
+  
   cli::cli_h1(sample_name)
 
   sample_data = data %>%
@@ -81,10 +84,10 @@ estimate_purity = function(data,
   sample_data$purity_bmix = bmix_best_purity
   sample_data$purity_error = sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2)
 
-  return(list(
-    data = sample_data,
-    fit = fit,
-    purity = bmix_best_purity,
-    plot_bmix = plot_bmix
-  ))
+  test$data = sample_data
+  test$fit = fit
+  test$purity = bmix_best_purity
+  test$plot_bmix = plot_bmix
+  
+  return(test)
 }

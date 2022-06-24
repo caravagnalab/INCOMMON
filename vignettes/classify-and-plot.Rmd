@@ -90,11 +90,10 @@ classified_data = run_classifier(
 print(classified_data)
 ```
 
-Results of the classification task for a target gene can be plotted using function
-`plot_tapacloth`.
+Results of the classification task for a target gene can be plotted:
 
 ```{r fig.height=6, fig.width=5, dpi=300}
-plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test")
+plot(classified_data, target_gene = "target gene", sample_name = "test")
 ```
 
 # VAF/$\pi$ based test
@@ -122,9 +121,9 @@ classified_data = run_classifier(
   model = "terzile"
 )
 
-classified_data$fit
+print(classified_data)
 ```
 
 ```{r dpi=300}
-plot_tapacloth(fit = classified_data, target_gene = "target gene", sample_name = "test 1")
+plot(classified_data, target_gene = "target gene", sample_name = "test 1")
 ```
