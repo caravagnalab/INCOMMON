@@ -13,13 +13,7 @@
 #' than the value of this parameter. If both distributions satisfy this condition,
 #' the one which is closest to the input purity estimate is used for the new estimate.
 #'
-#' @return A list containing:
-#' - the input table reduced to the selected sample, with
-#' additional columns `purity_bmix` for the inferred purity and `reliability` for
-#' the reliability score of the input purity (if available)
-#' - an object of class `bmix` that represents a fit mixtur
-#' - the inferred sample purity and 
-#' - a figure showing results of the fit.
+#' @return An object of class `TAPACLOTH` containing the inferred purity.
 #' @export
 #'
 #' @examples

@@ -188,7 +188,7 @@ data = dplyr::tibble(sample = paste0("test ", seq(1:20)),
            nv = seq(10,100,4.6) %>% round(0),
            dp = 100,
            VAF = (seq(10,100,4.6) %>% round(0))/100,
-           purity = exp(log(10)*seq(-0.5, 0, length.out=20)) %>% round(1)
+           purity = exp(log(10)*seq(-0.4, 0, length.out=20)) %>% round(1)
 )
 ```
 
@@ -201,12 +201,25 @@ classified_data = run_classifier(
 print(classified_data)
 ```
 
-```{r dpi=300}
-plot(classified_data, target_gene = "target gene", sample_name = "test 6")
-plot(classified_data, target_gene = "target gene", sample_name = "test 7")
+```{r fig.height=4, fig.width=5, dpi=300}
+ggpubr::ggarrange(plotlist = list(
+  plot(
+    classified_data,
+    target_gene = "target gene",
+    sample_name = "test 7"
+  ),
+  plot(
+    classified_data,
+    target_gene = "target gene",
+    sample_name = "test 8"
+  )
+),
+ncol = 1,
+nrow = 2, common.legend = T, legend = "bottom")
+
 ```
 The test shows how TAPACLOTH classification using the terzile model allows to take
 into account the confounding effect of sample purity we would have by classifying mutations
-based only on VAF: the variant observed in sample "test 7" has a larger VAF than
-the one in sample "test 6", but is not classified too as Clonal LOH due to the adjustment
+based only on VAF: the variant observed in sample "test 8" has a larger VAF than
+the one in sample "test 7", but is not classified too as Clonal LOH due to the adjustment
 of VAF for the larger sample purity.

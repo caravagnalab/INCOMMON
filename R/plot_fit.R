@@ -30,11 +30,12 @@ plot_fit = function(fit, target_gene, sample_name) {
     ggplot2::ggplot() +
     CNAqc:::my_ggplot_theme() +
     ggplot2::geom_histogram(binwidth = 0.01, aes(VAF, fill = class)) +
-    ggsci::scale_fill_jama() +
+    ggplot2::scale_fill_manual(values = colormap)+
+    # ggsci::scale_fill_jama() +
     xlim(0, 1) +
     ggplot2::labs(
       title = sample_name,
-      subtitle = paste0("Purity: ", fit$purity[1], " - ", target_gene, ": ", gene_status)
+      subtitle = paste0("Purity: ", fit$fit$purity[1], " - ", target_gene, ": ", gene_status)
     ) +
     ggplot2::guides(fill = guide_legend(''),
            color = guide_legend('', override.aes = aes(fill = NA)))  +

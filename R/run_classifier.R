@@ -13,10 +13,7 @@
 #' @param rho If Beta-Binomial model is selected, this parameter tunes the over-dispersion
 #' of the expected distribution used for the test.
 #'
-#' @return A list containing the input table reduced to the selected sample, with
-#' the additional 'class' column accounting for the classification, the chosen
-#' model, over-dispersion parameter (NA if the model is not Beta-Binomial) and
-#' significance level used in the test.
+#' @return An object of class `TAPACLOTH` that represents the classified input data.
 #' @export
 #' 
 #' @import dplyr

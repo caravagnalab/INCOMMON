@@ -24,10 +24,7 @@ and is based on a terzile test.}
 of the expected distribution used for the test.}
 }
 \value{
-A list containing the input table reduced to the selected sample, with
-the additional 'class' column accounting for the classification, the chosen
-model, over-dispersion parameter (NA if the model is not Beta-Binomial) and
-significance level used in the test.
+An object of class \code{TAPACLOTH} that represents the classified input data.
 }
 \description{
 Classify mutations per sample using a (Beta-)Binomial model-based test, or
