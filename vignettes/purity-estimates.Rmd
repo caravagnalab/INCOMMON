@@ -47,7 +47,7 @@ For example:
 ```{r}
 data = dplyr::tibble(sample = "test",
            gene = paste0("test gene ", 1:10),
-           nv = c(50, 60, 100, 250, 225, 270, 35, 375, 400, 450),
+           nv = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)*5,
            dp = 500,
            VAF = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)/100,
            purity = 1
@@ -97,7 +97,7 @@ and reports a reliability score for the input estimate of ~40%.
 ```{r}
 data = dplyr::tibble(sample = "test",
            gene = paste0("test gene ", 1:10),
-           nv = c(50, 60, 100, 250, 225, 270, 35, 375, 400, 450),
+           nv =  c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)*5,
            dp = 500,
            VAF = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)/100,
            purity = 0.4
