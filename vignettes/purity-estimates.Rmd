@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-options(crayon.enabled=F)
+options(crayon.enabled=TRUE)
 ```
 
 ```{r setup}
@@ -21,55 +21,35 @@ library(dplyr)
 library(TAPACLOTH)
 ```
 
-# Requirements
 
-TAPACLOTH can be used to to estimate the purity of a cancer sample from the VAF spectrum of somatic mutations detected from targeted panel sequencing. 
+We work with the [example TAPACLOTH `data`](TAPACLOTH.html).
 
-> Practically, the TAPACLOTH model can also be used with other gene sequencing assays. However, if one has access to more advanced data such as high-resolution whole-genome sequening, we suggest using [other quality control methodologies](https://caravagnalab.github.io/CNAqc). 
-
-If an estimate of tumour sample purity, made for example by copy number 
-or pathology assessment, is provided as input, TAPACLOTH additionally computes 
-a reliability score for the estimate.
-
-The required inputs are:
-
-- read/counts from the panel assay 
-- (optional) tumour sample purity $\pi > 0$
-
-##  Inputs format
-
-It should be a tibble with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
-with variant), `dp` (coverage), `VAF` (variant allele frequency) and `purity`
-(sample purity, NA if not available) columns. 
-
-For example:
-
-```{r}
+```{r, include=FALSE}
 data = dplyr::tibble(sample = "test",
-           gene = paste0("test gene ", 1:10),
-           nv = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)*5,
-           dp = 500,
-           VAF = c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)/100,
+           gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
+           nv = c(10, 50, 90, 120),
+           dp = c(100, 100, 100, 200),
+           VAF = c(0.1, 0.5, 0.9, 0.6),
            purity = 1
 )
-
-print(data)
 ```
+
 
 # Mixture-model based purity estimate
 
 TAPACLOTH infers sample purity by fitting the number of reads with variant of somatic mutations
 with a mixture of Binomial or Beta-Binomial distributions, using 
-[BMix](https://caravagnalab.github.io/BMix). Check the documentation of `BMix` 
-for details of the fitting procedure.
+[BMix](https://caravagnalab.github.io/BMix). 
 
-The fit is performed using Binomial or Beta-Binomial mixture models with 1 up to 3
-distributions, and the best model is selected. Purity is estimated as twice the 
+The BMix fit is performed using Binomial or Beta-Binomial mixture models with 1 up to 3
+clusters, and the best model is selected. Purity is estimated as twice the 
 mean of the mixture component that is expected to represent the cluster
 of clonal heterozygous mutations. The selected component is the one with lowest
 mean if data are fitted with two components, with intermediate mean if data are
-fitted with three components. In case data are fitted with a mixture of two components,
-we do not have any expectation on which one represents the clonal heterozygous cluster
+fitted with three components. 
+
+In case data are fit with a mixture of two components,
+we do not have any expectation on which one represents the clonal heterozygous cluster.
 In this case we adopt a conservative strategy and select the component that results 
 in the closest estimate to the input purity, if available, given that they are not
 more distant than the input parameter `eps`.
@@ -77,7 +57,7 @@ more distant than the input parameter `eps`.
 ## Example
 
 In this example, the input purity estimate of the cancer sample is correct, and 
-the VAF spectrum of somatic mutations is fitted using a mixture of Binomial distributions:
+the VAF spectrum of somatic mutations is fit using a mixture of Binomial distributions:
 
 ```{r}
 purity_bmix = estimate_purity(data = data,
@@ -85,16 +65,19 @@ purity_bmix = estimate_purity(data = data,
                 model = "Binomial",
                 purity = data$purity[1],
                 eps = 0.01)
+
 print(purity_bmix)
 ```
 
 This test shows that the inferred purity matches the true value, and a reliability
-score of 100% is reported.
+score of 100% is indeed reported.
+
 If we provide an input purity estimate of the cancer sample that is underestimated
-with respect to ground-truth, TAPACLOTH retrieves the correct purity value
+with respect to ground-truth,TAPACLOTH retrieves the correct purity value
 and reports a reliability score for the input estimate of ~40%.
 
 ```{r}
+# Example error with purity = 0.4
 data = dplyr::tibble(sample = "test",
            gene = paste0("test gene ", 1:10),
            nv =  c(10, 12, 20, 50, 45, 54, 61, 75, 80, 90)*5,
@@ -103,18 +86,16 @@ data = dplyr::tibble(sample = "test",
            purity = 0.4
 )
 
-print(data)
-```
-
-```{r}
 purity_bmix = estimate_purity(data = data,
                 sample_name = "test",
                 model = "Binomial",
                 purity = data$purity[1],
                 eps = 0.01)
+
 print(purity_bmix)
 ```
-Results of the fitting procedure can be inspected by printing the `purity_bmix$plot_bmix`.
+Results of the fitting procedure can be inspected by printing `purity_bmix$plot_bmix`.
+
 The output plot shows (left) the assignment of variants to the fitted mixture components, 
 (center) the fitted densities and a comparison between the tested model, based on three
 different likelihood measures (BIC, ICL and NLL).
@@ -125,14 +106,12 @@ purity_bmix$plot_bmix
 
 # Classifier re-run with the inferred purity
 
-TAPACLOTH purity estimate can be used as a preliminary step to the classification
-task, especially when the input estimate is not available or considered not reliable.
+TAPACLOTH purity estimate can be used as a preliminary step to the [classification task](classify-and-plot.html), especially when the input estimate is not available or is considered unreliable.
 
 ## Example
 
 In this example, the classification task is first run with an underestimated 
-input purity. Then the value of purity is replaced with the TAPACLOTH estimate 
-and the classification task is re-run with the new value.
+input purity. 
 
 ```{r}
 classified_data_w = run_classifier(
@@ -145,6 +124,9 @@ classified_data_w = run_classifier(
 print(classified_data_w)
 ```
 
+Then the value of purity is replaced with the TAPACLOTH estimate 
+and the classification task is re-run with the new value.
+
 ```{r}
 purity_bmix = estimate_purity(data = data,
                 sample_name = "test",
@@ -156,9 +138,7 @@ data = dplyr::rename(purity_bmix$data,
                      input_purity = purity, 
                      purity = purity_bmix) 
 print(data)
-```
 
-```{r}
 classified_data_r = run_classifier(
   data = data,
   alpha_level = 1e-3,
@@ -168,6 +148,8 @@ classified_data_r = run_classifier(
 
 print(classified_data_r)
 ```
+
+The two classifications can be compared.
 
 ```{r fig.height=6, fig.width=8, dpi=300}
 ggpubr::ggarrange(plotlist = list(
@@ -185,7 +167,7 @@ ggpubr::ggarrange(plotlist = list(
 ncol = 2,
 nrow = 1)
 ```
-This test shows the impact of an incorrect purity estimate on the classification
+This  shows the impact of an incorrect purity estimate on the classification
 of variants, and how TAPACLOTH can be used to improve the results when the input
 estimate is not reliable enough. An incorrect purity estimate can result in a bad
-variant classifcation and this could eventually lead to wrong conclusions in downstream analyses.
+variant classification and this can eventually lead to wrong conclusions in downstream analyses.

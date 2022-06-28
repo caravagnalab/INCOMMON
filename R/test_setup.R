@@ -4,6 +4,7 @@ test_setup = function(coverage = 500,
                           alpha_level = 0.01,
                           model = 'binomial')
 {
+
   # Range of NV values
   nvs = 1:coverage
 
@@ -44,6 +45,8 @@ test_setup = function(coverage = 500,
   inputs = data.frame(nv = nvs,
                       p = p_x,
                       VAF = vafs)
+
+  # cli::cli_alert_info("Computing p-values.")
 
   return(list(
     model = model,

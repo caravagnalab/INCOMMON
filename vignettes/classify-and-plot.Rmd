@@ -1,5 +1,5 @@
 ---
-title: "Classify mutations and plot results"
+title: "Classify clonality and zygosity"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-options(crayon.enabled=F)
+options(crayon.enabled=TRUE)
 ```
 
 ```{r setup}
@@ -20,35 +20,9 @@ library(dplyr)
 library(TAPACLOTH)
 ```
 
-# Requirements
+We work with the [example TAPACLOTH `data`](TAPACLOTH.html).
 
-TAPACLOTH can be used to classify the clonality and zygosity of somatic mutations detected from targeted panel sequencing of a cancer sample. 
-
-> The TAPACLOTH model can be used with any sequencing assay. However, if one can access  higher-resolution data such as whole-exome/genome sequencing, we suggest specific [other deconvolution methodologies](https://caravagnalab.github.io/mobster). 
-
-TAPACLOTH will assess, for every mutation, any of the following statuses:
-
-- subclonal mutation;
-- heterozygous clonal mutation within a diploid heterozygous tumour genome;
-- homozygous clonal mutation within a loss of heterozygosity of the tumour genome.
-
-TAPACLOTH implements two type of statistical tests; the required inputs are:
-
-- read/counts or variant allele frequencies from the panel assay 
-- tumour sample purity $\pi > 0$
-
-> Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other approach outside the scope of TAPACLOTH.
-
-We assume in TAPACLOTH that the provided input purity is correct, and provide functions to assess purity reliability (see Articles). 
-
-
-##  Inputs format
-
-It should be a tibble with `sample`(sample name), `gene`(name of the target gene), `nv` (number of reads
-with variant), `dp` (coverage), `VAF` (variant allele frequency) and `purity`
-(sample purity) columns. 
-
-```{r}
+```{r, include=FALSE}
 data = dplyr::tibble(sample = "test",
            gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
            nv = c(10, 50, 90, 120),
@@ -56,8 +30,6 @@ data = dplyr::tibble(sample = "test",
            VAF = c(0.1, 0.5, 0.9, 0.6),
            purity = 1
 )
-
-print(data)
 ```
 
 # Read-counts based test
@@ -66,8 +38,7 @@ TAPACLOTH provides an exact test (with a p-value) to assess clonality and zygosi
 
 This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to coverage. 
 
-Since a clonal variant within a diploid heterozygous tumour genome affects one out of two alleles of all the tumour cells, the success probability of the 
-counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations with loss of heterozygosity are expected to have repsectively smaller and larger success probabilities, respectively. Therefore, if we assume as null model clonality, and consider for every input mutation
+Since a clonal variant within a diploid heterozygous tumour genome affects one out of two alleles of all the tumour cells, the success probability of the counting process corresponds to half of the tumour sample purity. Sub-clonal and clonal mutations with loss of heterozygosity are expected to have respectively smaller and larger success probabilities, respectively. Therefore, if we assume as null model clonality, and consider for every input mutation
 
 - $n_v$ reads with the variant   at the locus;
 - $n_r$ reads with the reference   at the locus;
@@ -104,9 +75,7 @@ so to determine that:
 
 In the latter case the mutation has also high multiplicity, meaning that there could be no wildtype alleles. For a tumour suppressor gene this might imply total inactivation.
 
-Therefore the intuition is that a variant is
-classified as subclonal if $n_v$  falls to the left of the confidence interval of the distribution, while it is clonal with LOH if it falls
-to the right, or heterozygous otherwise (i.e., inside the confidence interval).
+Therefore the intuition is that a variant is classified as subclonal if $n_v$  falls to the left of the confidence interval of the distribution, while it is clonal with LOH if it falls to the right, or heterozygous otherwise (i.e., inside the confidence interval).
 
 ## Example 
 
@@ -117,13 +86,13 @@ of the used test.
 
 ```{r}
 binomial_model = run_classifier(
-  data = data,
+  x = data,
   alpha_level = 1e-3,
   model = "Binomial"
 )
 
 betabinomial_model = run_classifier(
-  data = data,
+  x = data,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
@@ -138,17 +107,15 @@ is more likely to be rejected, in favor of sub-clonality or LOH alternatives.
 
 # Approximate frequency-based test
 
-TAPACLOTH also provides an approximate test that turns useful when the number of reads with
-variant and coverage are not known, while VAF and sample purity only are provided.
+TAPACLOTH also provides an approximate test that is useful when the number of reads with
+variant and coverage are unknown, and VAF and sample purity are the only available information.
 
 This test is based on an adjustment of the observed VAF for the confounding sample
-purity. Since a clonal variant within a diploid heterozygous tumour genome affects 
-one out of two alleles of all the tumour cells, we expect its VAF/$\pi$ ratio to
+purity, i.e., `VAF/purity`. Since a clonal variant within a diploid heterozygous tumour genome affects  one out of two alleles of all the tumour cells, we expect its VAF/$\pi$ ratio to
 be close to 0.5. Analogously, for sub-clonal and clonal mutations with loss of 
 heterozygosity we expect the ratio to be close to 0 and 1, respectively. 
 
-If we assume that each of the $N$ observed values of $X=\text{VAF}/\pi$ for a target gene across the dataset
-has equal probability
+If we assume that each of the $N$ observed values of $X=\text{VAF}/\pi$ for a target gene across the dataset has equal probability
 
 \[
 Pr(X_k) = \frac{1}{N}
@@ -176,12 +143,14 @@ and determine that:
 - if $\text{VAF}/\pi \leq q^{\text{(sub)}}$ then the mutation is likely subclonal;
 - if $\text{VAF}/\pi > q^{\text{(loh)}}$ then the mutation is likely clonal with loss of heterozygosity (LOH) associated.
 
+> We remark this is an approximate test and, if possible, the actual counts-based test should be used.
+
 ## Example 
 
 In the following example, the classification task is run using the terzile model.
 
-The output contains a `fit` object that is basically the same input table with the additional column `class_terzile`, plus the input parameters 
-of the used test. 
+The output contains a `fit` object that is basically the same input table with the additional column `class_terzile`, plus the input parameters of the used test. 
+
 ```{r}
 data = dplyr::tibble(sample = paste0("test ", seq(1:20)),
            gene = "target gene",
@@ -220,6 +189,6 @@ nrow = 2, common.legend = T, legend = "bottom")
 ```
 The test shows how TAPACLOTH classification using the terzile model allows to take
 into account the confounding effect of sample purity we would have by classifying mutations
-based only on VAF: the variant observed in sample "test 8" has a larger VAF than
-the one in sample "test 7", but is not classified too as Clonal LOH due to the adjustment
+based only on VAF: the variant observed in sample `"test 8"` has a larger VAF than
+the one in sample `"test 7"`, but is not classified too as Clonal LOH due to the adjustment
 of VAF for the larger sample purity.

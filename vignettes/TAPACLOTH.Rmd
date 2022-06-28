@@ -1,0 +1,74 @@
+---
+title: "TAPACLOTH"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=F)
+```
+
+
+TAPACLOTH is a package to process targeted panel sequencing data of a tumour-matched normal cancer sample and perform clonal deconvolution. The tool allows to:
+
+- classify the clonality and zygosity of somatic mutations detected by the panel;
+- asses tumour purity from somatic mutations detected by the panel;
+
+> The TAPACLOTH model is designed to work with a target panel but, in principle, it can be used with any sequencing assay. However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster). 
+
+## Clonality assessment
+
+TAPACLOTH will assess, for every mutation, any of the following statuses:
+
+- subclonal mutation;
+- heterozygous clonal mutation within a diploid heterozygous tumour genome;
+- homozygous clonal mutation within a loss of heterozygosity of the tumour genome.
+
+TAPACLOTH implements [two type of statistical tests](classify-and-plot.html); the required inputs are:
+
+- read/counts or variant allele frequencies from the panel assay 
+- tumour sample purity $\pi > 0$
+
+> Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other bioinformatics approach outside TAPACLOTH.
+
+In these tests, TAPACLOTH assumes that the input purity is correct, an assert that can be tested by estimating purity from TAPACLOTH directly.
+
+## Purity assessment
+
+TAPACLOTH can be used to to [estimate the purity of the cancer sample](purity-estimates.html) from the spectrum of somatic mutations detected from targeted panel sequencing; the required inputs are:
+
+- read/counts or variant allele frequencies from the panel assay.
+
+If an estimate of tumour sample purity, made for example by copy number  or pathology assessment, is provided as input, TAPACLOTH additionally computes  a reliability score for the estimate.
+
+##  Inputs format
+
+For all tests, input data should be provided as a tibble with the following columns:
+
+-`sample`, for sample name if multiple samples are given in input;
+- `gene`, as name of the target gene;
+- `nv`, for the number of reads with variant;
+- `dp`, for the total depth (or coverage) at the locus;
+- `VAF`, for the variant allele frequency (VAF) defined by `nv`/`dp`;
+- `purity`, for sample purity.
+
+This is an example input dataset.
+
+```{r}
+data = dplyr::tibble(sample = "test",
+           gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
+           nv = c(10, 50, 90, 120),
+           dp = c(100, 100, 100, 200),
+           VAF = c(0.1, 0.5, 0.9, 0.6),
+           purity = 1
+)
+
+print(data)
+```
