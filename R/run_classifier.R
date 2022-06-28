@@ -29,6 +29,11 @@ run_classifier = function(x,
   class(test) = "TAPACLOTH"
 
   stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial", "terzile"))
+  
+  if(inherits(x, "TAPACLOTH")) {
+    test = x
+    x = test$data
+  }
 
   if (model %in% c("Binomial", "Beta-Binomial")) {
     
@@ -98,10 +103,13 @@ run_classifier = function(x,
       do.call(rbind, .)
   }
 
-  test$fit = x
-  test$model = model
-  test$rho = rho
-  test$alpha_level = alpha_level
+  test$data = x
+  test$classifier = list(
+    model = model,
+    rho = rho,
+    alpha_level = alpha_level
+  )
+  
 
   return(test)
 

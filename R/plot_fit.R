@@ -1,32 +1,32 @@
-plot_fit = function(fit, target_gene, sample_name) {
-  if(fit$model == "terzile") {
-    fit$fit = fit$fit %>% 
+plot_fit = function(x, target_gene, sample_name) {
+  if(x$classifier$model == "terzile") {
+    x$data = x$data %>% 
       dplyr::mutate(class = class_terzile)
   } else {
-    fit$fit = fit$fit %>% 
+    x$data = x$data %>% 
       dplyr::mutate(class = class_binom)
   }
   
   # Select sample
-  fit$fit = fit$fit %>% 
+  x$data = x$data %>% 
     dplyr::filter(sample == sample_name)
 
   # Get class of mutations on target gene
-  gene_status = fit$fit %>%
+  gene_status = x$data %>%
     dplyr::filter(gene == target_gene) %>%
     dplyr::mutate(class = paste0(class, ' (', nv, '/', dp, ')')) %>%
     dplyr::pull(class) %>%
     paste(collapse = ', ')
   
   # Get VAF of mutations on target gene
-  gene_vafs = fit$fit %>%
+  gene_vafs = x$data %>%
     dplyr::filter(gene == target_gene) %>%
     dplyr::pull(VAF)
   
   # Fit plot
   colormap = ggsci::pal_jama("default")(7)[1:3]
   names(colormap) = c("Clonal", "Clonal LOH", "Subclonal")
-  fit_plot = fit$fit %>%
+  fit_plot = x$data %>%
     ggplot2::ggplot() +
     CNAqc:::my_ggplot_theme() +
     ggplot2::geom_histogram(binwidth = 0.01, aes(VAF, fill = class)) +
@@ -35,7 +35,7 @@ plot_fit = function(fit, target_gene, sample_name) {
     xlim(0, 1) +
     ggplot2::labs(
       title = sample_name,
-      subtitle = paste0("Purity: ", fit$fit$purity[1], " - ", target_gene, ": ", gene_status)
+      subtitle = paste0("Purity: ", x$data$purity[1], " - ", target_gene, ": ", gene_status)
     ) +
     ggplot2::guides(fill = guide_legend(''),
            color = guide_legend('', override.aes = aes(fill = NA)))  +
@@ -43,12 +43,12 @@ plot_fit = function(fit, target_gene, sample_name) {
                    color = "Target VAF"),
                linetype = 6) +
     ggplot2::geom_vline(
-      aes(xintercept = fit$fit$purity[1],
+      aes(xintercept = x$data$purity[1],
           color = "Purity"),
       linetype = 'dashed',
       size = .6
     ) +
-    ggplot2::geom_vline(aes(xintercept = fit$fit$purity[1] / 2,
+    ggplot2::geom_vline(aes(xintercept = x$data$purity[1] / 2,
                    color = "Clonal peak"),
                linetype = 'dashed') +
     ggplot2::scale_color_manual(

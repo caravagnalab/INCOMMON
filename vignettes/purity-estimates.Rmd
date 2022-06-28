@@ -60,10 +60,8 @@ In this example, the input purity estimate of the cancer sample is correct, and
 the VAF spectrum of somatic mutations is fit using a mixture of Binomial distributions:
 
 ```{r}
-purity_bmix = estimate_purity(data = data,
-                sample_name = "test",
+purity_bmix = estimate_purity(x = data,
                 model = "Binomial",
-                purity = data$purity[1],
                 eps = 0.01)
 
 print(purity_bmix)
@@ -86,10 +84,8 @@ data = dplyr::tibble(sample = "test",
            purity = 0.4
 )
 
-purity_bmix = estimate_purity(data = data,
-                sample_name = "test",
+purity_bmix = estimate_purity(x = data,
                 model = "Binomial",
-                purity = data$purity[1],
                 eps = 0.01)
 
 print(purity_bmix)
@@ -128,10 +124,8 @@ Then the value of purity is replaced with the TAPACLOTH estimate
 and the classification task is re-run with the new value.
 
 ```{r}
-purity_bmix = estimate_purity(data = data,
-                sample_name = "test",
+purity_bmix = estimate_purity(x = data,
                 model = "Binomial",
-                purity = data$purity[1],
                 eps = 0.01)
 
 data = dplyr::rename(purity_bmix$data, 

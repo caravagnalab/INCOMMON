@@ -17,19 +17,33 @@
 #' @export
 #'
 #' @examples
-estimate_purity = function(data,
-                           sample_name,
+estimate_purity = function(x,
                            model = "Binomial",
-                           purity = 1.0,
                            eps = 0.01) {
   # Output
   test = list()
   class(test) = "TAPACLOTH"
   
-  cli::cli_h1(sample_name)
-
-  sample_data = data %>%
-    filter(sample == sample_name)
+  stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial"))
+  
+  if(inherits(x, "TAPACLOTH")) {
+    test = x
+    x = test$data
+  }
+  
+  samples = unique(x$sample)
+  
+  x = lapply(samples, function(s) {
+    cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
+    cat("\n")
+    
+    sample_data = x %>%
+      dplyr::filter(sample == s)
+    
+    purity = unique(sample_data$purity)
+    
+    cli::cli_h1("TAPACLOTH purity estimate of sample {.field {s}} using {.field {model}} model")
+    cat("\n")
   
   if(is.na(purity)){
     cli::cli_alert("Input purity not available, reliability score will not be computed.")
@@ -66,6 +80,7 @@ estimate_purity = function(data,
 
   }
   # Estimate purity from fits when feasible
+  purity = unique(sample_data$purity)
   bmix_best_purity = case_when(
     n_binomials == 3 ~ peaks[2] * 2,
     n_binomials == 1 ~ peaks[1] * 2,
@@ -83,13 +98,25 @@ estimate_purity = function(data,
   # Prepare output
   fit$data = input
   plot_bmix = BMix::plot.bmix(fit, fit$data)
+  fit$plot_bmix = plot_bmix
+  fit$eps = eps
   sample_data$purity_bmix = min(bmix_best_purity, 1) %>% round(2)
   sample_data$reliability = ifelse(purity == 0.0, NA, 1-sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2))
+  out = list(sample_data, fit)
+  names(out) = c("data", "fit")
+  return(out)
+  })
+  
+  test$data = lapply(1:length(x), function(n){x[[n]]$data}) %>% do.call(rbind, .)
+  test$purity_estimate = lapply(1:length(x), function(n){x[[n]]$fit})
+  names(test$purity_estimate) = samples
+  
+  
 
-  test$data = sample_data
-  test$fit = fit
-  test$purity = bmix_best_purity
-  test$plot_bmix = plot_bmix
+  # test$data = sample_data
+  # test$fit = fit
+  # test$purity = bmix_best_purity
+  # test$plot_bmix = plot_bmix
   
   return(test)
 }
