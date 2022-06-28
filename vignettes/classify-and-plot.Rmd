@@ -32,7 +32,7 @@ data = dplyr::tibble(sample = "test",
 )
 ```
 
-# Read-counts based test
+# Exact read-counts based test
 
 TAPACLOTH provides an exact test (with a p-value) to assess clonality and zygosity from read-count data.
 

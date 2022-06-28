@@ -4,7 +4,7 @@
 #' @description
 #'
 #' If the terzile model is used, the default plot is a histogram of the VAF spectrum is plotted,
-#' with expected clonal peak, purity and VAF of mutations affecting the target gene 
+#' with expected clonal peak, purity and VAF of mutations affecting the target gene
 #' highlighted. If the Binomial or Beta-Binomial model is used, it includes
 #' a plot showing details of the used statistical test in the bottom panel.
 #'
@@ -19,26 +19,26 @@
 #'
 #' @examples
 plot.TAPACLOTH = function(x, target_gene, sample_name,...){
-  
+
   stopifnot(inherits(x, "TAPACLOTH"))
-  
+
   if(any(class(x$fit) == "bmix"))
   {
     return(x$plot_bmix)
   }
-  
+
   fit_plot = plot_fit(fit = x, target_gene = target_gene, sample_name)
-  
+
   if(x$model == "terzile"){
     return(fit_plot)
   }
-  
+
   else{
-    target_data = x$fit %>% 
+    target_data = x$fit %>%
       dplyr::filter(gene == target_gene)
-    
+
     target_plots = lapply(1:(target_data %>% nrow), function(i){
-      
+
       null_model = test_setup(
         coverage = target_data$dp[i],
         purity = target_data$purity[i],
@@ -46,22 +46,22 @@ plot.TAPACLOTH = function(x, target_gene, sample_name,...){
         alpha_level = x$alpha_level,
         model = x$model
       )
-      
+
       fit_power = plot_test_power(null_model)+
         ggplot2::geom_vline(xintercept = target_data$nv[i], linetype = 'dashed', size = .5)
-      
+
     }
     )
-    
+
     # Fig assembly
     lp = append(list(fit_plot), target_plots)
-    
+
     figure = ggpubr::ggarrange(
       plotlist = lp,
       nrow = lp %>% length,
       ncol = 1
     )
-    
+
     return(figure)
   }
 }
@@ -76,9 +76,9 @@ plot.TAPACLOTH = function(x, target_gene, sample_name,...){
 #'
 #' @examples
 print.TAPACLOTH = function(x, ...){
-  
+
   stopifnot(inherits(x, "TAPACLOTH"))
-  
+
   if(any(class(x$fit) == "bmix")){
     cli::cli_rule(
       paste(
@@ -86,8 +86,13 @@ print.TAPACLOTH = function(x, ...){
         'Purity estimate using BMix: '
       )
     )
+    cat("\n")
+    cli::cli_h3("BMix fit")
+    cat("\n")
+
     print(x$fit)
     cat("\n")
+
     cli::cli_rule(
       paste(
         crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
@@ -96,7 +101,8 @@ print.TAPACLOTH = function(x, ...){
     )
     print(x$data)
   }
-  else{
+  else
+  {
     if(x$model == "Beta-Binomial"){
       cli::cli_rule(
         paste(
@@ -104,16 +110,29 @@ print.TAPACLOTH = function(x, ...){
           'Test using {.field {x$model}} model, with overdispersion parameter {.field {x$rho}} and significance level {.field {x$alpha}}'
         )
       )
-    } else{
+    }
+    else
+      {
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Test using {.field {x$model}} model, with significance level {.field {x$alpha}}'
         )
       )
-    }
-    
+      }
+
+
+
     print(x$fit)
   }
-  
+
+}
+
+# Volevo fare qualcosa ma poi sono morto vedendo dentro x!
+print_sample_test_binomial = function(x, sample)
+{
+  # x$fit %>% dplyr::filter()
+  #
+  # cli::cli_text("Classification: {.value {crayon:red()}}")
+
 }
