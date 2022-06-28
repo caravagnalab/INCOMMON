@@ -2,6 +2,7 @@
 title: "TAPACLOTH"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteIndexEntry{TAPACLOTH}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

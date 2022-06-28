@@ -2,7 +2,7 @@
 title: "Purity estimates"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{purity-estimates}
+  %\VignetteIndexEntry{Purity estimates}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -115,7 +115,7 @@ input purity.
 
 ```{r}
 classified_data_w = run_classifier(
-  data = data,
+  x = data,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
@@ -140,7 +140,7 @@ data = dplyr::rename(purity_bmix$data,
 print(data)
 
 classified_data_r = run_classifier(
-  data = data,
+  x = data,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01

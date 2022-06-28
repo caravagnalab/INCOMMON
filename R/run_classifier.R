@@ -31,16 +31,17 @@ run_classifier = function(x,
   stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial", "terzile"))
 
   if (model %in% c("Binomial", "Beta-Binomial")) {
+    
     x = lapply(unique(x$sample), function(s) {
       cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
       cat("\n")
-
+      
       sample_data = x %>%
         dplyr::filter(sample == s)
-
+      
       cli::cli_alert_info("Computing null model distributions and p-values.")
-
-      sample_data$class_binom = sapply(1:(sample_data %>% nrow), function(i) {
+      
+      sample_data$cumprob = sapply(1:(sample_data %>% nrow), function(i) {
         null_model = test_setup(
           coverage = sample_data$dp[i],
           purity = sample_data$purity[i],
@@ -48,14 +49,27 @@ run_classifier = function(x,
           alpha_level = alpha_level,
           model = model
         )
-
-        run_test(nv = sample_data$nv[i], null_model = null_model)
+        
+        # class = run_test(nv = sample_data$nv[i], null_model = null_model)
+        cumprob = null_model$density$p[sample_data$nv[i]]
+        return(cumprob)
       })
-
-
-
+      
+      sample_data = sample_data %>%
+        dplyr::mutate(
+          p_subclonal = cumprob,
+          p_loh = 1 - cumprob,
+          class_binom = case_when(
+            p_subclonal <= alpha_level ~ "Subclonal",
+            p_loh <= alpha_level ~ "Clonal LOH",
+            TRUE ~ "Clonal"
+          )
+        ) %>%
+        select(-cumprob)
+      
+      
       return(sample_data)
-
+      
     }) %>%
       do.call(rbind, .)
   }
