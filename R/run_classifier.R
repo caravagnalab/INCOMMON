@@ -67,19 +67,17 @@ run_classifier = function(x,
           ) %>%
         select(-cumprob)
       
+      sample_data$p_subclonal = p.adjust(sample_data$p_subclonal, method = "BH")    
+      sample_data$p_loh = p.adjust(sample_data$p_loh, method = "BH")
+      sample_data$class_binom = case_when(
+        sample_data$p_subclonal <= alpha_level ~ "Subclonal",
+        sample_data$p_loh <= alpha_level ~ "Clonal LOH",
+        TRUE ~ "Clonal")
       
       return(sample_data)
       
     }) %>%
       do.call(rbind, .)
-    
-    x$p_subclonal = p.adjust(x$p_subclonal, method = "BH")    
-    x$p_loh = p.adjust(x$p_loh, method = "BH")
-    x$class_binom = case_when(
-      x$p_subclonal <= alpha_level ~ "Subclonal",
-      x$p_loh <= alpha_level ~ "Clonal LOH",
-      TRUE ~ "Clonal")
-      
   }
 
   else{
