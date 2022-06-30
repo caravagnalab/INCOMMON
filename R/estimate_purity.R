@@ -20,32 +20,38 @@
 estimate_purity = function(x,
                            model = "Binomial",
                            eps = 0.01) {
+  
   # Output
   test = list()
   class(test) = "TAPACLOTH"
   
   stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial"))
   
-  if(inherits(x, "TAPACLOTH")) {
+  if (inherits(x, "TAPACLOTH")) {
     test = x
     x = test$data
+    if(!("purity_estimate" %in% names(test))) test$purity_estimate = list()
+  }
+  else{
+    test$data = x
+    test$purity_estimate = list()
   }
   
-  samples = unique(x$sample)
+  samples = unique(x$data$sample)
   
   x = lapply(samples, function(s) {
     cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
     cat("\n")
     
-    sample_data = x %>%
+    sample_data = x$data %>%
       dplyr::filter(sample == s)
     
-    purity = unique(sample_data$purity)
+    sample_purity = dplyr::filter(x$purity, sample == s)$purity
     
     cli::cli_h1("TAPACLOTH purity estimate of sample {.field {s}} using {.field {model}} model")
     cat("\n")
   
-  if(is.na(purity)){
+  if(is.na(sample_purity)){
     cli::cli_alert("Input purity not available, reliability score will not be computed.")
     purity = 0.0
   }
@@ -58,10 +64,7 @@ estimate_purity = function(x,
 
   # Return NA if NVs are less than 3
   if (length(nvs) <= 3) {
-    test$data = sample_data
-    test$fit = NA
-    test$purity = NA
-    test$plot_bmix = NA
+    cli::cli_alert("There are less than 3 SNVs: purity will not be estimated")
     return(test)
   }
 
@@ -70,49 +73,42 @@ estimate_purity = function(x,
     fit = BMix::bmixfit(input, K.Binomials = 1:3, K.BetaBinomials = 0)
     n_binomials = fit$K["B"]
     peaks = sort(fit$B.params)
-
+    purity_bmix = purity_from_fit(n_binomials, peaks, sample_purity, eps)
   }
 
   else{
     fit = BMix::bmixfit(input, K.Binomials = 0, K.BetaBinomials = 1:3)
     n_binomials = fit$K["BB"]
     peaks = sort(fit$BB.params["mu", ]) %>% as.double()
-
+    purity_bmix = purity_from_fit(n_binomials, peaks, sample_purity, eps)
+    plot_bmix = BMix::plot.bmix(fit, input)
+    # test$purity_estimate$binomial = list(params = tibble(alpha = alpha_level))
   }
-  # Estimate purity from fits when feasible
-  purity = unique(sample_data$purity)
-  bmix_best_purity = case_when(
-    n_binomials == 3 ~ peaks[2] * 2,
-    n_binomials == 1 ~ peaks[1] * 2,
-    n_binomials == 2 &
-      min(abs(peaks[2] * 2 - purity), abs(peaks[1] * 2 - purity)) <= eps ~ peaks[which.min(c(abs(peaks[2] *
-                                                                                                   2 - purity), abs(peaks[1] * 2 - purity)))] * 2,
-    TRUE ~ NA %>% as.double()
-
-  )
   
-  if(is.na(bmix_best_purity)){
-    cli::cli_alert("Purity could not be estimated reliably. Check results of the fit in the output figure")
-  }
-
   # Prepare output
   fit$data = input
-  plot_bmix = BMix::plot.bmix(fit, fit$data)
-  fit$plot_bmix = plot_bmix
+  fit$plot_bmix = BMix::plot.bmix(fit, fit$data)
   fit$eps = eps
-  sample_data$purity_bmix = min(bmix_best_purity, 1) %>% round(2)
-  sample_data$reliability = ifelse(purity == 0.0, NA, 1-sqrt(((purity-bmix_best_purity)/bmix_best_purity)**2))
-  out = list(sample_data, fit)
-  names(out) = c("data", "fit")
-  return(out)
+  fit$purity = min(purity_bmix, 1) %>% round(2)
+  fit$reliability = ifelse(sample_purity == 0.0, NA, 1-sqrt(((sample_purity-fit$purity)/fit$purity)**2))
+  return(fit)
   })
   
-  test$data = lapply(1:length(x), function(n){x[[n]]$data}) %>% do.call(rbind, .)
-  test$purity_estimate = lapply(1:length(x), function(n){x[[n]]$fit})
-  names(test$purity_estimate) = samples
+  plot_bmix = lapply(1:length(x), function(n){x[[n]]$plot_bmix})
+  names(plot_bmix) = samples
   
+    test$purity_estimate[[ifelse(model == "binomial", "binomial", "bbinomial")]] = list(
+      params = tibble(eps = eps),
+      purity = tibble(sample = samples,
+                      purity = sapply(1:length(x), function(n){x[[n]]$purity})),
+      reliability = tibble(sample = samples,
+                           reliability = sapply(1:length(x), function(n){x[[n]]$reliability})),
+      plot_bmix = plot_bmix
+      )
+    
+  # test$purity_estimate = lapply(1:length(x), function(n){x[[n]]$fit})
+  # names(test$purity_estimate) = samples
   
-
   # test$data = sample_data
   # test$fit = fit
   # test$purity = bmix_best_purity

@@ -18,47 +18,47 @@
 #' @export
 #'
 #' @examples
-plot.TAPACLOTH = function(x, target_gene, sample_name, ...) {
+plot.TAPACLOTH = function(x, target_gene, sample_name, model, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
-  
+
   # if(any(class(x$fit) == "bmix"))
   # {
   #   return(x$plot_bmix)
   # }
-  
-  fit_plot = plot_fit(x, target_gene = target_gene, sample_name)
-  
-  if (x$classifier$model == "terzile") {
+
+  fit_plot = plot_fit(x, target_gene, sample_name, model)
+
+  if (model == "terzile") {
     return(fit_plot)
   }
-  
+
   else{
-    target_data = x$data %>%
+    target_data = x$data$data %>%
       dplyr::filter(gene == target_gene)
-    
+
     target_plots = lapply(1:(target_data %>% nrow), function(i) {
       null_model = test_setup(
         coverage = target_data$dp[i],
-        purity = target_data$purity[i],
-        rho = x$classifier$rho,
-        alpha_level = x$classifier$alpha_level,
-        model = x$classifier$model
+        purity = filter(x$data$purity, sample == sample_name)$purity,
+        rho = x$classifier[[model]]$params$rho,
+        alpha_level = x$classifier[[model]]$params$alpha,
+        model = model
       )
-      
+
       fit_power = plot_test_power(null_model) +
         ggplot2::geom_vline(xintercept = target_data$nv[i],
                             linetype = 'dashed',
                             size = .5)
-      
+
     })
-    
+
     # Fig assembly
     lp = append(list(fit_plot), target_plots)
-    
+
     figure = ggpubr::ggarrange(plotlist = lp,
                                nrow = lp %>% length,
                                ncol = 1)
-    
+
     return(figure)
   }
 }
@@ -74,12 +74,28 @@ plot.TAPACLOTH = function(x, target_gene, sample_name, ...) {
 #' @examples
 print.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
-  
+
   if ("purity_estimate" %in% names(x))
   {
+    for(s in names(x$purity_estimate)){
+      cli::cli_rule(
+        paste(
+          crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
+          'Purity estimate using ',
+          crayon::bgYellow(crayon::black("[ BMix ] ")),
+          'with ',
+          ifelse(s == 'bbinomial', "Beta-Binomial", "Binomial"),
+          'model'
+        )
+      )
+      print(full_join(x$purity_estimate[[s]]$purity, x$purity_estimate[[s]]$reliability, by = "sample") %>% as_tibble())
+    }
+
     cli::cli_rule(paste('Purity estimate using ',
                         crayon::bgYellow(crayon::black("[ BMix ] "))))
     cat("\n")
+
+    x$purity_estimate
   }
   #   cli::cli_rule(
   #     paste(
@@ -105,33 +121,21 @@ print.TAPACLOTH = function(x, ...) {
   # else
   # {
   if ("classifier" %in% names(x)) {
-    if ((x$classifier$model %>% tolower()) == "beta-binomial") {
+
+    for(s in names(x$classifier)){
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-          'Test using {.field {x$classifier$model}} model, with overdispersion parameter {.field {x$classifier$rho}} and significance level {.field {x$classifier$alpha}}'
+          'Test using {.field {s}} model',
+          ifelse(s == 'bbinomial',
+                 ' with overdispersion parameter {.field {x$classifier$bbinomial$params$rho}} and significance level {.field {x$classifier$bbinomial$params$alpha}}',
+                 ifelse(s == 'binomial', 'with significance level {.field {x$classifier$bbinomial$params$alpha}}', '')),
+          ''
         )
       )
-    }
-    if ((x$classifier$model %>% tolower()) == "binomial") {
-      cli::cli_rule(
-        paste(
-          crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-          'Test using {.field {x$classifier$model}} model, with significance level {.field {x$classifier$alpha}}'
-        )
-      )
-    }
-    if ((x$classifier$model %>% tolower()) == "terzile")
-    {
-      cli::cli_rule(paste(
-        crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-        'Test using {.field {x$classifier$model}} model'
-      ))
+      print(cbind(x$data$data, x$classifier[[s]]$data) %>% as_tibble())
     }
   }
-  
-  print(x$data)
-  # }
 }
 
 # Volevo fare qualcosa ma poi sono morto vedendo dentro x!
