@@ -142,7 +142,7 @@ m^{\text{loh}} = \inf\left\{x \mid P(X \leq x) &gt; 1 - \alpha\right\} \, .
 <p>In the following example, the classification task is run using both the Binomial and Beta-Binomial models - do appreciate the difference across the width of the acceptance regions of each class.</p>
 <p>The output contains a <code>fit</code> object that is basically the same input table with the additional column <code>class_binom</code>, plus the input parameters of the used test.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">binomial_model</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  alpha_level <span class="op">=</span> <span class="fl">1e-3</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"Binomial"</span></span>
@@ -159,7 +159,7 @@ m^{\text{loh}} = \inf\left\{x \mid P(X \leq x) &gt; 1 - \alpha\right\} \, .
 <span><span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span></span>
 <span></span>
-<span><span class="va">betabinomial_model</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
+<span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  alpha_level <span class="op">=</span> <span class="fl">1e-3</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,</span>
@@ -169,24 +169,23 @@ m^{\text{loh}} = \inf\left\{x \mid P(X \leq x) &gt; 1 - \alpha\right\} \, .
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">Beta-Binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">──────────</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing null model distributions and p-values.</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">binomial_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">Binomial</span> model, with significance level <span style="color: #00BB00;">0.001</span> ─────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 9</span></span></span>
-<span><span class="co">#&gt;   sample gene           nv    dp   VAF purity p_subclonal p_loh class_binom</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1      1          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span> Clonal     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span> Clonal     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span> Clonal     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span> Clonal</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">betabinomial_model</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">Beta-Binomial</span> model, with overdispersion parameter</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 9</span></span></span>
-<span><span class="co">#&gt;   sample gene           nv    dp   VAF purity p_subclonal    p_loh class_binom</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1      1    8.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span> 1.00<span style="color: #949494;">e</span>+ 0 Subclonal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5      1    1.00<span style="color: #949494;">e</span>+ 0 6.29<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span> Clonal     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9      1    1.00<span style="color: #949494;">e</span>+ 0 2.20<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span> Clonal LOH </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6      1    1.00<span style="color: #949494;">e</span>+ 0 9.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span> Clonal</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">binomial</span> model with significance level <span style="color: #00BB00;">0.001</span>  ─────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 8</span></span></span>
+<span><span class="co">#&gt;   sample gene           nv    dp   VAF class  p_subclonal p_loh</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1 Clonal          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5 Clonal          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9 Clonal          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6 Clonal          <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">bbinomial</span> model  with overdispersion parameter <span style="color: #00BB00;">0.01</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 8</span></span></span>
+<span><span class="co">#&gt;   sample gene           nv    dp   VAF class      p_subclonal    p_loh</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test   test gene 1    10   100   0.1 Subclonal     8.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span> 1.00<span style="color: #949494;">e</span>+ 0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> test   test gene 2    50   100   0.5 Clonal        1.00<span style="color: #949494;">e</span>+ 0 6.29<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> test   test gene 3    90   100   0.9 Clonal LOH    1.00<span style="color: #949494;">e</span>+ 0 2.20<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> test   target gene   120   200   0.6 Clonal        1.00<span style="color: #949494;">e</span>+ 0 9.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span></code></pre></div>
 <p>The test shows that at fixed <span class="math inline">\(\alpha\)</span>-level, including over-dispersion results in a narrower confidence interval on <span class="math inline">\(n_v\)</span>, so that the null hypothesis of heterozygosity is more likely to be rejected, in favor of sub-clonality or LOH alternatives.</p>
 </div>
 </div>
@@ -222,63 +221,73 @@ q^{\text{loh}} = \inf\left\{x \in [x_1,\dots,x_N] \mid Pr(X\leq x)\geq \frac{2}{
 <h3 id="example-1">Example<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h3>
 <p>In the following example, the classification task is run using the terzile model.</p>
+<p>Input data contains mutations on the same “target gene” from different samples with different purities, then aggregated in a single sample “test”.</p>
 <p>The output contains a <code>fit</code> object that is basically the same input table with the additional column <code>class_terzile</code>, plus the input parameters of the used test.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"test "</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,</span>
 <span>           gene <span class="op">=</span> <span class="st">"target gene"</span>,</span>
 <span>           nv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>           dp <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>           VAF <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>,</span>
-<span>           purity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0</span>, length.out<span class="op">=</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>           VAF <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>,<span class="fl">100</span>,<span class="fl">4.6</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>,</span>
+<span>         purity <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,</span>
+<span>                         purity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0</span>, length.out<span class="op">=</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">classified_data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">data</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"terzile"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">target gene</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">test</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────────</span></span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">terzile</span> model ─────────────────────────────────────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 7</span></span></span>
-<span><span class="co">#&gt;    sample  gene           nv    dp   VAF purity class_terzile   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> test 1  target gene    10   100  0.1     0.4 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> test 2  target gene    15   100  0.15    0.4 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> test 3  target gene    19   100  0.19    0.4 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> test 4  target gene    24   100  0.24    0.5 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> test 5  target gene    28   100  0.28    0.5 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> test 6  target gene    33   100  0.33    0.5 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> test 7  target gene    38   100  0.38    0.5 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> test 8  target gene    42   100  0.42    0.6 Subclonal/Clonal</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> test 9  target gene    47   100  0.47    0.6 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> test 10 target gene    51   100  0.51    0.6 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> test 11 target gene    56   100  0.56    0.6 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> test 12 target gene    61   100  0.61    0.7 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> test 13 target gene    65   100  0.65    0.7 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> test 14 target gene    70   100  0.7     0.7 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> test 15 target gene    74   100  0.74    0.8 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> test 16 target gene    79   100  0.79    0.8 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> test 17 target gene    84   100  0.84    0.9 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> test 18 target gene    88   100  0.88    0.9 Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> test 19 target gene    93   100  0.93    1   Clonal LOH      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> test 20 target gene    97   100  0.97    1   Clonal LOH</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">terzile</span> model   ───────────────────────────────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 20 × 6</span></span></span>
+<span><span class="co">#&gt;    sample gene           nv    dp   VAF class           </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> test   target gene    10   100  0.1  Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> test   target gene    15   100  0.15 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> test   target gene    19   100  0.19 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> test   target gene    24   100  0.24 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> test   target gene    28   100  0.28 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> test   target gene    33   100  0.33 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> test   target gene    38   100  0.38 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> test   target gene    42   100  0.42 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> test   target gene    47   100  0.47 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> test   target gene    51   100  0.51 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> test   target gene    56   100  0.56 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> test   target gene    61   100  0.61 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> test   target gene    65   100  0.65 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> test   target gene    70   100  0.7  Clonal LOH      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> test   target gene    74   100  0.74 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> test   target gene    79   100  0.79 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> test   target gene    84   100  0.84 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> test   target gene    88   100  0.88 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> test   target gene    93   100  0.93 Subclonal/Clonal</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> test   target gene    97   100  0.97 Subclonal/Clonal</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>    <span class="va">classified_data</span>,</span>
+<code class="sourceCode R"><span><span class="co"># ggpubr::ggarrange(plotlist = list(</span></span>
+<span><span class="co">#   plot(</span></span>
+<span><span class="co">#     data,</span></span>
+<span><span class="co">#     target_gene = "target gene",</span></span>
+<span><span class="co">#     sample_name = "test",</span></span>
+<span><span class="co">#     model = "terzile"</span></span>
+<span><span class="co">#   ),</span></span>
+<span><span class="co">#   plot(</span></span>
+<span><span class="co">#     data,</span></span>
+<span><span class="co">#     target_gene = "target gene",</span></span>
+<span><span class="co">#     sample_name = "test 8",</span></span>
+<span><span class="co">#     model = "terzile"</span></span>
+<span><span class="co">#   )</span></span>
+<span><span class="co"># ),</span></span>
+<span><span class="co"># ncol = 1,</span></span>
+<span><span class="co"># nrow = 2, common.legend = T, legend = "bottom")</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>    <span class="va">data</span>,</span>
 <span>    target_gene <span class="op">=</span> <span class="st">"target gene"</span>,</span>
-<span>    sample_name <span class="op">=</span> <span class="st">"test 7"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>    <span class="va">classified_data</span>,</span>
-<span>    target_gene <span class="op">=</span> <span class="st">"target gene"</span>,</span>
-<span>    sample_name <span class="op">=</span> <span class="st">"test 8"</span></span>
+<span>    sample_name <span class="op">=</span> <span class="st">"test"</span>,</span>
+<span>    model <span class="op">=</span> <span class="st">"terzile"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="op">)</span>,</span>
-<span>ncol <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>nrow <span class="op">=</span> <span class="fl">2</span>, common.legend <span class="op">=</span> <span class="cn">T</span>, legend <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span></span>
@@ -287,9 +296,7 @@ q^{\text{loh}} = \inf\left\{x \in [x_1,\dots,x_N] \mid Pr(X\leq x)\geq \frac{2}{
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></span>
-<span><span class="co">#&gt; Removed 2 rows containing missing values (geom_bar).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 4 rows containing missing values (geom_bar).</span></span></code></pre></div>
 <p><img src="classify-and-plot_files/figure-html/unnamed-chunk-6-1.png" width="1500"> The test shows how TAPACLOTH classification using the terzile model allows to take into account the confounding effect of sample purity we would have by classifying mutations based only on VAF: the variant observed in sample <code>"test 8"</code> has a larger VAF than the one in sample <code>"test 7"</code>, but is not classified too as Clonal LOH due to the adjustment of VAF for the larger sample purity.</p>
 </div>
 </div>
