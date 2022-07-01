@@ -115,9 +115,9 @@
 <span>                model <span class="op">=</span> <span class="st">"Binomial"</span>,</span>
 <span>                eps <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">───────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">───────────────</span></span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span></span>
@@ -125,59 +125,140 @@
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">BMix</span>, <span style="font-style: italic;">'Binomial and Beta-Binomial univariate mixtures'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagnalab.github.io/BMix/&gt;</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">BMix fit</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">0</span>; 6 fits to run.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">0</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>; 6 fits to run.</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0 mins</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 4 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">3</span> + <span style="color: #00BB00;">0</span>) ────────────────</span></span>
-<span><span class="co">#&gt; • Clusters: π = 50% [<span style="color: #BBBB00;">Bin 3</span>], 25% [<span style="color: #BBBB00;">Bin 1</span>], and 25% [<span style="color: #BBBB00;">Bin 2</span>], with π &gt; 0.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.1.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.9.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.566666666666714.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 38.76.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0.02 mins</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 10 with <span style="color: #00BB00;">k = 1</span> component(s) (<span style="color: #00BB00;">0</span> + <span style="color: #00BB00;">1</span>) ───────────────</span></span>
+<span><span class="co">#&gt; • Clusters: π = 100% [<span style="color: #BBBB00;">BBin 1</span>], with π &gt; 0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 98.97.</span></span>
 <span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
 <span><span class="co">#&gt; "none")` instead.</span></span>
-<span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
+<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></span>
+<span><span class="co">#&gt; Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span></span>
+<span><span class="co">#&gt; Placing graphs unaligned.</span></span>
+<span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
+<span><span class="co">#&gt; "none")` instead.</span></span>
+<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values (geom_bar).</span></span>
 <span><span class="co">#&gt; Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span></span>
 <span><span class="co">#&gt; Placing graphs unaligned.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with  Beta-Binomial model ───</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   sample purity reliability</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test        1           1</span></span>
-<span><span class="co">#&gt; ── Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> ────────────────────────────────────────────</span></span></code></pre></div>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">binomial</span> model ─────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test              1           1      1</span></span></code></pre></div>
 <p>This test shows that the inferred purity matches the true value, and a reliability score of 100% is indeed reported.</p>
-<p>If we provide an input purity estimate of the cancer sample that is underestimated with respect to ground-truth,TAPACLOTH retrieves the correct purity value and reports a reliability score for the input estimate of ~40%.</p>
+<p>If we provide an input purity of the cancer sample that is underestimated with respect to ground-truth, TAPACLOTH retrieves the correct purity value and reports the corresponding reliability score for the input estimate.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example error with purity = 0.4</span></span>
 <span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,</span>
-<span>           gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"test gene "</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span>           nv <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">20</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">54</span>, <span class="fl">61</span>, <span class="fl">75</span>, <span class="fl">80</span>, <span class="fl">90</span><span class="op">)</span><span class="op">*</span><span class="fl">5</span>,</span>
-<span>           dp <span class="op">=</span> <span class="fl">500</span>,</span>
-<span>           VAF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">20</span>, <span class="fl">50</span>, <span class="fl">45</span>, <span class="fl">54</span>, <span class="fl">61</span>, <span class="fl">75</span>, <span class="fl">80</span>, <span class="fl">90</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span><span class="op">)</span>,</span>
+<span>           gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"test gene "</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span>,</span>
+<span>           nv <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">14</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span>,<span class="fl">58</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">98</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span>,</span>
+<span>           dp <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>           VAF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">14</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">40</span>,<span class="fl">58</span>,<span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">98</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span><span class="op">/</span><span class="fl">200</span></span>
+<span>           <span class="op">)</span>,</span>
 <span>           purity <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="st">"test"</span>,</span>
 <span>                           purity <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_purity.html">estimate_purity</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">data</span>,</span>
-<span>                model <span class="op">=</span> <span class="st">"Binomial"</span>,</span>
+<span>                model <span class="op">=</span> <span class="st">"binomial"</span>,</span>
 <span>                eps <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">───────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">───────────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">BMix fit</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">0</span>; 6 fits to run.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0 mins</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 10 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">3</span> + <span style="color: #00BB00;">0</span>) ───────────────</span></span>
-<span><span class="co">#&gt; • Clusters: π = 40% [<span style="color: #BBBB00;">Bin 2</span>], 30% [<span style="color: #BBBB00;">Bin 1</span>], and 30% [<span style="color: #BBBB00;">Bin 3</span>], with π &gt; 0.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.816666666666667.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.525.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.14.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 191.42.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">0</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>; 6 fits to run.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0.02 mins</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 30 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">0</span> + <span style="color: #00BB00;">3</span>) ───────────────</span></span>
+<span><span class="co">#&gt; • Clusters: π = 33% [<span style="color: #BBBB00;">BBin 2</span>], 33% [<span style="color: #BBBB00;">BBin 3</span>], and 33% [<span style="color: #BBBB00;">BBin 1</span>], with π &gt; 0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 314.68.</span></span>
+<span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
+<span><span class="co">#&gt; "none")` instead.</span></span>
+<span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
+<span><span class="co">#&gt; Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span></span>
+<span><span class="co">#&gt; Placing graphs unaligned.</span></span>
 <span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
 <span><span class="co">#&gt; "none")` instead.</span></span>
 <span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
@@ -185,16 +266,15 @@
 <span><span class="co">#&gt; Placing graphs unaligned.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with  Beta-Binomial model ───</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   sample purity reliability</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test        1         0.4</span></span>
-<span><span class="co">#&gt; ── Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> ────────────────────────────────────────────</span></span></code></pre></div>
-<p>Results of the fitting procedure can be inspected by printing <code>purity_bmix$plot_bmix</code>.</p>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">binomial</span> model ─────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test            0.4       0.408   0.98</span></span></code></pre></div>
+<p>Results of the fitting procedure are shown in a plot in <code>data$purity_estimate$binomial$plot_bmix</code>.</p>
 <p>The output plot shows (left) the assignment of variants to the fitted mixture components, (center) the fitted densities and a comparison between the tested model, based on three different likelihood measures (BIC, ICL and NLL).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data</span><span class="op">$</span><span class="va">purity_estimate</span><span class="op">$</span><span class="va">bbinomial</span><span class="op">$</span><span class="va">plot_bmix</span></span>
+<code class="sourceCode R"><span><span class="va">data</span><span class="op">$</span><span class="va">purity_estimate</span><span class="op">$</span><span class="va">binomial</span><span class="op">$</span><span class="va">plot_bmix</span></span>
 <span><span class="co">#&gt; $test</span></span></code></pre></div>
 <p><img src="purity-estimates_files/figure-html/unnamed-chunk-5-1.png" width="2400"></p>
 </div>
@@ -218,60 +298,111 @@
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">Beta-Binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">──────────</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing null model distributions and p-values.</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_wrong</span><span class="op">$</span><span class="va">classifier</span><span class="op">$</span><span class="va">bbinomial</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $params</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
-<span><span class="co">#&gt;   alpha   rho</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 0.001  0.01</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 3</span></span></span>
-<span><span class="co">#&gt;    class      p_subclonal    p_loh</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Clonal          0.051<span style="text-decoration: underline;">5</span> 9.95<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Clonal          0.126  9.95<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Clonal          1.00   5.89<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Clonal LOH      1.00   8.38<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Clonal LOH      1.00   8.53<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Clonal LOH      1.00   1.27<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Clonal LOH      1.00   8.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Clonal LOH      1.00   8.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Clonal LOH      1.00   8.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Clonal LOH      1.00   8.72<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span></span></span></code></pre></div>
-<p>Then the value of purity is replaced with the TAPACLOTH estimate and the classification task is re-run with the new value.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_wrong</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">binomial</span> model ─────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test            0.4       0.408   0.98</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">beta-binomial</span> model   ─────────────────────────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 8</span></span></span>
+<span><span class="co">#&gt;    sample gene            nv    dp   VAF class  p_subclonal p_loh</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> test   test gene 1     10   200  0.05 Clonal     0.002<span style="text-decoration: underline;">40</span>  1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> test   test gene 2     12   200  0.06 Clonal     0.004<span style="text-decoration: underline;">68</span>  1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> test   test gene 3     14   200  0.07 Clonal     0.009<span style="text-decoration: underline;">98</span>  1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> test   test gene 4     16   200  0.08 Clonal     0.020<span style="text-decoration: underline;">3</span>   1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> test   test gene 5     18   200  0.09 Clonal     0.038<span style="text-decoration: underline;">6</span>   1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> test   test gene 6     20   200  0.1  Clonal     0.068<span style="text-decoration: underline;">1</span>   1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> test   test gene 7     22   200  0.11 Clonal     0.112    1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> test   test gene 8     24   200  0.12 Clonal     0.173    1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> test   test gene 9     26   200  0.13 Clonal     0.251    1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> test   test gene 10    28   200  0.14 Clonal     0.346    1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 20 more rows</span></span></span></code></pre></div>
+<p>In the following example the value of purity is replaced with the TAPACLOTH estimate and the classification task is re-run with the new value.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">=</span> <span class="fu"><a href="../reference/estimate_purity.html">estimate_purity</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">data</span>,</span>
-<span>                model <span class="op">=</span> <span class="st">"Binomial"</span>,</span>
+<span>                model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,</span>
 <span>                eps <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">beta-binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">test</span> <span style="color: #00BBBB;">──────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">Binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">───────────────</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH purity estimate of sample </span><span style="color: #00BB00; font-weight: bold;">test</span><span style="font-weight: bold;"> using </span><span style="color: #00BB00; font-weight: bold;">beta-binomial</span><span style="font-weight: bold;"> model</span> <span style="color: #00BBBB;">──────────</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">BMix fit</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">0</span>; 6 fits to run.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0 mins</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 10 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">3</span> + <span style="color: #00BB00;">0</span>) ───────────────</span></span>
-<span><span class="co">#&gt; • Clusters: π = 40% [<span style="color: #BBBB00;">Bin 3</span>], 30% [<span style="color: #BBBB00;">Bin 1</span>], and 30% [<span style="color: #BBBB00;">Bin 2</span>], with π &gt; 0.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 1</span> with mean = 0.816666666666667.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 2</span> with mean = 0.14.</span></span>
-<span><span class="co">#&gt; • Binomial <span style="color: #00BB00;">Bin 3</span> with mean = 0.525.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 202.11.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binomials k_B = <span style="color: #00BB00;">0</span>, Beta-Binomials k_BB = <span style="color: #00BB00;">1</span>, <span style="color: #00BB00;">2</span>, and <span style="color: #00BB00;">3</span>; 6 fits to run.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; Warning in lbeta(shape1[okk], shape2[okk]): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in value[[3L]](cond): MLE error, forcing stop.</span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span></span>
+<span><span class="co">#&gt; Warning in stats4::mle(minuslogl = .NLLBetaBinMix(k + K[1], data, z_nk, : start</span></span>
+<span><span class="co">#&gt; values do not satisfy constraints</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">Bmix best fit</span> completed in 0.02 mins</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BBBB00;">[ BMix ] My BMix model</span> n = 30 with <span style="color: #00BB00;">k = 3</span> component(s) (<span style="color: #00BB00;">0</span> + <span style="color: #00BB00;">3</span>) ───────────────</span></span>
+<span><span class="co">#&gt; • Clusters: π = 33% [<span style="color: #BBBB00;">BBin 1</span>], 33% [<span style="color: #BBBB00;">BBin 3</span>], and 33% [<span style="color: #BBBB00;">BBin 2</span>], with π &gt; 0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Score (model selection): <span style="color: #00BB00;">ICL</span> = 317.39.</span></span>
+<span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
+<span><span class="co">#&gt; "none")` instead.</span></span>
+<span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
+<span><span class="co">#&gt; Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span></span>
+<span><span class="co">#&gt; Placing graphs unaligned.</span></span>
 <span><span class="co">#&gt; Warning: `guides(&lt;scale&gt; = FALSE)` is deprecated. Please use `guides(&lt;scale&gt; =</span></span>
 <span><span class="co">#&gt; "none")` instead.</span></span>
 <span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
 <span><span class="co">#&gt; Warning: Graphs cannot be horizontally aligned unless the axis parameter is set.</span></span>
 <span><span class="co">#&gt; Placing graphs unaligned.</span></span>
 <span></span>
-<span><span class="va">data</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">purity</span><span class="op">$</span><span class="va">purity</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">purity_estimate</span><span class="op">$</span><span class="va">bbinomial</span><span class="op">$</span><span class="va">purity</span><span class="op">$</span><span class="va">purity</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">purity</span><span class="op">$</span><span class="va">purity</span> <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">purity_estimate</span><span class="op">$</span><span class="va">`beta-binomial`</span><span class="op">$</span><span class="va">purity</span><span class="op">$</span><span class="va">purity</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with  Beta-Binomial model ───</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   sample purity reliability</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test        1         0.4</span></span>
-<span><span class="co">#&gt; ── Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> ────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">binomial</span> model ─────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.408   0.98</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.417   0.96</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">beta-binomial</span> model ────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.408   0.98</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.417   0.96</span></span>
 <span></span>
 <span><span class="va">classified_right</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">data</span>,</span>
@@ -284,38 +415,51 @@
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing null model distributions and p-values.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">classified_right</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with  Beta-Binomial model ───</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   sample purity reliability</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test        1         0.4</span></span>
-<span><span class="co">#&gt; ── Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> ────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">bbinomial</span> model  with overdispersion parameter <span style="color: #00BB00;">0.01</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 8</span></span></span>
-<span><span class="co">#&gt;    sample gene            nv    dp   VAF class      p_subclonal    p_loh</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> test   test gene 1     50   500  0.1  Subclonal     1.90<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span> 1   <span style="color: #949494;">e</span>+ 0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> test   test gene 2     60   500  0.12 Subclonal     2.06<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span> 1   <span style="color: #949494;">e</span>+ 0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> test   test gene 3    100   500  0.2  Subclonal     5.43<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 1   <span style="color: #949494;">e</span>+ 0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> test   test gene 4    250   500  0.5  Clonal        1.00<span style="color: #949494;">e</span>+ 0 8.21<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> test   test gene 5    225   500  0.45 Clonal        4.67<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span> 1   <span style="color: #949494;">e</span>+ 0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> test   test gene 6    270   500  0.54 Clonal        1.00<span style="color: #949494;">e</span>+ 0 4.57<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> test   test gene 7    305   500  0.61 Clonal        1.00<span style="color: #949494;">e</span>+ 0 5.24<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> test   test gene 8    375   500  0.75 Clonal LOH    1.00<span style="color: #949494;">e</span>+ 0 2.31<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> test   test gene 9    400   500  0.8  Clonal LOH    1.00<span style="color: #949494;">e</span>+ 0 6.08<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> test   test gene 10   450   500  0.9  Clonal LOH    1.00<span style="color: #949494;">e</span>+ 0 3.09<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span></span></span></code></pre></div>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">binomial</span> model ─────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.408   0.98</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.417   0.96</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Purity estimate using  <span style="color: #000000; background-color: #BBBB00;">[ BMix ] </span> with <span style="color: #00BB00;">beta-binomial</span> model ────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.408   0.98</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   sample input_purity reliability purity</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> test           0.96       0.417   0.96</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">beta-binomial</span> model   ─────────────────────────────</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 8</span></span></span>
+<span><span class="co">#&gt;    sample gene            nv    dp   VAF class     p_subclonal p_loh</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> test   test gene 1     10   200  0.05 Subclonal    9.61<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> test   test gene 2     12   200  0.06 Subclonal    8.00<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> test   test gene 3     14   200  0.07 Subclonal    6.86<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> test   test gene 4     16   200  0.08 Subclonal    5.33<span style="color: #949494;">e</span><span style="color: #BB0000;">-14</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> test   test gene 5     18   200  0.09 Subclonal    3.67<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> test   test gene 6     20   200  0.1  Subclonal    2.24<span style="color: #949494;">e</span><span style="color: #BB0000;">-12</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> test   test gene 7     22   200  0.11 Subclonal    1.23<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> test   test gene 8     24   200  0.12 Subclonal    6.03<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> test   test gene 9     26   200  0.13 Subclonal    2.69<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> test   test gene 10    28   200  0.14 Subclonal    1.10<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span>     1</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 20 more rows</span></span></span></code></pre></div>
 <p>The two classifications can be compared.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggpubr</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>    <span class="va">classified_wrong</span>,</span>
-<span>    target_gene <span class="op">=</span> <span class="st">"test gene 5"</span>,</span>
+<span>    target_gene <span class="op">=</span> <span class="st">"test gene 15"</span>,</span>
 <span>    sample_name <span class="op">=</span> <span class="st">"test"</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"beta-binomial"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>    <span class="va">classified_right</span>,</span>
-<span>    target_gene <span class="op">=</span> <span class="st">"test gene 5"</span>,</span>
+<span>    target_gene <span class="op">=</span> <span class="st">"test gene 15"</span>,</span>
 <span>    sample_name <span class="op">=</span> <span class="st">"test"</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"beta-binomial"</span></span>
 <span>  <span class="op">)</span></span>
@@ -323,14 +467,8 @@
 <span>ncol <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>nrow <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span></span>
-<span><span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span></span>
-<span><span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span></span>
 <span><span class="co">#&gt; Warning: Removed 4 rows containing missing values (geom_bar).</span></span>
-<span><span class="co">#&gt; Warning: Removed 500 rows containing missing values (geom_point).</span></span>
-<span><span class="co">#&gt; Warning in max(.): no non-missing arguments to max; returning -Inf</span></span>
-<span><span class="co">#&gt; Warning in min(.): no non-missing arguments to min; returning Inf</span></span>
-<span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span>
-<span><span class="co">#&gt; Warning: Removed 500 rows containing missing values (geom_point).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 6 rows containing missing values (geom_bar).</span></span></code></pre></div>
 <p><img src="purity-estimates_files/figure-html/unnamed-chunk-8-1.png" width="2400"> This shows the impact of an incorrect purity estimate on the classification of variants, and how TAPACLOTH can be used to improve the results when the input estimate is not reliable enough. An incorrect purity estimate can result in a bad variant classification and this can eventually lead to wrong conclusions in downstream analyses.</p>
 </div>
 </div>
