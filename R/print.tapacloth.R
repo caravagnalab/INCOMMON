@@ -83,19 +83,13 @@ print.TAPACLOTH = function(x, ...) {
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Purity estimate using ',
           crayon::bgYellow(crayon::black("[ BMix ] ")),
-          'with ',
-          ifelse(s == 'bbinomial', "Beta-Binomial", "Binomial"),
-          'model'
+          'with {.field {s}} model'
         )
       )
-      print(full_join(x$purity_estimate[[s]]$purity, x$purity_estimate[[s]]$reliability, by = "sample") %>% as_tibble())
+      purity_per_sample(data)
     }
-
-    cli::cli_rule(paste('Purity estimate using ',
-                        crayon::bgYellow(crayon::black("[ BMix ] "))))
+    
     cat("\n")
-
-    x$purity_estimate
   }
   #   cli::cli_rule(
   #     paste(

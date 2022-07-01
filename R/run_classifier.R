@@ -19,6 +19,9 @@
 #' @import dplyr
 #'
 #' @examples
+#' data = list(data = dplyr::tibble(sample = "test", gene = c(paste("test gene ", 1:9), "target gene"), nv = c(seq(10,90,10), 120), dp = c(rep(100, 9), 200), VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)), purity = dplyr::tibble(sample = "test", purity = 1))
+#' data = run_classifier(x = data, alpha_level = 1e-3, model = "Binomial")
+#' print(data)
 run_classifier = function(x,
                           alpha_level = 0.01,
                           model = "Binomial",
@@ -94,7 +97,7 @@ run_classifier = function(x,
     }
     
     if ((model %>% tolower()) == "beta-binomial") {
-      test$classifier$bbinomial = list(
+      test$classifier$`beta-binomial` = list(
         params = tibble(alpha = alpha_level,
                       rho = rho),
         data = x %>% select(class, starts_with("p_"))

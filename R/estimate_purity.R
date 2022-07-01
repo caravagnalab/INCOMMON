@@ -17,6 +17,9 @@
 #' @export
 #'
 #' @examples
+#' data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
+#' data = estimate_purity(x = data, model = "binomial", eps = 0.01)
+#' print(data)
 estimate_purity = function(x,
                            model = "Binomial",
                            eps = 0.01) {
@@ -24,6 +27,8 @@ estimate_purity = function(x,
   # Output
   test = list()
   class(test) = "TAPACLOTH"
+  
+  model = model %>% tolower()
   
   stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial"))
   
@@ -97,7 +102,7 @@ estimate_purity = function(x,
   plot_bmix = lapply(1:length(x), function(n){x[[n]]$plot_bmix})
   names(plot_bmix) = samples
   
-    test$purity_estimate[[ifelse(model == "binomial", "binomial", "bbinomial")]] = list(
+    test$purity_estimate[[model]] = list(
       params = tibble(eps = eps),
       purity = tibble(sample = samples,
                       purity = sapply(1:length(x), function(n){x[[n]]$purity})),

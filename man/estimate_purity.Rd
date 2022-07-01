@@ -30,3 +30,8 @@ An object of class \code{TAPACLOTH} containing the inferred purity.
 \description{
 Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
 }
+\examples{
+data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
+data = estimate_purity(x = data, model = "binomial", eps = 0.01)
+print(data)
+}

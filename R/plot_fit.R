@@ -9,7 +9,7 @@ plot_fit = function(x, target_gene, sample_name, model) {
 
   # Select sample
   data = x$data$data %>%
-    cbind(x$classifier[[ifelse((model %>% tolower())=="beta-binomial", "bbinomial", model %>% tolower())]]$data) %>%
+    cbind(x$classifier[[model]]$data) %>%
     dplyr::filter(sample == sample_name)
 
   # Get class of mutations on target gene

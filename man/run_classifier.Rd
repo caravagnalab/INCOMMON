@@ -30,3 +30,8 @@ An object of class \code{TAPACLOTH} that represents the classified input data.
 Classify mutations per sample using a (Beta-)Binomial model-based test, or
 per gene using a 3-quantile test.
 }
+\examples{
+data = list(data = dplyr::tibble(sample = "test", gene = c(paste("test gene ", 1:9), "target gene"), nv = c(seq(10,90,10), 120), dp = c(rep(100, 9), 200), VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)), purity = dplyr::tibble(sample = "test", purity = 1))
+data = run_classifier(x = data, alpha_level = 1e-3, model = "Binomial")
+print(data)
+}

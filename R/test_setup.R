@@ -11,7 +11,7 @@ test_setup = function(coverage = 500,
   # Compute Binomial or Beta-Binomial probability for NV values in range
   log_p = NULL
   p = purity/2
-  if (model == 'binomial')
+  if ((model %>% tolower()) == 'binomial')
   {
     log_p = sapply(nvs, dbinom, size = coverage, prob = p)
   }
