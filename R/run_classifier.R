@@ -45,7 +45,7 @@ run_classifier = function(x,
 
   if ((model %>% tolower()) %in% c("binomial", "beta-binomial")) {
     
-    x = lapply(unique(x$data$sample), function(s) {
+    x = lapply(unique(x$data$sample)[1:2], function(s) {
       cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
       cat("\n")
       
@@ -56,7 +56,7 @@ run_classifier = function(x,
       
       cli::cli_alert_info("Computing null model distributions and p-values.")
       
-      sample_data$cumprob = sapply(1:(sample_data %>% nrow), function(i) {
+      sample_data$pvalues = lapply(1:(sample_data %>% nrow), function(i) {
         null_model = test_setup(
           coverage = sample_data$dp[i],
           purity = sample_purity,
@@ -67,23 +67,35 @@ run_classifier = function(x,
         
         # class = run_test(nv = sample_data$nv[i], null_model = null_model)
         cumprob = null_model$density$p[sample_data$nv[i]]
-        return(cumprob)
+        pvalues = null_model$test %>% select(karyotype, multiplicity)
+        pvalues$pvalue = sapply(null_model$test$inputs, function(s) {
+          s$p[sample_data$nv[i]]
+        })
+        return(pvalues)
       })
       
-      sample_data = sample_data %>%
-        dplyr::mutate(
-          p_subclonal = cumprob,
-          p_loh = 1 - cumprob,
-          ) %>%
-        select(-cumprob)
-      
-      sample_data$p_subclonal = p.adjust(sample_data$p_subclonal, method = "BH")    
-      sample_data$p_loh = p.adjust(sample_data$p_loh, method = "BH")
-      sample_data$class = case_when(
-        sample_data$p_subclonal <= alpha_level ~ "Subclonal",
-        sample_data$p_loh <= alpha_level ~ "Clonal LOH",
-        TRUE ~ "Clonal")
-      
+      sample_data$class = sapply(1:(sample_data %>% nrow), function(i) {
+        pvalues = sample_data[i,]$pvalues[[1]]$pvalue
+        maxp = pvalues %>% max()
+        k = sample_data[i,]$pvalues[[1]]$karyotype[which(pvalues == maxp)]
+        m = sample_data[i,]$pvalues[[1]]$multiplicity[which(pvalues == maxp)]
+        paste(k,m,sep = "-",collapse = "|")
+      })
+      # 
+      # sample_data = sample_data %>%
+      #   dplyr::mutate(
+      #     p_subclonal = cumprob,
+      #     p_loh = 1 - cumprob,
+      #     ) %>%
+      #   select(-cumprob)
+      # 
+      # sample_data$p_subclonal = p.adjust(sample_data$p_subclonal, method = "BH")    
+      # sample_data$p_loh = p.adjust(sample_data$p_loh, method = "BH")
+      # sample_data$class = case_when(
+      #   sample_data$p_subclonal <= alpha_level ~ "Subclonal",
+      #   sample_data$p_loh <= alpha_level ~ "Clonal LOH",
+      #   TRUE ~ "Clonal")
+      # 
       return(sample_data)
       
     }) %>%

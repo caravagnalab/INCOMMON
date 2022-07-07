@@ -10,52 +10,93 @@ test_setup = function(coverage = 500,
 
   # Compute Binomial or Beta-Binomial probability for NV values in range
   log_p = NULL
-  p = purity/2
-  if ((model %>% tolower()) == 'binomial')
-  {
-    log_p = sapply(nvs, dbinom, size = coverage, prob = p)
-  }
-  else
-  {
-    log_p = sapply(
-      nvs,
-      VGAM::dbetabinom,
-      size = coverage,
-      prob = p,
-      rho = rho
-    )
-  }
+  # p = purity/2
+  # if ((model %>% tolower()) == 'binomial')
+  # {
+  #   log_p = sapply(nvs, dbinom, size = coverage, prob = p)
+  # }
+  # else
+  # {
+  #   log_p = sapply(
+  #     nvs,
+  #     VGAM::dbetabinom,
+  #     size = coverage,
+  #     prob = p,
+  #     rho = rho
+  #   )
+  # }
+  
+  log_p = lapply(c("1:0", "1:1", "2:0", "2:1", "2:2"), function(karyotype) {
+    ploidy = stringr::str_split(string = karyotype, pattern = ":") %>% unlist() %>% as.integer() %>% sum()
+    lapply(1:min(ploidy, 2), function(mult) {
+      if ((model %>% tolower()) == 'binomial') {
+        log_p = sapply(nvs,
+                       dbinom,
+                       size = coverage,
+                       prob = mult * purity / (2 * (1 - purity) + purity * ploidy))
+      }
+      else {
+        log_p = sapply(
+          nvs,
+          VGAM::dbetabinom,
+          size = coverage,
+          prob = mult * purity / (2 * (1 - purity) + purity * ploidy),
+          rho = rho
+        )
+      }
+      
+      # Compute P(X > NV) for each NV value
+      # p_x = cumsum(log_p)
+      # Find l_a such that P(X <= l_a) < alpha
+      # l_a = which(p_x < alpha_level, arr.ind = TRUE) %>% max
+      # 
+      # # Find r_a such that P(X > r_a) < 1 - alpha
+      # r_a = which(p_x > 1 - alpha_level, arr.ind = TRUE) %>% min
 
-  # Compute P(X > NV) for each NV value
-  p_x = cumsum(log_p)
-
-  # Find l_a such that P(X <= l_a) < alpha
-  l_a = which(p_x < alpha_level, arr.ind = TRUE) %>% max
-  # Find r_a such that P(X > r_a) < 1 - alpha
-  r_a = which(p_x > 1 - alpha_level, arr.ind = TRUE) %>% min
-  # Adjustments for plots when test fails
-  if(is.infinite(l_a)) l_a = 1
-  if(is.infinite(r_a)) r_a = coverage
-
-  # Translate NV cutoffs in VAF space
-  vafs = nvs / coverage
-  l_v = vafs[l_a]
-  r_v = vafs[r_a]
-
-  inputs = data.frame(nv = nvs,
-                      p = p_x,
-                      VAF = vafs)
-
+      # Compute two-tailed p-value for each NV value
+      p_x = sapply(nvs, function(nv){log_p[which(log_p <= log_p[nv])] %>% sum()})
+      
+      # Find left extremum NV l_a such that p-value < alpha
+      l_a = which(p_x > alpha_level, arr.ind = TRUE) %>% min
+      
+      # Find right extremum NV l_a such that p-value < alpha
+      r_a = which(p_x > alpha_level, arr.ind = TRUE) %>% max
+      
+      # Adjustments for plots when test fails
+      if (is.infinite(l_a))
+        l_a = 1
+      if (is.infinite(r_a))
+        r_a = coverage
+      
+      # Translate NV cutoffs in VAF space
+      
+      vafs = nvs / coverage
+      l_v = vafs[l_a]
+      r_v = vafs[r_a]
+      
+      return(tibble(
+        karyotype = karyotype,
+        multiplicity = mult,
+        inputs = list(tibble(nv = nvs,
+                             p = p_x,
+                             VAF = vafs)),
+          l_a = l_a,
+          r_a = r_a,
+          l_v = l_v,
+          r_v = r_v
+      ))
+    }) %>% do.call(rbind, .)
+  }) %>% do.call(rbind, .)
+  
+  
   # cli::cli_alert_info("Computing p-values.")
 
   return(list(
     model = model,
-    density = inputs,
     rho = rho,
     coverage = coverage,
     purity = purity,
     alpha_level = alpha_level,
-    nv = c(l_a, r_a),
-    vaf = c(l_v, r_v)
+    test = log_p
   ))
 }
