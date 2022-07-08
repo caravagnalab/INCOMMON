@@ -45,7 +45,7 @@ run_classifier = function(x,
 
   if ((model %>% tolower()) %in% c("binomial", "beta-binomial")) {
     
-    x = lapply(unique(x$data$sample)[1:2], function(s) {
+    x = lapply(unique(x$data$sample), function(s) {
       cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
       cat("\n")
       
@@ -66,7 +66,7 @@ run_classifier = function(x,
         )
         
         # class = run_test(nv = sample_data$nv[i], null_model = null_model)
-        cumprob = null_model$density$p[sample_data$nv[i]]
+        # cumprob = null_model$density$p[sample_data$nv[i]]
         pvalues = null_model$test %>% select(karyotype, multiplicity)
         pvalues$pvalue = sapply(null_model$test$inputs, function(s) {
           s$p[sample_data$nv[i]]
@@ -76,9 +76,8 @@ run_classifier = function(x,
       
       sample_data$class = sapply(1:(sample_data %>% nrow), function(i) {
         pvalues = sample_data[i,]$pvalues[[1]]$pvalue
-        maxp = pvalues %>% max()
-        k = sample_data[i,]$pvalues[[1]]$karyotype[which(pvalues == maxp)]
-        m = sample_data[i,]$pvalues[[1]]$multiplicity[which(pvalues == maxp)]
+        k = sample_data[i,]$pvalues[[1]]$karyotype[which(pvalues > alpha_level)]
+        m = sample_data[i,]$pvalues[[1]]$multiplicity[which(pvalues > alpha_level)]
         paste(k,m,sep = "-",collapse = "|")
       })
       # 
@@ -112,7 +111,7 @@ run_classifier = function(x,
       test$classifier$`beta-binomial` = list(
         params = tibble(alpha = alpha_level,
                       rho = rho),
-        data = x %>% select(class, starts_with("p_"))
+        data = x %>% select(class, starts_with("pvalues"))
       )
     }
   }
