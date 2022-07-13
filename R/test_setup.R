@@ -27,8 +27,9 @@ test_setup = function(coverage = 500,
   # }
   
   log_p = lapply(c("1:0", "1:1", "2:0", "2:1", "2:2"), function(karyotype) {
-    ploidy = stringr::str_split(string = karyotype, pattern = ":") %>% unlist() %>% as.integer() %>% sum()
-    lapply(1:min(ploidy, 2), function(mult) {
+    alleles = stringr::str_split(string = karyotype, pattern = ":") %>% unlist() %>% as.integer()
+    ploidy = sum(alleles)
+    lapply(1:max(alleles), function(mult) {
       if ((model %>% tolower()) == 'binomial') {
         log_p = sapply(nvs,
                        dbinom,
