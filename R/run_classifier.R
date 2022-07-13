@@ -62,7 +62,7 @@ run_classifier = function(x,
         
         # class = run_test(nv = sample_data$nv[i], null_model = null_model)
         # cumprob = null_model$density$p[sample_data$nv[i]]
-        pvalues = null_model$test %>% select(karyotype, multiplicity, l_a, r_a)
+        pvalues = null_model$test %>% dplyr::select(karyotype, multiplicity, l_a, r_a)
         pvalues$pvalue = sapply(null_model$test$inputs, function(s) {
           s$p[x$data$NV[i]]
         })
@@ -123,52 +123,52 @@ run_classifier = function(x,
       }
   }
 
-  else{
-    # x = lapply(unique(x$data$gene), function(g) {
-    #   cli::cli_h1(g)
-    # 
-    #   gene_data = x$data %>%
-    #     dplyr::filter(gene == g)
-    # 
-    #   terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
-    #     round(2)
-    # 
-    #   gene_data = gene_data %>%
-    #     dplyr::mutate(
-    #       class = case_when(
-    #         VAF / x$puritypurity >= terziles[3] ~ "Clonal LOH",
-    #         VAF / purity < terziles[3] ~ "Subclonal/Clonal"
-    #       )
-    #     )
-    # }) %>%
-    #   do.call(rbind, .)
-    
-    x = lapply(unique(x$data$sample), function(s) {
-      cli::cli_h1(s)
-
-      sample_data = x$data %>%
-        dplyr::filter(sample == s)
-      
-      sample_purity = dplyr::filter(x$purity, sample == s)$purity
-
-      terziles = quantile(sample_data$VAF / sample_purity, 
-                          probs = c(0, 1, 0.33)) %>%
-        round(2) %>% sort()
-
-      sample_data = sample_data %>%
-        dplyr::mutate(
-          class = case_when(
-            VAF / sample_purity >= terziles[3] ~ "Clonal LOH",
-            VAF / sample_purity < terziles[3] ~ "Subclonal/Clonal"
-          )
-        )
-    }) %>%
-      do.call(rbind, .)
-    
-    test$classifier$terzile = list(
-      data = x %>% select(class)
-    )
-  }
+  # else{
+  #   # x = lapply(unique(x$data$gene), function(g) {
+  #   #   cli::cli_h1(g)
+  #   # 
+  #   #   gene_data = x$data %>%
+  #   #     dplyr::filter(gene == g)
+  #   # 
+  #   #   terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
+  #   #     round(2)
+  #   # 
+  #   #   gene_data = gene_data %>%
+  #   #     dplyr::mutate(
+  #   #       class = case_when(
+  #   #         VAF / x$puritypurity >= terziles[3] ~ "Clonal LOH",
+  #   #         VAF / purity < terziles[3] ~ "Subclonal/Clonal"
+  #   #       )
+  #   #     )
+  #   # }) %>%
+  #   #   do.call(rbind, .)
+  #   
+  #   x = lapply(unique(x$data$sample), function(s) {
+  #     cli::cli_h1(s)
+  # 
+  #     sample_data = x$data %>%
+  #       dplyr::filter(sample == s)
+  #     
+  #     sample_purity = dplyr::filter(x$purity, sample == s)$purity
+  # 
+  #     terziles = quantile(sample_data$VAF / sample_purity, 
+  #                         probs = c(0, 1, 0.33)) %>%
+  #       round(2) %>% sort()
+  # 
+  #     sample_data = sample_data %>%
+  #       dplyr::mutate(
+  #         class = case_when(
+  #           VAF / sample_purity >= terziles[3] ~ "Clonal LOH",
+  #           VAF / sample_purity < terziles[3] ~ "Subclonal/Clonal"
+  #         )
+  #       )
+  #   }) %>%
+  #     do.call(rbind, .)
+  #   
+  #   test$classifier$terzile = list(
+  #     data = x %>% select(class)
+  #   )
+  # }
 
   # test$data = x
   # test$classifier = list(
