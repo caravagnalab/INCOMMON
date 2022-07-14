@@ -1,50 +1,42 @@
 plot_test = function(x) {
-  plotmodels = lapply(names(x$classifier), function(model) {
-    plotlist = lapply(x$classifier[[model]]$data$gene %>% unique(), function(g) {
-      
-      ## Get model parameters
-      alpha_level = x$classifier[[model]]$params$alpha
-      rho = x$classifier[[model]]$params$rho
-      ## Get NV of mutation under test
-      nvtest = x$classifier[[model]]$data %>%
-        filter(gene == g) %>%
-        pull(NV) %>%
-        unique()
+  x = idify(x)
+  plotmodels = lapply(models_avail(x), function(model) {
+    plotlist = lapply(get_data(x) %>% pull(id), function(ID) {
+      ## Get data for mutation and model used
+      mdata = get_classifier(x, model = model) %>% 
+        idify() %>% 
+        get_data() %>% 
+        dplyr::filter(id == ID)
       ## Get sample purity
-      purity = x$purity
-      ## Get data for tested gene and model used
-      gdata = x$classifier[[model]]$data %>% dplyr::filter(gene == g)
+      purity = get_purity(x)
       ## Format data for plot
-      y = lapply(1:(gdata %>% nrow()),
+      y = lapply(1:(mdata %>% nrow()),
                  function(i) {
-                   dp = gdata[i,]$DP
-                   k = gdata[i,]$karyotype
-                   m = gdata[i,]$multiplicity
-                   ploidy = stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()
-                   
+                   k = mdata[i,]$karyotype
+                   m = mdata[i,]$multiplicity
                    if ((model %>% tolower()) == "binomial") {
                      p = dbinom(
-                       x = 1:dp,
-                       size = dp,
-                       prob = m * purity / (2 * (1 - purity) + purity * ploidy)
+                       x = 1:get_DP(x, ID),
+                       size = get_DP(x, ID),
+                       prob = m * get_purity(x) / (2 * (1 - get_purity(x)) + get_purity(x) * get_ploidy(k))
                      )
                    }
                    if ((model %>% tolower()) == "beta-binomial") {
                      p = VGAM::dbetabinom(
-                       x = 1:dp,
-                       size = dp,
-                       rho = rho,
-                       prob = m * purity / (2 * (1 - purity) + purity * ploidy)
+                       x = 1:get_DP(x, ID),
+                       size = get_DP(x, ID),
+                       rho = get_rho(x),
+                       prob = m * get_purity(x) / (2 * (1 - get_purity(x)) + get_purity(x) * get_ploidy(k))
                      )
                    }
                    tibble(
-                     nv = 1:dp,
+                     nv = 1:get_DP(x, ID),
                      p = p,
-                     karyotype = gdata[i,]$karyotype,
-                     multiplicity = gdata[i,]$multiplicity,
-                     outcome = ifelse(gdata[i,]$pvalue > alpha_level, "PASS", "FAIL"),
-                     l_a = gdata[i,]$l_a,
-                     r_a = gdata[i,]$r_a
+                     karyotype = mdata[i,]$karyotype,
+                     multiplicity = mdata[i,]$multiplicity,
+                     outcome = ifelse(mdata[i,]$pvalue > get_alpha(x, model), "PASS", "FAIL"),
+                     l_a = mdata[i,]$l_a,
+                     r_a = mdata[i,]$r_a
                    )
                  }) %>% do.call(rbind, .)
       y = y %>%
@@ -65,7 +57,7 @@ plot_test = function(x) {
       
       if ((model %>% tolower()) == "beta-binomial") {
         model_string = bquote("Test using Beta-Binomial model with " * rho * " = " *
-                                .(rho))
+                                .(get_rho(x)))
       } else{
         model_string = bquote("Test using Binomial model")
       }
@@ -83,25 +75,29 @@ plot_test = function(x) {
           limits = c(unique(y$class)),
           guide = "none"
         ) +
-        geom_vline(xintercept = nvtest, linetype = "longdash") +
+        geom_vline(xintercept = get_NV(x, mutation_id = ID), linetype = "longdash") +
         CNAqc:::my_ggplot_theme() +
         coord_cartesian(clip = "off") +
         ggplot2::labs(
           x = 'NV',
           y = "Pr(X = NV)",
           caption = model_string,
-          title = paste0("Mutation", " ; Gene ", g),
+          title = paste0(ID," ; Gene ", get_gene(x, ID)),
           subtitle = bquote(
-            "DP = " * .(unique(gdata$DP)) * '; ' * pi * ' = ' * .(purity) * ', ' ~ alpha *
-              ' = ' * .(alpha_level)
+            "DP = " * .(unique(mdata$DP)) * '; ' * pi * ' = ' * .(get_purity(x)) * ', ' ~ alpha *
+              ' = ' * .(get_alpha(x, model))
           )
         )
     })
-    names(plotlist) = x$classifier[[model]]$data$gene %>% unique()
+    names(plotlist) = get_classifier(x, model) %>% 
+      idify() %>% 
+      get_data() %>% 
+      pull(id) %>% 
+      unique()
     return(plotlist)
   })
-  names(plotmodels) = names(x$classifier)
-  for(model in names(x$classifier)) {
+  names(plotmodels) = models_avail(x)
+  for(model in names(plotmodels)) {
     x$classifier[[model]]$plot_test = plotmodels[[model]]
   }
   return(x)
