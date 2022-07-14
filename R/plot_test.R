@@ -1,81 +1,77 @@
-##
-x = readRDS("./testdata.rds")
-test = TAPACLOTH::run_classifier(x, alpha_level = 0.05, rho = 0.01, model = "beta-binomial")
-x = test
-model = "beta-binomial"
-gene_name = "SPEN"
-alpha_level = 0.05
-rho = 0.01
-
-plot_test = function(x){
-  
-  plotmodels = lapply(names(x$classifier), function(model){
-    
-    plotlist = lapply(x$classifier[[model]]$data$gene %>% unique(), function(g){
+plot_test = function(x) {
+  plotmodels = lapply(names(x$classifier), function(model) {
+    plotlist = lapply(x$classifier[[model]]$data$gene %>% unique(), function(g) {
       
-      nvtest = x$classifier[[model]]$data %>% 
-        filter(gene == g) %>% 
-        pull(NV) %>% 
+      ## Get model parameters
+      alpha_level = x$classifier[[model]]$params$alpha
+      rho = x$classifier[[model]]$params$rho
+      ## Get NV of mutation under test
+      nvtest = x$classifier[[model]]$data %>%
+        filter(gene == g) %>%
+        pull(NV) %>%
         unique()
-      
+      ## Get sample purity
       purity = x$purity
-      
+      ## Get data for tested gene and model used
       gdata = x$classifier[[model]]$data %>% dplyr::filter(gene == g)
-      
-      y = lapply(1:(
-        gdata %>% nrow()
-      ),
-      function(i) {
-        
-        dp = gdata[i,]$DP
-        k = gdata[i,]$karyotype
-        m = gdata[i,]$multiplicity
-        ploidy = stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()
-        
-        if ((model %>% tolower()) == "binomial") {
-          p = dbinom(
-            x = 1:dp,
-            size = dp,
-            prob = m * purity / (2 * (1 - purity) + purity * ploidy)
-          )
-        }
-        if ((model %>% tolower()) == "beta-binomial") {
-          p = VGAM::dbetabinom(
-            x = 1:dp,
-            size = dp,
-            rho = rho,
-            prob = m * purity / (2 * (1 - purity) + purity * ploidy)
-          )
-        }
-        tibble(
-          nv = 1:dp,
-          p = p,
-          # class = gdata[i,]$class,
-          karyotype = gdata[i,]$karyotype,
-          multiplicity = gdata[i,]$multiplicity,
-          outcome = ifelse(gdata[i,]$pvalue > alpha_level, "PASS", "FAIL"),
-          l_a = gdata[i,]$l_a,
-          r_a = gdata[i,]$r_a
+      ## Format data for plot
+      y = lapply(1:(gdata %>% nrow()),
+                 function(i) {
+                   dp = gdata[i,]$DP
+                   k = gdata[i,]$karyotype
+                   m = gdata[i,]$multiplicity
+                   ploidy = stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()
+                   
+                   if ((model %>% tolower()) == "binomial") {
+                     p = dbinom(
+                       x = 1:dp,
+                       size = dp,
+                       prob = m * purity / (2 * (1 - purity) + purity * ploidy)
+                     )
+                   }
+                   if ((model %>% tolower()) == "beta-binomial") {
+                     p = VGAM::dbetabinom(
+                       x = 1:dp,
+                       size = dp,
+                       rho = rho,
+                       prob = m * purity / (2 * (1 - purity) + purity * ploidy)
+                     )
+                   }
+                   tibble(
+                     nv = 1:dp,
+                     p = p,
+                     karyotype = gdata[i,]$karyotype,
+                     multiplicity = gdata[i,]$multiplicity,
+                     outcome = ifelse(gdata[i,]$pvalue > alpha_level, "PASS", "FAIL"),
+                     l_a = gdata[i,]$l_a,
+                     r_a = gdata[i,]$r_a
+                   )
+                 }) %>% do.call(rbind, .)
+      y = y %>%
+        mutate(class = ifelse(outcome == "FAIL", "FAIL", karyotype))
+      ## Build plot
+      plt = ggplot() +
+        ggridges::geom_density_ridges(
+          y %>% filter(nv > l_a & nv < r_a),
+          mapping = aes(
+            x = nv,
+            y = karyotype,
+            height = p,
+            fill = class
+          ),
+          stat = "identity",
+          alpha = 0.8
         )
-      }) %>% do.call(rbind, .)
       
-      # y = y %>% 
-      #   mutate(class = ifelse(outcome == "FAIL", "FAIL", karyotype))
-      ###
-      dataplot = lapply(y$karyotype %>% unique(), function(k){
-        ploidy = stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()
-        tibble(values = sample(filter(y, karyotype == k)$nv,
-                               size = 100000,
-                               replace = TRUE,
-                               prob = filter(y, karyotype == k)$p
-        ),
-        karyotype = rep(k, 100000),
-        class = rep(ifelse(any(y[y$karyotype == k,]$outcome=="PASS"), k, "FAIL"), 100000))
-      }) %>% do.call(rbind, .)
+      if ((model %>% tolower()) == "beta-binomial") {
+        model_string = bquote("Test using Beta-Binomial model with " * rho * " = " *
+                                .(rho))
+      } else{
+        model_string = bquote("Test using Binomial model")
+      }
       
-      plt = ggplot(dataplot, aes(x=values, fill=class))+
+      plt + CNAqc:::my_ggplot_theme() +
         scale_fill_manual(
-          # values = c("#BEBEBE66","steelblue", "#228B22CC" , "turquoise4" ,"#00868B80"  ,"#FFA500CC",  "#FFA50080",  "firebrick3", "#CD262680" ),
           values = c(
             "FAIL" = "#BEBEBE66",
             "1:0" = "steelblue",
@@ -84,159 +80,31 @@ plot_test = function(x){
             "2:1" = "#FFA500CC",
             "2:2" = "firebrick3"
           ),
-          limits = c("1:0","1:1","2:0","2:1","2:2"),
-          guide = "legend")+
-        ggridges::geom_density_ridges(aes(y=karyotype), bandwidth = 10, scale = 1)+
-        geom_vline(xintercept = nvtest, linetype = "longdash")+
-        CNAqc:::my_ggplot_theme()+
-        coord_cartesian(clip = "off")
-          
-      ###
-  #     y = y %>% 
-  #       mutate(ff = case_when(
-  #         outcome == "FAIL" ~ ggplot2::alpha("gray", 0.4),
-  #         outcome == "PASS" & class == "k=1:0,m=1" ~ "steelblue",
-  #         outcome == "PASS" & class == "k=1:1,m=1" ~ ggplot2::alpha("forestgreen", 0.8),
-  #         outcome == "PASS" & class == "k=2:0,m=1" ~ "turquoise4",
-  #         outcome == "PASS" & class == "k=2:0,m=2" ~ ggplot2::alpha("turquoise4",0.5),
-  #         outcome == "PASS" & class == "k=2:1,m=1" ~ ggplot2::alpha("orange",0.8),
-  #         outcome == "PASS" & class == "k=2:1,m=2" ~ ggplot2::alpha("orange",0.5),
-  #         outcome == "PASS" & class == "k=2:2,m=1" ~ "firebrick3",
-  #         outcome == "PASS" & class == "k=2:2,m=2" ~ ggplot2::alpha("firebrick3",0.5)
-  #       ))
-  #     
-  #     pp = lapply(arrange(y, outcome)$class %>% unique(), function(c){
-  #       # ff = case_when(
-  #       #   unique(filter(y, class==c)$outcome) == "FAIL" ~ ggplot2::alpha("gray", 0.4),
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=1:0,m=1" ~ "steelblue",
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=1:1,m=1" ~ ggplot2::alpha("forestgreen", 0.8),
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:0,m=1" ~ "turquoise4",
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:0,m=2" ~ ggplot2::alpha("turquoise4",0.5),
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:1,m=1" ~ ggplot2::alpha("orange",0.8),
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:1,m=2" ~ ggplot2::alpha("orange",0.5),
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:2,m=1" ~ "firebrick3",
-  #       #   unique(filter(y, class==c)$outcome) == "PASS" & c == "k=2:2,m=2" ~ ggplot2::alpha("firebrick3",0.5)
-  #       # )
-  #       geom_area(
-  #         y %>% filter(class==c,nv > l_a &
-  #                        nv < r_a),
-  #         mapping = aes(x = nv, y = p, fill = ff),
-  #         position = 'identity'
-  #       )
-  #     })
-  #     
-  #     ggplot() + (pp %>% unlist()) +
-  #       scale_fill_manual(
-  #         name = "class",
-  #         values = c(
-  #           "#BEBEBE66" = "#BEBEBE66",
-  #           "steelblue" = "steelblue",
-  #           "#228B22CC" = "#228B22CC",
-  #           "turquoise4" = "turquoise4",
-  #           "#00868B80" = "#00868B80",
-  #           "#FFA500CC" = "#FFA500CC",
-  #           "#FFA50080" = "#FFA50080",
-  #           "firebrick3" = "firebrick3",
-  #           "#CD262680" = "#CD262680"
-  #         ),
-  #         labels = c(
-  #           "FAIL",
-  #           "k=1:0,m=1",
-  #           "k=1:1,m=1",
-  #           "k=2:0,m=1",
-  #           "k=2:0,m=2",
-  #           "k=2:1,m=1",
-  #           "k=2:1,m=2",
-  #           "k=2:2,m=1",
-  #           "k=2:2,m=2"
-  #         )
-  #       ) + ggplot2::geom_vline(xintercept = nvtest,
-  #                             linetype = "longdash",
-  #                             color = "black")+
-  #       CNAqc:::my_ggplot_theme() +
-  #       ggplot2::labs(
-  #         x = 'NV',
-  #         y = "P(X = NV)",
-  #         caption = paste0("Test using ", model, " model"),
-  #         title = paste0("Gene ",g,": coverage ", max(gdata$DP[i]), ' with purity ', x$purity),
-  #         subtitle = paste0('Alpha-level: ', alpha_level)
-  #       )
-  #   })
-  #   names(plotlist) = x$classifier[[model]]$data$gene %>% unique()
-  #   plotlist
-  # })
-  # names(plotmodels) = names(x$classifier)
-  # plotmodels
-}}
-
-plot_test(x)
+          limits = c(unique(y$class)),
+          guide = "none"
+        ) +
+        geom_vline(xintercept = nvtest, linetype = "longdash") +
+        CNAqc:::my_ggplot_theme() +
+        coord_cartesian(clip = "off") +
+        ggplot2::labs(
+          x = 'NV',
+          y = "Pr(X = NV)",
+          caption = model_string,
+          title = paste0("Mutation", " ; Gene ", g),
+          subtitle = bquote(
+            "DP = " * .(unique(gdata$DP)) * '; ' * pi * ' = ' * .(purity) * ', ' ~ alpha *
+              ' = ' * .(alpha_level)
+          )
+        )
+    })
+    names(plotlist) = x$classifier[[model]]$data$gene %>% unique()
+    return(plotlist)
+  })
+  names(plotmodels) = names(x$classifier)
+  for(model in names(x$classifier)) {
+    x$classifier[[model]]$plot_test = plotmodels[[model]]
+  }
+  return(x)
+}
 
 
-# ggplot2::ggplot() +
-#   ggplot2::geom_vline(xintercept = nvtest,
-#              linetype = "longdash",
-#              color = "black") +
-#   ggplot2::geom_line(y, mapping = aes(x = nv, y = p)) +
-#   # ggplot2::geom_vline(y, mapping = aes(xintercept = l_a)) +
-#   # ggplot2::geom_vline(y, mapping = aes(xintercept = r_a)) +
-#   ggplot2::geom_area(y %>% filter(nv>l_a & nv<r_a), mapping = aes(x=nv, y=p), alpha=0.5)+
-#   CNAqc:::my_ggplot_theme() +
-#   ggplot2::facet_wrap( ~ class,ncol = 2)
-#   # ggplot2::labs(
-#   #   x = 'NV',
-#   #   y = "P(X = NV)",
-#   #   caption = model,
-#   #   title = paste0("Coverage ", dp, ' with purity ', purity),
-#   #   subtitle = paste0('Alpha-level: ', alpha_level))
-# ##
-# 
-# ggplot2::ggplot() +
-#   # ggplot2::geom_line(y, mapping = aes(x = nv, y = p, color = class), fill = NA) +
-#   ggplot2::geom_area(
-#     y %>% filter(nv > l_a &
-#                    nv < r_a),
-#     mapping = aes(x = nv, y = p, fill = class, alpha = outcome),
-#     position = 'identity'
-#   ) + scale_alpha_discrete(range=c(0.08,0.9))+
-#   # scale_fill_manual(values = RColorBrewer::brewer.pal(n = 8, name = 'Set3'))+
-#   scale_fill_manual(values = ggsci::pal_lancet(palette = "lanonc")(8))+
-#   ggplot2::geom_vline(xintercept = nvtest,
-#                       linetype = "longdash",
-#                       color = "black") +
-#   CNAqc:::my_ggplot_theme() 
-
-
-# w %>% mutate(v = case_when(z == "k=1:0,m=1" ~ 1,
-#                            z == "k=1:1,m=1" ~ 2,
-#                            z == "k=2:0,m=1" ~ 3,
-#                            z == "k=2:0,m=2" ~ 4,
-#                            z == "k=2:1,m=1" ~ 5,
-#                            z == "k=2:1,m=2" ~ 6,
-#                            z == "k=2:2,m=1" ~ 7,
-#                            z == "k=2:2,m=2" ~ 8,)) %>% 
-#   ggplot(aes(x=x, y=y))+ggridges::geom_ridgeline(aes(height=v))
-
-# w = list()
-# w$values = sample(filter(y, class=="k=1:0,m=1")$nv, size = 100000, replace = TRUE, prob = filter(y, class=="k=1:0,m=1")$p)
-# w$class = rep("k=1:0,m=1", 100000)
-# w = as_tibble(w)
-# w = tibble(values = sample(filter(y, class=="k=1:1,m=1")$nv, size = 100000, replace = TRUE, prob = filter(y, class=="k=1:1,m=1")$p),
-#        class = rep("k=1:1,m=1", 100000)) %>% rbind(w)
-# w %>% ggplot(aes(x=values))+ggjoy::geom_joy(aes(y=class))
-# 
-# #
-# y = y %>% 
-#   mutate(class = ifelse(outcome == "PASS", class, "FAIL"))
-dataplot = lapply(y$class %>% unique(), function(c){
-  tibble(values = sample(filter(yy, class == c)$nv,
-                         size = 1000,
-                         replace = TRUE,
-                         prob = filter(y, class == c)$p
-                         ),
-         class = rep(c, 1000))
-}) %>% do.call(rbind, .)
-
-ggplot(dataplot, aes(x=values))+ggjoy::geom_joy(aes(y=class, fill=class), bandwidth = 50)+
-  CNAqc:::my_ggplot_theme()
-#
-  

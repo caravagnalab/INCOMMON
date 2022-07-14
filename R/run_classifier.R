@@ -27,112 +27,75 @@ run_classifier = function(x,
                           model = "Binomial",
                           rho = NA)
 {
+  model = model %>% tolower()
+  
   # Output
   test = list()
   class(test) = "TAPACLOTH"
-
-  stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial", "terzile"))
+  
+  stopifnot(model%in% c("binomial", "beta-binomial", "terzile"))
   
   if (inherits(x, "TAPACLOTH")) {
     test = x
-    x = test$data
-    if(!("classifier" %in% names(test))) test$classifier = list()
+    if (!("classifier" %in% names(test)))
+      test$classifier = list()
   }
   else{
-    # test$data = x
     test = x
     test$classifier = list()
+    class(test) = "TAPACLOTH"
   }
-
+  
   if ((model %>% tolower()) %in% c("binomial", "beta-binomial")) {
+    cli::cli_h1(
+      "TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {x$sample}}"
+    )
+    cat("\n")
     
-      cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {x$sample}}")
-      cat("\n")
-      
-      cli::cli_alert_info("Computing null model distributions and p-values.")
-      
-      pvalues = lapply(1:(x$data %>% nrow), function(i) {
-        null_model = test_setup(
-          coverage = x$data$DP[i],
-          purity = x$purity,
-          rho = rho,
-          alpha_level = alpha_level,
-          model = model
-        )
-        
-        # class = run_test(nv = sample_data$nv[i], null_model = null_model)
-        # cumprob = null_model$density$p[sample_data$nv[i]]
-        pvalues = null_model$test %>% dplyr::select(karyotype, multiplicity, l_a, r_a)
-        pvalues$pvalue = sapply(null_model$test$inputs, function(s) {
-          s$p[x$data$NV[i]]
-        })
-        pvalues$gene = x$data$gene[i]
-        pvalues$class = paste0("k=",pvalues$karyotype,",m=",pvalues$multiplicity)
-        return(pvalues %>% 
-                 dplyr::select(gene, karyotype, multiplicity, class, pvalue,l_a,r_a))
-      }) %>% do.call(rbind,.)
-      
-      # class = sapply(1:(x$data %>% nrow), function(i) {
-      #   k = pvalues[[i]]$karyotype[which(pvalues[[i]]$pvalue > alpha_level)]
-      #   m = pvalues[[i]]$multiplicity[which(pvalues[[i]]$pvalue > alpha_level)]
-      #   paste(k,m,sep = "-",collapse = "|")
-      # })
-      # 
-      # sample_data = sample_data %>%
-      #   dplyr::mutate(
-      #     p_subclonal = cumprob,
-      #     p_loh = 1 - cumprob,
-      #     ) %>%
-      #   select(-cumprob)
-      # 
-      # sample_data$p_subclonal = p.adjust(sample_data$p_subclonal, method = "BH")    
-      # sample_data$p_loh = p.adjust(sample_data$p_loh, method = "BH")
-      # sample_data$class = case_when(
-      #   sample_data$p_subclonal <= alpha_level ~ "Subclonal",
-      #   sample_data$p_loh <= alpha_level ~ "Clonal LOH",
-      #   TRUE ~ "Clonal")
-      # 
-      # return(sample_data)
+    cli::cli_alert_info("Computing null model distributions and p-values.")
     
-    # if ((model %>% tolower()) == "binomial") {
-    #   test$classifier$binomial = list(
-    #     params = tibble(alpha = alpha_level),
-    #     data = x %>% select(class, starts_with("p_"))
-    #   )
-    # }
-    # 
-    # if ((model %>% tolower()) == "beta-binomial") {
-    #   test$classifier$`beta-binomial` = list(
-    #     params = tibble(alpha = alpha_level,
-    #                   rho = rho),
-    #     data = x %>% select(class, starts_with("pvalues"))
-    #   )
-    # }
-      if ((model %>% tolower()) == "binomial") {
-        test$classifier$binomial = list(
-          params = tibble(alpha = alpha_level),
-          data = full_join(test$data, pvalues, by = "gene"))
-        # full_join(test$classifier$`beta-binomial`$data, by="gene")
-      }
+    x = idify(x)
+    
+    pvalues = lapply(x$data$id, function(id) {
+      null_model = test_setup(
+        coverage = get_DP(x, mutation_id = id),
+        purity = get_purity(x),
+        rho = rho,
+        alpha_level = alpha_level,
+        model = model
+      )
       
-      if ((model %>% tolower()) == "beta-binomial") {
-        test$classifier$`beta-binomial`= list(
-          params = tibble(alpha = alpha_level,
-                          rho = rho),
-          data = full_join(test$data, pvalues, by = "gene"))
-      }
+      pvalues = get_pvalues(x, null_model, id)
+      
+      return(pvalues)
+    }) %>% do.call(rbind, .)
+    
+    if ((model %>% tolower()) == "binomial") {
+      test$classifier$binomial = list(
+        params = tibble(alpha = alpha_level),
+        data = full_join(test$data, pvalues, by = "gene")
+      )
+    }
+    
+    if ((model %>% tolower()) == "beta-binomial") {
+      test$classifier$`beta-binomial` = list(
+        params = tibble(alpha = alpha_level,
+                        rho = rho),
+        data = full_join(test$data, pvalues, by = "gene")
+      )
+    }
   }
-
+  
   # else{
   #   # x = lapply(unique(x$data$gene), function(g) {
   #   #   cli::cli_h1(g)
-  #   # 
+  #   #
   #   #   gene_data = x$data %>%
   #   #     dplyr::filter(gene == g)
-  #   # 
+  #   #
   #   #   terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
   #   #     round(2)
-  #   # 
+  #   #
   #   #   gene_data = gene_data %>%
   #   #     dplyr::mutate(
   #   #       class = case_when(
@@ -142,19 +105,19 @@ run_classifier = function(x,
   #   #     )
   #   # }) %>%
   #   #   do.call(rbind, .)
-  #   
+  #
   #   x = lapply(unique(x$data$sample), function(s) {
   #     cli::cli_h1(s)
-  # 
+  #
   #     sample_data = x$data %>%
   #       dplyr::filter(sample == s)
-  #     
+  #
   #     sample_purity = dplyr::filter(x$purity, sample == s)$purity
-  # 
-  #     terziles = quantile(sample_data$VAF / sample_purity, 
+  #
+  #     terziles = quantile(sample_data$VAF / sample_purity,
   #                         probs = c(0, 1, 0.33)) %>%
   #       round(2) %>% sort()
-  # 
+  #
   #     sample_data = sample_data %>%
   #       dplyr::mutate(
   #         class = case_when(
@@ -164,12 +127,12 @@ run_classifier = function(x,
   #       )
   #   }) %>%
   #     do.call(rbind, .)
-  #   
+  #
   #   test$classifier$terzile = list(
   #     data = x %>% select(class)
   #   )
   # }
-
+  
   # test$data = x
   # test$classifier = list(
   #   model = model,
@@ -177,7 +140,7 @@ run_classifier = function(x,
   #   alpha_level = alpha_level
   # )
   
-
+  
   return(test)
-
+  
 }
