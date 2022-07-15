@@ -46,7 +46,7 @@ run_classifier = function(x,
     class(test) = "TAPACLOTH"
   }
   
-  if ((model %>% tolower()) %in% c("binomial", "beta-binomial")) {
+  if (model %in% c("binomial", "beta-binomial")) {
     cli::cli_h1(
       "TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {x$sample}}"
     )
@@ -66,6 +66,7 @@ run_classifier = function(x,
       )
       
       pvalues = get_pvalues(x, null_model, id)
+      pvalues$outcome = pvalues$pvalue > alpha_level
       
       return(pvalues)
     }) %>% do.call(rbind, .)

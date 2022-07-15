@@ -31,3 +31,6 @@ Remotes:
 URL: https://github.com/caravagnalab/TAPACLOTH
 BugReports: https://github.com/caravagnalab/TAPACLOTH/issues
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true
