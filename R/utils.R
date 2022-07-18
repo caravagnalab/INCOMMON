@@ -244,3 +244,10 @@ models_avail = function(x){
 
 get_ploidy = function(k){
   stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()}
+
+get_id = function(x, gene_name){
+  x = idify(x)
+  x$data %>% 
+    dplyr::filter(gene == gene_name) %>% 
+    pull(id)
+}
