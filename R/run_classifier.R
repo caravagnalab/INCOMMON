@@ -74,7 +74,7 @@ run_classifier = function(x,
     if ((model %>% tolower()) == "binomial") {
       test$classifier$binomial = list(
         params = tibble(alpha = alpha_level),
-        data = full_join(test %>% idify() %>% get_data(), pvalues, by = "id")
+        data = full_join(test %>% idify() %>% get_data(), pvalues, by = c("id", "gene"))
       )
     }
     
@@ -82,7 +82,7 @@ run_classifier = function(x,
       test$classifier$`beta-binomial` = list(
         params = tibble(alpha = alpha_level,
                         rho = rho),
-        data = full_join(test %>% idify() %>% get_data(), pvalues, by = "id")
+        data = full_join(test %>% idify() %>% get_data(), pvalues, by = c("id", "gene"))
       )
     }
   }
