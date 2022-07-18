@@ -21,6 +21,6 @@ cancer gene census, sample name and purity, in the format requested for
 \code{TAPACLOTH} analyses.
 }
 \description{
-Cast input data in the format requested by \code{'TAPACLOTH} \code{run_classifier}
+Cast input data in the format requested by \code{'TAPACLOTH'} \code{run_classifier}
 and \code{estimate_purity} functions.
 }

@@ -1,6 +1,6 @@
 #' #' Prepare input for analyses with \code{'TAPACLOTH'}.
 #' @description
-#' Cast input data in the format requested by \code{'TAPACLOTH} `run_classifier`
+#' Cast input data in the format requested by \code{'TAPACLOTH'} `run_classifier`
 #' and `estimate_purity` functions.
 #' @param mutations A tibble listing mutations called in the sample
 #' in the form of chromosome `chr`, start position `from`, end position `to`,
