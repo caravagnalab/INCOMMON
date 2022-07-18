@@ -48,11 +48,11 @@ plot_test = function(x) {
                    )
                  }) %>% do.call(rbind, .)
       y = y %>%
-        mutate(class = ifelse(outcome == "FAIL", "FAIL", karyotype))
+        dplyr::mutate(class = ifelse(outcome == "FAIL", "FAIL", karyotype))
       ## Build plot
-      plt = ggplot() +
+      plt = ggplot2::ggplot() +
         ggridges::geom_density_ridges(
-          y %>% filter(nv > l_a & nv < r_a),
+          y %>% dplyr::filter(nv > l_a & nv < r_a),
           mapping = aes(
             x = nv,
             y = karyotype,
@@ -71,7 +71,7 @@ plot_test = function(x) {
       }
       
       plt + CNAqc:::my_ggplot_theme() +
-        scale_fill_manual(
+        ggplot2::scale_fill_manual(
           values = c(
             "FAIL" = "#BEBEBE66",
             "1:0" = "steelblue",
@@ -83,9 +83,9 @@ plot_test = function(x) {
           limits = c(unique(y$class)),
           guide = "none"
         ) +
-        geom_vline(xintercept = get_NV(x, mutation_id = ID), linetype = "longdash") +
+        ggplot2::geom_vline(xintercept = get_NV(x, mutation_id = ID), linetype = "longdash") +
         CNAqc:::my_ggplot_theme() +
-        coord_cartesian(clip = "off") +
+        ggplot2::coord_cartesian(clip = "off") +
         ggplot2::labs(
           x = 'NV',
           y = "Pr(X = NV)",
