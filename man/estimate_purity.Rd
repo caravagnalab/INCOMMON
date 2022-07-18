@@ -4,29 +4,34 @@
 \alias{estimate_purity}
 \title{Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.}
 \usage{
-estimate_purity(data, sample_name, model = "Binomial", purity = 1, eps = 0.01)
+estimate_purity(x, model = "Binomial", eps = 0.01)
 }
 \arguments{
+\item{model}{The expected distribution for the number of reads with variant
+at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
+or Beta-Binomial (over-dispersion included).}
+
+\item{eps}{In case data is fitted with a mixture of 2 distributions, sample purity
+is estimated using only that whose peak is closer to the input purity estimate
+than the value of this parameter. If both distributions satisfy this condition,
+the one which is closest to the input purity estimate is used for the new estimate.}
+
 \item{data}{A tibble containing mutations with sample name (sample), gene name
 (gene), number of reads with variant (nv), coverage (dp), variant allele
 frequency (VAF), and sample purity (purity) as columns.}
 
 \item{sample_name}{The name of the sample for which to infer purity.}
 
-\item{model}{The expected distribution for the number of reads with variant
-at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
-or Beta-Binomial (over-dispersion included).}
-
 \item{purity}{An input purity estimate.}
-
-\item{eps}{In case data is fitted with a mixture of 2 distributions, sample purity
-is estimated using only that whose peak is closer to the input purity estimate
-than the value of this parameter. If both distributions satisfy this condition,
-the one which is closest to the input purity estimate is used for the new estimate.}
 }
 \value{
 An object of class \code{TAPACLOTH} containing the inferred purity.
 }
 \description{
 Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
+}
+\examples{
+data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
+data = estimate_purity(x = data, model = "binomial", eps = 0.01)
+print(data)
 }

@@ -4,7 +4,7 @@
 \alias{plot.TAPACLOTH}
 \title{#' Plot for class \code{'TAPACLOTH'}.}
 \usage{
-\method{plot}{TAPACLOTH}(x, target_gene, sample_name, ...)
+\method{plot}{TAPACLOTH}(x, target_gene, sample_name, model, ...)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}

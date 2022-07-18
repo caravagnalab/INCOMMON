@@ -2,6 +2,7 @@
 title: "TAPACLOTH"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteIndexEntry{TAPACLOTH}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -61,14 +62,14 @@ For all tests, input data should be provided as a tibble with the following colu
 
 This is an example input dataset.
 
-```{r}
-data = dplyr::tibble(sample = "test",
-           gene = c("test gene 1", "test gene 2", "test gene 3", "target gene"),
-           nv = c(10, 50, 90, 120),
-           dp = c(100, 100, 100, 200),
-           VAF = c(0.1, 0.5, 0.9, 0.6),
-           purity = 1
+```{r, include=FALSE}
+data = list(data = dplyr::tibble(sample = "test",
+           gene = c(paste("test gene ", 1:9), "target gene"),
+           nv = c(seq(10,90,10), 120),
+           dp = c(rep(100, 9), 200),
+           VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)),
+           purity = tibble::tibble(sample = "test",
+                           purity = 1)
 )
-
 print(data)
 ```

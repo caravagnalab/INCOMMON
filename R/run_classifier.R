@@ -19,6 +19,9 @@
 #' @import dplyr
 #'
 #' @examples
+#' data = list(data = dplyr::tibble(sample = "test", gene = c(paste("test gene ", 1:9), "target gene"), nv = c(seq(10,90,10), 120), dp = c(rep(100, 9), 200), VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)), purity = dplyr::tibble(sample = "test", purity = 1))
+#' data = run_classifier(x = data, alpha_level = 1e-3, model = "Binomial")
+#' print(data)
 run_classifier = function(x,
                           alpha_level = 0.01,
                           model = "Binomial",
@@ -29,62 +32,133 @@ run_classifier = function(x,
   class(test) = "TAPACLOTH"
 
   stopifnot((model %>% tolower()) %in% c("binomial", "beta-binomial", "terzile"))
+  
+  if (inherits(x, "TAPACLOTH")) {
+    test = x
+    x = test$data
+    if(!("classifier" %in% names(test))) test$classifier = list()
+  }
+  else{
+    test$data = x
+    test$classifier = list()
+  }
 
-  if (model %in% c("Binomial", "Beta-Binomial")) {
-    x = lapply(unique(x$sample), function(s) {
+  if ((model %>% tolower()) %in% c("binomial", "beta-binomial")) {
+    
+    x = lapply(unique(x$data$sample), function(s) {
       cli::cli_h1("TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {s}}")
       cat("\n")
-
-      sample_data = x %>%
+      
+      sample_data = x$data %>%
         dplyr::filter(sample == s)
-
+      
+      sample_purity = dplyr::filter(x$purity, sample == s)$purity
+      
       cli::cli_alert_info("Computing null model distributions and p-values.")
-
-      sample_data$class_binom = sapply(1:(sample_data %>% nrow), function(i) {
+      
+      sample_data$cumprob = sapply(1:(sample_data %>% nrow), function(i) {
         null_model = test_setup(
           coverage = sample_data$dp[i],
-          purity = sample_data$purity[i],
+          purity = sample_purity,
           rho = rho,
           alpha_level = alpha_level,
           model = model
         )
-
-        run_test(nv = sample_data$nv[i], null_model = null_model)
+        
+        # class = run_test(nv = sample_data$nv[i], null_model = null_model)
+        cumprob = null_model$density$p[sample_data$nv[i]]
+        return(cumprob)
       })
-
-
-
+      
+      sample_data = sample_data %>%
+        dplyr::mutate(
+          p_subclonal = cumprob,
+          p_loh = 1 - cumprob,
+          ) %>%
+        select(-cumprob)
+      
+      sample_data$p_subclonal = p.adjust(sample_data$p_subclonal, method = "BH")    
+      sample_data$p_loh = p.adjust(sample_data$p_loh, method = "BH")
+      sample_data$class = case_when(
+        sample_data$p_subclonal <= alpha_level ~ "Subclonal",
+        sample_data$p_loh <= alpha_level ~ "Clonal LOH",
+        TRUE ~ "Clonal")
+      
       return(sample_data)
-
+      
     }) %>%
       do.call(rbind, .)
+    
+    if ((model %>% tolower()) == "binomial") {
+      test$classifier$binomial = list(
+        params = tibble(alpha = alpha_level),
+        data = x %>% select(class, starts_with("p_"))
+      )
+    }
+    
+    if ((model %>% tolower()) == "beta-binomial") {
+      test$classifier$`beta-binomial` = list(
+        params = tibble(alpha = alpha_level,
+                      rho = rho),
+        data = x %>% select(class, starts_with("p_"))
+      )
+    }
   }
 
   else{
-    x = lapply(unique(x$gene), function(g) {
-      cli::cli_h1(g)
+    # x = lapply(unique(x$data$gene), function(g) {
+    #   cli::cli_h1(g)
+    # 
+    #   gene_data = x$data %>%
+    #     dplyr::filter(gene == g)
+    # 
+    #   terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
+    #     round(2)
+    # 
+    #   gene_data = gene_data %>%
+    #     dplyr::mutate(
+    #       class = case_when(
+    #         VAF / x$puritypurity >= terziles[3] ~ "Clonal LOH",
+    #         VAF / purity < terziles[3] ~ "Subclonal/Clonal"
+    #       )
+    #     )
+    # }) %>%
+    #   do.call(rbind, .)
+    
+    x = lapply(unique(x$data$sample), function(s) {
+      cli::cli_h1(s)
 
-      gene_data = x %>%
-        dplyr::filter(gene == g)
+      sample_data = x$data %>%
+        dplyr::filter(sample == s)
+      
+      sample_purity = dplyr::filter(x$purity, sample == s)$purity
 
-      terziles = quantile(gene_data$VAF / gene_data$purity, probs = c(0, 1, 0.33)) %>%
-        round(2)
+      terziles = quantile(sample_data$VAF / sample_purity, 
+                          probs = c(0, 1, 0.33)) %>%
+        round(2) %>% sort()
 
-      gene_data = gene_data %>%
+      sample_data = sample_data %>%
         dplyr::mutate(
-          class_terzile = case_when(
-            VAF / purity >= terziles[3] ~ "Clonal LOH",
-            VAF / purity < terziles[3] ~ "Subclonal/Clonal"
+          class = case_when(
+            VAF / sample_purity >= terziles[3] ~ "Clonal LOH",
+            VAF / sample_purity < terziles[3] ~ "Subclonal/Clonal"
           )
         )
     }) %>%
       do.call(rbind, .)
+    
+    test$classifier$terzile = list(
+      data = x %>% select(class)
+    )
   }
 
-  test$fit = x
-  test$model = model
-  test$rho = rho
-  test$alpha_level = alpha_level
+  # test$data = x
+  # test$classifier = list(
+  #   model = model,
+  #   rho = rho,
+  #   alpha_level = alpha_level
+  # )
+  
 
   return(test)
 
