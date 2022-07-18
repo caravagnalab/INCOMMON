@@ -48,11 +48,17 @@ plot_test = function(x) {
                    )
                  }) %>% do.call(rbind, .)
       y = y %>%
-        dplyr::mutate(class = ifelse(outcome == "FAIL", "FAIL", karyotype))
+        dplyr::mutate(
+          class = case_when(
+            outcome == "FAIL" & multiplicity == 1 ~ "FAIL1",
+            outcome == "FAIL" & multiplicity == 2 ~ "FAIL2",
+            outcome == "PASS" ~ karyotype,
+          )
+        ) #ifelse(outcome == "FAIL", "FAIL", karyotype))
       ## Build plot
       plt = ggplot2::ggplot() +
         ggridges::geom_density_ridges(
-          data = y %>% dplyr::filter(nv > l_a & nv < r_a),
+          data = y %>% dplyr::filter(nv >= l_a & nv <= r_a),
           mapping = ggplot2::aes(
             x = nv,
             y = karyotype,
@@ -70,10 +76,11 @@ plot_test = function(x) {
         model_string = bquote("Test using Binomial model")
       }
       
-      plt + CNAqc:::my_ggplot_theme() +
+      plt +
         ggplot2::scale_fill_manual(
           values = c(
-            "FAIL" = "#BEBEBE66",
+            "FAIL1" = "#BEBEBE66",
+            "FAIL2" = "#BEBEBE66",
             "1:0" = "steelblue",
             "1:1" = "#228B22CC",
             "2:0" =  "turquoise4",
