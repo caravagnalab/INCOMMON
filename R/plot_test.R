@@ -1,3 +1,11 @@
+#' #'Plotting function for class \code{'TAPACLOTH'}.
+#' @description
+#' Produces a list of plots, one for each mutation in the input, displaying the
+#' results of classification.
+#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @return An object of class \code{'TAPACLOTH'} containing a list of ggplot2
+#' plots named `plot_test` inside `classifier`.
+#' @export
 plot_test = function(x) {
   x = idify(x)
   plotmodels = lapply(models_avail(x), function(model) {
