@@ -25,14 +25,7 @@ library(TAPACLOTH)
 We work with the [example TAPACLOTH `data`](TAPACLOTH.html).
 
 ```{r, include=FALSE}
-data = list(data = dplyr::tibble(sample = "test",
-           gene = c(paste("test gene ", 1:9), "target gene"),
-           nv = c(seq(10,90,10), 120),
-           dp = c(rep(100, 9), 200),
-           VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)),
-           purity = tibble(sample = "test",
-                           purity = 1)
-)
+print(example_data)
 ```
 
 
@@ -61,11 +54,14 @@ In this example, the input purity estimate of the cancer sample is correct, and
 the VAF spectrum of somatic mutations is fit using a mixture of Binomial distributions:
 
 ```{r}
-data = estimate_purity(x = data,
-                model = "Binomial",
+out = estimate_purity(
+                mutations = example_data$data,
+                sample = example_data$sample,
+                purity = example_data$purity,
+                model = "Beta-Binomial",
                 eps = 0.01)
 
-print(data)
+print(out)
 ```
 
 This test shows that the inferred purity matches the true value, and a reliability
@@ -77,21 +73,28 @@ and reports the corresponding reliability score for the input estimate.
 
 ```{r}
 # Example error with purity = 0.4
-data = list(data = dplyr::tibble(sample = "test",
-           gene = paste0("test gene ", 1:30),
-           nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
-           dp = 200,
-           VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200
-           ),
-           purity = tibble(sample = "test",
-                           purity = 0.4)
+input = list(
+           
 )
 
-data = estimate_purity(x = data,
-                model = "binomial",
-                eps = 0.01)
+out = estimate_purity(
+  mutations = dplyr::tibble(
+             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
+             from = seq(1000,30000,1000),
+             to = seq(1001,30001,1000),
+             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
+             DP = 200,
+             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
+             gene = paste0("test gene ", 1:30)
+           ),
+  sample = "test",
+  purity = 0.4,
+  model = "binomial",
+  eps = 0.01)
 
-print(data)
+print(out)
 ```
 Results of the fitting procedure are shown in a plot in `data$purity_estimate$binomial$plot_bmix`.
 
@@ -100,7 +103,7 @@ The output plot shows (left) the assignment of variants to the fitted mixture co
 different likelihood measures (BIC, ICL and NLL).
 
 ```{r fig.height=4, fig.width=8, dpi=300}
-data$purity_estimate$binomial$plot_bmix
+plot_bmix(out, model = "Binomial")
 ```
 
 # Classifier re-run with the inferred purity
@@ -114,57 +117,87 @@ input purity.
 
 ```{r}
 classified_wrong = run_classifier(
-  x = data,
+  mutations = dplyr::tibble(
+             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
+             from = seq(1000,30000,1000),
+             to = seq(1001,30001,1000),
+             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
+             DP = 200,
+             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
+             gene = paste0("test gene ", 1:30)
+           ),
+  sample = "test",
+  purity = 0.4,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
-print(classified_wrong)
+classified_wrong = plot_test(classified_wrong)
+plt_wrong = plot_gene(x = classified_wrong,
+          model = "Beta-Binomial",
+          gene_name = "test gene 13")
 ```
 
 In the following example the value of purity is replaced with the TAPACLOTH estimate 
 and the classification task is re-run with the new value.
 
 ```{r}
-data = estimate_purity(x = data,
+out = estimate_purity(
+  mutations = dplyr::tibble(
+             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
+             from = seq(1000,30000,1000),
+             to = seq(1001,30001,1000),
+             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
+             DP = 200,
+             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
+             gene = paste0("test gene ", 1:30)
+           ),
+  sample = "test",
+  purity = 0.4,
                 model = "Beta-Binomial",
                 eps = 0.01)
 
-data$data$purity$purity = data$purity_estimate$`beta-binomial`$purity$purity
-print(data)
-
 classified_right = run_classifier(
-  x = data,
+  mutations = dplyr::tibble(
+             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
+             from = seq(1000,30000,1000),
+             to = seq(1001,30001,1000),
+             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
+             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
+             DP = 200,
+             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
+             gene = paste0("test gene ", 1:30)
+           ),
+  sample = "test",
+  purity = get_purity_bmix(out, model = "Beta-Binomial"),
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
-print(classified_right)
+classified_right = plot_test(classified_right)
+plt_right = plot_gene(x = classified_right,
+          model = "Beta-Binomial",
+          gene_name = "test gene 13")
 ```
 
 The two classifications can be compared.
 
 ```{r fig.height=6, fig.width=8, dpi=300}
 ggpubr::ggarrange(plotlist = list(
-  plot(
-    classified_wrong,
-    target_gene = "test gene 15",
-    sample_name = "test",
-    model = "beta-binomial"
+  plt_wrong[[1]]+xlim(1,200),
+  plt_right[[1]]+xlim(1,200)
   ),
-  plot(
-    classified_right,
-    target_gene = "test gene 15",
-    sample_name = "test",
-    model = "beta-binomial"
-  )
-),
-ncol = 2,
-nrow = 1)
+ncol = 1,
+nrow = 2)
 ```
-This  shows the impact of an incorrect purity estimate on the classification
+This example shows the impact of an incorrect purity estimate on the classification
 of variants, and how TAPACLOTH can be used to improve the results when the input
 estimate is not reliable enough. An incorrect purity estimate can result in a bad
 variant classification and this can eventually lead to wrong conclusions in downstream analyses.

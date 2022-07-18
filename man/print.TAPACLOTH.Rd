@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.tapacloth.R
 \name{print.TAPACLOTH}
 \alias{print.TAPACLOTH}
-\title{#' Print for class \code{'TAPACLOTH'}.}
+\title{Print for class \code{'TAPACLOTH'}.}
 \usage{
 \method{print}{TAPACLOTH}(x, ...)
 }
@@ -15,5 +15,5 @@
 Nothing.
 }
 \description{
-#' Print for class \code{'TAPACLOTH'}.
+Print for class \code{'TAPACLOTH'}.
 }

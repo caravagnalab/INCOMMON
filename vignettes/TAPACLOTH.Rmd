@@ -19,22 +19,26 @@ options(crayon.enabled=F)
 
 TAPACLOTH is a package to process targeted panel sequencing data of a tumour-matched normal cancer sample and perform clonal deconvolution. The tool allows to:
 
-- classify the clonality and zygosity of somatic mutations detected by the panel;
+- classify the karyotype and multiplicity of somatic mutations detected by the panel;
 - asses tumour purity from somatic mutations detected by the panel;
 
 > The TAPACLOTH model is designed to work with a target panel but, in principle, it can be used with any sequencing assay. However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster). 
 
-## Clonality assessment
+## Karyotype and multiplicity assessment
 
 TAPACLOTH will assess, for every mutation, any of the following statuses:
 
-- subclonal mutation;
-- heterozygous clonal mutation within a diploid heterozygous tumour genome;
-- homozygous clonal mutation within a loss of heterozygosity of the tumour genome.
+- karyotype among 
+  - 1:0 (LOH), 
+  - 1:1 (diploid heterozygous), 
+  - 2:0 (copy-neutral LOH), 
+  - 2:1 (trisomy), 
+  - 2:2 (tetrasomy);
+- multiplicity between 1 and 2 for ploidy greater than 1;
 
 TAPACLOTH implements [two type of statistical tests](classify-and-plot.html); the required inputs are:
 
-- read/counts or variant allele frequencies from the panel assay 
+- read/counts from the panel assay 
 - tumour sample purity $\pi > 0$
 
 > Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other bioinformatics approach outside TAPACLOTH.
@@ -51,25 +55,18 @@ If an estimate of tumour sample purity, made for example by copy number  or path
 
 ##  Inputs format
 
-For all tests, input data should be provided as a tibble with the following columns:
+For all tests, input data should be provided as a list containing:
 
--`sample`, for sample name if multiple samples are given in input;
-- `gene`, as name of the target gene;
-- `nv`, for the number of reads with variant;
-- `dp`, for the total depth (or coverage) at the locus;
-- `VAF`, for the variant allele frequency (VAF) defined by `nv`/`dp`;
-- `purity`, for sample purity.
+- `mutations` as a tibble with columns indicating chromosome `chr`, start position `from`,
+end position `to`, reference `ref` adn alternative `alt` alleles, coverage `DP`, number
+of reads with variant `NV`, variant allelic frequency `VAF` and gene name `gene` as Hugo Symbol;
+- `sample`, for name of the sample;
+- `purity`, for sample purity;
+
+The input can be prepared in the right format using function `init`.
 
 This is an example input dataset.
 
 ```{r, include=FALSE}
-data = list(data = dplyr::tibble(sample = "test",
-           gene = c(paste("test gene ", 1:9), "target gene"),
-           nv = c(seq(10,90,10), 120),
-           dp = c(rep(100, 9), 200),
-           VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)),
-           purity = tibble::tibble(sample = "test",
-                           purity = 1)
-)
-print(data)
+print(TAPACLOTH::example_data)
 ```

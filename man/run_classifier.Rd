@@ -2,36 +2,53 @@
 % Please edit documentation in R/run_classifier.R
 \name{run_classifier}
 \alias{run_classifier}
-\title{Classify mutations per sample using a (Beta-)Binomial model-based test, or
-per gene using a 3-quantile test.}
+\title{Classify mutations using a (Beta-)Binomial model-based test.}
 \usage{
-run_classifier(x, alpha_level = 0.01, model = "Binomial", rho = NA)
+run_classifier(
+  mutations,
+  sample,
+  purity,
+  alpha_level = 0.01,
+  model = "Binomial",
+  rho = NA,
+  tpanel = TAPACLOTH::cancer_gene_census
+)
 }
 \arguments{
+\item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
+reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
+of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene}
+as Hugo Symbol.}
+
+\item{sample}{sample name}
+
+\item{purity}{sample purity.
+The input can be prepared using function \code{init}.}
+
 \item{alpha_level}{The significance level to be used in hypothesis testing.}
 
-\item{model}{If set to "Binomial" or "Beta-Binomial": classification is run per
-sample, using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
+\item{model}{If set to "Binomial" or "Beta-Binomial": classification is run
+using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
 included) as expected distribution for the number of reads with variant at
-fixed coverage and purity. If set to "terzile": classification is run per gene,
-and is based on a terzile test.}
+fixed coverage and purity.}
 
 \item{rho}{If Beta-Binomial model is selected, this parameter tunes the over-dispersion
 of the expected distribution used for the test.}
 
-\item{data}{A tibble containing mutations with sample name (sample), gene name
-(gene), number of reads with variant (nv), coverage (dp), variant allele
-frequency (VAF), and sample purity (purity) as columns.}
+\item{tpanel}{A tibble assigning a role among oncogene, tumor suppressor gene (TSG)
+and fusion to each gene, with columns \code{gene} for gene name and \code{gene_role} for the
+role. Default is taken from COSMIC cancer gene census and stored in \link{data}.}
 }
 \value{
 An object of class \code{TAPACLOTH} that represents the classified input data.
 }
 \description{
-Classify mutations per sample using a (Beta-)Binomial model-based test, or
-per gene using a 3-quantile test.
+Classify mutations using a (Beta-)Binomial model-based test.
 }
 \examples{
-data = list(data = dplyr::tibble(sample = "test", gene = c(paste("test gene ", 1:9), "target gene"), nv = c(seq(10,90,10), 120), dp = c(rep(100, 9), 200), VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)), purity = dplyr::tibble(sample = "test", purity = 1))
-data = run_classifier(x = data, alpha_level = 1e-3, model = "Binomial")
-print(data)
+x = run_classifier(
+    example_data, 
+    alpha_level = 1e-3, 
+   model = "Binomial")
+print(x)
 }

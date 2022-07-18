@@ -1,4 +1,4 @@
-#' #' Plot for class \code{'TAPACLOTH'}.
+#' Plot for class \code{'TAPACLOTH'}.
 #'
 
 #' @description
@@ -9,8 +9,6 @@
 #' a plot showing details of the used statistical test in the bottom panel.
 #'
 #' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param target_gene The target gene for which classification of mutation calls is wanted.
-#' @param sample_name The name of the sample to be analysed.
 #' @param... Default S3 method parameter.
 #'
 #' @return Nothing.
@@ -18,52 +16,65 @@
 #' @export
 #'
 #' @examples
-plot.TAPACLOTH = function(x, target_gene, sample_name, model, ...) {
+# plot.TAPACLOTH = function(x, target_gene, sample_name, model, ...) {
+#   stopifnot(inherits(x, "TAPACLOTH"))
+# 
+#   # if(any(class(x$fit) == "bmix"))
+#   # {
+#   #   return(x$plot_bmix)
+#   # }
+# 
+#   fit_plot = plot_fit(x, target_gene, sample_name, model)
+# 
+#   if (model == "terzile") {
+#     return(fit_plot)
+#   }
+# 
+#   else{
+#     target_data = x$data$data %>%
+#       dplyr::filter(gene == target_gene)
+# 
+#     target_plots = lapply(1:(target_data %>% nrow), function(i) {
+#       null_model = test_setup(
+#         coverage = target_data$dp[i],
+#         purity = filter(x$data$purity, sample == sample_name)$purity,
+#         rho = x$classifier[[model]]$params$rho,
+#         alpha_level = x$classifier[[model]]$params$alpha,
+#         model = model
+#       )
+# 
+#       fit_power = plot_test_power(null_model) +
+#         ggplot2::geom_vline(xintercept = target_data$nv[i],
+#                             linetype = 'dashed',
+#                             size = .5)
+# 
+#     })
+# 
+#     # Fig assembly
+#     lp = append(list(fit_plot), target_plots)
+# 
+#     figure = ggpubr::ggarrange(plotlist = lp,
+#                                nrow = lp %>% length,
+#                                ncol = 1)
+# 
+#     return(figure)
+#   }
+# }
+
+plot.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
-
-  # if(any(class(x$fit) == "bmix"))
-  # {
-  #   return(x$plot_bmix)
-  # }
-
-  fit_plot = plot_fit(x, target_gene, sample_name, model)
-
-  if (model == "terzile") {
-    return(fit_plot)
-  }
-
-  else{
-    target_data = x$data$data %>%
-      dplyr::filter(gene == target_gene)
-
-    target_plots = lapply(1:(target_data %>% nrow), function(i) {
-      null_model = test_setup(
-        coverage = target_data$dp[i],
-        purity = filter(x$data$purity, sample == sample_name)$purity,
-        rho = x$classifier[[model]]$params$rho,
-        alpha_level = x$classifier[[model]]$params$alpha,
-        model = model
-      )
-
-      fit_power = plot_test_power(null_model) +
-        ggplot2::geom_vline(xintercept = target_data$nv[i],
-                            linetype = 'dashed',
-                            size = .5)
-
-    })
-
-    # Fig assembly
-    lp = append(list(fit_plot), target_plots)
-
-    figure = ggpubr::ggarrange(plotlist = lp,
-                               nrow = lp %>% length,
-                               ncol = 1)
-
-    return(figure)
-  }
+  lapply(names(x$classifier), function(model){
+    if("plot_test" %in% names(x$classifier[[model]])){
+      return(x$classifier[[model]]$plot_test)
+    }
+    else{
+      x = plot_test(x)
+      return(x$classifier[[model]]$plot_test)
+    }
+  })
+  
 }
-
-#' #' Print for class \code{'TAPACLOTH'}.
+#' Print for class \code{'TAPACLOTH'}.
 #' @param x An obj of class \code{'TAPACLOTH'}.
 #' @param ... Default S3 method parameter.
 #'
@@ -77,16 +88,20 @@ print.TAPACLOTH = function(x, ...) {
 
   if ("purity_estimate" %in% names(x))
   {
-    for(s in names(x$purity_estimate)){
+    for(model in names(x$purity_estimate)){
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Purity estimate using ',
           crayon::bgYellow(crayon::black("[ BMix ] ")),
-          'with {.field {s}} model'
+          'with {.field {model}} model'
         )
       )
-      purity_per_sample(data)
+      print(tibble(
+        purity = get_purity(x),
+        reliability = get_reliability(x, model),
+        purity_bmix = get_purity_bmix(x, model),
+      ))
     }
     
     cat("\n")
@@ -116,18 +131,17 @@ print.TAPACLOTH = function(x, ...) {
   # {
   if ("classifier" %in% names(x)) {
 
-    for(s in names(x$classifier)){
+    for(model in names(x$classifier)){
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-          'Test using {.field {s}} model',
-          ifelse(s == 'bbinomial',
-                 ' with overdispersion parameter {.field {x$classifier$bbinomial$params$rho}} and significance level {.field {x$classifier$bbinomial$params$alpha}}',
-                 ifelse(s == 'binomial', 'with significance level {.field {x$classifier$bbinomial$params$alpha}}', '')),
+          'Test using {.field {model}} model',
+          ifelse((model %>% tolower()) == 'beta-binomial',
+                 ' with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and significance level {.field {x$classifier[[model]]$params$alpha}}',
+                 ' with significance level {.field {x$classifier[[model]]$params$alpha}}')),
           ''
         )
-      )
-      print(cbind(x$data$data, x$classifier[[s]]$data) %>% as_tibble())
+      print(x$classifier[[model]]$data)
     }
   }
 }

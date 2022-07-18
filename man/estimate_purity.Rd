@@ -4,9 +4,25 @@
 \alias{estimate_purity}
 \title{Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.}
 \usage{
-estimate_purity(x, model = "Binomial", eps = 0.01)
+estimate_purity(
+  mutations,
+  sample,
+  purity,
+  model = "Binomial",
+  eps = 0.01,
+  tpanel = TAPACLOTH::cancer_gene_census
+)
 }
 \arguments{
+\item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
+reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
+of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene}
+as Hugo Symbol.}
+
+\item{sample}{sample name}
+
+\item{purity}{An input purity estimate.}
+
 \item{model}{The expected distribution for the number of reads with variant
 at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
 or Beta-Binomial (over-dispersion included).}
@@ -15,14 +31,6 @@ or Beta-Binomial (over-dispersion included).}
 is estimated using only that whose peak is closer to the input purity estimate
 than the value of this parameter. If both distributions satisfy this condition,
 the one which is closest to the input purity estimate is used for the new estimate.}
-
-\item{data}{A tibble containing mutations with sample name (sample), gene name
-(gene), number of reads with variant (nv), coverage (dp), variant allele
-frequency (VAF), and sample purity (purity) as columns.}
-
-\item{sample_name}{The name of the sample for which to infer purity.}
-
-\item{purity}{An input purity estimate.}
 }
 \value{
 An object of class \code{TAPACLOTH} containing the inferred purity.

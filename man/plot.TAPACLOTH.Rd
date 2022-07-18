@@ -2,16 +2,12 @@
 % Please edit documentation in R/print.tapacloth.R
 \name{plot.TAPACLOTH}
 \alias{plot.TAPACLOTH}
-\title{#' Plot for class \code{'TAPACLOTH'}.}
+\title{Plot for class \code{'TAPACLOTH'}.}
 \usage{
-\method{plot}{TAPACLOTH}(x, target_gene, sample_name, model, ...)
+\method{plot}{TAPACLOTH}(x, ...)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
-
-\item{target_gene}{The target gene for which classification of mutation calls is wanted.}
-
-\item{sample_name}{The name of the sample to be analysed.}
 
 \item{...}{Default S3 method parameter.}
 }
