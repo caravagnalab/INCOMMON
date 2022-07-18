@@ -1,9 +1,11 @@
 #' Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
 #'
-#' @param data A tibble containing mutations with sample name (sample), gene name
-#' (gene), number of reads with variant (nv), coverage (dp), variant allele
-#' frequency (VAF), and sample purity (purity) as columns.
-#' @param sample_name The name of the sample for which to infer purity.
+#' @param mutations a tibble with columns chromosome `chr`, start position `from`, end position `to`,
+#'   reference `ref` and alternative `alt` alleles, coverage `DP`, number
+#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` 
+#'   as Hugo Symbol.
+#' @param sample sample name
+#' @param purity sample purity.
 #' @param model The expected distribution for the number of reads with variant
 #' at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
 #' or Beta-Binomial (over-dispersion included).
@@ -20,9 +22,18 @@
 #' data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
 #' data = estimate_purity(x = data, model = "binomial", eps = 0.01)
 #' print(data)
-estimate_purity = function(x,
+estimate_purity = function(mutations,
+                           sample,
+                           purity,
                            model = "Binomial",
-                           eps = 0.01) {
+                           eps = 0.01,
+                           tpanel = TAPACLOTH::cancer_gene_census) 
+  {
+  
+  x = list(
+    data = mutations,
+    sample = sample,
+    purity = purity)
   
   model = model %>% tolower()
   
@@ -42,6 +53,8 @@ estimate_purity = function(x,
     test$purity_estimate = list()
     class(test) = "TAPACLOTH"
   }
+    
+    x$mutations = left_join(mutations, tpanel, by = "gene")
   
     cli::cli_h1("TAPACLOTH purity estimate of sample {.field {get_sample(x)}} using {.field {model}} model")
     cat("\n")

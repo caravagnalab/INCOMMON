@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_purity_estimate}
 \alias{get_purity_estimate}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_purity_estimate(x, model)
 }

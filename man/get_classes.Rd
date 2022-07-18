@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_classes}
 \alias{get_classes}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_classes(x, model)
 }

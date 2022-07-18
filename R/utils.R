@@ -10,7 +10,7 @@ get_purity = function(x){
   return(x$purity)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get significant classification data for the specified model, if already tested.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -24,7 +24,7 @@ get_classes = function(x, model){
   return(y)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get model parameters of the performed classification tests.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -41,7 +41,7 @@ get_params = function(x) {
     do.call(rbind, .)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get classification data for specific gene under the selected model.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -55,7 +55,15 @@ gene_classification = function(x, gene_id, model){
   return(y)
 }
 
+#' Getter for class \code{'TAPACLOTH'}.
+#' @description
+#' Get classification data for specific selected model.
+#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param model Model used in the test from which to get classification data.
+#' @return A tibble with classification data.
+#' @export
 get_classifier = function(x, model){
+  model = model %>% tolower()
   stopifnot(inherits(x, "TAPACLOTH"))
   y = x$classifier[[model]]
   return(y)
@@ -77,7 +85,7 @@ unidify = function(x){
   return(x)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get coverage for a specific mutation in the sample.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -92,7 +100,7 @@ get_DP = function(x, mutation_id){
     pull(DP)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get number of reads with variant for a specific mutation in the sample.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -108,7 +116,7 @@ get_NV = function(x, mutation_id){
     pull(NV)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get variant allele frequency (VAF) for a specific mutation in the sample.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -123,7 +131,7 @@ get_VAF = function(x, mutation_id){
     pull(VAF)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get ID of the gene affected by the specified mutation.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -138,7 +146,7 @@ get_gene = function(x, mutation_id){
     pull(gene)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get coordinates of mutation(s) mapped on a specified gene.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -169,7 +177,7 @@ get_pvalues = function(x, null_model, mutation_id){
   return(y)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Plot function for class \code{'TAPACLOTH'}.
 #' @description
 #' Plot results of the classification under the specified model and for the specified gene.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -186,7 +194,21 @@ plot_gene = function(x,model,gene_name){
   })
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Plot function for class \code{'TAPACLOTH'}.
+#' @description
+#' Plot results of the BMix fit used for purity estimation, under the specified model.
+#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param model Model used for purity estimate
+#' @return A plot of BMix fit.
+#' @export
+plot_bmix = function(x, model){
+  model = model %>% tolower()
+  y = x$purity_estimate[[model]]$plot_bmix
+  return(y)
+}
+
+
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Extract data and parameters of purity estimation.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -194,12 +216,13 @@ plot_gene = function(x,model,gene_name){
 #' @return Purity estimate data.
 #' @export
 get_purity_estimate = function(x, model){
+  model = model %>% tolower()
   stopifnot(inherits(x, "TAPACLOTH"))
   y = x$purity_estimate[[model]]
   return(y)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Extract the sample purity as estimated using the specified model
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -212,7 +235,7 @@ get_purity_bmix = function(x, model){
   return(y$purity)
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Extract reliability of input sample purity as compared to TAPACLOTH estimate using the specified model.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -235,7 +258,7 @@ get_rho = function(x){
   y$params$rho
 }
 
-#' #' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' List models used for classification tests.
 #' @param x An obj of class \code{'TAPACLOTH'}.

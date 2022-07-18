@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_reliability}
 \alias{get_reliability}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_reliability(x, model)
 }

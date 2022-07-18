@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_NV}
 \alias{get_NV}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_NV(x, mutation_id)
 }

@@ -1,13 +1,11 @@
-#' Classify mutations per sample using a (Beta-)Binomial model-based test, or
-#' per gene using a 3-quantile test.
+#' Classify mutations using a (Beta-)Binomial model-based test.
 #'
-#' @param x A list containing:
-#' - `mutations`: a tibble with columns chromosome `chr`, start position `from`, end position `to`,
+#' @param mutations a tibble with columns chromosome `chr`, start position `from`, end position `to`,
 #'   reference `ref` and alternative `alt` alleles, coverage `DP`, number
-#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` as Hugo Symbol and
-#'   `gene_role`.
-#' - `sample` sample name
-#' - `purity` sample purity.
+#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` 
+#'   as Hugo Symbol.
+#' @param sample sample name
+#' @param purity sample purity.
 #' The input can be prepared using function `init`.
 #' @param alpha_level The significance level to be used in hypothesis testing.
 #' @param model If set to "Binomial" or "Beta-Binomial": classification is run 
@@ -16,6 +14,9 @@
 #' fixed coverage and purity.
 #' @param rho If Beta-Binomial model is selected, this parameter tunes the over-dispersion
 #' of the expected distribution used for the test.
+#' @param tpanel A tibble assigning a role among oncogene, tumor suppressor gene (TSG)
+#' and fusion to each gene, with columns `gene` for gene name and `gene_role` for the
+#' role. Default is taken from COSMIC cancer gene census and stored in [data].
 #'
 #' @return An object of class `TAPACLOTH` that represents the classified input data.
 #' @export
@@ -23,14 +24,25 @@
 #' @import dplyr
 #'
 #' @examples
-#' data = list(data = dplyr::tibble(sample = "test", gene = c(paste("test gene ", 1:9), "target gene"), nv = c(seq(10,90,10), 120), dp = c(rep(100, 9), 200), VAF = c(seq(10,90,10), 120)/c(rep(100, 9), 200)), purity = dplyr::tibble(sample = "test", purity = 1))
-#' data = run_classifier(x = data, alpha_level = 1e-3, model = "Binomial")
-#' print(data)
-run_classifier = function(x,
+#' x = run_classifier(
+#'     example_data, 
+#'     alpha_level = 1e-3, 
+#'    model = "Binomial")
+#' print(x)
+run_classifier = function(mutations,
+                          sample,
+                          purity,
                           alpha_level = 0.01,
                           model = "Binomial",
-                          rho = NA)
+                          rho = NA,
+                          tpanel = TAPACLOTH::cancer_gene_census)
 {
+  x = list(
+    data = mutations,
+    sample = sample,
+    purity = purity
+  )
+  
   model = model %>% tolower()
   
   # Output
@@ -49,6 +61,8 @@ run_classifier = function(x,
     test$classifier = list()
     class(test) = "TAPACLOTH"
   }
+  
+  x$mutations = left_join(mutations, tpanel, by = "gene")
   
   if (model %in% c("binomial", "beta-binomial")) {
     cli::cli_h1(

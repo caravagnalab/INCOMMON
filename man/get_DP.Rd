@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_DP}
 \alias{get_DP}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_DP(x, mutation_id)
 }

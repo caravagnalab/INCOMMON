@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{plot_gene}
 \alias{plot_gene}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Plot function for class \code{'TAPACLOTH'}.}
 \usage{
 plot_gene(x, model, gene_name)
 }

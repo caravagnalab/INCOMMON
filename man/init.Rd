@@ -2,7 +2,7 @@
 % Please edit documentation in R/init.R
 \name{init}
 \alias{init}
-\title{#' Prepare input for analyses with \code{'TAPACLOTH'}.}
+\title{Prepare input for analyses with \code{'TAPACLOTH'}.}
 \usage{
 init(mutations, sample, purity)
 }

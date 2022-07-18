@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_coord}
 \alias{get_coord}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_coord(x, gene_name)
 }

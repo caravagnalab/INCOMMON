@@ -1,4 +1,4 @@
-#' #'Plotting function for class \code{'TAPACLOTH'}.
+#'Plotting function for class \code{'TAPACLOTH'}.
 #' @description
 #' Produces a list of plots, one for each mutation in the input, displaying the
 #' results of classification.

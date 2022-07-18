@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{gene_classification}
 \alias{gene_classification}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 gene_classification(x, gene_id, model)
 }

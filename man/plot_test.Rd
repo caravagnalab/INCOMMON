@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_test.R
 \name{plot_test}
 \alias{plot_test}
-\title{#'Plotting function for class \code{'TAPACLOTH'}.}
+\title{Plotting function for class \code{'TAPACLOTH'}.}
 \usage{
 plot_test(x)
 }

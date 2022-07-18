@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_gene}
 \alias{get_gene}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_gene(x, mutation_id)
 }

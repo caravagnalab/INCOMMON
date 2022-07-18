@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{models_avail}
 \alias{models_avail}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 models_avail(x)
 }

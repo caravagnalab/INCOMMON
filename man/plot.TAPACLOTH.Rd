@@ -2,7 +2,7 @@
 % Please edit documentation in R/print.tapacloth.R
 \name{plot.TAPACLOTH}
 \alias{plot.TAPACLOTH}
-\title{#' Plot for class \code{'TAPACLOTH'}.}
+\title{Plot for class \code{'TAPACLOTH'}.}
 \usage{
 \method{plot}{TAPACLOTH}(x, ...)
 }

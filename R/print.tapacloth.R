@@ -1,4 +1,4 @@
-#' #' Plot for class \code{'TAPACLOTH'}.
+#' Plot for class \code{'TAPACLOTH'}.
 #'
 
 #' @description
@@ -74,7 +74,7 @@ plot.TAPACLOTH = function(x, ...) {
   })
   
 }
-#' #' Print for class \code{'TAPACLOTH'}.
+#' Print for class \code{'TAPACLOTH'}.
 #' @param x An obj of class \code{'TAPACLOTH'}.
 #' @param ... Default S3 method parameter.
 #'

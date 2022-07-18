@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_VAF}
 \alias{get_VAF}
-\title{#' Getter for class \code{'TAPACLOTH'}.}
+\title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
 get_VAF(x, mutation_id)
 }
