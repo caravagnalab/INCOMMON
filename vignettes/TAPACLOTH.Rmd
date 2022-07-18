@@ -19,18 +19,17 @@ options(crayon.enabled=F)
 
 TAPACLOTH is a package to process targeted panel sequencing data of a tumour-matched normal cancer sample and perform clonal deconvolution. The tool allows to:
 
-- classify the clonality and zygosity of somatic mutations detected by the panel;
+- classify the karyotype and multiplicity of somatic mutations detected by the panel;
 - asses tumour purity from somatic mutations detected by the panel;
 
 > The TAPACLOTH model is designed to work with a target panel but, in principle, it can be used with any sequencing assay. However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster). 
 
-## Clonality assessment
+## Karyotype and multiplicity assessment
 
 TAPACLOTH will assess, for every mutation, any of the following statuses:
 
-- subclonal mutation;
-- heterozygous clonal mutation within a diploid heterozygous tumour genome;
-- homozygous clonal mutation within a loss of heterozygosity of the tumour genome.
+- karyotype among 1:0 (LOH), 1:1 (diploid heterozygous), 2:0 (copy-neutral LOH), 2:1 (trisomy), 2:2 (tetrasomy);
+- multiplicity between 1 and 2 for ploidy greater than 1;
 
 TAPACLOTH implements [two type of statistical tests](classify-and-plot.html); the required inputs are:
 

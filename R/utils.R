@@ -158,6 +158,8 @@ get_pvalues = function(x, null_model, mutation_id){
   y = null_model$test %>% 
     dplyr::select(karyotype, multiplicity, l_a, r_a)
   
+  y$id = mutation_id
+  
   y$pvalue = sapply(null_model$test$inputs, function(s) {
     s$p[get_NV(x, mutation_id)]
   })
@@ -178,7 +180,10 @@ get_pvalues = function(x, null_model, mutation_id){
 plot_gene = function(x,model,gene_name){
   stopifnot(inherits(x, "TAPACLOTH"))
   model = model %>% tolower()
-  x$classifier[[model]]$plot_test[[get_id(x,gene_name)]]
+  ids = get_id(x,gene_name)
+  lapply(ids, function(i){
+    x$classifier[[model]]$plot_test[[i]]
+  })
 }
 
 #' #' Getter for class \code{'TAPACLOTH'}.
