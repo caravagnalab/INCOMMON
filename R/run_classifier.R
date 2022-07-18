@@ -82,7 +82,7 @@ run_classifier = function(x,
       test$classifier$`beta-binomial` = list(
         params = tibble(alpha = alpha_level,
                         rho = rho),
-        data = full_join(test$data, pvalues, by = "gene")
+        data = full_join(test %>% idify() %>% get_data(), pvalues, by = "id")
       )
     }
   }
