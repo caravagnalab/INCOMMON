@@ -52,8 +52,8 @@ plot_test = function(x) {
       ## Build plot
       plt = ggplot2::ggplot() +
         ggridges::geom_density_ridges(
-          y %>% dplyr::filter(nv > l_a & nv < r_a),
-          mapping = aes(
+          data = y %>% dplyr::filter(nv > l_a & nv < r_a),
+          mapping = ggplot2::aes(
             x = nv,
             y = karyotype,
             height = p,
