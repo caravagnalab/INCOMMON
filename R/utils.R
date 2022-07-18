@@ -20,7 +20,7 @@ get_purity = function(x){
 get_classes = function(x, model){
   stopifnot(inherits(x, "TAPACLOTH"))
   y = x$classifier[[model]]$data %>% 
-    dplyr::select(chr, from, to, ref, alt, karyotype.y, multiplicity.y, outcome)
+    dplyr::select(chr, from, to, ref, alt, karyotype, multiplicity, outcome)
   return(y)
 }
 
@@ -88,7 +88,7 @@ unidify = function(x){
 get_DP = function(x, mutation_id){
   x = idify(x)
   x$data %>% 
-    dplyr::filter(id == id) %>% 
+    dplyr::filter(id == mutation_id) %>% 
     pull(DP)
 }
 
