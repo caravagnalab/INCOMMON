@@ -1,15 +1,19 @@
 #' Classify mutations per sample using a (Beta-)Binomial model-based test, or
 #' per gene using a 3-quantile test.
 #'
-#' @param data A tibble containing mutations with sample name (sample), gene name
-#' (gene), number of reads with variant (nv), coverage (dp), variant allele
-#' frequency (VAF), and sample purity (purity) as columns.
+#' @param x A list containing:
+#' - `mutations`: a tibble with columns chromosome `chr`, start position `from`, end position `to`,
+#'   reference `ref` and alternative `alt` alleles, coverage `DP`, number
+#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` as Hugo Symbol and
+#'   `gene_role`.
+#' - `sample` sample name
+#' - `purity` sample purity.
+#' The input can be prepared using function `init`.
 #' @param alpha_level The significance level to be used in hypothesis testing.
-#' @param model If set to "Binomial" or "Beta-Binomial": classification is run per
-#' sample, using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
+#' @param model If set to "Binomial" or "Beta-Binomial": classification is run 
+#' using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
 #' included) as expected distribution for the number of reads with variant at
-#' fixed coverage and purity. If set to "terzile": classification is run per gene,
-#' and is based on a terzile test.
+#' fixed coverage and purity.
 #' @param rho If Beta-Binomial model is selected, this parameter tunes the over-dispersion
 #' of the expected distribution used for the test.
 #'

@@ -8,20 +8,26 @@ per gene using a 3-quantile test.}
 run_classifier(x, alpha_level = 0.01, model = "Binomial", rho = NA)
 }
 \arguments{
+\item{x}{A list containing:
+\itemize{
+\item \code{mutations}: a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
+reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
+of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene} as Hugo Symbol and
+\code{gene_role}.
+\item \code{sample} sample name
+\item \code{purity} sample purity.
+The input can be prepared using function \code{init}.
+}}
+
 \item{alpha_level}{The significance level to be used in hypothesis testing.}
 
-\item{model}{If set to "Binomial" or "Beta-Binomial": classification is run per
-sample, using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
+\item{model}{If set to "Binomial" or "Beta-Binomial": classification is run
+using a Binomial (no over-dispersion) or Beta-Binomial (over-dispersion
 included) as expected distribution for the number of reads with variant at
-fixed coverage and purity. If set to "terzile": classification is run per gene,
-and is based on a terzile test.}
+fixed coverage and purity.}
 
 \item{rho}{If Beta-Binomial model is selected, this parameter tunes the over-dispersion
 of the expected distribution used for the test.}
-
-\item{data}{A tibble containing mutations with sample name (sample), gene name
-(gene), number of reads with variant (nv), coverage (dp), variant allele
-frequency (VAF), and sample purity (purity) as columns.}
 }
 \value{
 An object of class \code{TAPACLOTH} that represents the classified input data.
