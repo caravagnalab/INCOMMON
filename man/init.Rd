@@ -4,23 +4,22 @@
 \alias{init}
 \title{Prepare input for analyses with \code{'TAPACLOTH'}.}
 \usage{
-init(mutations, sample, purity)
+init(mutations, sample, purity, gene_roles = cancer_gene_census)
 }
 \arguments{
-\item{mutations}{A tibble listing mutations called in the sample
-in the form of chromosome \code{chr}, start position \code{from}, end position \code{to},
-reference \code{ref} and alternative \code{alt} alleles, gene name \code{gene} as Hugo Symbol.}
+\item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
+reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
+of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene}
+as Hugo Symbol.}
 
 \item{sample}{Sample name.}
 
 \item{purity}{Sample purity.}
 }
 \value{
-A list with mutations including gene role as annotated in COSMIC
-cancer gene census, sample name and purity, in the format requested for
-\code{TAPACLOTH} analyses.
+An object of class \code{TAPACLOTH}.
 }
 \description{
-Cast input data in the format requested by \code{'TAPACLOTH'} \code{run_classifier}
-and \code{estimate_purity} functions.
+Process input data into an object of class \code{'TAPACLOTH'}, ready for
+analyses with \code{run_classifier} and \code{estimate_purity} functions.
 }

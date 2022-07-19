@@ -4,7 +4,7 @@
 \alias{get_classifier}
 \title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
-get_classifier(x, model)
+get_classifier(x, model = NULL)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}

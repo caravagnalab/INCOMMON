@@ -7,6 +7,7 @@
 #' plots named `plot_test` inside `classifier`.
 #' @export
 plot_test = function(x) {
+  stopifnot(inherits(x, "TAPACLOTH"))
   x = idify(x)
   plotmodels = lapply(models_avail(x), function(model) {
     plotlist = lapply(get_data(x) %>% pull(id), function(ID) {

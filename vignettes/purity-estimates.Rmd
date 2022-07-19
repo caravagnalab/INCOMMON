@@ -51,21 +51,27 @@ more distant than the input parameter `eps`.
 ## Example
 
 In this example, the input purity estimate of the cancer sample is correct, and 
-the VAF spectrum of somatic mutations is fit using a mixture of Binomial distributions:
+the VAF spectrum of somatic mutations is fit using a mixture of Binomial distributions.
+
+The input must be prepared using function `init`:
+```{r}
+input = init(mutations = example_data$data,
+             sample = example_data$sample,
+             purity = example_data$purity,
+             gene_roles = cancer_gene_census)
+print(input)
+```
 
 ```{r}
-out = estimate_purity(
-                mutations = example_data$data,
-                sample = example_data$sample,
-                purity = example_data$purity,
+out = estimate_purity(input,
                 model = "Beta-Binomial",
                 eps = 0.01)
 
 print(out)
 ```
 
-This test shows that the inferred purity matches the true value, and a reliability
-score of 100% is indeed reported.
+This test shows that the inferred purity matches the true value with a reliability
+score of 82%.
 
 If we provide an input purity of the cancer sample that is underestimated
 with respect to ground-truth, TAPACLOTH retrieves the correct purity value
@@ -73,11 +79,7 @@ and reports the corresponding reliability score for the input estimate.
 
 ```{r}
 # Example error with purity = 0.4
-input = list(
-           
-)
-
-out = estimate_purity(
+input = init(
   mutations = dplyr::tibble(
              chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
              from = seq(1000,30000,1000),
@@ -90,7 +92,11 @@ out = estimate_purity(
              gene = paste0("test gene ", 1:30)
            ),
   sample = "test",
-  purity = 0.4,
+  purity = 0.4
+)
+
+out = estimate_purity(
+  input,
   model = "binomial",
   eps = 0.01)
 
@@ -116,7 +122,7 @@ In this example, the classification task is first run with an underestimated
 input purity. 
 
 ```{r}
-classified_wrong = run_classifier(
+input = init(
   mutations = dplyr::tibble(
              chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
              from = seq(1000,30000,1000),
@@ -129,13 +135,17 @@ classified_wrong = run_classifier(
              gene = paste0("test gene ", 1:30)
            ),
   sample = "test",
-  purity = 0.4,
+  purity = 0.4
+)
+classified_wrong = run_classifier(
+  input,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
 classified_wrong = plot_test(classified_wrong)
+
 plt_wrong = plot_gene(x = classified_wrong,
           model = "Beta-Binomial",
           gene_name = "test gene 13")
@@ -146,36 +156,14 @@ and the classification task is re-run with the new value.
 
 ```{r}
 out = estimate_purity(
-  mutations = dplyr::tibble(
-             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
-             from = seq(1000,30000,1000),
-             to = seq(1001,30001,1000),
-             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
-             DP = 200,
-             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
-             gene = paste0("test gene ", 1:30)
-           ),
-  sample = "test",
-  purity = 0.4,
-                model = "Beta-Binomial",
-                eps = 0.01)
+  out,
+  model = "Beta-Binomial",
+  eps = 0.01)
+
+out$purity = get_purity_bmix(out, model = "beta-binomial")
 
 classified_right = run_classifier(
-  mutations = dplyr::tibble(
-             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
-             from = seq(1000,30000,1000),
-             to = seq(1001,30001,1000),
-             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
-             DP = 200,
-             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
-             gene = paste0("test gene ", 1:30)
-           ),
-  sample = "test",
-  purity = get_purity_bmix(out, model = "Beta-Binomial"),
+  out,
   alpha_level = 1e-3,
   model = "Beta-Binomial",
   rho = 0.01

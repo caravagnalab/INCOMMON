@@ -22,47 +22,26 @@
 #' data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
 #' data = estimate_purity(x = data, model = "binomial", eps = 0.01)
 #' print(data)
-estimate_purity = function(mutations,
-                           sample,
-                           purity,
+estimate_purity = function(x,
                            model = "Binomial",
                            eps = 0.01,
                            tpanel = TAPACLOTH::cancer_gene_census) 
   {
   
-  x = list(
-    data = mutations,
-    sample = sample,
-    purity = purity)
+  stopifnot(inherits(x, "TAPACLOTH"))
   
   model = model %>% tolower()
-  
-  # Output
-  test = list()
-  class(test) = "TAPACLOTH"
-  
   stopifnot(model %in% c("binomial", "beta-binomial"))
   
-  if (inherits(x, "TAPACLOTH")) {
-    test = x
-    if(!("purity_estimate" %in% names(test))) 
-      test$purity_estimate = list()
-  }
-  else{
-    test = x
+  # Output
+  test = x
+  if (!("purity_estimate" %in% names(test)))
     test$purity_estimate = list()
-    class(test) = "TAPACLOTH"
-  }
-    
-    x$mutations = left_join(mutations, tpanel, by = "gene")
   
-    cli::cli_h1("TAPACLOTH purity estimate of sample {.field {get_sample(x)}} using {.field {model}} model")
-    cat("\n")
-  
-  # if(is.na(sample_purity)){
-  #   cli::cli_alert("Input purity not available, reliability score will not be computed.")
-  #   purity = 0.0
-  # }
+  cli::cli_h1(
+    "TAPACLOTH purity estimate of sample {.field {get_sample(x)}} using {.field {model}} model"
+  )
+  cat("\n")
   
   # Prepare data for BMix
   input = data.frame(successes = get_data(x) %>% pull(NV),

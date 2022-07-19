@@ -62,29 +62,31 @@ where $I = \left\{i:P(X=i)\leq P(X=NV)\right\}$.
 
 In the following example, the classification task is run using both the Binomial and Beta-Binomial models - do appreciate the difference across the width of the acceptance regions of each class. 
 
-The output contains the input plus a `classifier` list that contains, for each model
-used for the classification, the parameters of
-the fit and the outcome of the classifier for all the possible classes,
-along with the corresponding p-values.
+The input must be prepared using function `init`:
+```{r}
+input = init(mutations = example_data$data,
+             sample = example_data$sample,
+             purity = example_data$purity,
+             gene_roles = cancer_gene_census)
+print(input)
+```
+For each run of `run_classifier` using a certain model, a `classifier` object is 
+added to the input, that contains the model parameters and the outcome of the classifier 
+for all the possible classes, along with the corresponding p-values.
 
 ```{r}
 out = run_classifier(
-  mutations = example_data$data,
-  sample = example_data$sample,
-  purity = example_data$purity,
+  input,
   alpha_level = 0.1,
   model = "Binomial"
 )
 
-out$classifier$`beta-binomial` =
-    run_classifier(
-      mutations = example_data$data,
-      sample = example_data$sample,
-      purity = example_data$purity,
-      alpha_level = 0.1,
-      model = "Beta-Binomial",
-      rho = 0.01
-    ) %>% get_classifier(., model = "Beta-Binomial")
+out = run_classifier(
+    out,
+    alpha_level = 0.1,
+    model = "Beta-Binomial",
+    rho = 0.01
+    )
 
 print(out)
 ```
@@ -97,8 +99,8 @@ out = plot_test(out)
 The following example shows
 results for a specific gene, "TP53".
 ```{r, fig.height=4, fig.width=8, dpi=300}
-plot_gene(out, model = "Binomial", gene_name = "TP53")[[1]]+ggplot2::xlim(1,26)
-plot_gene(out, model = "Beta-Binomial", gene_name = "TP53")[[1]]+ggplot2::xlim(1,26)
+plot_gene(out, model = "Binomial", gene_name = "PRKD1")[[1]]+ggplot2::xlim(1,get_DP(out, get_id(out,"PRKD1")[[1]]))
+plot_gene(out, model = "Beta-Binomial", gene_name = "PRKD1")[[1]]+ggplot2::xlim(1,get_DP(out, get_id(out, "PRKD1")[[1]]))
 ```
 The test shows that at fixed $\alpha$-level, including over-dispersion results in 
 a larger confidence interval on $NV$ so that it is more unlikely that karyotype-multiplcity 
@@ -127,9 +129,7 @@ Another way to reduce ambiguity is to increase the `alpha_level` parameter or
 decrease the overdispersion paramter `rho` when using the Beta-Binomial model.
 ```{r, fig.height=4, fig.width=8, dpi=300}
 out = run_classifier(
-  mutations = example_data$data,
-  sample = example_data$sample,
-  purity = example_data$purity,
+  input,
   alpha_level = 0.2,
   model = "Beta-Binomial",
   rho = 0.0001

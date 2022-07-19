@@ -85,6 +85,15 @@ plot.TAPACLOTH = function(x, ...) {
 #' @examples
 print.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
+  ## Print input data
+  cli::cli_rule(
+    paste(
+      crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
+      'Input data for sample {.field {x$sample}}, with purity {.field {x$purity}}'
+    )
+  )
+  
+  print(x$data)
 
   if ("purity_estimate" %in% names(x))
   {
@@ -106,29 +115,7 @@ print.TAPACLOTH = function(x, ...) {
     
     cat("\n")
   }
-  #   cli::cli_rule(
-  #     paste(
-  #       crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-  #       'Purity estimate using BMix: '
-  #     )
-  #   )
-  #   cat("\n")
-  #   cli::cli_h3("BMix fit")
-  #   cat("\n")
-  #
-  #   print(x$fit)
-  #   cat("\n")
-  #
-  #   cli::cli_rule(
-  #     paste(
-  #       crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-  #       'Data: '
-  #     )
-  #   )
-  #   print(x$data)
-  # }
-  # else
-  # {
+  
   if ("classifier" %in% names(x)) {
 
     for(model in names(x$classifier)){
@@ -141,7 +128,13 @@ print.TAPACLOTH = function(x, ...) {
                  ' with significance level {.field {x$classifier[[model]]$params$alpha}}')),
           ''
         )
-      print(x$classifier[[model]]$data)
+      print(get_classifier(x) %>% 
+              get_data() %>% 
+              dplyr::select(id, NV, DP, VAF, 
+                            gene, gene_role, 
+                            karyotype, multiplicity, 
+                            l_a, r_a, pvalue, outcome)
+            )
     }
   }
 }

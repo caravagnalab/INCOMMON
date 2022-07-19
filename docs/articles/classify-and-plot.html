@@ -147,15 +147,36 @@ over-dispersion of the sequencing assay.</p>
 <p>In the following example, the classification task is run using both
 the Binomial and Beta-Binomial models - do appreciate the difference
 across the width of the acceptance regions of each class.</p>
-<p>The output contains the input plus a <code>classifier</code> list
-that contains, for each model used for the classification, the
-parameters of the fit and the outcome of the classifier for all the
-possible classes, along with the corresponding p-values.</p>
+<p>The input must be prepared using function <code>init</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">input</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span>
+<span>             sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span>
+<span>             purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span>
+<span>             gene_roles <span class="op">=</span> <span class="va">cancer_gene_census</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Input data for sample <span style="color: #00BB00;">0009b464-b376-4fbc-8a56-da538269a02f</span>, wi</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 10</span></span></span>
+<span><span class="co">#&gt;    chr        from        to ref   alt      NV    DP   VAF gene   gene_role     </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10 114<span style="text-decoration: underline;">879</span>306 114<span style="text-decoration: underline;">879</span>306 G     C        30    45 0.667 TCF7L2 oncogene, fus…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr14  30<span style="text-decoration: underline;">159</span>463  30<span style="text-decoration: underline;">159</span>463 G     A         7    25 0.28  PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr14  30<span style="text-decoration: underline;">203</span>217  30<span style="text-decoration: underline;">203</span>217 G     C         3    25 0.12  PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr14  30<span style="text-decoration: underline;">332</span>623  30<span style="text-decoration: underline;">332</span>623 T     A         9    48 0.188 PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr14  81<span style="text-decoration: underline;">536</span>104  81<span style="text-decoration: underline;">536</span>104 T     C        17    54 0.315 TSHR   oncogene      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr16  72<span style="text-decoration: underline;">916</span>293  72<span style="text-decoration: underline;">916</span>293 A     G        17    37 0.459 ZFHX3  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr16  72<span style="text-decoration: underline;">960</span>833  72<span style="text-decoration: underline;">960</span>833 C     T        10    26 0.385 ZFHX3  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr17   7<span style="text-decoration: underline;">577</span>058   7<span style="text-decoration: underline;">577</span>058 C     A        23    26 0.885 TP53   oncogene, TSG…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr17  11<span style="text-decoration: underline;">931</span>906  11<span style="text-decoration: underline;">931</span>906 G     T        15    19 0.789 MAP2K4 oncogene, TSG </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr17  16<span style="text-decoration: underline;">076</span>272  16<span style="text-decoration: underline;">076</span>272 G     C        11    12 0.917 NCOR1  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 15 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre></div>
+<p>For each run of <code>run_classifier</code> using a certain model, a
+<code>classifier</code> object is added to the input, that contains the
+model parameters and the outcome of the classifier for all the possible
+classes, along with the corresponding p-values.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
-<span>  mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span>
-<span>  purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span>
+<span>  <span class="va">input</span>,</span>
 <span>  alpha_level <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"Binomial"</span></span>
 <span><span class="op">)</span></span>
@@ -163,58 +184,71 @@ possible classes, along with the corresponding p-values.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">0009b464-b376-4fbc-8</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing null model distributions and p-values.</span></span>
 <span></span>
-<span><span class="va">out</span><span class="op">$</span><span class="va">classifier</span><span class="op">$</span><span class="va">`beta-binomial`</span> <span class="op">=</span></span>
-<span>    <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
-<span>      mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>      sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span>
-<span>      purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span>
-<span>      alpha_level <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>      model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,</span>
-<span>      rho <span class="op">=</span> <span class="fl">0.01</span></span>
-<span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/get_classifier.html">get_classifier</a></span><span class="op">(</span><span class="va">.</span>, model <span class="op">=</span> <span class="st">"Beta-Binomial"</span><span class="op">)</span></span>
+<span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
+<span>    <span class="va">out</span>,</span>
+<span>    alpha_level <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>    model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,</span>
+<span>    rho <span class="op">=</span> <span class="fl">0.01</span></span>
+<span>    <span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">TAPACLOTH </span><span style="color: #00BB00; font-weight: bold;">beta-binomial</span><span style="font-weight: bold;"> clonality/Zygosity testing for sample </span><span style="color: #00BB00; font-weight: bold;">0009b464-b376-4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing null model distributions and p-values.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Input data for sample <span style="color: #00BB00;">0009b464-b376-4fbc-8a56-da538269a02f</span>, wi</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 10</span></span></span>
+<span><span class="co">#&gt;    chr        from        to ref   alt      NV    DP   VAF gene   gene_role     </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10 114<span style="text-decoration: underline;">879</span>306 114<span style="text-decoration: underline;">879</span>306 G     C        30    45 0.667 TCF7L2 oncogene, fus…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr14  30<span style="text-decoration: underline;">159</span>463  30<span style="text-decoration: underline;">159</span>463 G     A         7    25 0.28  PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr14  30<span style="text-decoration: underline;">203</span>217  30<span style="text-decoration: underline;">203</span>217 G     C         3    25 0.12  PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr14  30<span style="text-decoration: underline;">332</span>623  30<span style="text-decoration: underline;">332</span>623 T     A         9    48 0.188 PRKD1  fusion        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr14  81<span style="text-decoration: underline;">536</span>104  81<span style="text-decoration: underline;">536</span>104 T     C        17    54 0.315 TSHR   oncogene      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr16  72<span style="text-decoration: underline;">916</span>293  72<span style="text-decoration: underline;">916</span>293 A     G        17    37 0.459 ZFHX3  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr16  72<span style="text-decoration: underline;">960</span>833  72<span style="text-decoration: underline;">960</span>833 C     T        10    26 0.385 ZFHX3  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr17   7<span style="text-decoration: underline;">577</span>058   7<span style="text-decoration: underline;">577</span>058 C     A        23    26 0.885 TP53   oncogene, TSG…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr17  11<span style="text-decoration: underline;">931</span>906  11<span style="text-decoration: underline;">931</span>906 G     T        15    19 0.789 MAP2K4 oncogene, TSG </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr17  16<span style="text-decoration: underline;">076</span>272  16<span style="text-decoration: underline;">076</span>272 G     C        11    12 0.917 NCOR1  TSG           </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 15 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">binomial</span> model  with significance level <span style="color: #00BB00;">0.1</span> ───────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 16</span></span></span>
-<span><span class="co">#&gt;    chr     from     to ref   alt      NV    DP   VAF gene  id    karyo…¹ multi…²</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 1:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 1:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:0           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:1           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:2           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:2           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14 3.02<span style="color: #949494;">e</span>7 3.02<span style="color: #949494;">e</span>7 G     A         7    25 0.28  PRKD1 chr1… 1:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14 3.02<span style="color: #949494;">e</span>7 3.02<span style="color: #949494;">e</span>7 G     A         7    25 0.28  PRKD1 chr1… 1:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 4 more variables: l_a &lt;int&gt;, r_a &lt;int&gt;, pvalue &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   outcome &lt;lgl&gt;, and abbreviated variable names ¹​karyotype, ²​multiplicity</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 12</span></span></span>
+<span><span class="co">#&gt;    id          NV    DP   VAF gene  gene_…¹ karyo…² multi…³   l_a   r_a   pvalue</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:1…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40 4.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:1…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25 3.82<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25 3.82<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43 9.42<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19 7.19<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33 5.42<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15 9.58<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26 1.04<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:3…     7    25 0.28  PRKD1 fusion  1:0           1    17    23 4.81<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:3…     7    25 0.28  PRKD1 fusion  1:1           1     7    15 1.11<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 1 more variable: outcome &lt;lgl&gt;, and abbreviated</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​gene_role, ²​karyotype, ³​multiplicity</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ TAPACLOTH ] </span> Test using <span style="color: #00BB00;">beta-binomial</span> model  with overdispersion parameter</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 16</span></span></span>
-<span><span class="co">#&gt;    chr     from     to ref   alt      NV    DP   VAF gene  id    karyo…¹ multi…²</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 1:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 1:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:0           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:1           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:2           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10 1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 G     C        30    45 0.667 TCF7… chr1… 2:2           2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14 3.02<span style="color: #949494;">e</span>7 3.02<span style="color: #949494;">e</span>7 G     A         7    25 0.28  PRKD1 chr1… 1:0           1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14 3.02<span style="color: #949494;">e</span>7 3.02<span style="color: #949494;">e</span>7 G     A         7    25 0.28  PRKD1 chr1… 1:1           1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 4 more variables: l_a &lt;int&gt;, r_a &lt;int&gt;, pvalue &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   outcome &lt;lgl&gt;, and abbreviated variable names ¹​karyotype, ²​multiplicity</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 12</span></span></span>
+<span><span class="co">#&gt;    id          NV    DP   VAF gene  gene_…¹ karyo…² multi…³   l_a   r_a   pvalue</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:1…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40 4.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:1…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25 3.82<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25 3.82<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43 9.42<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19 7.19<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33 5.42<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15 9.58<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:1…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26 1.04<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:3…     7    25 0.28  PRKD1 fusion  1:0           1    17    23 4.81<span style="color: #949494;">e</span><span style="color: #BB0000;">- 8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:3…     7    25 0.28  PRKD1 fusion  1:1           1     7    15 1.11<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 1 more variable: outcome &lt;lgl&gt;, and abbreviated</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​gene_role, ²​karyotype, ³​multiplicity</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre></div>
 <p>The results of classification for mutations affecting a specific gene
 in the panel can be visualized using the internal plotting functions.
 First plots must be generated.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_test.html">plot_test</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span></span>
@@ -225,12 +259,12 @@ First plots must be generated.</p>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span></span></code></pre></div>
 <p>The following example shows results for a specific gene, “TP53”.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"TP53"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">26</span><span class="op">)</span></span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-5-1.png" width="2400"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"TP53"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">26</span><span class="op">)</span></span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-5-2.png" width="2400">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fu"><a href="../reference/get_DP.html">get_DP</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="../reference/get_id.html">get_id</a></span><span class="op">(</span><span class="va">out</span>,<span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-6-1.png" width="2400"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fu"><a href="../reference/get_DP.html">get_DP</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="../reference/get_id.html">get_id</a></span><span class="op">(</span><span class="va">out</span>, <span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-6-2.png" width="2400">
 The test shows that at fixed <span class="math inline">\(\alpha\)</span>-level, including over-dispersion
 results in a larger confidence interval on <span class="math inline">\(NV\)</span> so that it is more unlikely that
 karyotype-multiplcity hypotheses are rejected.</p>
@@ -238,10 +272,10 @@ karyotype-multiplcity hypotheses are rejected.</p>
 classes, as different combinations of karyotype and multiplicity can
 yield the same expectation value of VAF. In the following example, the
 classification results are plotted for the known oncogene TSHR.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"TSHR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-6-1.png" width="2400">
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-7-1.png" width="2400">
 Classes compatible with read counts data include diploid heterozygous
 (1:1) and amplification (2:0, 2:1, 2:2) with multiplicity 1. Knowledge
 of the gene role can be used to make a choice: since TSHR is an
@@ -252,18 +286,16 @@ test more strict, for example by excluding overdispersion and relying on
 the Binomial model. The following example for gene TSHR shows that
 relying on the more strict Binomial model reduces classification
 ambiguity, allowing only for amplification states.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"TSHR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-7-1.png" width="2400">
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-8-1.png" width="2400">
 Another way to reduce ambiguity is to increase the
 <code>alpha_level</code> parameter or decrease the overdispersion
 paramter <code>rho</code> when using the Beta-Binomial model.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_classifier.html">run_classifier</a></span><span class="op">(</span></span>
-<span>  mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span>
-<span>  purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span>
+<span>  <span class="va">input</span>,</span>
 <span>  alpha_level <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fl">0.0001</span></span>
@@ -274,7 +306,7 @@ paramter <code>rho</code> when using the Beta-Binomial model.</p>
 <span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_test.html">plot_test</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Beta-Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"TSHR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
-<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-8-1.png" width="2400">
+<p><img src="classify-and-plot_files/figure-html/unnamed-chunk-9-1.png" width="2400">
 This example shows that using a stricter test (low overdispersion and
 large <span class="math inline">\(\alpha\)</span> level) may reduce the
 number of possible classes even to one only karyotype and multiplicity

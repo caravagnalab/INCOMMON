@@ -55,7 +55,8 @@ If an estimate of tumour sample purity, made for example by copy number  or path
 
 ##  Inputs format
 
-For all tests, input data should be provided as a list containing:
+For all tests, input must be prepared using function `init`, providing as input
+the following data:
 
 - `mutations` as a tibble with columns indicating chromosome `chr`, start position `from`,
 end position `to`, reference `ref` adn alternative `alt` alleles, coverage `DP`, number

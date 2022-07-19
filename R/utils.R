@@ -62,11 +62,18 @@ gene_classification = function(x, gene_id, model){
 #' @param model Model used in the test from which to get classification data.
 #' @return A tibble with classification data.
 #' @export
-get_classifier = function(x, model){
-  model = model %>% tolower()
+get_classifier = function(x, model = NULL) {
   stopifnot(inherits(x, "TAPACLOTH"))
-  y = x$classifier[[model]]
-  return(y)
+  stopifnot("classifier" %in% names(x))
+  if (is.null(model)) {
+    lapply(names(x$classifier), function(model) {
+      x$classifier[[model]]
+    }) %>% unlist(recursive = FALSE)
+  }
+  else{
+    model = model %>% tolower()
+    x$classifier[[model]]
+  }
 }
 
 idify = function(x){
@@ -273,6 +280,13 @@ models_avail = function(x){
 get_ploidy = function(k){
   stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()}
 
+#' Getter for class \code{'TAPACLOTH'}.
+#' @description
+#' Get ID of the mutation(s) affecting the specified gene
+#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param gene_name Name of the selected gene.
+#' @return ID( of mutation(s).
+#' @export
 get_id = function(x, gene_name){
   x = idify(x)
   x$data %>% 
