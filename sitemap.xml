@@ -31,15 +31,72 @@
     <loc>caravagnalab.github.io/TAPACLOTH/reference/estimate_purity.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/gene_classification.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_DP.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_NV.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_VAF.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_classes.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_classifier.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_coord.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_gene.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_id.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_params.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_purity_bmix.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_purity_estimate.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/get_reliability.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/init.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/models_avail.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/plot.TAPACLOTH.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_bmix.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_gene.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_test.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/print.TAPACLOTH.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/run_classifier.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/test_setup.html</loc>
   </url>
 </urlset>
