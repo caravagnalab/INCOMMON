@@ -31,7 +31,8 @@ Imports:
     CNAqc,
     BMix,
     dplyr,
-    VGAM
+    VGAM,
+    pheatmap
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
