@@ -1,17 +1,21 @@
-# devtools::load_all()
-# 
-# 
-# x = init(mutations = TAPACLOTH::example_data$data,
-#          sample = TAPACLOTH::example_data$sample,
-#          purity = TAPACLOTH::example_data$purity)
-# x = run_classifier(
-#   x,
-#   alpha_level = 0.1,
-#   model = "beta-binomial",
-#   rho = 1e-4
-# )
-
-plot_heatmap = function(x, model = 'beta-binomial')
+#'Plotting function for class \code{'TAPACLOTH'}.
+#' @description
+#' Generates a composite heatmap with useful information on data and classification results.
+#' @param x An obj of class \code{'TAPACLOTH'} containing a `classifier`.
+#' @import pheatmap
+#' @import CNAqc
+#' @import ggplot2
+#' @import ggsci 
+#' @import ggridges 
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @return An object of class \code{'TAPACLOTH'} containing a list of ggplot2
+#' plots named `plot_test` inside `classifier`.
+#' @export
+#' @examples
+#' x = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+#' x = run_classifier(x)
+#' plot_heatmap(x)
+plot_heatmap = function(x, model = 'binomial')
 {
   stopifnot(inherits(x, "TAPACLOTH"))
   
@@ -63,8 +67,8 @@ plot_heatmap = function(x, model = 'beta-binomial')
   
   p_matrix = apply(p_matrix, c(1, 2), function(x) {
     if (is.na(x)) return('')
-    if (x > 0.01) return("*")
-    if (x > 0.001) return("**")
+    if (x < 0.33) return("*")
+    if (x > 0.33 & x < 0.67) return("**")
     return("***")
   })
   
