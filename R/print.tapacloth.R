@@ -16,50 +16,10 @@
 #' @export
 #'
 #' @examples
-# plot.TAPACLOTH = function(x, target_gene, sample_name, model, ...) {
-#   stopifnot(inherits(x, "TAPACLOTH"))
-# 
-#   # if(any(class(x$fit) == "bmix"))
-#   # {
-#   #   return(x$plot_bmix)
-#   # }
-# 
-#   fit_plot = plot_fit(x, target_gene, sample_name, model)
-# 
-#   if (model == "terzile") {
-#     return(fit_plot)
-#   }
-# 
-#   else{
-#     target_data = x$data$data %>%
-#       dplyr::filter(gene == target_gene)
-# 
-#     target_plots = lapply(1:(target_data %>% nrow), function(i) {
-#       null_model = test_setup(
-#         coverage = target_data$dp[i],
-#         purity = filter(x$data$purity, sample == sample_name)$purity,
-#         rho = x$classifier[[model]]$params$rho,
-#         alpha_level = x$classifier[[model]]$params$alpha,
-#         model = model
-#       )
-# 
-#       fit_power = plot_test_power(null_model) +
-#         ggplot2::geom_vline(xintercept = target_data$nv[i],
-#                             linetype = 'dashed',
-#                             size = .5)
-# 
-#     })
-# 
-#     # Fig assembly
-#     lp = append(list(fit_plot), target_plots)
-# 
-#     figure = ggpubr::ggarrange(plotlist = lp,
-#                                nrow = lp %>% length,
-#                                ncol = 1)
-# 
-#     return(figure)
-#   }
-# }
+#' input = init(mutations = example_data$data[1,], sample = example_data$sample, purity = example_data$purity)
+#' x = run_classifier(input, alpha_level = 1e-3, model = "Binomial")
+#' x = plot_test(x)
+#' plot.TAPACLOTH(x)
 
 plot.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
@@ -79,10 +39,21 @@ plot.TAPACLOTH = function(x, ...) {
 #' @param ... Default S3 method parameter.
 #'
 #' @return Nothing.
-#'
+#' @import cli
+#' @import crayon
+#' @importFrom dplyr filter mutate rename select %>% 
 #' @export
 #'
 #' @examples
+#' x = init(mutations = example_data$data,
+#'          sample = example_data$sample,
+#'          purity = example_data$purity)
+#' x = run_classifier(
+#'     x, 
+#'     alpha_level = 1e-3, 
+#'    model = "Binomial")
+#' x = estimate_purity(x = x, model = "binomial", eps = 0.01)
+#' print(x)
 print.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
   ## Print input data

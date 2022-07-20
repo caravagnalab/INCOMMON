@@ -98,7 +98,19 @@
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/TAPACLOTH" class="external-link">TAPACLOTH</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
+<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span></span>
+<span><span class="co">#&gt; 'BMix'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">BMix</span>, <span style="font-style: italic;">'Binomial and Beta-Binomial univariate mixtures'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagnalab.github.io/BMix/&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
+<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
+<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'TAPACLOTH'</span></span>
+<span><span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span></span>
+<span><span class="co">#&gt; 'TAPACLOTH'</span></span></code></pre></div>
 <p>We work with the <a href="TAPACLOTH.html">example TAPACLOTH
 <code>data</code></a>.</p>
 <div class="section level2">
@@ -249,15 +261,7 @@ classes, along with the corresponding p-values.</p>
 in the panel can be visualized using the internal plotting functions.
 First plots must be generated.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_test.html">plot_test</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
-<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'BMix'</span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'crayon::%+%' by 'ggplot2::%+%' when loading</span></span>
-<span><span class="co">#&gt; 'BMix'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">BMix</span>, <span style="font-style: italic;">'Binomial and Beta-Binomial univariate mixtures'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagnalab.github.io/BMix/&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
-<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'easypar'</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Loading <span style="color: #00BB00;">CNAqc</span>, <span style="font-style: italic;">'Copy Number Alteration quality check'</span>. Support : <span style="color: #0000BB; font-style: italic;">&lt;https://caravagn.github.io/CNAqc/&gt;</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/plot_test.html">plot_test</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
 <p>The following example shows results for a specific gene, “TP53”.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_gene.html">plot_gene</a></span><span class="op">(</span><span class="va">out</span>, model <span class="op">=</span> <span class="st">"Binomial"</span>, gene_name <span class="op">=</span> <span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fu"><a href="../reference/get_DP.html">get_DP</a></span><span class="op">(</span><span class="va">out</span>, <span class="fu"><a href="../reference/get_id.html">get_id</a></span><span class="op">(</span><span class="va">out</span>,<span class="st">"PRKD1"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>

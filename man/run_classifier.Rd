@@ -4,13 +4,7 @@
 \alias{run_classifier}
 \title{Classify mutations using a (Beta-)Binomial model-based test.}
 \usage{
-run_classifier(
-  x,
-  alpha_level = 0.01,
-  model = "Binomial",
-  rho = NA,
-  tpanel = TAPACLOTH::cancer_gene_census
-)
+run_classifier(x, alpha_level = 0.01, model = "Binomial", rho = NA)
 }
 \arguments{
 \item{x}{An object of class \code{'TAPACLOTH'} generated with function \code{init}.}

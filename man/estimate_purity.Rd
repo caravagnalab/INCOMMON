@@ -4,14 +4,11 @@
 \alias{estimate_purity}
 \title{Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.}
 \usage{
-estimate_purity(
-  x,
-  model = "Binomial",
-  eps = 0.01,
-  tpanel = TAPACLOTH::cancer_gene_census
-)
+estimate_purity(x, model = "Binomial", eps = 0.01)
 }
 \arguments{
+\item{x}{An object of class \code{'TAPACLOTH'} generated with function \code{init}.}
+
 \item{model}{The expected distribution for the number of reads with variant
 at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
 or Beta-Binomial (over-dispersion included).}
@@ -20,15 +17,6 @@ or Beta-Binomial (over-dispersion included).}
 is estimated using only that whose peak is closer to the input purity estimate
 than the value of this parameter. If both distributions satisfy this condition,
 the one which is closest to the input purity estimate is used for the new estimate.}
-
-\item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
-reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
-of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene}
-as Hugo Symbol.}
-
-\item{sample}{sample name}
-
-\item{purity}{An input purity estimate.}
 }
 \value{
 An object of class \code{TAPACLOTH} containing the inferred purity.
@@ -37,7 +25,7 @@ An object of class \code{TAPACLOTH} containing the inferred purity.
 Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
 }
 \examples{
-data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
-data = estimate_purity(x = data, model = "binomial", eps = 0.01)
-print(data)
+input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+out = estimate_purity(x = input, model = "binomial", eps = 0.01)
+print(out)
 }

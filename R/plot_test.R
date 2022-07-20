@@ -3,6 +3,11 @@
 #' Produces a list of plots, one for each mutation in the input, displaying the
 #' results of classification.
 #' @param x An obj of class \code{'TAPACLOTH'}.
+#' @import CNAqc
+#' @import ggplot2
+#' @import ggsci 
+#' @import ggridges 
+#' @importFrom dplyr filter mutate rename select %>% 
 #' @return An object of class \code{'TAPACLOTH'} containing a list of ggplot2
 #' plots named `plot_test` inside `classifier`.
 #' @export

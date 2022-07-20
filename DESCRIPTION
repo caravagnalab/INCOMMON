@@ -21,6 +21,13 @@ Suggests:
     knitr,
     rmarkdown,
 Imports:
+    cli,
+    crayon,
+    ggplot2,
+    ggpubr,
+    ggridges,
+    ggsci,
+    stringr,
     CNAqc,
     BMix,
     dplyr,

@@ -1,3 +1,18 @@
+#' Compute parameters and distribution for null hypothesis.
+#'
+#' @param coverage The sequencing coverage at the locus of mutation.
+#' @param purity Sample purity.
+#' @param rho The overdisperion parameter for "Beta-Binomial" model.
+#' @param alpha_level The confidence level of the test.
+#' @param model Model used for the test, either "Binomial" or "Beta-Binomial".
+#' @return A list.
+#' @export
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @import VGAM 
+#' @import stringr
+#' @examples
+#' null_model = test_setup(coverage = 500, purity = 1.0, rho = 0.01, alpha_level = 0.01, model = 'binomial') 
+#' print(null_model)
 test_setup = function(coverage = 500,
                           purity = 1.0,
                           rho = 0.01,

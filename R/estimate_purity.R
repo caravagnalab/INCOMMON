@@ -1,15 +1,9 @@
 #' Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
 #'
-#' @param mutations a tibble with columns chromosome `chr`, start position `from`, end position `to`,
-#'   reference `ref` and alternative `alt` alleles, coverage `DP`, number
-#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` 
-#'   as Hugo Symbol.
-#' @param sample sample name
-#' @param purity sample purity.
+#' @param x An object of class \code{'TAPACLOTH'} generated with function `init`.
 #' @param model The expected distribution for the number of reads with variant
 #' at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
 #' or Beta-Binomial (over-dispersion included).
-#' @param purity An input purity estimate.
 #' @param eps In case data is fitted with a mixture of 2 distributions, sample purity
 #' is estimated using only that whose peak is closer to the input purity estimate
 #' than the value of this parameter. If both distributions satisfy this condition,
@@ -19,13 +13,12 @@
 #' @export
 #'
 #' @examples
-#' data = list(data = dplyr::tibble(sample = "test", gene = paste0("test gene ", 1:30), nv =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2, dp = 200, VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200), purity = dplyr::tibble(sample = "test",  purity = 0.4))
-#' data = estimate_purity(x = data, model = "binomial", eps = 0.01)
-#' print(data)
+#' input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+#' out = estimate_purity(x = input, model = "binomial", eps = 0.01)
+#' print(out)
 estimate_purity = function(x,
                            model = "Binomial",
-                           eps = 0.01,
-                           tpanel = TAPACLOTH::cancer_gene_census) 
+                           eps = 0.01) 
   {
   
   stopifnot(inherits(x, "TAPACLOTH"))

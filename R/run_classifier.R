@@ -10,9 +10,7 @@
 #' @return An object of class `TAPACLOTH` containing the input plus
 #' the classification data and paramters.
 #' @export
-#'
-#' @import dplyr
-#'
+#' @importFrom dplyr filter mutate rename select %>% 
 #' @examples
 #' x = init(mutations = example_data$data,
 #'          sample = example_data$sample,
@@ -25,8 +23,7 @@
 run_classifier = function(x,
                           alpha_level = 0.01,
                           model = "Binomial",
-                          rho = NA,
-                          tpanel = TAPACLOTH::cancer_gene_census)
+                          rho = NA)
 {
   stopifnot(inherits(x, "TAPACLOTH"))
   

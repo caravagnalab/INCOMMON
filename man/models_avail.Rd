@@ -8,8 +8,6 @@ models_avail(x)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
-
-\item{model}{Model used for purity estimation}
 }
 \value{
 Model names.

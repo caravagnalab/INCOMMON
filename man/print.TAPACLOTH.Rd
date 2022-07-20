@@ -17,3 +17,14 @@ Nothing.
 \description{
 Print for class \code{'TAPACLOTH'}.
 }
+\examples{
+x = init(mutations = example_data$data,
+         sample = example_data$sample,
+         purity = example_data$purity)
+x = run_classifier(
+    x, 
+    alpha_level = 1e-3, 
+   model = "Binomial")
+x = estimate_purity(x = x, model = "binomial", eps = 0.01)
+print(x)
+}

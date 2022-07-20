@@ -28,7 +28,6 @@ get_classes = function(x, model){
 #' @description
 #' Get model parameters of the performed classification tests.
 #' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used in the test from which to get classification data.
 #' @return A tibble containing parameters for all the models used in the classification.
 #' @export
 #' 
@@ -46,6 +45,7 @@ get_params = function(x) {
 #' Get classification data for specific gene under the selected model.
 #' @param x An obj of class \code{'TAPACLOTH'}.
 #' @param model Model used in the test from which to get classification data.
+#' @param gene_id The name of the gene.
 #' @return A tibble with gene-specific classification data.
 #' @export
 gene_classification = function(x, gene_id, model){
@@ -111,9 +111,8 @@ get_DP = function(x, mutation_id){
 #' @description
 #' Get number of reads with variant for a specific mutation in the sample.
 #' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param id Coordinates of mutation in the form of a string 
+#' @param mutation_id Coordinates of mutation in the form of a string 
 #' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
-#' @param from Start position of the mutation.
 #' @return NV of the mutation.
 #' @export
 get_NV = function(x, mutation_id){
@@ -269,7 +268,6 @@ get_rho = function(x){
 #' @description
 #' List models used for classification tests.
 #' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used for purity estimation
 #' @return Model names.
 #' @export
 models_avail = function(x){

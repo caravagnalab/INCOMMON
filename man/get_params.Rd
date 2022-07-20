@@ -8,8 +8,6 @@ get_params(x)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
-
-\item{model}{Model used in the test from which to get classification data.}
 }
 \value{
 A tibble containing parameters for all the models used in the classification.

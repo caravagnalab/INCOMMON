@@ -4,7 +4,7 @@
 \alias{plot.TAPACLOTH}
 \title{Plot for class \code{'TAPACLOTH'}.}
 \usage{
-\method{plot}{TAPACLOTH}(x, ...)
+plot.TAPACLOTH(x, ...)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
@@ -19,4 +19,10 @@ If the terzile model is used, the default plot is a histogram of the VAF spectru
 with expected clonal peak, purity and VAF of mutations affecting the target gene
 highlighted. If the Binomial or Beta-Binomial model is used, it includes
 a plot showing details of the used statistical test in the bottom panel.
+}
+\examples{
+input = init(mutations = example_data$data[1,], sample = example_data$sample, purity = example_data$purity)
+x = run_classifier(input, alpha_level = 1e-3, model = "Binomial")
+x = plot_test(x)
+plot.TAPACLOTH(x)
 }

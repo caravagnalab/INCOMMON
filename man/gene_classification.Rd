@@ -9,6 +9,8 @@ gene_classification(x, gene_id, model)
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
 
+\item{gene_id}{The name of the gene.}
+
 \item{model}{Model used in the test from which to get classification data.}
 }
 \value{

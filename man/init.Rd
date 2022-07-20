@@ -15,6 +15,9 @@ as Hugo Symbol.}
 \item{sample}{Sample name.}
 
 \item{purity}{Sample purity.}
+
+\item{gene_roles}{A tibble reporting a list of gene names \code{gene} and associated
+role \code{gene_role} among "oncogene", "TSG" and "fusion". Default is taken from COSMIC cancer gene census.}
 }
 \value{
 An object of class \code{TAPACLOTH}.

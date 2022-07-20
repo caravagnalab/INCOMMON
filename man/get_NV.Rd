@@ -9,10 +9,8 @@ get_NV(x, mutation_id)
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}
 
-\item{id}{Coordinates of mutation in the form of a string
+\item{mutation_id}{Coordinates of mutation in the form of a string
 containing \code{chr},\code{from},\code{to},\code{alt},\code{ref} coordinates, colon separated.}
-
-\item{from}{Start position of the mutation.}
 }
 \value{
 NV of the mutation.

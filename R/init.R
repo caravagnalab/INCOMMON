@@ -8,6 +8,8 @@
 #'   as Hugo Symbol.
 #' @param sample Sample name.
 #' @param purity Sample purity.
+#' @param gene_roles A tibble reporting a list of gene names `gene` and associated
+#' role `gene_role` among "oncogene", "TSG" and "fusion". Default is taken from COSMIC cancer gene census.
 #' @return An object of class \code{TAPACLOTH}.
 #' @export
 init = function(mutations, sample, purity, gene_roles = cancer_gene_census){
