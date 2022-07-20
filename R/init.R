@@ -4,7 +4,7 @@
 #' analyses with `run_classifier` and `estimate_purity` functions.
 #' @param mutations a tibble with columns chromosome `chr`, start position `from`, end position `to`,
 #'   reference `ref` and alternative `alt` alleles, coverage `DP`, number
-#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene` 
+#'   of reads with variant `NV`, variant allelic frequency `VAF` gene name `gene`
 #'   as Hugo Symbol.
 #' @param sample Sample name.
 #' @param purity Sample purity.
@@ -12,7 +12,7 @@
 #' role `gene_role` among "oncogene", "TSG" and "fusion". Default is taken from COSMIC cancer gene census.
 #' @return An object of class \code{TAPACLOTH}.
 #' @export
-init = function(mutations, sample, purity, gene_roles = cancer_gene_census){
+init = function(mutations, sample, purity, gene_roles = TAPACLOTH::cancer_gene_census){
   mutations = left_join(mutations, gene_roles, by = "gene")
   out = list(
     data = mutations,
