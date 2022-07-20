@@ -4,7 +4,7 @@
 \alias{init}
 \title{Prepare input for analyses with \code{'TAPACLOTH'}.}
 \usage{
-init(mutations, sample, purity, gene_roles = cancer_gene_census)
+init(mutations, sample, purity, gene_roles = TAPACLOTH::cancer_gene_census)
 }
 \arguments{
 \item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
@@ -25,4 +25,8 @@ An object of class \code{TAPACLOTH}.
 \description{
 Process input data into an object of class \code{'TAPACLOTH'}, ready for
 analyses with \code{run_classifier} and \code{estimate_purity} functions.
+}
+\examples{
+input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+print(input)
 }

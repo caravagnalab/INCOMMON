@@ -12,6 +12,9 @@
 #' role `gene_role` among "oncogene", "TSG" and "fusion". Default is taken from COSMIC cancer gene census.
 #' @return An object of class \code{TAPACLOTH}.
 #' @export
+#' @examples 
+#' input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+#' print(input)
 init = function(mutations, sample, purity, gene_roles = TAPACLOTH::cancer_gene_census){
   mutations = left_join(mutations, gene_roles, by = "gene")
   out = list(
