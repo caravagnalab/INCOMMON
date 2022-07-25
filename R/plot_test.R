@@ -48,7 +48,7 @@ plot_test = function(x) {
                      p = p,
                      karyotype = mdata[i,]$karyotype,
                      multiplicity = mdata[i,]$multiplicity,
-                     outcome = ifelse(mdata[i,]$pvalue > get_alpha(x, model), "PASS", "FAIL"),
+                     outcome = mdata[i,]$outcome,
                      l_a = mdata[i,]$l_a,
                      r_a = mdata[i,]$r_a
                    )
@@ -56,9 +56,9 @@ plot_test = function(x) {
       y = y %>%
         dplyr::mutate(
           class = case_when(
-            outcome == "FAIL" & multiplicity == 1 ~ "FAIL1",
-            outcome == "FAIL" & multiplicity == 2 ~ "FAIL2",
-            outcome == "PASS" ~ karyotype,
+            outcome == "FALSE" & multiplicity == 1 ~ "FAIL1",
+            outcome == "FALSE" & multiplicity == 2 ~ "FAIL2",
+            outcome == "TRUE" ~ karyotype,
           )
         ) #ifelse(outcome == "FAIL", "FAIL", karyotype))
       ## Build plot

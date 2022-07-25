@@ -291,3 +291,12 @@ get_id = function(x, gene_name){
     dplyr::filter(gene == gene_name) %>% 
     pull(id)
 }
+
+closer_dist = function(null_model, nv, karyotypes) {
+  i = null_model$test %>% 
+    rowwise() %>%
+    mutate(dist = min(nv - l_a, nv - r_a)) %>% 
+    pull(dist) %>% 
+    which.min()
+  return(i)
+}

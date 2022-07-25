@@ -23,7 +23,9 @@
 run_classifier = function(x,
                           alpha_level = 0.01,
                           model = "Binomial",
-                          rho = NA)
+                          rho = NA,
+                          karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
+                          closer = TRUE)
 {
   stopifnot(inherits(x, "TAPACLOTH"))
   
@@ -50,12 +52,19 @@ run_classifier = function(x,
       purity = get_purity(x),
       rho = rho,
       alpha_level = alpha_level,
-      model = model
+      model = model,
+      karyotypes = karyotypes
     )
     
+
     pvalues = get_pvalues(x, null_model, id)
-    pvalues$pvalue = p.adjust(pvalues$pvalue, method = "BH")
+    pvalues$pvalue = 1-p.adjust(1-pvalues$pvalue, method = "BH")
     pvalues$outcome = pvalues$pvalue < 1 - alpha_level
+    if(all(pvalues$outcome == "FALSE")) {
+      if (closer) {
+        pvalues[closer_dist(null_model, get_NV(x, id), karyotypes), ]$outcome = TRUE
+      }
+    }
     
     return(pvalues)
   }) %>% 

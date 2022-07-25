@@ -14,10 +14,12 @@
 #' null_model = test_setup(coverage = 500, purity = 1.0, rho = 0.01, alpha_level = 0.01, model = 'binomial') 
 #' print(null_model)
 test_setup = function(coverage = 500,
-                          purity = 1.0,
-                          rho = 0.01,
-                          alpha_level = 0.01,
-                          model = 'binomial')
+                      purity = 1.0,
+                      rho = 0.01,
+                      alpha_level = 0.01,
+                      model = 'binomial',
+                      karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+)
 {
 
   # Range of NV values
@@ -41,7 +43,7 @@ test_setup = function(coverage = 500,
   #   )
   # }
   
-  log_p = lapply(c("1:0", "1:1", "2:0", "2:1", "2:2"), function(karyotype) {
+  log_p = lapply(karyotypes, function(karyotype) {
     alleles = stringr::str_split(string = karyotype, pattern = ":") %>% unlist() %>% as.integer()
     ploidy = sum(alleles)
     lapply(1:max(alleles), function(mult) {
