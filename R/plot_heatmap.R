@@ -2,6 +2,7 @@
 #' @description
 #' Generates a composite heatmap with useful information on data and classification results.
 #' @param x An obj of class \code{'TAPACLOTH'} containing a `classifier`.
+#' @param model Model used for the test, either "Binomial" or "Beta-Binomial".
 #' @import pheatmap
 #' @import CNAqc
 #' @import ggplot2
@@ -65,13 +66,13 @@ plot_heatmap = function(x, model = 'binomial')
     dplyr::filter(model == !!model) %>% 
     pull(alpha)
   
-  p_matrix[p_matrix < alpha_test] = NA
+  p_matrix[p_matrix > 1-alpha_test] = NA
   
   p_matrix = apply(p_matrix, c(1, 2), function(x) {
     if (is.na(x)) return('')
-    if (x < 0.33) return("*")
-    if (x > 0.33 & x < 0.67) return("**")
-    return("***")
+    if (x < alpha_test*0.001) return("***")
+    if (x < alpha_test*0.01) return("**")
+    return("*")
   })
   
   # Read counts data

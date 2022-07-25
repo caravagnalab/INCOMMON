@@ -8,6 +8,8 @@ plot_heatmap(x, model = "binomial")
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'} containing a \code{classifier}.}
+
+\item{model}{Model used for the test, either "Binomial" or "Beta-Binomial".}
 }
 \value{
 An object of class \code{'TAPACLOTH'} containing a list of ggplot2
