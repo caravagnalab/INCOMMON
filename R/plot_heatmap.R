@@ -19,6 +19,8 @@ plot_heatmap = function(x, model = 'binomial')
 {
   stopifnot(inherits(x, "TAPACLOTH"))
   
+  model = model %>% tolower()
+  
   # Tibble 2 matrix
   t2m = function(x){
     m =  x[, 2:ncol(x)] %>% as.matrix()

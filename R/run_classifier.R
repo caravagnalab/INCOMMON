@@ -54,7 +54,8 @@ run_classifier = function(x,
     )
     
     pvalues = get_pvalues(x, null_model, id)
-    pvalues$outcome = pvalues$pvalue > alpha_level
+    pvalues$pvalue = p.adjust(pvalues$pvalue, method = "BH")
+    pvalues$outcome = pvalues$pvalue < 1 - alpha_level
     
     return(pvalues)
   }) %>% 

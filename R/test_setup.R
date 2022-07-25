@@ -71,12 +71,13 @@ test_setup = function(coverage = 500,
 
       # Compute two-tailed p-value for each NV value
       p_x = sapply(nvs, function(nv){log_p[which(log_p <= log_p[nv])] %>% sum()})
+      p_x = 1-p_x
       
       # Find left extremum NV l_a such that p-value < alpha
-      l_a = which(p_x > alpha_level, arr.ind = TRUE) %>% min
+      l_a = which(p_x < 1-alpha_level, arr.ind = TRUE) %>% min
       
       # Find right extremum NV l_a such that p-value < alpha
-      r_a = which(p_x > alpha_level, arr.ind = TRUE) %>% max
+      r_a = which(p_x < 1-alpha_level, arr.ind = TRUE) %>% max
       
       # Adjustments for plots when test fails
       if (is.infinite(l_a))
