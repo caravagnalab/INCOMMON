@@ -206,16 +206,16 @@ p = \sum_{i\in I} Bin\left(i \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 12</span></span></span>
 <span><span class="co">#&gt;    id            NV    DP   VAF gene  gene_…¹ karyo…² multi…³   l_a   r_a pvalue</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:0           1    17    23   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:1           1     7    15   1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40  0.952</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25  0.994</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25  0.994</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33  0.458</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26  0.986</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:0           1    17    23  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:1           1     7    15  0.852</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 1 more variable: outcome &lt;lgl&gt;, and abbreviated</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​gene_role, ²​karyotype, ³​multiplicity</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span>
@@ -223,16 +223,16 @@ p = \sum_{i\in I} Bin\left(i \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 12</span></span></span>
 <span><span class="co">#&gt;    id            NV    DP   VAF gene  gene_…¹ karyo…² multi…³   l_a   r_a pvalue</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:0           1    17    23   1.00</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:1           1     7    15   1.00</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:0           1    32    40  0.952</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> chr10:114…    30    45 0.667 TCF7… oncoge… 1:1           1    15    25  0.994</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           1    15    25  0.994</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:0           2    37    43  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           1     9    19  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:1           2    23    33  0.458</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           1     6    15  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> chr10:114…    30    45 0.667 TCF7… oncoge… 2:2           2    16    26  0.986</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:0           1    17    23  1.00 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> chr14:301…     7    25 0.28  PRKD1 fusion  1:1           1     7    15  0.852</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># … with 190 more rows, 1 more variable: outcome &lt;lgl&gt;, and abbreviated</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   variable names ¹​gene_role, ²​karyotype, ³​multiplicity</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span></span></code></pre></div>
