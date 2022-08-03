@@ -54,7 +54,8 @@ run_classifier = function(x,
       purity = get_purity(x),
       cutoff = cutoff,
       model = model,
-      rho = 0.01
+      rho = rho,
+      karyotypes = karyotypes
     )
   }) %>% 
     do.call(rbind, .)

@@ -4,13 +4,15 @@
 # cutoff - likelihood minima da considerare per il test
 # normalise - se ogni likelihood viene ri-scalato sul suo massimo (nota, i valori
 # sono dapo tra 0/1 ma NON sono probability, sono re-scaled likelihoods)
-binomial_test = function(test, 
-                               DP, 
-                               purity, 
-                               cutoff, 
-                               normalise = TRUE, 
-                               model,
-                               rho = 0.01
+binomial_test = function(test,
+                         DP,
+                         purity,
+                         cutoff,
+                         normalise = TRUE,
+                         model,
+                         rho = 0.01,
+                         karyotypes
+                         
 )
 {
   NV_x = 1:DP
@@ -56,11 +58,16 @@ binomial_test = function(test,
       mutate(label = ifelse(density < cutoff, "out of sample", label))
   }
   
-  dataset = bind_rows(db(1, 0),
-                      db(1, 1),
-                      db(2, 0),
-                      db(2, 1),
-                      db(2, 2)) %>% cut(cutoff)
+  dataset = lapply(karyotypes, function(k) {
+    alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
+    db(alleles[1],alleles[2])
+  }) %>% bind_rows() %>% cut(cutoff)
+  
+  # dataset = bind_rows(db(1, 0),
+  #                     db(1, 1),
+  #                     db(2, 0),
+  #                     db(2, 1),
+  #                     db(2, 2)) %>% cut(cutoff)
   
   class_of =  dataset %>%
     maximise() %>%
