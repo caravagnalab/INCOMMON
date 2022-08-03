@@ -25,7 +25,6 @@ run_classifier = function(x,
                           model = "Binomial",
                           rho = 0.01,
                           karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
-                          normalise = TRUE,
                           closer = FALSE)
 {
   stopifnot(inherits(x, "TAPACLOTH"))
@@ -49,13 +48,12 @@ run_classifier = function(x,
     
   tests = lapply(x$data$id, function(id) {
     
-    binomial_test_power(
+    binomial_test(
       test = get_NV(x, id),
       DP = get_DP(x, id),
       purity = get_purity(x),
       cutoff = cutoff,
-      normalise = normalise,
-      model = "beta-binomial",
+      model = model,
       rho = 0.01
     )
   }) %>% 

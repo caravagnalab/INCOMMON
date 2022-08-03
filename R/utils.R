@@ -308,3 +308,12 @@ closer_dist = function(null_model, nv, karyotypes) {
     which.min()
   return(i)
 }
+
+# Maxima
+maximise = function(x)
+{
+  x %>%
+    group_by(NV) %>%
+    filter(density == max(density)) %>%
+    ungroup()
+}
