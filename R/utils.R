@@ -100,10 +100,10 @@ unidify = function(x){
 #' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
 #' @return DP of the mutation.
 #' @export
-get_DP = function(x, mutation_id){
+get_DP = function(x, id){
   x = idify(x)
   x$data %>% 
-    dplyr::filter(id == mutation_id) %>% 
+    dplyr::filter(id == !!id) %>% 
     pull(DP)
 }
 
@@ -115,10 +115,10 @@ get_DP = function(x, mutation_id){
 #' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
 #' @return NV of the mutation.
 #' @export
-get_NV = function(x, mutation_id){
+get_NV = function(x, id){
   x = idify(x)
   x$data %>% 
-    dplyr::filter(id == mutation_id) %>% 
+    dplyr::filter(id == !!id) %>% 
     pull(NV)
 }
 
@@ -152,6 +152,13 @@ get_gene = function(x, mutation_id){
     pull(gene)
 }
 
+get_gene_role = function(x, id){
+  x = idify(x)
+  x$data %>% 
+    dplyr::filter(id == !!id) %>% 
+    pull(gene_role)
+}
+
 #' Getter for class \code{'TAPACLOTH'}.
 #' @description
 #' Get coordinates of mutation(s) mapped on a specified gene.
@@ -168,17 +175,17 @@ get_coord = function(x, gene_name){
     strsplit(., split = ":")
 }
 
-get_pvalues = function(x, null_model, mutation_id){
+get_mass = function(x, null_model, id){
   y = null_model$test %>% 
     dplyr::select(karyotype, multiplicity, l_a, r_a)
   
-  y$id = mutation_id
+  y$id = id
   
-  y$pvalue = sapply(null_model$test$inputs, function(s) {
-    s$p[get_NV(x, mutation_id)]
+  y$mass = sapply(null_model$test$inputs, function(s) {
+    s$p[get_NV(x, id)]
   })
   
-  y$gene = get_gene(x, mutation_id)
+  y$gene = get_gene(x, id)
   
   return(y)
 }
@@ -254,9 +261,9 @@ get_reliability = function(x, model){
   return(y$reliability)
 }
 
-get_alpha = function(x, model){
+get_threshold = function(x, model){
   y = get_classifier(x, model)
-  y$params$alpha
+  y$params$threshold
 }
 
 get_rho = function(x){

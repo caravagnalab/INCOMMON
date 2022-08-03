@@ -95,8 +95,8 @@ print.TAPACLOTH = function(x, ...) {
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Test using {.field {model}} model',
           ifelse((model %>% tolower()) == 'beta-binomial',
-                 ' with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and significance level {.field {x$classifier[[model]]$params$alpha}}',
-                 ' with significance level {.field {x$classifier[[model]]$params$alpha}}')),
+                 ' with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and probability mass threshold {.field {x$classifier[[model]]$params$threshold}}',
+                 ' with probability mass threshold {.field {x$classifier[[model]]$params$threshold}}')),
           ''
         )
       print(get_classifier(x) %>% 
@@ -104,7 +104,7 @@ print.TAPACLOTH = function(x, ...) {
               dplyr::select(id, NV, DP, VAF, 
                             gene, gene_role, 
                             karyotype, multiplicity, 
-                            l_a, r_a, pvalue, outcome)
+                            l_a, r_a, mass, outcome)
             )
     }
   }

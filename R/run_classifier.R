@@ -21,11 +21,12 @@
 #'    model = "Binomial")
 #' print(x)
 run_classifier = function(x,
-                          alpha_level = 0.01,
+                          cutoff = 0.9,
                           model = "Binomial",
-                          rho = NA,
+                          rho = 0.01,
                           karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
-                          closer = TRUE)
+                          normalise = TRUE,
+                          closer = FALSE)
 {
   stopifnot(inherits(x, "TAPACLOTH"))
   
@@ -46,42 +47,32 @@ run_classifier = function(x,
     
   x = idify(x)
     
-  pvalues = lapply(x$data$id, function(id) {
-    null_model = test_setup(
-      coverage = get_DP(x, mutation_id = id),
+  tests = lapply(x$data$id, function(id) {
+    
+    binomial_test_power(
+      test = get_NV(x, id),
+      DP = get_DP(x, id),
       purity = get_purity(x),
-      rho = rho,
-      alpha_level = alpha_level,
-      model = model,
-      karyotypes = karyotypes
+      cutoff = cutoff,
+      normalise = normalise,
+      model = "beta-binomial",
+      rho = 0.01
     )
-    
-
-    pvalues = get_pvalues(x, null_model, id)
-    pvalues$pvalue = 1-p.adjust(1-pvalues$pvalue, method = "BH")
-    pvalues$outcome = pvalues$pvalue < 1 - alpha_level
-    if(all(pvalues$outcome == "FALSE")) {
-      if (closer) {
-        pvalues[closer_dist(null_model, get_NV(x, id), karyotypes), ]$outcome = TRUE
-      }
-    }
-    
-    return(pvalues)
   }) %>% 
     do.call(rbind, .)
   
-  if ((model %>% tolower()) == "binomial") {
+  if (model == "binomial") {
     test$classifier$binomial = list(
-      params = tibble(alpha = alpha_level),
-      data = full_join(x %>% idify() %>% get_data(), pvalues, by = c("id", "gene"))
+      params = tibble(cutoff = cutoff),
+      data = bind_cols(x %>% get_data(), tests)
     )
   }
   
-  if ((model %>% tolower()) == "beta-binomial") {
+  if (model == "beta-binomial") {
     test$classifier$`beta-binomial` = list(
-      params = tibble(alpha = alpha_level,
+      params = tibble(cutoff = cutoff,
                       rho = rho),
-      data = full_join(x %>% idify() %>% get_data(), pvalues, by = c("id", "gene"))
+      data = bind_cols(x %>% get_data(), tests)
     )
   }
   return(test)

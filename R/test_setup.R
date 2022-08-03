@@ -16,7 +16,7 @@
 test_setup = function(coverage = 500,
                       purity = 1.0,
                       rho = 0.01,
-                      alpha_level = 0.01,
+                      threshold = 0.1,
                       model = 'binomial',
                       karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
@@ -73,13 +73,14 @@ test_setup = function(coverage = 500,
 
       # Compute two-tailed p-value for each NV value
       p_x = sapply(nvs, function(nv){log_p[which(log_p <= log_p[nv])] %>% sum()})
-      p_x = 1-p_x
+      # p_x = 1-p_x
+      # p_x = log_p
       
       # Find left extremum NV l_a such that p-value < alpha
-      l_a = which(p_x < 1-alpha_level, arr.ind = TRUE) %>% min
+      l_a = which(p_x > threshold, arr.ind = TRUE) %>% min
       
       # Find right extremum NV l_a such that p-value < alpha
-      r_a = which(p_x < 1-alpha_level, arr.ind = TRUE) %>% max
+      r_a = which(p_x > threshold, arr.ind = TRUE) %>% max
       
       # Adjustments for plots when test fails
       if (is.infinite(l_a))
@@ -115,7 +116,7 @@ test_setup = function(coverage = 500,
     rho = rho,
     coverage = coverage,
     purity = purity,
-    alpha_level = alpha_level,
+    threshold = threshold,
     test = log_p
   ))
 }

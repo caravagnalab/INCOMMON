@@ -45,20 +45,27 @@ plot_test = function(x) {
                    }
                    tibble(
                      nv = 1:get_DP(x, ID),
+                     VAF = nv/unique(mdata$DP),
                      p = p,
                      karyotype = mdata[i,]$karyotype,
                      multiplicity = mdata[i,]$multiplicity,
                      outcome = mdata[i,]$outcome,
+                     rank = mdata[i,]$rank,
                      l_a = mdata[i,]$l_a,
                      r_a = mdata[i,]$r_a
                    )
                  }) %>% do.call(rbind, .)
+      minrank = y$rank %>% min()
       y = y %>%
         dplyr::mutate(
           class = case_when(
+            outcome == "TRUE" & rank == minrank & multiplicity == 1 ~ "BEST1",
+            outcome == "TRUE" & rank == minrank & multiplicity == 2 ~ "BEST2",
             outcome == "FALSE" & multiplicity == 1 ~ "FAIL1",
             outcome == "FALSE" & multiplicity == 2 ~ "FAIL2",
-            outcome == "TRUE" ~ karyotype,
+            outcome == "TRUE" & multiplicity == 1  & rank != 1 ~ "PASS1",
+            outcome == "TRUE" & multiplicity == 2  & rank != 1 ~ "PASS2"
+            # outcome == "TRUE" ~ karyotype,
           )
         ) #ifelse(outcome == "FAIL", "FAIL", karyotype))
       ## Build plot
@@ -69,11 +76,10 @@ plot_test = function(x) {
             x = nv,
             y = karyotype,
             height = p,
-            fill = class
+            fill = class,
           ),
-          stat = "identity",
-          alpha = 0.8
-        )
+          stat = "identity"
+        )+scale_x_continuous(sec.axis = sec_axis(trans=~./get_DP(x, ID), name = "VAF"))
       
       if ((model %>% tolower()) == "beta-binomial") {
         model_string = bquote("Test using Beta-Binomial model with " * rho * " = " *
@@ -87,26 +93,26 @@ plot_test = function(x) {
           values = c(
             "FAIL1" = "#BEBEBE66",
             "FAIL2" = "#BEBEBE66",
-            "1:0" = "steelblue",
-            "1:1" = "#228B22CC",
-            "2:0" =  "turquoise4",
-            "2:1" = "#FFA500CC",
-            "2:2" = "firebrick3"
+            "BEST1" = "firebrick3",
+            "BEST2" = "firebrick3",
+            "PASS1" =  "#FFA500CC",
+            "PASS2" = "#FFA500CC"
           ),
-          limits = c(unique(y$class)),
-          guide = "none"
-        ) +
-        ggplot2::geom_vline(xintercept = get_NV(x, mutation_id = ID), linetype = "longdash") +
+          breaks = c("FAIL", "PASS", "BEST"),
+          limits = c(unique(y$class))
+          # guide = "none"
+        ) + 
+        ggplot2::geom_vline(xintercept = get_NV(x, id = ID), linetype = "longdash") +
         CNAqc:::my_ggplot_theme() +
-        ggplot2::coord_cartesian(clip = "off") +
+        ggplot2::coord_cartesian(clip = "off", expand = TRUE) +
         ggplot2::labs(
           x = 'NV',
           y = "Pr(X = NV)",
           caption = model_string,
-          title = paste0(ID," ; Gene ", get_gene(x, ID)),
+          title = paste0(unique(mdata$ref),">",unique(mdata$alt), "; Gene ", get_gene(x, ID), "(", get_gene_role(x, ID), ")"),
           subtitle = bquote(
-            "DP = " * .(unique(mdata$DP)) * '; ' * pi * ' = ' * .(get_purity(x)) * ', ' ~ alpha *
-              ' = ' * .(get_alpha(x, model))
+            "DP = " * .(unique(mdata$DP)) * '; ' * pi * ' = ' * .(get_purity(x)) * ', Threshold' *
+              ' = ' * .(get_threshold(x, model))
           )
         )
     })
