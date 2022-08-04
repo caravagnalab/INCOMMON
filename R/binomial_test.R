@@ -11,7 +11,8 @@ binomial_test = function(test,
                          normalise = TRUE,
                          model,
                          rho = 0.01,
-                         karyotypes
+                         karyotypes,
+                         closer
                          
 )
 {
@@ -30,7 +31,8 @@ binomial_test = function(test,
         minor = minor,
         multiplicity = p,
         karyotype = paste0(Major, ":", minor),
-        label = paste0(Major, ":", minor, ' ', p)
+        label = paste0(Major, ":", minor, ' ', p),
+        peak = peaks[p]
       )) %>%
       Reduce(f = bind_rows)
   }
@@ -72,6 +74,7 @@ binomial_test = function(test,
   class_of =  dataset %>%
     maximise() %>%
     filter(NV == test) %>%
+    mutate(label = ifelse(closer == TRUE, paste0(karyotype, ' ', multiplicity), label)) %>% 
     pull(label) %>% 
     unique() %>% 
     paste(collapse = ', ')

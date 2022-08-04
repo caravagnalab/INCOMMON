@@ -50,10 +50,10 @@ plot_test = function(x, id, model){
       "N)\nPurity: ",
       get_purity(x),
       ' - cutoff: ',
-      x %>% get_params() %>% filter(model == !!model) %>% pull(cutoff)
+      x %>% get_params(model = model) %>% pull(cutoff)
     ),
     caption = paste0("Classified using ", model, " model")) +
-    guides(color = 'none') +
+    # guides(color = 'none') +
     # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
     #     mapping = aes(yintercept = cutoff,
     #     color = label),

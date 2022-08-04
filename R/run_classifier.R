@@ -21,7 +21,7 @@
 #'    model = "Binomial")
 #' print(x)
 run_classifier = function(x,
-                          cutoff = 0.9,
+                          cutoff = 0.75,
                           model = "Binomial",
                           rho = 0.01,
                           karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
@@ -55,7 +55,8 @@ run_classifier = function(x,
       cutoff = cutoff,
       model = model,
       rho = rho,
-      karyotypes = karyotypes
+      karyotypes = karyotypes,
+      closer = closer
     )
   }) %>% 
     do.call(rbind, .)

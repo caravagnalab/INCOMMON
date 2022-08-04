@@ -31,13 +31,10 @@ get_classes = function(x, model){
 #' @return A tibble containing parameters for all the models used in the classification.
 #' @export
 #' 
-get_params = function(x) {
+get_params = function(x, model) {
   stopifnot(inherits(x, "TAPACLOTH"))
-  lapply(x$classifier %>% names(), function(model) {
     tibble(model = model,
            x$classifier[[model]]$params)
-  }) %>%
-    do.call(rbind, .)
 }
 
 #' Getter for class \code{'TAPACLOTH'}.
