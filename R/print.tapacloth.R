@@ -24,15 +24,10 @@
 plot.TAPACLOTH = function(x, ...) {
   stopifnot(inherits(x, "TAPACLOTH"))
   lapply(names(x$classifier), function(model){
-    if("plot_test" %in% names(x$classifier[[model]])){
-      return(x$classifier[[model]]$plot_test)
-    }
-    else{
-      x = plot_test(x)
-      return(x$classifier[[model]]$plot_test)
-    }
+    lapply(x$classifier[[model]]$data$id, function(id){
+      plot_test(x, id = id, model = model)
+    })
   })
-  
 }
 #' Print for class \code{'TAPACLOTH'}.
 #' @param x An obj of class \code{'TAPACLOTH'}.
@@ -95,26 +90,16 @@ print.TAPACLOTH = function(x, ...) {
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Test using {.field {model}} model',
           ifelse((model %>% tolower()) == 'beta-binomial',
-                 ' with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and probability mass threshold {.field {x$classifier[[model]]$params$threshold}}',
-                 ' with probability mass threshold {.field {x$classifier[[model]]$params$threshold}}')),
+                 'with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and likelihood cutoff {.field {x$classifier[[model]]$params$cutoff}}',
+                 'with likelihood cutoff {.field {x$classifier[[model]]$params$cutoff}}')),
           ''
         )
       print(get_classifier(x) %>% 
               get_data() %>% 
               dplyr::select(id, NV, DP, VAF, 
                             gene, gene_role, 
-                            karyotype, multiplicity, 
-                            l_a, r_a, mass, outcome)
+                            ploidy, multiplicity,wt)
             )
     }
   }
-}
-
-# Volevo fare qualcosa ma poi sono morto vedendo dentro x!
-print_sample_test_binomial = function(x, sample)
-{
-  # x$fit %>% dplyr::filter()
-  #
-  # cli::cli_text("Classification: {.value {crayon:red()}}")
-
 }

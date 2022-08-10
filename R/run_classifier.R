@@ -24,9 +24,9 @@ run_classifier = function(x,
                           cutoff = 0.75,
                           model = "Binomial",
                           rho = 0.01,
-                          karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
-                          closer = FALSE)
-{
+                          karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+                          )
+  {
   stopifnot(inherits(x, "TAPACLOTH"))
   
   model = model %>% tolower()
@@ -56,7 +56,6 @@ run_classifier = function(x,
       model = model,
       rho = rho,
       karyotypes = karyotypes,
-      closer = closer
     )
   }) %>% 
     do.call(rbind, .)

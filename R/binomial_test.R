@@ -11,10 +11,8 @@ binomial_test = function(test,
                          normalise = TRUE,
                          model,
                          rho = 0.01,
-                         karyotypes,
-                         closer
-                         
-)
+                         karyotypes
+                         )
 {
   NV_x = 1:DP
   
@@ -38,13 +36,13 @@ binomial_test = function(test,
   }
   
   # Re-scaled likelihoods (makes them comparable)
-  scaling = function(x, normalise)
-  {
-    x %>%
-      group_by(karyotype, multiplicity) %>%
-      mutate(density = density / max(density)) %>%
-      ungroup()
-  }
+  # scaling = function(x, normalise)
+  # {
+  #   x %>%
+  #     group_by(karyotype, multiplicity) %>%
+  #     mutate(density = density / max(density)) %>%
+  #     ungroup()
+  # }
   
   # Cutoff
   cut = function(x, cutoff)
@@ -71,10 +69,9 @@ binomial_test = function(test,
   #                     db(2, 1),
   #                     db(2, 2)) %>% cut(cutoff)
   
-  class_of =  dataset %>%
+  class_of = dataset %>%
     maximise() %>%
-    filter(NV == test) %>%
-    mutate(label = ifelse(closer == TRUE, paste0(karyotype, ' ', multiplicity), label)) %>% 
+    filter(NV == test) %>% 
     pull(label) %>% 
     unique() %>% 
     paste(collapse = ', ')
