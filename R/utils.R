@@ -7,7 +7,7 @@ get_sample = function(x){
 }
 
 get_purity = function(x){
-  return(x$purity)
+  return(unique(x$purity))
 }
 
 #' Getter for class \code{'TAPACLOTH'}.
