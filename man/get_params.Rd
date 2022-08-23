@@ -4,7 +4,7 @@
 \alias{get_params}
 \title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
-get_params(x)
+get_params(x, model)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}

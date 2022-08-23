@@ -98,7 +98,8 @@ print.TAPACLOTH = function(x, ...) {
               get_data() %>% 
               dplyr::select(id, NV, DP, VAF, 
                             gene, gene_role, 
-                            ploidy, multiplicity,wt)
+                            ploidy, multiplicity,wt,
+                            uncertainty)
             )
     }
   }

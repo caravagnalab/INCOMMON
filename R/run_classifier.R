@@ -1,12 +1,13 @@
 #' Classify mutations using a (Beta-)Binomial model-based test.
 #'
 #' @param x An object of class \code{'TAPACLOTH'} generated with function `init`.
-#' @param alpha_level The significance level to be used in hypothesis testing.
+#' @param cutoff Likelihood cut-off for class assignment.
 #' @param model Model used for the classification task, either "Binomial" (no over-dispersion) 
 #' or "Beta-Binomial" (over-dispersion included), that will be used as the expected 
 #' distribution for the number of reads with variant at fixed coverage and purity.
 #' @param rho If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
 #' of the expected distribution used for the test.
+#' @param karyotypes Karyotypes to be included among the possible classes.
 #' @return An object of class `TAPACLOTH` containing the input plus
 #' the classification data and paramters.
 #' @export
@@ -16,9 +17,11 @@
 #'          sample = example_data$sample,
 #'          purity = example_data$purity)
 #' x = run_classifier(
-#'     x, 
-#'     alpha_level = 1e-3, 
-#'    model = "Binomial")
+#'     x = x, 
+#'     model = "Beta-Binomial", 
+#'     rho = 0.01,
+#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#'     )
 #' print(x)
 run_classifier = function(x,
                           cutoff = 0.75,

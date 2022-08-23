@@ -4,7 +4,7 @@
 \alias{get_NV}
 \title{Getter for class \code{'TAPACLOTH'}.}
 \usage{
-get_NV(x, mutation_id)
+get_NV(x, id)
 }
 \arguments{
 \item{x}{An obj of class \code{'TAPACLOTH'}.}

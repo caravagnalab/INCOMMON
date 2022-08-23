@@ -1,14 +1,33 @@
-# test - scalare della mutazione da testare
-# DP - coverage della mutazione da testare
-# purity - del campione
-# cutoff - likelihood minima da considerare per il test
-# normalise - se ogni likelihood viene ri-scalato sul suo massimo (nota, i valori
-# sono dapo tra 0/1 ma NON sono probability, sono re-scaled likelihoods)
+#' Compute likelihoods and uncertainty..
+#'
+#' @param test Number of reads with the variant.
+#' @param DP Sequencing coverage of the mutated genome site.
+#' @param purity Purity of the sample.
+#' @param cutoff Likelihood cut-off for class assignment.
+#' @param model Model used for the classification task, either "Binomial" (no over-dispersion) 
+#' or "Beta-Binomial" (over-dispersion included), that will be used as the expected 
+#' distribution for the number of reads with variant at fixed coverage and purity.
+#' @param rho If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
+#' of the expected distribution used for the classification.
+#' @param karyotypes Karyotypes to be included among the possible classes.
+#' @return A tibble including ploidy, multiplicity, proportion of wt alleles, 
+#' uncertainty  of the class assignment, model density.
+#' @export
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @examples
+#' binomial_test(test = 220,
+#' DP = 500,
+#' purity = 0.98,
+#' cutoff = 0.9,
+#' model = "Beta-Binomial",
+#' rho = 0.01,
+#' karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#')
+
 binomial_test = function(test,
                          DP,
                          purity,
                          cutoff,
-                         normalise = TRUE,
                          model,
                          rho = 0.01,
                          karyotypes
@@ -35,16 +54,6 @@ binomial_test = function(test,
       Reduce(f = bind_rows)
   }
   
-  # Re-scaled likelihoods (makes them comparable)
-  # scaling = function(x, normalise)
-  # {
-  #   x %>%
-  #     group_by(karyotype, multiplicity) %>%
-  #     mutate(density = density / max(density)) %>%
-  #     ungroup()
-  # }
-  
-  # Cutoff
   cut = function(x, cutoff)
   {
     cut_offs = x %>%  
@@ -63,15 +72,19 @@ binomial_test = function(test,
     db(alleles[1],alleles[2])
   }) %>% bind_rows() %>% cut(cutoff)
   
-  # dataset = bind_rows(db(1, 0),
-  #                     db(1, 1),
-  #                     db(2, 0),
-  #                     db(2, 1),
-  #                     db(2, 2)) %>% cut(cutoff)
+  normll = dataset %>% 
+    dplyr::mutate(state = paste0(Major, ":", minor, " ", multiplicity)) %>% 
+    group_by(state) %>%
+    dplyr::summarise(NV,density = density/max(density)) %>%
+    dplyr::filter(NV==test) %>% 
+    dplyr::arrange(desc(density))
+    
+  
+  llratio = normll[2,]$density/normll[1,]$density
   
   class_of = dataset %>%
     maximise() %>%
-    filter(NV == test) %>% 
+    dplyr::filter(NV == test) %>% 
     pull(label) %>% 
     unique() %>% 
     paste(collapse = ', ')
@@ -87,6 +100,7 @@ binomial_test = function(test,
   return(tibble(ploidy = ploidy,
                 multiplicity = multiplicity,
                 wt = ploidy-multiplicity,
+                uncertainty = llratio,
                 density = list(dataset)))
 }
   

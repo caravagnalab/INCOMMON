@@ -8,8 +8,9 @@ test_setup(
   coverage = 500,
   purity = 1,
   rho = 0.01,
-  alpha_level = 0.01,
-  model = "binomial"
+  threshold = 0.1,
+  model = "binomial",
+  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
 }
 \arguments{
@@ -19,9 +20,9 @@ test_setup(
 
 \item{rho}{The overdisperion parameter for "Beta-Binomial" model.}
 
-\item{alpha_level}{The confidence level of the test.}
-
 \item{model}{Model used for the test, either "Binomial" or "Beta-Binomial".}
+
+\item{alpha_level}{The confidence level of the test.}
 }
 \value{
 A list.

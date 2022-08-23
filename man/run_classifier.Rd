@@ -4,12 +4,18 @@
 \alias{run_classifier}
 \title{Classify mutations using a (Beta-)Binomial model-based test.}
 \usage{
-run_classifier(x, alpha_level = 0.01, model = "Binomial", rho = NA)
+run_classifier(
+  x,
+  cutoff = 0.75,
+  model = "Binomial",
+  rho = 0.01,
+  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+)
 }
 \arguments{
 \item{x}{An object of class \code{'TAPACLOTH'} generated with function \code{init}.}
 
-\item{alpha_level}{The significance level to be used in hypothesis testing.}
+\item{cutoff}{Likelihood cut-off for class assignment.}
 
 \item{model}{Model used for the classification task, either "Binomial" (no over-dispersion)
 or "Beta-Binomial" (over-dispersion included), that will be used as the expected
@@ -17,6 +23,8 @@ distribution for the number of reads with variant at fixed coverage and purity.}
 
 \item{rho}{If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
 of the expected distribution used for the test.}
+
+\item{karyotypes}{Karyotypes to be included among the possible classes.}
 }
 \value{
 An object of class \code{TAPACLOTH} containing the input plus
@@ -30,8 +38,10 @@ x = init(mutations = example_data$data,
          sample = example_data$sample,
          purity = example_data$purity)
 x = run_classifier(
-    x, 
-    alpha_level = 1e-3, 
-   model = "Binomial")
+    x = x, 
+    model = "Beta-Binomial", 
+    rho = 0.01,
+    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+    )
 print(x)
 }
