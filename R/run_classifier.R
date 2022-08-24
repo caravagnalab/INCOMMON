@@ -58,7 +58,7 @@ run_classifier = function(x,
       cutoff = cutoff,
       model = model,
       rho = rho,
-      karyotypes = karyotypes,
+      karyotypes = karyotypes
     )
   }) %>% 
     do.call(rbind, .)
