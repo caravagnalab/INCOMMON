@@ -72,15 +72,11 @@ binomial_test = function(test,
     db(alleles[1],alleles[2])
   }) %>% bind_rows() %>% cut(cutoff)
   
-  normll = dataset %>% 
-    dplyr::mutate(state = paste0(Major, ":", minor, " ", multiplicity)) %>% 
-    group_by(state) %>%
-    dplyr::summarise(NV,density = density/max(density)) %>%
-    dplyr::filter(NV==test) %>% 
-    dplyr::arrange(desc(density))
-    
+  dens = dataset %>% 
+    filter(NV==test) %>% 
+    pull(density)
   
-  llratio = normll[2,]$density/normll[1,]$density
+  uncertainty = 1-max(dens)/sum(dens)
   
   class_of = dataset %>%
     maximise() %>%
@@ -100,7 +96,7 @@ binomial_test = function(test,
   return(tibble(ploidy = ploidy,
                 multiplicity = multiplicity,
                 wt = ploidy-multiplicity,
-                uncertainty = llratio,
+                uncertainty = uncertainty,
                 density = list(dataset)))
 }
   

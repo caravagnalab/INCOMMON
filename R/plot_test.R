@@ -1,3 +1,24 @@
+#' Visualize classification results for individual observations.
+#'
+#' @param x An object of class \code{'TAPACLOTH'} containing the classification results, as 
+#' produced by function `run_classifier`.
+#' @param id The id (format chr:from:to:ref:alt) of the mutation.
+#' @param model Model used for the classification task.
+#' @return An object of class \code{'ggplot2'}.
+#' @export
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @examples
+#' x = init(mutations = example_data$data,
+#'          sample = example_data$sample,
+#'          purity = example_data$purity)
+#' model = "beta-binomial"
+#' x = run_classifier(
+#'     x = x, 
+#'     model = model, 
+#'     rho = 0.01,
+#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#'     )
+#' plot_test(x = x,id = x$classifier[[model]]data$id[1],model = model)
 plot_test = function(x, id, model){
   stopifnot(inherits(x,"TAPACLOTH"))
   colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
