@@ -90,29 +90,28 @@
     
 <p>TAPACLOTH is a package to process targeted panel sequencing data of a tumour-matched normal cancer sample and perform clonal deconvolution. The tool allows to:</p>
 <ul>
-<li>classify the karyotype and multiplicity of somatic mutations detected by the panel;</li>
+<li>classify the ploidy and multiplicity of somatic mutations detected by the panel;</li>
 <li>asses tumour purity from somatic mutations detected by the panel;</li>
 </ul>
 <blockquote>
 <p>The TAPACLOTH model is designed to work with a target panel but, in principle, it can be used with any sequencing assay. However, if one can access higher-resolution whole-exome or whole-genome assays, specific <a href="https://caravagnalab.github.io/mobster" class="external-link">deconvolution methodologies should be used</a>.</p>
 </blockquote>
 <div class="section level2">
-<h2 id="karyotype-and-multiplicity-assessment">Karyotype and multiplicity assessment<a class="anchor" aria-label="anchor" href="#karyotype-and-multiplicity-assessment"></a>
+<h2 id="ploidy-and-multiplicity-assessment">Ploidy and multiplicity assessment<a class="anchor" aria-label="anchor" href="#ploidy-and-multiplicity-assessment"></a>
 </h2>
 <p>TAPACLOTH will assess, for every mutation, any of the following statuses:</p>
 <ul>
-<li>karyotype among
+<li>ploidy among
 <ul>
-<li>1:0 (LOH),</li>
-<li>1:1 (diploid heterozygous),</li>
-<li>2:0 (copy-neutral LOH),</li>
-<li>2:1 (trisomy),</li>
-<li>2:2 (tetrasomy);</li>
+<li>1 (LOH),</li>
+<li>2 (diploid heterozygous and copy-neutral LOH), ,</li>
+<li>3 (trisomy),</li>
+<li>4 (tetrasomy);</li>
 </ul>
 </li>
 <li>multiplicity between 1 and 2 for ploidy greater than 1;</li>
 </ul>
-<p>TAPACLOTH implements <a href="classify-and-plot.html">two type of statistical tests</a>; the required inputs are:</p>
+<p>TAPACLOTH implements <a href="classify-and-plot.html">a classifier based on maximum likelihood estimation</a>; the required inputs are:</p>
 <ul>
 <li>read/counts from the panel assay</li>
 <li>tumour sample purity <span class="math inline">\(\pi &gt; 0\)</span>
@@ -121,12 +120,12 @@
 <blockquote>
 <p>Tumour sample purity <span class="math inline">\(\pi\)</span> can be estimated by copy number assessment, pathology assessment, or in general any other bioinformatics approach outside TAPACLOTH.</p>
 </blockquote>
-<p>In these tests, TAPACLOTH assumes that the input purity is correct, an assert that can be tested by estimating purity from TAPACLOTH directly.</p>
+<p>For classification, TAPACLOTH assumes that the input purity is correct, an assert that can be tested by estimating purity from TAPACLOTH directly.</p>
 </div>
 <div class="section level2">
 <h2 id="purity-assessment">Purity assessment<a class="anchor" aria-label="anchor" href="#purity-assessment"></a>
 </h2>
-<p>TAPACLOTH can be used to to <a href="purity-estimates.html">estimate the purity of the cancer sample</a> from the spectrum of somatic mutations detected from targeted panel sequencing; the required inputs are:</p>
+<p>TAPACLOTH can be used to <a href="purity-estimates.html">estimate the purity of the cancer sample</a> from the spectrum of somatic mutations detected from targeted panel sequencing; the required inputs are:</p>
 <ul>
 <li>read/counts or variant allele frequencies from the panel assay.</li>
 </ul>
@@ -138,13 +137,12 @@
 <p>For all tests, input must be prepared using function <code>init</code>, providing as input the following data:</p>
 <ul>
 <li>
-<code>mutations</code> as a tibble with columns indicating chromosome <code>chr</code>, start position <code>from</code>, end position <code>to</code>, reference <code>ref</code> adn alternative <code>alt</code> alleles, coverage <code>DP</code>, number of reads with variant <code>NV</code>, variant allelic frequency <code>VAF</code> and gene name <code>gene</code> as Hugo Symbol;</li>
+<code>mutations</code> as a tibble with columns indicating chromosome <code>chr</code>, start position <code>from</code>, end position <code>to</code>, reference <code>ref</code> and alternative <code>alt</code> alleles, coverage <code>DP</code>, number of reads with variant <code>NV</code>, variant allelic frequency <code>VAF</code> and gene name <code>gene</code> as Hugo Symbol;</li>
 <li>
 <code>sample</code>, for name of the sample;</li>
 <li>
 <code>purity</code>, for sample purity;</li>
 </ul>
-<p>The input can be prepared in the right format using function <code>init</code>.</p>
 <p>This is an example input dataset.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

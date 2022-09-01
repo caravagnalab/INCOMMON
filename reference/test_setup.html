@@ -62,8 +62,9 @@
 <span>  coverage <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  purity <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>  alpha_level <span class="op">=</span> <span class="fl">0.01</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"binomial"</span></span>
+<span>  threshold <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"binomial"</span>,</span>
+<span>  karyotypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1:0"</span>, <span class="st">"1:1"</span>, <span class="st">"2:0"</span>, <span class="st">"2:1"</span>, <span class="st">"2:2"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,12 +82,12 @@
 <dd><p>The overdisperion parameter for "Beta-Binomial" model.</p></dd>
 
 
-<dt>alpha_level</dt>
-<dd><p>The confidence level of the test.</p></dd>
-
-
 <dt>model</dt>
 <dd><p>Model used for the test, either "Binomial" or "Beta-Binomial".</p></dd>
+
+
+<dt>alpha_level</dt>
+<dd><p>The confidence level of the test.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -99,35 +100,9 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">null_model</span> <span class="op">=</span> <span class="fu">test_setup</span><span class="op">(</span>coverage <span class="op">=</span> <span class="fl">500</span>, purity <span class="op">=</span> <span class="fl">1.0</span>, rho <span class="op">=</span> <span class="fl">0.01</span>, alpha_level <span class="op">=</span> <span class="fl">0.01</span>, model <span class="op">=</span> <span class="st">'binomial'</span><span class="op">)</span> </span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in test_setup(coverage = 500, purity = 1, rho = 0.01, alpha_level = 0.01,     model = "binomial"):</span> unused argument (alpha_level = 0.01)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">null_model</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "binomial"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $rho</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $coverage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $purity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $alpha_level</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $test</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   karyotype multiplicity inputs               l_a   r_a   l_v   r_v</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 1:0                  1 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   500   500 1     1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 1:1                  1 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   221   279 0.442 0.558</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 2:0                  1 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   221   279 0.442 0.558</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 2:0                  2 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   500   500 1     1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 2:1                  1 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   140   194 0.28  0.388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> 2:1                  2 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   306   360 0.612 0.72 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> 2:2                  1 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   101   150 0.202 0.3  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> 2:2                  2 <span style="color: #949494;">&lt;tibble [500 × 3]&gt;</span>   221   279 0.442 0.558</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in print(null_model):</span> object 'null_model' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
