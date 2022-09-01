@@ -4,13 +4,11 @@
 \alias{plot_test}
 \title{Visualize classification results for individual observations.}
 \usage{
-plot_test(x, id, model)
+plot_test(x, model, assembly = F)
 }
 \arguments{
 \item{x}{An object of class \code{'TAPACLOTH'} containing the classification results, as
 produced by function \code{run_classifier}.}
-
-\item{id}{The id (format chr:from:to:ref:alt) of the mutation.}
 
 \item{model}{Model used for the classification task.}
 }

@@ -46,9 +46,10 @@ binomial_test = function(test,
         NV = NV_x,
         Major = Major,
         minor = minor,
+        ploidy = Major+minor,
         multiplicity = p,
         karyotype = paste0(Major, ":", minor),
-        label = paste0(Major, ":", minor, ' ', p),
+        label = paste0(Major+minor,'N (Mutated: ', p,"N)"),
         peak = peaks[p]
       )) %>%
       Reduce(f = bind_rows)
@@ -56,47 +57,57 @@ binomial_test = function(test,
   
   cut = function(x, cutoff)
   {
-    cut_offs = x %>%  
-                  group_by(label) %>% 
-                  filter(density == max(density)) %>% 
-                  ungroup() %>% 
-                  mutate(cutoff = density*cutoff) %>% 
-                  select(label, cutoff) 
-    x %>% 
-      left_join(cut_offs, by = "label") %>% 
+   
+    ## Normalize likelihoods by maximum and compute corresponding cut-offs 
+    x = x %>% 
+      group_by(label) %>% 
+      summarise(
+        density,
+        NV,
+        ploidy,
+        multiplicity,
+        label,
+        peak,
+        cutoff = max(density) * cutoff
+      ) %>% 
+      unique() %>% 
+      ungroup()
+    
+    ## Compute uncertainty (relative likelihood) for each class
+    x = x %>% 
+      group_by(NV) %>% 
+      summarise(
+        density,
+        ploidy,
+        multiplicity,
+        peak,
+        cutoff,
+        label,
+        uncertainty = 1 - max(density) / sum(density)
+      ) %>% 
+      ungroup()
+    
+    ## Add out-of-sample label for densities lower than cut-offs
+    x = x %>% 
       mutate(label = ifelse(density < cutoff, "out of sample", label))
+    x
   }
+  
   
   dataset = lapply(karyotypes, function(k) {
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
     db(alleles[1],alleles[2])
   }) %>% bind_rows() %>% cut(cutoff)
   
-  dens = dataset %>% 
-    filter(NV==test) %>% 
-    pull(density)
-  
-  uncertainty = 1-max(dens)/sum(dens)
-  
-  class_of = dataset %>%
+  tested = dataset %>%
     maximise() %>%
-    dplyr::filter(NV == test) %>% 
-    pull(label) %>% 
-    unique() %>% 
-    paste(collapse = ', ')
+    dplyr::filter(NV == test)
+    # mutate(label = paste0(ploidy, "N (Mutated: ",multiplicity,"N)")) %>% 
+    # pull(label)
   
-  ploidy = NA
-  multiplicity = NA
-  if(class_of != "out of sample"){
-      info = strsplit(class_of, ",")[[1]][1] %>% strsplit(" ")
-      ploidy = strsplit(info[[1]][1],"\\:")[[1]] %>% as.integer() %>% sum()
-      multiplicity = info[[1]][2] %>% as.integer()
-  }
-  
-  return(tibble(ploidy = ploidy,
-                multiplicity = multiplicity,
-                wt = ploidy-multiplicity,
-                uncertainty = uncertainty,
+  return(tibble(ploidy = tested$ploidy,
+                multiplicity = tested$multiplicity,
+                uncertainty = tested$uncertainty,
                 density = list(dataset)))
 }
   

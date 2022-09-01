@@ -2,7 +2,6 @@
 #'
 #' @param x An object of class \code{'TAPACLOTH'} containing the classification results, as 
 #' produced by function `run_classifier`.
-#' @param id The id (format chr:from:to:ref:alt) of the mutation.
 #' @param model Model used for the classification task.
 #' @return An object of class \code{'ggplot2'}.
 #' @export
@@ -19,72 +18,122 @@
 #'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
 #'     )
 #' plot_test(x = x,id = x$classifier[[model]]data$id[1],model = model)
-plot_test = function(x, id, model){
+plot_test = function(x, model, assembly = F){
   stopifnot(inherits(x,"TAPACLOTH"))
   colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
+  colors = colors[c("1:0","1:1","2:1","2:2")]
   names_colors = expand.grid(names(colors), 1:2) %>% apply(1, paste, collapse = ' ')
   colors = sapply(names_colors, function(n)
     colors[strsplit(n, ' ')[[1]][1]])
-  names(colors) = names_colors
+  names(colors) = sapply(names_colors, function(n){
+    splitted = strsplit(n, ' ')[[1]]
+    k = splitted[1]
+    m = splitted[2]
+    paste0(strsplit(k, ':')[[1]] %>% as.integer() %>% sum(),"N (Mutated: ", m,"N)")
+  })
   
   colors = c(colors, `out_of_sample` = 'gray')
   
-  mdata = x %>% get_classifier(model) %>%
-    get_data() %>%
-    filter(id == !!id)
+  cutoff = x %>% get_params(model = model) %>% pull(cutoff)
   
-  dataset = pull(mdata, density)[[1]]
-  
-  dataset %>%
-    ggplot() +
-    geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3) +
-    CNAqc:::my_ggplot_theme() +
-    scale_color_manual(values = colors) +
-    geom_point(data = dataset %>% maximise(),
-               aes(x = NV,
-                   y = density,
-                   color = label),
-               size = 1) +
-    geom_line(data = dataset %>% maximise(),
-              aes(x = NV,
-                  y = density,
-                  color = label),
-              size = .3) +
-    labs(
-      title = paste0(
-        mdata$ref,
-        ">",
-        mdata$alt,
-        "; ",
-        mdata$gene,
-        " (",
-        mdata$gene_role,
-        ")"
-      ),
-      subtitle = paste0(
-      "Alleles: ",
-      mdata$ploidy,
-      "N (Mutated: ",
-      mdata$multiplicity,
-      "N, Wild Type: ",
-      mdata$wt,
-      "N)\nPurity: ",
-      get_purity(x),
-      ' - cutoff: ',
-      x %>% get_params(model = model) %>% pull(cutoff)
-    ),
-    caption = paste0("Classified using ", model, " model")) +
-    # guides(color = 'none') +
-    # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
-    #     mapping = aes(yintercept = cutoff,
-    #     color = label),
-    #     linetype = 'dashed',
-    #     size = .5
-    #   )
-    geom_vline(
-      xintercept = get_NV(x, id),
-      color = ifelse(is.na(mdata$ploidy), 'indianred3', 'forestgreen'),
-      linetype = 'dashed',
-      size = .5
-    )
+  plots = lapply(x$classifier[[model]]$data$id, function(id){
+    
+    # uncertainty = round(x %>%  get_classifier() %>% get_data() %>% 
+    #                       filter(id == !!id) %>% pull(uncertainty),2)
+    
+    
+    mdata = x %>% get_classifier(model) %>%
+      get_data() %>%
+      filter(id == !!id)
+    
+    # dataset = pull(mdata, density)[[1]] %>%
+    #   group_by(NV) %>%
+    #   summarise(
+    #     density,
+    #     Major,
+    #     minor,
+    #     multiplicity,
+    #     karyotype,
+    #     label,
+    #     peak,
+    #     cutoff,
+    #     uncertainty = 1 - max(density / sum(density))
+    #   ) %>%
+    #   ungroup()
+    
+    dataset = pull(mdata, density)[[1]]
+    
+    scaleFactor = max(dataset$density)/max(dataset$uncertainty)
+    
+    dataset %>%
+      ggplot() +
+      geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3)+
+      geom_line(
+        aes(x = NV, y = uncertainty * scaleFactor),
+        color = "red",
+        size = 0.5,
+        linetype = "longdash",
+        alpha = .4
+      ) +
+      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Uncertainty"))+
+      CNAqc:::my_ggplot_theme() +
+      theme(axis.title.y.right = element_text(color="red"),
+            axis.text.y.right = element_text(color="red"))+
+      scale_color_manual(values = colors, breaks = dataset$label %>% unique()) +
+      geom_point(data = dataset %>% maximise(),
+                 aes(x = NV,
+                     y = density,
+                     color = label),
+                 size = 1) +
+      geom_line(data = dataset %>% maximise(),
+                aes(x = NV,
+                    y = density,
+                    color = label),
+                size = .3) +
+      labs(
+        title = paste0(
+          mdata$from,
+          "; ",
+          mdata$ref,
+          ">",
+          mdata$alt,
+          "; ",
+          mdata$gene,
+          " (",
+          mdata$gene_role,
+          ")"
+        ),
+        subtitle = paste0(
+          "Classification: ",
+          ifelse(
+            is.na(mdata$ploidy),
+            "not classified",
+            paste0(mdata$ploidy,
+                   "N (Mutated: ",
+                   mdata$multiplicity,
+                   "N)")
+          ),
+          "\nSample: ",
+          get_sample(x),
+          "; Purity: ",
+          get_purity(x)
+        ),
+        caption = bquote("Model: "*.(model)*";"~alpha*" = "*.(cutoff)~"; Uncertainty: "*.(mdata$uncertainty))) +
+      # guides(color = 'none') +
+      # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
+      #     mapping = aes(yintercept = cutoff,
+      #     color = label),
+      #     linetype = 'dashed',
+      #     size = .5
+      #   )
+      geom_vline(
+        xintercept = get_NV(x, id),
+        color = ifelse(is.na(mdata$ploidy), 'indianred3', 'forestgreen'),
+        linetype = 'dashed',
+        size = .5
+      )
+  })
+  if(assembly){
+    ggpubr::ggarrange(plotlist = plots, ncol = 4)
+  } else plots
 }

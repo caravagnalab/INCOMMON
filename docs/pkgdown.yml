@@ -1,11 +1,11 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5
+pandoc: '2.18'
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   TAPACLOTH: TAPACLOTH.html
   classify-and-plot: classify-and-plot.html
   purity-estimates: purity-estimates.html
-last_built: 2022-07-20T13:47Z
+last_built: 2022-09-01T10:22Z
 urls:
   reference: caravagnalab.github.io/TAPACLOTH/reference
   article: caravagnalab.github.io/TAPACLOTH/articles

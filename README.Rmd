@@ -19,7 +19,9 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-TAPACLOTH is a tool that uses targeted sequencing data to classify somatic mutations as either subclonal, clonal heterozygous or clonal with loss of heterozygosity. Two types of tests are available: an exact one based on Binomial or Beta-Binomial modelling of sequencing read counts, and approximate based on allelic frequencies. The former is parametrised by a p-value. Additionally, TAPACLOTH can infer sample purity, an information used to carry out variant classification. Since the two tests are independent, one can first estimate sample purity and then use it as input for the classification task.
+TAPACLOTH is a tool that uses targeted sequencing data to determine the clonality status of tumour mutations while estimating their copy number state and multiplicity (LOH in monosomy, copy-neutral LOH, amplifications with trisomy and tetrasomy, diploid heterozygous are the supported configurations). 
+The implemented classifier is based on Binomial or Beta-Binomial modelling of sequencing read counts,
+parametrised by a likelihood cut-off. Additionally, TAPACLOTH can infer sample purity, an information used to carry out variant classification. Since the two tests are independent, one can first estimate sample purity and then use it as input for the classification task.
     
 #### Help and support
 

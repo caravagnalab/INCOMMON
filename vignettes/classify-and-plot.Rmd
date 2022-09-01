@@ -29,9 +29,9 @@ print(example_data)
 
 # Exact read-counts based test
 
-TAPACLOTH provides an exact test (with a p-value) to assess karyotype and multipilcity from read-count data.
+TAPACLOTH implements a maximum likelihood-based classifier to assess ploidy and multiplicity from read-count data.
 
-This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to coverage. 
+This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to sequencing coverage. 
 
 A clonal variant affecting a genome site of ploidy $p$, with multiplicity $m \in \{1,2\}$ in a sample of purity $\pi$
 has an expected VAF of
@@ -39,24 +39,18 @@ has an expected VAF of
 \mathbb{E}[\text{VAF}] = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
 \] 
 
-In the (Beta-)Binomial process this represents the success probability of the counting process. Therefore, if we assume as null model each possible combination of karyotype and multiplicity, and consider for every input mutation
+In the (Beta-)Binomial process this represents the success probability of the counting process. Therefore, if we assume Binomial model for each possible combination of ploidy $p$ and multiplicity $m$, and consider for every input mutation
 
 - $NV$ reads with the variant at the locus;
 - $DP$ coverage at the locus;
 - sample purity $\pi$;
 
-then the expected number of reads with the variant follows
+then the likelihood of observing $NV$ reads with the variant is
 \[
 P(X = NV) = Bin\left(NV \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\left(1-\pi\right)}\right)
 \] 
-and therefore the p-value for a two-tailed test is
-\[
-p = \sum_{i\in I} Bin\left(i \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\left(1-\pi\right)}\right)
-\]
 
-where $I = \left\{i:P(X=i)\leq P(X=NV)\right\}$.
-
-> The Beta-Binomial case simply follows $P(X_{BB} \leq x) = \sum_{k = 0}^x \textit{Beta-Bin}(x \mid c, \pi/2, \rho)$ for some over-dipsersion $\rho$. A Beta-Binomial distribution can be used to take into account the over-dispersion of the sequencing assay. 
+> The Beta-Binomial case simply follows $P(X = NV) = \textit{Beta-Bin}\left(NV \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\left(1-\pi\right)}\right)$ for some overdipsersion $\rho$. A Beta-Binomial distribution can be used to take into account the overdispersion of the sequencing assay. 
 
 ## Example 
 
@@ -70,74 +64,46 @@ input = init(mutations = example_data$data,
              gene_roles = cancer_gene_census)
 print(input)
 ```
+A column `gene_role` is attached to the input data, indicating the function of the
+affected gene as described in COSMIC Cancer Gene Census (default). Other descriptions can
+be input by the user through option `gene_role` of function `init`.
+
+A cut-off $\alpha$ on the likelihood can be used in the classification in order to
+discard classifications with poor likelihoods.
 For each run of `run_classifier` using a certain model, a `classifier` object is 
-added to the input, that contains the model parameters and the outcome of the classifier 
-for all the possible classes, along with the corresponding p-values.
+attached to the input, containing the model parameters (cut-off, overdispersion) and 
+the outcome of the classifier, including a measure of classification uncertainty.
+By default, ploidies corresponding to karyotypes 1:0, 1:1, 2:0, 2:1 and 2:2 are 
+tested. Other karyotypes can be provided by the user through option `karyotypes`.
 
 ```{r}
 out = run_classifier(
-  input,
-  alpha_level = 0.1,
+  x = input,
+  cutoff = 0.75,
   model = "Binomial"
 )
 
 out = run_classifier(
-    out,
-    alpha_level = 0.1,
+    x = out,
+    cutoff = 0.75,
     model = "Beta-Binomial",
     rho = 0.01
     )
 
 print(out)
 ```
-The results of classification for mutations affecting a specific gene in the panel 
-can be visualized using the internal plotting functions. First plots must be
-generated.
+The results of the classification task can be visualized using the internal 
+plotting function. Here is an example using the Binomial model:
 ```{r}
-out = plot_test(out)
+plots = plot_test(out, model = "binomial")
+plots[[1]]
 ```
-The following example shows
-results for a specific gene, "TP53".
-```{r, fig.height=4, fig.width=8, dpi=300}
-plot_gene(out, model = "Binomial", gene_name = "PRKD1")[[1]]+ggplot2::xlim(1,get_DP(out, get_id(out,"PRKD1")[[1]]))
-plot_gene(out, model = "Beta-Binomial", gene_name = "PRKD1")[[1]]+ggplot2::xlim(1,get_DP(out, get_id(out, "PRKD1")[[1]]))
+And the Beta-Binomial model:
+```{r}
+plots = plot_test(out, model = "beta-binomial")
+plots[[1]]
 ```
-The test shows that at fixed $\alpha$-level, including over-dispersion results in 
-a larger confidence interval on $NV$ so that it is more unlikely that karyotype-multiplcity 
-hypotheses are rejected.
 
-The classification procedure implemented in \code{TAPACLOTH} allows for multiple
-classes, as different combinations of karyotype and multiplicity can yield the
-same expectation value of VAF. In the following example, the classification results
-are plotted for the known oncogene TSHR. 
-```{r, fig.height=4, fig.width=8, dpi=300}
-plot_gene(out, model = "Beta-Binomial", gene_name = "TSHR")
-```
-Classes compatible with read counts data include diploid heterozygous (1:1) and 
-amplification (2:0, 2:1, 2:2) with multiplicity 1. Knowledge of the gene role can
-be used to make a choice: since TSHR is an oncogene, it is more likely for a mutation
-affecting it to be amplified.
-
-One can reduce the ambiguity in the classification also by making the test more
-strict, for example by excluding overdispersion and relying on the Binomial model.
-The following example for gene TSHR shows that relying on the more strict Binomial
-model reduces classification ambiguity, allowing only for amplification states. 
-```{r, fig.height=4, fig.width=8, dpi=300}
-plot_gene(out, model = "Binomial", gene_name = "TSHR")
-```
-Another way to reduce ambiguity is to increase the `alpha_level` parameter or 
-decrease the overdispersion paramter `rho` when using the Beta-Binomial model.
-```{r, fig.height=4, fig.width=8, dpi=300}
-out = run_classifier(
-  input,
-  alpha_level = 0.2,
-  model = "Beta-Binomial",
-  rho = 0.0001
-)
-out = plot_test(out)
-plot_gene(out, model = "Beta-Binomial", gene_name = "TSHR")
-
-```
-This example shows that using a stricter test (low overdispersion and large $\alpha$ level)
-may reduce the number of possible classes even to one only karyotype and multiplicity
-combination.
+This example shows differences in the classification task in terms of expected distributions 
+under the Binomial and the Beta-Binomial models. In this case the assigned class is the same,
+but the classification uncertainty is shown to be larger for the Beta-Binomial case.

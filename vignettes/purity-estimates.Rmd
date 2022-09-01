@@ -57,8 +57,7 @@ The input must be prepared using function `init`:
 ```{r}
 input = init(mutations = example_data$data,
              sample = example_data$sample,
-             purity = example_data$purity,
-             gene_roles = cancer_gene_census)
+             purity = example_data$purity)
 print(input)
 ```
 
@@ -71,7 +70,7 @@ print(out)
 ```
 
 This test shows that the inferred purity matches the true value with a reliability
-score of 82%.
+score of 100%.
 
 If we provide an input purity of the cancer sample that is underestimated
 with respect to ground-truth, TAPACLOTH retrieves the correct purity value
@@ -79,21 +78,10 @@ and reports the corresponding reliability score for the input estimate.
 
 ```{r}
 # Example error with purity = 0.4
-input = init(
-  mutations = dplyr::tibble(
-             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
-             from = seq(1000,30000,1000),
-             to = seq(1001,30001,1000),
-             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
-             DP = 200,
-             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
-             gene = paste0("test gene ", 1:30)
-           ),
-  sample = "test",
-  purity = 0.4
-)
+input = init(mutations = example_data$data,
+             sample = example_data$sample,
+             purity = 0.7) # wrong purity!
+
 
 out = estimate_purity(
   input,
@@ -102,7 +90,10 @@ out = estimate_purity(
 
 print(out)
 ```
-Results of the fitting procedure are shown in a plot in `data$purity_estimate$binomial$plot_bmix`.
+In this example TAPACLOTH estimates the correct purity (0.91) and assign a reliability
+of 0.77 to the input (under-estimated) purity. 
+
+Results of the fitting procedure are shown in a plot in `out$purity_estimate$binomial$plot_bmix`.
 
 The output plot shows (left) the assignment of variants to the fitted mixture components, 
 (center) the fitted densities and a comparison between the tested model, based on three
@@ -114,7 +105,8 @@ plot_bmix(out, model = "Binomial")
 
 # Classifier re-run with the inferred purity
 
-TAPACLOTH purity estimate can be used as a preliminary step to the [classification task](classify-and-plot.html), especially when the input estimate is not available or is considered unreliable.
+TAPACLOTH purity estimate can be used as a preliminary step to the [classification task](classify-and-plot.html), especially when the input estimate is not 
+available or is considered unreliable.
 
 ## Example
 
@@ -122,65 +114,47 @@ In this example, the classification task is first run with an underestimated
 input purity. 
 
 ```{r}
-input = init(
-  mutations = dplyr::tibble(
-             chr = sample(paste0("chr",1:23), size = 30, replace = TRUE),
-             from = seq(1000,30000,1000),
-             to = seq(1001,30001,1000),
-             ref = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             alt = sample(c("A","T","C","G"), size = 30, replace = TRUE),
-             NV =  c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2,
-             DP = 200,
-             VAF = c(seq(5, 14, 1), seq(40,58,2), seq(80, 98, 2))*2/200,
-             gene = paste0("test gene ", 1:30)
-           ),
-  sample = "test",
-  purity = 0.4
-)
+input = init(mutations = example_data$data,
+             sample = example_data$sample,
+             purity = 0.7) # wrong purity!
+
 classified_wrong = run_classifier(
   input,
-  alpha_level = 1e-3,
+  cutoff = 0.75,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
-classified_wrong = plot_test(classified_wrong)
-
-plt_wrong = plot_gene(x = classified_wrong,
-          model = "Beta-Binomial",
-          gene_name = "test gene 13")
+plt_wrong = plot_test(x = classified_wrong, model = "beta-binomial")[[1]]
 ```
 
 In the following example the value of purity is replaced with the TAPACLOTH estimate 
 and the classification task is re-run with the new value.
 
 ```{r}
-out = estimate_purity(
-  out,
+input = estimate_purity(
+  input,
   model = "Beta-Binomial",
   eps = 0.01)
 
-out$purity = get_purity_bmix(out, model = "beta-binomial")
+input$purity = get_purity_bmix(input, model = "beta-binomial")
 
 classified_right = run_classifier(
-  out,
-  alpha_level = 1e-3,
+  input,
+  cutoff = 0.75,
   model = "Beta-Binomial",
   rho = 0.01
 )
 
-classified_right = plot_test(classified_right)
-plt_right = plot_gene(x = classified_right,
-          model = "Beta-Binomial",
-          gene_name = "test gene 13")
+plt_right = plot_test(classified_right, model = "beta-binomial")[[1]]
 ```
 
-The two classifications can be compared.
+The two classifications can now be compared.
 
 ```{r fig.height=6, fig.width=8, dpi=300}
 ggpubr::ggarrange(plotlist = list(
-  plt_wrong[[1]]+xlim(1,200),
-  plt_right[[1]]+xlim(1,200)
+  plt_wrong,
+  plt_right
   ),
 ncol = 1,
 nrow = 2)
