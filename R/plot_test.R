@@ -32,7 +32,7 @@ plot_test = function(x, model, assembly = F){
     paste0(strsplit(k, ':')[[1]] %>% as.integer() %>% sum(),"N (Mutated: ", m,"N)")
   })
   
-  colors = c(colors, `out_of_sample` = 'gray')
+  colors = c(colors, "out of sample" = 'gray')
   
   cutoff = x %>% get_params(model = model) %>% pull(cutoff)
   
@@ -62,6 +62,10 @@ plot_test = function(x, model, assembly = F){
     #   ungroup()
     
     dataset = pull(mdata, density)[[1]]
+    
+    label = dataset %>% 
+      filter(NV==mdata$NV, ploidy == mdata$ploidy, multiplicity == mdata$multiplicity) %>% 
+      pull(label)
     
     scaleFactor = max(dataset$density)/max(dataset$uncertainty)
     
@@ -105,20 +109,13 @@ plot_test = function(x, model, assembly = F){
         ),
         subtitle = paste0(
           "Classification: ",
-          ifelse(
-            is.na(mdata$ploidy),
-            "not classified",
-            paste0(mdata$ploidy,
-                   "N (Mutated: ",
-                   mdata$multiplicity,
-                   "N)")
-          ),
+          label,
           "\nSample: ",
           get_sample(x),
           "; Purity: ",
           get_purity(x)
         ),
-        caption = bquote("Model: "*.(model)*";"~alpha*" = "*.(cutoff)~"; Uncertainty: "*.(mdata$uncertainty))) +
+        caption = bquote("Model: "*.(model)*";"~alpha*" = "*.(cutoff)~"; Uncertainty: "*.(round(mdata$uncertainty,2)))) +
       # guides(color = 'none') +
       # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
       #     mapping = aes(yintercept = cutoff,
@@ -128,7 +125,8 @@ plot_test = function(x, model, assembly = F){
       #   )
       geom_vline(
         xintercept = get_NV(x, id),
-        color = ifelse(is.na(mdata$ploidy), 'indianred3', 'forestgreen'),
+        # color = ifelse(is.na(mdata$ploidy), 'indianred3', 'forestgreen'),
+        color = ifelse(label=="out of sample", 'indianred3', 'forestgreen'),
         linetype = 'dashed',
         size = .5
       )
