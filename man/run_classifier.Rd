@@ -9,7 +9,9 @@ run_classifier(
   cutoff = 0.75,
   model = "Binomial",
   rho = 0.01,
-  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2"),
+  gene_role_specific = FALSE,
+  assign_extremes = FALSE
 )
 }
 \arguments{

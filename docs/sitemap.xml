@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/404.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/articles/TAPACLOTH.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/articles/classify-and-plot.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/articles/purity-estimates.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/authors.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/index.html</loc>
   </url>
   <url>
@@ -49,6 +73,9 @@
     <loc>caravagnalab.github.io/TAPACLOTH/reference/get_reliability.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/index.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/init.html</loc>
   </url>
   <url>
@@ -67,6 +94,12 @@
     <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_heatmap.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_summary.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_tapacloth.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/plot_test.html</loc>
   </url>
   <url>
@@ -77,14 +110,5 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/TAPACLOTH/reference/test_setup.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/TAPACLOTH/articles/TAPACLOTH.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/TAPACLOTH/articles/classify-and-plot.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/TAPACLOTH/articles/purity-estimates.html</loc>
   </url>
 </urlset>

@@ -30,7 +30,8 @@ binomial_test = function(test,
                          cutoff,
                          model,
                          rho = 0.01,
-                         karyotypes
+                         karyotypes,
+                         assign_extremes
                          )
 {
   NV_x = 1:DP
@@ -104,10 +105,27 @@ binomial_test = function(test,
     dplyr::filter(NV == test)
     # mutate(label = paste0(ploidy, "N (Mutated: ",multiplicity,"N)")) %>% 
     # pull(label)
+  if(tested$label == "out of sample" & assign_extremes){
+    min_in_sample = dataset %>%
+      dplyr::filter(label != "out of sample") %>%
+      dplyr::filter(NV == min(NV)) %>%
+      pull(NV)
+    
+    max_in_sample = dataset %>%
+      dplyr::filter(label != "out of sample") %>%
+      dplyr::filter(NV == max(NV)) %>%
+      pull(NV)
+    
+    tested$label = ifelse(tested$NV < min_in_sample | tested$NV > max_in_sample,
+                          paste0(tested$ploidy,'N (Mutated: ', tested$multiplicity,"N)"),
+                          tested$label)
+  }
+  
   
   return(tibble(ploidy = tested$ploidy,
                 multiplicity = tested$multiplicity,
                 uncertainty = tested$uncertainty,
+                label = tested$label,
                 density = list(dataset)))
 }
   

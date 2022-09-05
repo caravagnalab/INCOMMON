@@ -37,7 +37,7 @@ plot_heatmap = function(x, model = 'binomial')
     TAPACLOTH:::get_data() %>%
     dplyr::mutate(
       label = paste0(gene, " (", from, ") ", ref, '>', alt),
-      label_k = paste(karyotype, ' (', multiplicity, ')', sep = '')
+      label_k = paste(ploidy, ' (', multiplicity, ')', sep = '')
     )
   
   # Matrix of the classifications

@@ -4,7 +4,16 @@
 \alias{binomial_test}
 \title{Compute likelihoods and uncertainty..}
 \usage{
-binomial_test(test, DP, purity, cutoff, model, rho = 0.01, karyotypes)
+binomial_test(
+  test,
+  DP,
+  purity,
+  cutoff,
+  model,
+  rho = 0.01,
+  karyotypes,
+  assign_extremes
+)
 }
 \arguments{
 \item{test}{Number of reads with the variant.}

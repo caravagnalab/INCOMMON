@@ -99,7 +99,7 @@ print.TAPACLOTH = function(x, ...) {
               dplyr::select(id, NV, DP, VAF, 
                             gene, gene_role, 
                             ploidy, multiplicity,
-                            uncertainty)
+                            uncertainty, label)
             )
     }
   }

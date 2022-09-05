@@ -63,9 +63,10 @@ plot_test = function(x, model, assembly = F){
     
     dataset = pull(mdata, density)[[1]]
     
-    label = dataset %>% 
-      filter(NV==mdata$NV, ploidy == mdata$ploidy, multiplicity == mdata$multiplicity) %>% 
-      pull(label)
+    # label = dataset %>% 
+    #   filter(NV==mdata$NV, ploidy == mdata$ploidy, multiplicity == mdata$multiplicity) %>% 
+    #   pull(label)
+    label = mdata$label
     
     scaleFactor = max(dataset$density)/max(dataset$uncertainty)
     
