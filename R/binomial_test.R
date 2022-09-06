@@ -103,8 +103,9 @@ binomial_test = function(test,
   tested = dataset %>%
     maximise() %>%
     dplyr::filter(NV == test)
-    # mutate(label = paste0(ploidy, "N (Mutated: ",multiplicity,"N)")) %>% 
-    # pull(label)
+
+    # Optionally assign NVs lower than minimum (larger than maximum) accepted to 
+  # Subclonal/Higher Ploidy (Higher Ploidy and Multiplicity)
   if(tested$label == "out of sample" & assign_extremes){
     min_in_sample = dataset %>%
       dplyr::filter(label != "out of sample") %>%
@@ -116,9 +117,14 @@ binomial_test = function(test,
       dplyr::filter(NV == max(NV)) %>%
       pull(NV)
     
-    tested$label = ifelse(tested$NV < min_in_sample | tested$NV > max_in_sample,
-                          paste0(tested$ploidy,'N (Mutated: ', tested$multiplicity,"N)"),
-                          tested$label)
+    # tested$label = ifelse(tested$NV < min_in_sample | tested$NV > max_in_sample,
+    #                       paste0(tested$ploidy,'N (Mutated: ', tested$multiplicity,"N)"),
+    #                       tested$label)
+    # tested$label = ifelse(tested$NV < min_in_sample | tested$NV > max_in_sample,
+    #                       paste0(tested$ploidy,'N (Mutated: ', tested$multiplicity,"N)"),
+    #                       tested$label)
+    if(tested$NV < min_in_sample) tested$label = "SUB/HPLM"
+    if(tested$NV > max_in_sample) tested$label = "HPHM"
   }
   
   

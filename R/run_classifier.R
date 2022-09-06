@@ -53,9 +53,14 @@ run_classifier = function(x,
     
   tests = lapply(x$data$id, function(id) {
     
+    # If classifying with a bias towards gene role, adapt karyotypes list accordingly.
     k_reduced = karyotypes
-    if(x %>% get_gene_role(id) == "TSG" & gene_role_specific) k_reduced = c("1:0","1:1","2:0")
+    if(gene_role_specific){
+      if(x %>% get_gene_role(id) == "TSG") k_reduced = c("1:0","1:1","2:0")
+      if(x %>% get_gene_role(id) == "oncogene") k_reduced = c("1:1","2:1","2:2")
+    } 
     
+    # Compute likelihoods
     binomial_test(
       test = get_NV(x, id),
       DP = get_DP(x, id),
