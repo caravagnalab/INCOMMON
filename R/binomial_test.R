@@ -115,7 +115,7 @@ binomial_test = function(test,
     max_in_sample = dataset %>%
       dplyr::filter(label != "out of sample") %>%
       dplyr::filter(NV == max(NV)) %>%
-      pull(NV)
+      pull(NV) %>% unique()
     
     # tested$label = ifelse(tested$NV < min_in_sample | tested$NV > max_in_sample,
     #                       paste0(tested$ploidy,'N (Mutated: ', tested$multiplicity,"N)"),
