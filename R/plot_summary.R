@@ -42,49 +42,79 @@ plot_summary = function(x, model = 'binomial',out_file = "./tapacloth_pheatmap.p
   ## Uncertainty
   input_uncertainty_matrix = x %>% 
     group_by(gene) %>% 
-    summarise(uncertainty = mean(uncertainty))
+    summarise(uncertainty = median(uncertainty))
   
   uncertainty_matrix = input_uncertainty_matrix %>% t2m()
   
+  ## Occurrence
+  input_occurrence_matrix = x %>% 
+    group_by(gene) %>% 
+    summarise(N = n())
+  
+  occurrence_matrix = input_occurrence_matrix %>% t2m()
+  
   ## Gene role
-  roles_all = x$gene_role %>% unique()
-  roles_all = strsplit(roles_all, ',') %>% unlist %>% unique
-  roles_all_others = roles_all[!(roles_all %in% c("TSG", "oncogene", NA))]
+  input_gene_role_matrix = x %>% 
+    group_by(gene) %>% 
+    summarise(gene_role = unique(gene_role))
   
-  df_roles = x %>%
-    dplyr::select(gene, gene_role) %>%
-    dplyr::rename(role = gene_role) %>%
-    dplyr::distinct() %>%
-    rowwise() %>%
-    mutate(
-      TSG = grepl('TSG', role),
-      oncogene = grepl('oncogene', role)
-    ) %>%
-    dplyr::select(-role) %>%
-    as.data.frame()
+  gene_role_matrix = input_gene_role_matrix %>% t2m()
   
-  annotation_rows = df_roles
-  rownames(annotation_rows) = annotation_rows$gene
-  annotation_rows = annotation_rows[,2:3]
-  annotation_rows = annotation_rows[order(row.names(annotation_rows)),]
-  
-  annotation_rows = apply(annotation_rows, 2, function(x)
-    ifelse(x, "YES", "NO")) %>% data.frame
-  
-  annotation_rows = cbind(annotation_rows, uncertainty_matrix)
-  
+  # roles_all = x$gene_role %>% unique()
+  # roles_all = strsplit(roles_all, ',') %>% unlist %>% unique
+  # roles_all_others = roles_all[!(roles_all %in% c("TSG", "oncogene", NA))]
+  # 
+  # df_roles = x %>%
+  #   dplyr::select(gene, gene_role) %>%
+  #   dplyr::rename(role = gene_role) %>%
+  #   dplyr::distinct() %>%
+  #   rowwise() %>%
+  #   mutate(
+  #     TSG = grepl('TSG', role),
+  #     oncogene = grepl('oncogene', role)
+  #   ) %>%
+  #   dplyr::select(-role) %>%
+  #   as.data.frame()
+  # 
+  # annotation_rows = df_roles
+  # rownames(annotation_rows) = annotation_rows$gene
+  # annotation_rows = annotation_rows[,2:3]
+  # annotation_rows = annotation_rows[order(row.names(annotation_rows)),]
+  # 
+  # annotation_rows = apply(annotation_rows, 2, function(x)
+  #   ifelse(x, "YES", "NO")) %>% data.frame
+  # 
+  # annotation_rows = cbind(annotation_rows, uncertainty_matrix)
+
+
   # Order rows (first TSG then oncogene) and columns (increasing ploidy)
-  classes_matrix = classes_matrix[c(which(annotation_rows$TSG == "YES"),
-                                    which(annotation_rows$oncogene == "YES", )), 
+  # classes_matrix = classes_matrix[c(which(annotation_rows$TSG == "YES"),
+  #                                   which(annotation_rows$oncogene == "YES", )),
+  #                                 order(colnames(classes_matrix))]
+  
+  annotation_rows = cbind(gene_role_matrix, uncertainty_matrix, occurrence_matrix) %>% 
+    as.data.frame()
+  annotation_rows[,"uncertainty"] = annotation_rows[,"uncertainty"] %>% as.numeric()
+  annotation_rows[,"N"] = annotation_rows[,"N"] %>% as.numeric()
+  
+  classes_matrix = classes_matrix[c(which(annotation_rows[,"gene_role"] == "TSG"),
+                                    which(annotation_rows[,"gene_role"] == "oncogene")), 
                                   order(colnames(classes_matrix))]
+  
   presence_annotation = 'darkgray'
   onco_color = 'steelblue'
   tsg_color = 'indianred'
   
+  # annotation_colors = list(
+  #   uncertainty = hcl.colors(20,"Grays", rev = T),
+  #   TSG = c(`NO` = "white", `YES` = tsg_color),
+  #   oncogene = c(`NO` = "white", `YES` = onco_color)
+  # )
+  
   annotation_colors = list(
     uncertainty = hcl.colors(20,"Grays", rev = T),
-    TSG = c(`NO` = "white", `YES` = tsg_color),
-    oncogene = c(`NO` = "white", `YES` = onco_color)
+    gene_role = c("TSG" = tsg_color, "oncogene" = onco_color),
+    N = hcl.colors(20,"Greens 3", rev = T)
   )
   
   pheatmap::pheatmap(

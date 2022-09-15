@@ -22,15 +22,18 @@ plot_test = function(x, model, assembly = F){
   stopifnot(inherits(x,"TAPACLOTH"))
   colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
   colors = colors[c("1:0","1:1","2:1","2:2")]
-  names_colors = expand.grid(names(colors), 1:2) %>% apply(1, paste, collapse = ' ')
-  colors = sapply(names_colors, function(n)
-    colors[strsplit(n, ' ')[[1]][1]])
-  names(colors) = sapply(names_colors, function(n){
-    splitted = strsplit(n, ' ')[[1]]
-    k = splitted[1]
-    m = splitted[2]
-    paste0(strsplit(k, ':')[[1]] %>% as.integer() %>% sum(),"N (Mutated: ", m,"N)")
+  names(colors) =sapply(names(colors), function(n){
+    strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
   })
+  # names_colors = expand.grid(names(colors), 1:2) %>% apply(1, paste, collapse = ' ')
+  # colors = sapply(names_colors, function(n)
+  #   colors[strsplit(n, ' ')[[1]][1]])
+  # names(colors) = sapply(names_colors, function(n){
+  #   splitted = strsplit(n, ' ')[[1]]
+  #   k = splitted[1]
+  #   m = splitted[2]
+  #   paste0(strsplit(k, ':')[[1]] %>% as.integer() %>% sum(),"N (Mutated: ", m,"N)")
+  # })
   
   colors = c(colors, "out of sample" = 'gray')
   
@@ -70,31 +73,44 @@ plot_test = function(x, model, assembly = F){
     
     scaleFactor = max(dataset$density)/max(dataset$uncertainty)
     
+    dataset$multiplicity = factor(dataset$multiplicity)
+    
+    n_points = 1000
+    stride = max(round(nrow(dataset)/n_points),1)
+    
+    dataset = dataset[seq(1,nrow(dataset),stride),] %>% 
+      mutate(ploidy = ifelse(label=="out of sample", label, ploidy))
+    
     dataset %>%
       ggplot() +
       geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3)+
       geom_line(
         aes(x = NV, y = uncertainty * scaleFactor),
-        color = "red",
+        color = "deeppink4",
         size = 0.5,
         linetype = "longdash",
         alpha = .4
       ) +
       scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Uncertainty"))+
       CNAqc:::my_ggplot_theme() +
-      theme(axis.title.y.right = element_text(color="red"),
-            axis.text.y.right = element_text(color="red"))+
-      scale_color_manual(values = colors, breaks = dataset$label %>% unique()) +
+      theme(axis.title.y.right = element_text(color="deeppink4"),
+            axis.text.y.right = element_text(color="deeppink4"))+
+      # scale_color_manual(values = colors, breaks = dataset$label %>% unique()) +
       geom_point(data = dataset %>% maximise(),
                  aes(x = NV,
                      y = density,
-                     color = label),
+                     color = ploidy,
+                     shape = multiplicity
+                     ),
                  size = 1) +
+      scale_color_manual(values = colors)+
+      scale_shape_manual(values = data_frame("1"=16,"2"=17))+
       geom_line(data = dataset %>% maximise(),
                 aes(x = NV,
                     y = density,
-                    color = label),
-                size = .3) +
+                    color = ploidy,
+                    size = multiplicity))+
+      scale_size_manual(values = c("1"=.3,"2"=.3))+
       labs(
         title = paste0(
           mdata$from,
