@@ -47,12 +47,23 @@ run_classifier = function(x,
     )
     cat("\n")
     
-  cli::cli_alert_info("Computing null model distributions and p-values.")
+  cli::cli_alert_info("Computing likelihoods and uncertainties.")
     
   x = idify(x)
     
   tests = lapply(x$data$id, function(id) {
     
+    if(x$data %>% 
+      dplyr::filter(id==!!id) %>% 
+      nrow() > 1){
+      cli_alert_warning(text = "More than one mutation mapped at: {.field {id}}")
+      x$data %>% 
+        dplyr::filter(id==!!id) 
+      cli_alert_warning(text = "Keeping first one (consider going back to input data)")
+      w = which(x$data$id==id)
+      x$data = x$data[-w[2:length(w)],]
+        
+    }
     # If classifying with a bias towards gene role, adapt karyotypes list accordingly.
     k_reduced = karyotypes
     if(gene_role_specific){

@@ -103,6 +103,17 @@ binomial_test = function(test,
   tested = dataset %>%
     maximise() %>%
     dplyr::filter(NV == test)
+  
+  if(nrow(tested)>1){
+    cli_alert_warning(text = 
+                        "With purity {.field {purity}} classes {.field {tested$label}} have the same likelihood"
+                      )
+    cli_alert_warning(text = 
+                        "Simplest case will be selected: {.field {tested$label[1]}}"
+    )
+    
+    tested = tested[1.,]
+  }
 
     # Optionally assign NVs lower than minimum (larger than maximum) accepted to 
   # Subclonal/Higher Ploidy (Higher Ploidy and Multiplicity)
@@ -110,7 +121,7 @@ binomial_test = function(test,
     min_in_sample = dataset %>%
       dplyr::filter(label != "out of sample") %>%
       dplyr::filter(NV == min(NV)) %>%
-      pull(NV)
+      pull(NV) %>% unique()
     
     max_in_sample = dataset %>%
       dplyr::filter(label != "out of sample") %>%

@@ -15,7 +15,12 @@
 #' x = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
 #' x = run_classifier(x)
 #' plot_heatmap(x)
-plot_summary = function(x, model = 'binomial',out_file = "./tapacloth_pheatmap.pdf")
+plot_summary = function(x,
+                        model = 'binomial',
+                        out_file = "./tapacloth_pheatmap.pdf",
+                        main = "summary statistics of classification",
+                        n_frequency_colors = 4
+)
 {
   # stopifnot(inherits(x, "TAPACLOTH"))
   
@@ -119,8 +124,8 @@ plot_summary = function(x, model = 'binomial',out_file = "./tapacloth_pheatmap.p
   
   pheatmap::pheatmap(
     mat = classes_matrix,
-    color = hcl.colors(20,"RdPu", rev = T),
-    main = "Summary statistics of classification",
+    color = hcl.colors(n_frequency_colors,"RdPu", rev = T),
+    main = main,
     cluster_cols = FALSE,
     cluster_rows = FALSE,
     fontsize_row = 6,

@@ -81,6 +81,8 @@ plot_test = function(x, model, assembly = F){
     dataset = dataset[seq(1,nrow(dataset),stride),] %>% 
       mutate(ploidy = ifelse(label=="out of sample", label, ploidy))
     
+    dataset$ploidy = factor(dataset$ploidy)
+    
     dataset %>%
       ggplot() +
       geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3)+
@@ -103,14 +105,15 @@ plot_test = function(x, model, assembly = F){
                      shape = multiplicity
                      ),
                  size = 1) +
-      scale_color_manual(values = colors)+
-      scale_shape_manual(values = data_frame("1"=16,"2"=17))+
+      scale_color_manual(values = colors,breaks = dataset$ploidy %>% unique(), name = "Ploidy")+
+      scale_shape_manual(values = data_frame("1"=16,"2"=17), name = "Multiplicity")+
       geom_line(data = dataset %>% maximise(),
                 aes(x = NV,
                     y = density,
                     color = ploidy,
                     size = multiplicity))+
       scale_size_manual(values = c("1"=.3,"2"=.3))+
+      guides(size = "none")+
       labs(
         title = paste0(
           mdata$from,
