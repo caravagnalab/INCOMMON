@@ -1,9 +1,6 @@
 #' Infer sample purity using a mixture of Binomial or Beta-Binomial distributions.
 #'
 #' @param x An object of class \code{'TAPACLOTH'} generated with function `init`.
-#' @param model The expected distribution for the number of reads with variant
-#' at fixed coverage and purity, that can be chosen between Binomial (no over-dispersion)
-#' or Beta-Binomial (over-dispersion included).
 #' @param eps In case data is fitted with a mixture of 2 distributions, sample purity
 #' is estimated using only that whose peak is closer to the input purity estimate
 #' than the value of this parameter. If both distributions satisfy this condition,
@@ -17,14 +14,10 @@
 #' out = estimate_purity(x = input, model = "binomial", eps = 0.01)
 #' print(out)
 estimate_purity = function(x,
-                           model = "Binomial",
                            eps = 0.01) 
   {
   
   stopifnot(inherits(x, "TAPACLOTH"))
-  
-  model = model %>% tolower()
-  stopifnot(model %in% c("binomial", "beta-binomial"))
   
   # Output
   test = x
@@ -32,7 +25,7 @@ estimate_purity = function(x,
     test$purity_estimate = list()
   
   cli::cli_h1(
-    "TAPACLOTH purity estimate of sample {.field {get_sample(x)}} using {.field {model}} model"
+    "TAPACLOTH purity estimate of sample {.field {get_sample(x)}} using a Beta-binomial model"
   )
   cat("\n")
   
@@ -41,32 +34,20 @@ estimate_purity = function(x,
                      trials = get_data(x) %>% pull(DP))
   # Return NA if NVs are less than 3
   if (nrow(input) <= 3) {
-    cli::cli_alert("There are less than 3 SNVs: purity will not be estimated")
+    cli::cli_alert("There are less than 4 SNVs: purity will not be estimated")
     return(test)
   }
-  # Fit data with a mixture of 3 Binomials or BetaBinomials
-  if (model == 'binomial') {
-    fit = BMix::bmixfit(input, K.Binomials = 1:3, K.BetaBinomials = 0)
-    n_binomials = fit$K["B"]
-    peaks = sort(fit$B.params)
-    purity_bmix = purity_from_fit(
-      n_binomials = n_binomials,
-      peaks = peaks,
-      purity = get_purity(x),
-      eps = eps
-    )
-  }
-  else{
-    fit = BMix::bmixfit(input, K.Binomials = 0, K.BetaBinomials = 1:3)
-    n_binomials = fit$K["BB"]
-    peaks = sort(fit$BB.params["mu", ]) %>% as.double()
-    purity_bmix = purity_from_fit(n_binomials = n_binomials, 
-                                  peaks = peaks, 
-                                  purity = get_purity(x), 
-                                  eps = eps)
-    plot_bmix = BMix::plot.bmix(fit, input)
-    # test$purity_estimate$binomial = list(params = tibble(alpha = alpha_level))
-  }
+  
+  fit = BMix::bmixfit(input, K.Binomials = 0, K.BetaBinomials = 1:3)
+  n_binomials = fit$K["BB"]
+  peaks = sort(fit$BB.params["mu",]) %>% as.double()
+  purity_bmix = purity_from_fit(
+    n_binomials = n_binomials,
+    peaks = peaks,
+    purity = get_purity(x),
+    eps = eps
+  )
+  plot_bmix = BMix::plot.bmix(fit, input)
   
   # Prepare output
   fit$data = input
@@ -75,33 +56,7 @@ estimate_purity = function(x,
   fit$purity = min(purity_bmix, 1) %>% round(2)
   fit$reliability = ifelse(get_purity(x) == 0.0, NA, 1-sqrt(((get_purity(x)-fit$purity)/fit$purity)**2))
   
-  if ((model %>% tolower()) == "binomial") {
-    test$purity_estimate$`binomial` = fit
-  }
-  else{
-    test$purity_estimate$`beta-binomial` = fit
-  }
+  test$purity_estimate = fit
+  
   return(test)
-
-  # plot_bmix = lapply(1:length(x), function(n){x[[n]]$plot_bmix})
-  # names(plot_bmix) = samples
-  # 
-  #   test$purity_estimate[[model]] = list(
-  #     params = tibble(eps = eps),
-  #     purity = tibble(sample = samples,
-  #                     purity = sapply(1:length(x), function(n){x[[n]]$purity})),
-  #     reliability = tibble(sample = samples,
-  #                          reliability = sapply(1:length(x), function(n){x[[n]]$reliability})),
-  #     plot_bmix = plot_bmix
-  #     )
-    
-  # test$purity_estimate = lapply(1:length(x), function(n){x[[n]]$fit})
-  # names(test$purity_estimate) = samples
-  
-  # test$data = sample_data
-  # test$fit = fit
-  # test$purity = bmix_best_purity
-  # test$plot_bmix = plot_bmix
-  
-  # return(test)
 }
