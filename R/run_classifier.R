@@ -25,7 +25,6 @@
 #' print(x)
 run_classifier = function(x,
                           cutoff = 0.75,
-                          model = "Binomial",
                           rho = 0.01,
                           karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
                           gene_role_specific = FALSE,
@@ -34,16 +33,13 @@ run_classifier = function(x,
   {
   stopifnot(inherits(x, "TAPACLOTH"))
   
-  model = model %>% tolower()
-  stopifnot(model%in% c("binomial", "beta-binomial"))
-  
   # Output
   test = x
   if (!("classifier" %in% names(test)))
     test$classifier = list()
   
   cli::cli_h1(
-      "TAPACLOTH {.field {model}} clonality/Zygosity testing for sample {.field {x$sample}}"
+      "TAPACLOTH clonality/Zygosity testing for sample {.field {x$sample}}"
     )
     cat("\n")
     
@@ -77,7 +73,6 @@ run_classifier = function(x,
       DP = get_DP(x, id),
       purity = get_purity(x),
       cutoff = cutoff,
-      model = model,
       rho = rho,
       karyotypes = k_reduced,
       assign_extremes
@@ -85,20 +80,13 @@ run_classifier = function(x,
   }) %>% 
     do.call(rbind, .)
   
-  if (model == "binomial") {
-    test$classifier$binomial = list(
-      params = tibble(cutoff = cutoff),
-      data = bind_cols(x %>% get_data(), tests)
-    )
-  }
   
-  if (model == "beta-binomial") {
-    test$classifier$`beta-binomial` = list(
+    test$classifier = list(
       params = tibble(cutoff = cutoff,
                       rho = rho),
       data = bind_cols(x %>% get_data(), tests)
     )
-  }
+    
   return(test)
 }
 

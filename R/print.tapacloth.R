@@ -61,39 +61,33 @@ print.TAPACLOTH = function(x, ...) {
   
   print(x$data)
 
-  if ("purity_estimate" %in% names(x))
-  {
-    for(model in names(x$purity_estimate)){
+  if ("purity_estimate" %in% names(x)){
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
           'Purity estimate using ',
           crayon::bgYellow(crayon::black("[ BMix ] ")),
-          'with {.field {model}} model'
+          'with Beta-binomial model'
         )
       )
       print(tibble(
         purity = get_purity(x),
-        reliability = get_reliability(x, model),
-        purity_bmix = get_purity_bmix(x, model),
+        reliability = get_reliability(x),
+        purity_bmix = get_purity_bmix(x),
       ))
-    }
     
     cat("\n")
   }
   
   if ("classifier" %in% names(x)) {
 
-    for(model in names(x$classifier)){
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ TAPACLOTH ] ")),
-          'Test using {.field {model}} model',
-          ifelse((model %>% tolower()) == 'beta-binomial',
-                 'with overdispersion parameter {.field {x$classifier[[model]]$params$rho}} and likelihood cutoff {.field {x$classifier[[model]]$params$cutoff}}',
-                 'with likelihood cutoff {.field {x$classifier[[model]]$params$cutoff}}')),
+          'Test using Beta-binomial model',
+                 'with overdispersion parameter {.field {x$classifier$params$rho}} and likelihood cutoff {.field {x$classifier$params$cutoff}}',
           ''
-        )
+        ))
       print(get_classifier(x) %>% 
               get_data() %>% 
               dplyr::select(id, NV, DP, VAF, 
@@ -101,6 +95,5 @@ print.TAPACLOTH = function(x, ...) {
                             ploidy, multiplicity,
                             uncertainty, label)
             )
-    }
   }
 }

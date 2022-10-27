@@ -62,16 +62,8 @@ gene_classification = function(x, gene_id, model){
 get_classifier = function(x, model = NULL) {
   stopifnot(inherits(x, "TAPACLOTH"))
   stopifnot("classifier" %in% names(x))
-  if (is.null(model)) {
-    lapply(names(x$classifier), function(model) {
-      x$classifier[[model]]
-    }) %>% unlist(recursive = FALSE)
+  x$classifier
   }
-  else{
-    model = model %>% tolower()
-    x$classifier[[model]]
-  }
-}
 
 idify = function(x){
   y = get_data(x)
@@ -225,10 +217,9 @@ plot_bmix = function(x, model){
 #' @param model Model used for purity estimation
 #' @return Purity estimate data.
 #' @export
-get_purity_estimate = function(x, model){
-  model = model %>% tolower()
+get_purity_estimate = function(x){
   stopifnot(inherits(x, "TAPACLOTH"))
-  y = x$purity_estimate[[model]]
+  y = x$purity_estimate
   return(y)
 }
 
@@ -239,9 +230,9 @@ get_purity_estimate = function(x, model){
 #' @param model Model used for purity estimation
 #' @return Sample purity as obtained by BMix purity estimation procedure.
 #' @export
-get_purity_bmix = function(x, model){
+get_purity_bmix = function(x){
   stopifnot(inherits(x, "TAPACLOTH"))
-  y = get_purity_estimate(x, model)
+  y = get_purity_estimate(x)
   return(y$purity)
 }
 
@@ -252,9 +243,9 @@ get_purity_bmix = function(x, model){
 #' @param model Model used for purity estimation
 #' @return Reliability of input purity estimate.
 #' @export
-get_reliability = function(x, model){
+get_reliability = function(x){
   stopifnot(inherits(x, "TAPACLOTH"))
-  y = get_purity_estimate(x, model)
+  y = get_purity_estimate(x)
   return(y$reliability)
 }
 

@@ -28,7 +28,6 @@ binomial_test = function(test,
                          DP,
                          purity,
                          cutoff,
-                         model,
                          rho = 0.01,
                          karyotypes,
                          assign_extremes
@@ -43,7 +42,7 @@ binomial_test = function(test,
     
     lapply(peaks %>% seq_along, function(p)
       data.frame(
-        density = compute_density(NV_x, DP, prob = peaks[p], model, rho),
+        density = compute_density(NV_x, DP, prob = peaks[p], rho),
         NV = NV_x,
         Major = Major,
         minor = minor,
@@ -94,6 +93,16 @@ binomial_test = function(test,
     x
   }
   
+  if(is.na(purity)){
+    cli_alert_warning(text = 
+                        "With purity {.field {purity}} classification is not possible."
+    )
+    return(tibble(ploidy = NA,
+                  multiplicity = NA,
+                  uncertainty = NA,
+                  label = NA,
+                  density = list(NULL)))
+  }
   
   dataset = lapply(karyotypes, function(k) {
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
