@@ -31,10 +31,9 @@ get_classes = function(x, model){
 #' @return A tibble containing parameters for all the models used in the classification.
 #' @export
 #' 
-get_params = function(x, model) {
+get_params = function(x) {
   stopifnot(inherits(x, "TAPACLOTH"))
-    tibble(model = model,
-           x$classifier[[model]]$params)
+  x$classifier$params
 }
 
 #' Getter for class \code{'TAPACLOTH'}.

@@ -83,7 +83,7 @@ binomial_test = function(test,
         peak,
         cutoff,
         label,
-        uncertainty = 1 - max(density) / sum(density)
+        entropy = 1 - max(density) / sum(density)
       ) %>% 
       ungroup()
     
@@ -99,7 +99,7 @@ binomial_test = function(test,
     )
     return(tibble(ploidy = NA,
                   multiplicity = NA,
-                  uncertainty = NA,
+                  entropy = NA,
                   label = NA,
                   density = list(NULL)))
   }
@@ -108,6 +108,15 @@ binomial_test = function(test,
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
     db(alleles[1],alleles[2])
   }) %>% bind_rows() %>% cut(cutoff)
+  
+  # Compute mean entropy over in-sample data
+  
+  mean_entropy = dataset %>% 
+    filter(label != "out of sample") %>% 
+    group_by(NV) %>% 
+    summarise(u = unique(entropy)) %>% 
+    pull(u) %>% 
+    mean()
   
   tested = dataset %>%
     maximise() %>%
@@ -150,8 +159,9 @@ binomial_test = function(test,
   
   return(tibble(ploidy = tested$ploidy,
                 multiplicity = tested$multiplicity,
-                uncertainty = tested$uncertainty,
+                entropy = tested$entropy,
                 label = tested$label,
-                density = list(dataset)))
+                density = list(dataset),
+                mean_entropy = mean_entropy))
 }
   

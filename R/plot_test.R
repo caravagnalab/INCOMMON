@@ -2,7 +2,6 @@
 #'
 #' @param x An object of class \code{'TAPACLOTH'} containing the classification results, as 
 #' produced by function `run_classifier`.
-#' @param model Model used for the classification task.
 #' @return An object of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 
@@ -18,11 +17,11 @@
 #'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
 #'     )
 #' plot_test(x = x,id = x$classifier[[model]]data$id[1],model = model)
-plot_test = function(x, model, assembly = F){
+plot_test = function(x, assembly = F){
   stopifnot(inherits(x,"TAPACLOTH"))
   colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
   colors = colors[c("1:0","1:1","2:1","2:2")]
-  names(colors) =sapply(names(colors), function(n){
+  names(colors) = sapply(names(colors), function(n){
     strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
   })
   # names_colors = expand.grid(names(colors), 1:2) %>% apply(1, paste, collapse = ' ')
@@ -37,9 +36,9 @@ plot_test = function(x, model, assembly = F){
   
   colors = c(colors, "out of sample" = 'gray')
   
-  cutoff = x %>% get_params(model = model) %>% pull(cutoff)
+  cutoff = x %>% get_params() %>% pull(cutoff)
   
-  plots = lapply(x$classifier[[model]]$data$id, function(id){
+  plots = lapply(x$classifier$data$id, function(id){
     
     # uncertainty = round(x %>%  get_classifier() %>% get_data() %>% 
     #                       filter(id == !!id) %>% pull(uncertainty),2)
@@ -71,7 +70,7 @@ plot_test = function(x, model, assembly = F){
     #   pull(label)
     label = mdata$label
     
-    scaleFactor = max(dataset$density)/max(dataset$uncertainty)
+    scaleFactor = max(dataset$density)/max(dataset$entropy)
     
     dataset$multiplicity = factor(dataset$multiplicity)
     
@@ -87,13 +86,14 @@ plot_test = function(x, model, assembly = F){
       ggplot() +
       geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3)+
       geom_line(
-        aes(x = NV, y = uncertainty * scaleFactor),
+        aes(x = NV, y = entropy * scaleFactor),
         color = "deeppink4",
         size = 0.5,
         linetype = "longdash",
         alpha = .4
       ) +
-      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Uncertainty"))+
+      geom_hline(yintercept = mdata$mean_entropy * scaleFactor, color = "deeppink4", linetype = "longdash", alpha = .4)+
+      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Entropy"))+
       CNAqc:::my_ggplot_theme() +
       theme(axis.title.y.right = element_text(color="deeppink4"),
             axis.text.y.right = element_text(color="deeppink4"))+
@@ -105,7 +105,7 @@ plot_test = function(x, model, assembly = F){
                      shape = multiplicity
                      ),
                  size = 1) +
-      scale_color_manual(values = colors,breaks = dataset$ploidy %>% unique(), name = "Ploidy")+
+      scale_color_manual(values = colors, breaks = dataset$ploidy %>% unique(), name = "Ploidy")+
       scale_shape_manual(values = data_frame("1"=16,"2"=17), name = "Multiplicity")+
       geom_line(data = dataset %>% maximise(),
                 aes(x = NV,
@@ -135,7 +135,11 @@ plot_test = function(x, model, assembly = F){
           "; Purity: ",
           get_purity(x)
         ),
-        caption = bquote("Model: "*.(model)*";"~alpha*" = "*.(cutoff)~"; Uncertainty: "*.(round(mdata$uncertainty,2)))) +
+        caption = bquote(~alpha*" = "*.(cutoff)~
+                           "; Entropy: "*.(round(mdata$entropy,2))~
+                           " (mean: "*.(round(mdata$mean_entropy,2))~
+                         ")")
+        ) +
       # guides(color = 'none') +
       # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
       #     mapping = aes(yintercept = cutoff,
