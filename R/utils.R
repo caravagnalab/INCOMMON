@@ -44,10 +44,12 @@ get_params = function(x) {
 #' @param gene_id The name of the gene.
 #' @return A tibble with gene-specific classification data.
 #' @export
-gene_classification = function(x, gene_id, model){
+gene_label = function(x, gene_id){
   stopifnot(inherits(x, "TAPACLOTH"))
-  y = x$classifier[[model]]$data %>% 
-    dplyr::filter(gene == gene_id)
+  x = idify(x)
+  y = x$classifier$data %>% 
+    dplyr::filter(gene == gene_id) %>% 
+    pull(label)
   return(y)
 }
 

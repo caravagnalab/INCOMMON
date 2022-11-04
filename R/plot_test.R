@@ -137,7 +137,7 @@ plot_test = function(x, assembly = F){
         ),
         caption = bquote(~alpha*" = "*.(cutoff)~
                            "; Entropy: "*.(round(mdata$entropy,2))~
-                           " (mean: "*.(round(mdata$mean_entropy,2))~
+                           " (mean: "*.(round(mdata$mean_entropy,2))*
                          ")")
         ) +
       # guides(color = 'none') +
