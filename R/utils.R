@@ -38,9 +38,8 @@ get_params = function(x) {
 
 #' Getter for class \code{'TAPACLOTH'}.
 #' @description
-#' Get classification data for specific gene under the selected model.
+#' Get classification data for a specific gene.
 #' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used in the test from which to get classification data.
 #' @param gene_id The name of the gene.
 #' @return A tibble with gene-specific classification data.
 #' @export
@@ -48,9 +47,24 @@ gene_label = function(x, gene_id){
   stopifnot(inherits(x, "TAPACLOTH"))
   x = idify(x)
   y = x$classifier$data %>% 
-    dplyr::filter(gene == gene_id) %>% 
-    pull(label)
-  return(y)
+    dplyr::filter(gene == gene_id)
+  return(tibble(label = y$label))
+}
+
+#' Getter for class \code{'TAPACLOTH'}.
+#' @description
+#' Get point and mean classification entropy data for a specific gene.
+#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param gene_id The name of the gene.
+#' @return A tibble with gene-specific classification data.
+#' @export
+gene_entropy = function(x, gene_id){
+  stopifnot(inherits(x, "TAPACLOTH"))
+  x = idify(x)
+  y = x$classifier$data %>% 
+    dplyr::filter(gene == gene_id)
+  return(tibble(entropy = y$entropy,
+                mean_entropy = y$mean_entropy))
 }
 
 #' Getter for class \code{'TAPACLOTH'}.
