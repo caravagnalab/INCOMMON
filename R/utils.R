@@ -48,7 +48,8 @@ gene_label = function(x, gene_id){
   x = idify(x)
   y = x$classifier$data %>% 
     dplyr::filter(gene == gene_id)
-  return(tibble(label = y$label))
+  return(tibble(id = y$id,
+                label = y$label))
 }
 
 #' Getter for class \code{'TAPACLOTH'}.
@@ -63,7 +64,8 @@ gene_entropy = function(x, gene_id){
   x = idify(x)
   y = x$classifier$data %>% 
     dplyr::filter(gene == gene_id)
-  return(tibble(entropy = y$entropy,
+  return(tibble(id = y$id,
+                entropy = y$entropy,
                 mean_entropy = y$mean_entropy))
 }
 
