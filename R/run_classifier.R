@@ -63,7 +63,6 @@ run_classifier = function(x,
     # If classifying with a bias towards gene role, adapt karyotypes list accordingly.
     k_reduced = karyotypes
     if(gene_role_specific & !(x %>% get_gene_role(id)  %>% is.na)){
-      if(x %>% get_gene_role(id)  %>% is.na)
       if(x %>% get_gene_role(id) == "TSG") k_reduced = c("1:0","1:1","2:0")
       if(x %>% get_gene_role(id) == "oncogene") k_reduced = c("1:1","2:1","2:2")
     } 
