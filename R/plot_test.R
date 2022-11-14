@@ -92,8 +92,6 @@ plot_test = function(x, assembly = F){
         linetype = "longdash",
         alpha = .4
       ) +
-      geom_hline(yintercept = mdata$mean_entropy * scaleFactor, color = "deeppink4", linetype = "longdash", alpha = .4)+
-      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Entropy"))+
       CNAqc:::my_ggplot_theme() +
       theme(axis.title.y.right = element_text(color="deeppink4"),
             axis.text.y.right = element_text(color="deeppink4"))+
@@ -113,6 +111,9 @@ plot_test = function(x, assembly = F){
                     color = ploidy,
                     size = multiplicity))+
       scale_size_manual(values = c("1"=.3,"2"=.3))+
+      # ylim(0,max(dataset$density)) +
+      # geom_hline(yintercept = mdata$mean_entropy * scaleFactor, color = "deeppink4", linetype = "longdash", alpha = .4)+
+      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Entropy"), limits = c(0,max(dataset$density)))+
       guides(size = "none")+
       labs(
         title = paste0(
