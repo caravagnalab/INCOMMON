@@ -65,6 +65,15 @@ plot_test = function(x, assembly = F){
     
     dataset = pull(mdata, density)[[1]]
     
+    dataset = lapply(dataset$label %>% unique(), function(l){
+      d = dataset %>% 
+        filter(label==l) 
+      n_points = 250
+      stride = max(round(nrow(d)/n_points),1)
+      d[seq(1,nrow(d),stride),]
+    }) %>% 
+      do.call(rbind, .)
+    
     # label = dataset %>% 
     #   filter(NV==mdata$NV, ploidy == mdata$ploidy, multiplicity == mdata$multiplicity) %>% 
     #   pull(label)
@@ -73,13 +82,8 @@ plot_test = function(x, assembly = F){
     scaleFactor = max(dataset$density)/max(dataset$entropy)
     
     dataset$multiplicity = factor(dataset$multiplicity)
-    
-    n_points = 1000
-    stride = max(round(nrow(dataset)/n_points),1)
-    
-    dataset = dataset[seq(1,nrow(dataset),stride),] %>% 
+    dataset %>% 
       mutate(ploidy = ifelse(label=="out of sample", label, ploidy))
-    
     dataset$ploidy = factor(dataset$ploidy)
     
     dataset %>%
