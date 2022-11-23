@@ -80,6 +80,7 @@ plot_test = function(x, assembly = F){
     label = mdata$label
     
     scaleFactor = max(dataset$density)/max(dataset$entropy)
+    scaleFactor = ifelse(is.infinite(scaleFactor), 1, scaleFactor)
     
     dataset$multiplicity = factor(dataset$multiplicity)
     dataset %>% 
