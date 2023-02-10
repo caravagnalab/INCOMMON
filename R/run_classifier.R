@@ -27,6 +27,7 @@ run_classifier = function(x,
                           cutoff = 0.75,
                           rho = 0.01,
                           karyotypes = c("1:0","1:1","2:0","2:1","2:2"),
+                          priors = NULL,
                           gene_role_specific = FALSE,
                           assign_extremes = FALSE
                           )
@@ -48,7 +49,7 @@ run_classifier = function(x,
   x = idify(x)
     
   tests = lapply(x$data$id, function(id) {
-    
+    print(id)
     if(x$data %>% 
       dplyr::filter(id==!!id) %>% 
       nrow() > 1){
@@ -71,6 +72,8 @@ run_classifier = function(x,
     binomial_test(
       test = get_NV(x, id),
       DP = get_DP(x, id),
+      gene = get_gene(x, id),
+      priors = priors,
       purity = get_purity(x),
       cutoff = cutoff,
       rho = rho,

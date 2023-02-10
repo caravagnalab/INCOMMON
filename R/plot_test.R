@@ -73,10 +73,7 @@ plot_test = function(x, assembly = F){
       d[seq(1,nrow(d),stride),]
     }) %>% 
       do.call(rbind, .)
-    
-    # label = dataset %>% 
-    #   filter(NV==mdata$NV, ploidy == mdata$ploidy, multiplicity == mdata$multiplicity) %>% 
-    #   pull(label)
+  
     label = mdata$label
     
     scaleFactor = max(dataset$density)/max(dataset$entropy)
@@ -100,7 +97,6 @@ plot_test = function(x, assembly = F){
       CNAqc:::my_ggplot_theme() +
       theme(axis.title.y.right = element_text(color="deeppink4"),
             axis.text.y.right = element_text(color="deeppink4"))+
-      # scale_color_manual(values = colors, breaks = dataset$label %>% unique()) +
       geom_point(data = dataset %>% maximise(),
                  aes(x = NV,
                      y = density,
@@ -116,9 +112,9 @@ plot_test = function(x, assembly = F){
                     color = ploidy,
                     size = multiplicity))+
       scale_size_manual(values = c("1"=.3,"2"=.3))+
-      # ylim(0,max(dataset$density)) +
-      # geom_hline(yintercept = mdata$mean_entropy * scaleFactor, color = "deeppink4", linetype = "longdash", alpha = .4)+
-      scale_y_continuous("Likelihood", sec.axis = sec_axis(~./scaleFactor, name = "Entropy"), limits = c(0,max(dataset$density)))+
+      scale_y_continuous("Likelihood", 
+                         sec.axis = sec_axis(~./scaleFactor, name = "Entropy"), 
+                         limits = c(0,max(dataset$density)))+
       guides(size = "none")+
       labs(
         title = paste0(
@@ -146,17 +142,16 @@ plot_test = function(x, assembly = F){
                            " (mean: "*.(round(mdata$mean_entropy,2))*
                          ")")
         ) +
-      # guides(color = 'none') +
-      # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
-      #     mapping = aes(yintercept = cutoff,
-      #     color = label),
-      #     linetype = 'dashed',
-      #     size = .5
-      #   )
+      guides(color = 'none') +
+      geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
+          mapping = aes(yintercept = cutoff,
+          color = label),
+          linetype = 'dashed',
+          size = .5
+        )
       geom_vline(
         xintercept = get_NV(x, id),
-        # color = ifelse(is.na(mdata$ploidy), 'indianred3', 'forestgreen'),
-        color = ifelse(label=="out of sample", 'indianred3', 'forestgreen'),
+        color = 'black',
         linetype = 'dashed',
         size = .5
       )

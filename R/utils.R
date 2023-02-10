@@ -322,3 +322,20 @@ maximise = function(x)
     filter(density == max(density)) %>%
     ungroup()
 }
+
+# Prior getter
+
+get_prior = function(x, gene, label){
+  
+  if(is.null(x)) {
+    cli::cli_alert("No prior probabilities provided")
+    return(1)
+  } else {
+    out = x %>% filter(gene == !!gene, label == !!label) %>% pull(p)
+  if(out %>% length() == 0){
+    cli::cli_alert("No prior probabilitiy specified for {.field {gene}}")
+    return(1)
+  }
+  else if (out %>% length() > 0) return(out)
+    }
+}

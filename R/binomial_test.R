@@ -26,6 +26,8 @@
 
 binomial_test = function(test,
                          DP,
+                         gene,
+                         priors = "NULL",
                          purity,
                          cutoff,
                          rho = 0.01,
@@ -36,22 +38,31 @@ binomial_test = function(test,
   NV_x = 1:DP
   
   # Density
-  db = function(Major, minor)
+  db = function(Major, minor, priors, gene)
   {
     peaks = CNAqc:::expected_vaf_peak(Major, minor, purity)$peak
     
-    lapply(peaks %>% seq_along, function(p)
-      data.frame(
+    lapply(peaks %>% seq_along, function(p) {
+      label = paste0(Major + minor, 'N (Mutated: ', p, "N)")
+      
+      out = data.frame(
         density = compute_density(NV_x, DP, prob = peaks[p], rho),
         NV = NV_x,
         Major = Major,
         minor = minor,
-        ploidy = Major+minor,
+        ploidy = Major + minor,
         multiplicity = p,
         karyotype = paste0(Major, ":", minor),
-        label = paste0(Major+minor,'N (Mutated: ', p,"N)"),
+        label = label,
         peak = peaks[p]
-      )) %>%
+      )
+      
+      if (!is.null(priors))
+        out$density = out$density * get_prior(priors, gene, label)
+      
+      out
+      
+    }) %>%
       Reduce(f = bind_rows)
   }
   
@@ -105,8 +116,9 @@ binomial_test = function(test,
   }
   
   dataset = lapply(karyotypes, function(k) {
+    print(k)
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
-    db(alleles[1],alleles[2])
+    db(alleles[1],alleles[2], priors, gene)
   }) %>% bind_rows() %>% cut(cutoff)
   
   # Compute mean entropy over in-sample data
