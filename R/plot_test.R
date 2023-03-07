@@ -18,12 +18,15 @@
 #'     )
 #' plot_test(x = x,id = x$classifier[[model]]data$id[1],model = model)
 plot_test = function(x, assembly = F){
+  
   stopifnot(inherits(x,"TAPACLOTH"))
+  
   colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
   colors = colors[c("1:0","1:1","2:1","2:2")]
   names(colors) = sapply(names(colors), function(n){
     strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
   })
+  
   # names_colors = expand.grid(names(colors), 1:2) %>% apply(1, paste, collapse = ' ')
   # colors = sapply(names_colors, function(n)
   #   colors[strsplit(n, ' ')[[1]][1]])
@@ -142,13 +145,13 @@ plot_test = function(x, assembly = F){
                            " (mean: "*.(round(mdata$mean_entropy,2))*
                          ")")
         ) +
-      guides(color = 'none') +
-      geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
-          mapping = aes(yintercept = cutoff,
-          color = label),
-          linetype = 'dashed',
-          size = .5
-        )
+      # guides(color = 'none') +
+      # geom_hline(data = dataset %>% group_by(label) %>% summarise(cutoff) %>% unique() %>% filter(label != "out of sample"),
+      #     mapping = aes(yintercept = cutoff,
+      #     color = label),
+      #     linetype = 'dashed',
+      #     size = .5
+      #   )+
       geom_vline(
         xintercept = get_NV(x, id),
         color = 'black',

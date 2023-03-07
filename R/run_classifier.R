@@ -49,7 +49,6 @@ run_classifier = function(x,
   x = idify(x)
     
   tests = lapply(x$data$id, function(id) {
-    print(id)
     if(x$data %>% 
       dplyr::filter(id==!!id) %>% 
       nrow() > 1){

@@ -116,7 +116,6 @@ binomial_test = function(test,
   }
   
   dataset = lapply(karyotypes, function(k) {
-    print(k)
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
     db(alleles[1],alleles[2], priors, gene)
   }) %>% bind_rows() %>% cut(cutoff)
