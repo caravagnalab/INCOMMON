@@ -372,9 +372,9 @@ check_input = function(x){
   if(x$data$VAF %>% class() != "numeric") 
     cli::cli_abort("Unrecogniseable VAF, will not proceed.")
   
-  if(x$data$DP %>% class() != "numeric") 
+  if(x$data$DP %>% class() != "integer") 
     cli::cli_abort("Unrecogniseable DP, will not proceed.")
   
-  if(x$data$NV %>% class() != "numeric") 
+  if(x$data$NV %>% class() != "integer") 
     cli::cli_abort("Unrecogniseable NV, will not proceed.")
 }
