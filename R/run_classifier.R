@@ -91,6 +91,11 @@ run_classifier = function(x,
       data = bind_cols(x %>% get_data(), tests)
     )
     
+    test$classifier$data = test %>% 
+      get_classifier() %>% 
+      get_data() %>% 
+      reduce_classes()
+    
   return(test)
 }
 

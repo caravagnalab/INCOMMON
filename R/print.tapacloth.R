@@ -91,9 +91,10 @@ print.TAPACLOTH = function(x, ...) {
       print(get_classifier(x) %>% 
               get_data() %>% 
               dplyr::select(id, NV, DP, VAF, 
-                            gene, gene_role, 
+                            gene, gene_role,
+                            state, label,
                             ploidy, multiplicity,
-                            entropy, label)
+                            entropy)
             )
   }
 }

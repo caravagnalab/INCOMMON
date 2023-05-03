@@ -378,3 +378,18 @@ check_input = function(x){
   if(x$data$NV %>% class() != "integer") 
     cli::cli_abort("Unrecogniseable NV, will not proceed.")
 }
+
+# Switch to higher-level classification
+
+reduce_classes = function(x) {
+  x %>%
+    mutate(
+      state = case_when(
+        label %in% c("2N (Mutated: 1N)") ~ "HMD",
+        label %in% c("4N (Mutated: 1N)", "3N (Mutated: 1N)") ~ "LOW MUT/WT",
+        label %in% c("1N (Mutated: 1N)") ~ "LOH",
+        label %in% c("2N (Mutated: 2N)") ~ "CNLOH",
+        label %in% c("3N (Mutated: 2N)", "4N (Mutated: 2N)") ~ "AM"
+      )
+    )
+}
