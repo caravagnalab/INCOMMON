@@ -377,6 +377,9 @@ check_input = function(x){
   
   if(x$data$NV %>% class() != "integer") 
     cli::cli_abort("Unrecogniseable NV, will not proceed.")
+  
+  if(is.na(x$purity) | x$purity < 0 | !is.numeric(x$purity))
+    cli::cli_abort("Unrecogniseable sample purity, will not proceed.")
 }
 
 # Switch to higher-level classification
