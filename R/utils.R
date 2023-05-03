@@ -339,3 +339,42 @@ get_prior = function(x, gene, label){
   else if (out %>% length() > 0) return(out)
     }
 }
+
+
+# Input format check
+
+check_input = function(x){
+  if(x$data$sample %>% class() != "character") 
+    cli::cli_abort("Unrecogniseable sample id, will not proceed.")
+  
+  if(x$data$gene %>% class() != "character") 
+    cli::cli_abort("Unrecogniseable gene names, will not proceed.")
+  
+  if(x$data$gene_role %>% class() != "character" | 
+     setdiff(x$data$gene_role,c("TSG", "oncogene")) %>% length() != 0) 
+    cli::cli_abort("Unrecogniseable gene roles, will not proceed.")
+  
+  if(x$data$chr %>% class() != "character") 
+    cli::cli_abort("Unrecogniseable chromosome names, will not proceed.")
+  
+  if(x$data$from %>% class() != "numeric") 
+    cli::cli_abort("Unrecogniseable mutation start positions \"from\", will not proceed.")
+  
+  if(x$data$to %>% class() != "numeric") 
+    cli::cli_abort("Unrecogniseable mutation end positions \"to\", will not proceed.")
+  
+  if(x$data$ref %>% class() != "character") 
+    cli::cli_abort("Unrecogniseable reference alleles, will not proceed.")
+  
+  if(x$data$alt %>% class() != "character") 
+    cli::cli_abort("Unrecogniseable alternative alleles, will not proceed.")
+  
+  if(x$data$VAF %>% class() != "numeric") 
+    cli::cli_abort("Unrecogniseable VAF, will not proceed.")
+  
+  if(x$data$DP %>% class() != "numeric") 
+    cli::cli_abort("Unrecogniseable DP, will not proceed.")
+  
+  if(x$data$NV %>% class() != "numeric") 
+    cli::cli_abort("Unrecogniseable NV, will not proceed.")
+}

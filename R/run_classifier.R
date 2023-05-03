@@ -44,6 +44,8 @@ run_classifier = function(x,
     )
     cat("\n")
     
+  check_input(x)
+    
   cli::cli_alert_info("Computing likelihoods and uncertainties.")
     
   x = idify(x)
