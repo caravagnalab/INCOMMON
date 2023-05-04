@@ -220,9 +220,8 @@ plot_gene = function(x,model,gene_name){
 #' @param model Model used for purity estimate
 #' @return A plot of BMix fit.
 #' @export
-plot_bmix = function(x, model){
-  model = model %>% tolower()
-  y = x$purity_estimate[[model]]$plot_bmix
+plot_bmix = function(x){
+  y = x$purity_estimate$plot_bmix
   return(y)
 }
 
