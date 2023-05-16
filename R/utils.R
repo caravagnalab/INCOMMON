@@ -343,7 +343,7 @@ get_prior = function(x, gene, label){
 # Input format check
 
 check_input = function(x){
-  if(x$data$sample %>% class() != "character") 
+  if(x$sample %>% class() != "character") 
     cli::cli_abort("Unrecogniseable sample id, will not proceed.")
   
   if(x$data$gene %>% class() != "character") 
