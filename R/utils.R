@@ -356,11 +356,11 @@ check_input = function(x){
   if(x$data$chr %>% class() != "character") 
     cli::cli_abort("Unrecogniseable chromosome names, will not proceed.")
   
-  if(x$data$from %>% class() != "numeric") 
-    cli::cli_abort("Unrecogniseable mutation start positions \"from\", will not proceed.")
-  
-  if(x$data$to %>% class() != "numeric") 
-    cli::cli_abort("Unrecogniseable mutation end positions \"to\", will not proceed.")
+  # if(x$data$from %>% class() != "numeric") 
+  #   cli::cli_abort("Unrecogniseable mutation start positions \"from\", will not proceed.")
+  # 
+  # if(x$data$to %>% class() != "numeric") 
+  #   cli::cli_abort("Unrecogniseable mutation end positions \"to\", will not proceed.")
   
   if(x$data$ref %>% class() != "character") 
     cli::cli_abort("Unrecogniseable reference alleles, will not proceed.")
@@ -395,3 +395,18 @@ reduce_classes = function(x) {
       )
     )
 }
+
+# Extract assignment probability for each higher-level class
+
+add_per_state_probabilities = function(x, NV){
+  lapply(1:nrow(x), function(i){
+    probs = x[i,]$density[[1]] %>% 
+      dplyr::filter(NV == x[i,]$NV) %>% 
+      reduce_classes() %>% 
+      group_by(state) %>% 
+      dplyr::reframe(p_assign = sum(p_assign)) %>% 
+      tidyr::pivot_wider(names_from = state, values_from = p_assign)
+    tibble(x[i,],
+           p_assign_all = list(probs))
+  }) %>% do.call(rbind, .)
+} 

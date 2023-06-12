@@ -72,7 +72,7 @@ binomial_test = function(test,
     ## Normalize likelihoods by maximum and compute corresponding cut-offs 
     x = x %>% 
       group_by(label) %>% 
-      summarise(
+      reframe(
         density,
         NV,
         ploidy,
@@ -84,17 +84,20 @@ binomial_test = function(test,
       unique() %>% 
       ungroup()
     
-    ## Compute uncertainty (relative likelihood) for each class
+    ## Compute assignment probability (relative likelihood) for each class
+      
     x = x %>% 
       group_by(NV) %>% 
-      summarise(
+      reframe(
         density,
         ploidy,
         multiplicity,
         peak,
         cutoff,
         label,
-        entropy = 1 - max(density) / sum(density)
+        p_assign = density / sum(density),
+        entropy = 1 - (density / sum(density))
+        # entropy = 1 - max(density) / sum(density)
       ) %>% 
       ungroup()
     
@@ -125,9 +128,10 @@ binomial_test = function(test,
   mean_entropy = dataset %>% 
     filter(label != "out of sample") %>% 
     group_by(NV) %>% 
-    summarise(u = unique(entropy)) %>% 
+    summarise(u = min(entropy)) %>% 
     pull(u) %>% 
     mean()
+  
   
   tested = dataset %>%
     maximise() %>%
@@ -170,6 +174,7 @@ binomial_test = function(test,
   
   return(tibble(ploidy = tested$ploidy,
                 multiplicity = tested$multiplicity,
+                p_assign = tested$p_assign,
                 entropy = tested$entropy,
                 label = tested$label,
                 density = list(dataset),

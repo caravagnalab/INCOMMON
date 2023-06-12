@@ -94,7 +94,8 @@ run_classifier = function(x,
     test$classifier$data = test %>% 
       get_classifier() %>% 
       get_data() %>% 
-      reduce_classes()
+      reduce_classes() %>% 
+      add_per_state_probabilities()
     
   return(test)
 }
