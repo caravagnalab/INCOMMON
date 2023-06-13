@@ -68,6 +68,10 @@ plot_test = function(x, assembly = F){
     
     dataset = pull(mdata, density)[[1]]
     
+    dataset = dataset %>% 
+      group_by(NV) %>% 
+      reframe(entropy = 1-max(density)/sum(density), density, ploidy, multiplicity, peak, cutoff, label, p_assign)
+    
     dataset = lapply(dataset$label %>% unique(), function(l){
       d = dataset %>% 
         filter(label==l) 
