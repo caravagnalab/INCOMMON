@@ -93,7 +93,7 @@ plot_test = function(x, assembly = F){
     
     dataset %>%
       ggplot() +
-      geom_line(aes(x = NV, y = density), color = 'gainsboro',  size = .3)+
+      geom_line(aes(x = NV, y = density), color = 'white',  size = .5, alpha = 0)+
       geom_line(
         aes(x = NV, y = entropy * scaleFactor),
         color = "deeppink4",
