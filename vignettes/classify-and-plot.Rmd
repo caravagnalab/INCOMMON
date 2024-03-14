@@ -29,32 +29,35 @@ print(example_data)
 
 # Exact read-counts based test
 
-TAPACLOTH implements a maximum likelihood-based classifier to assess ploidy and multiplicity from read-count data.
+INCOMMON implements a maximum a posteriori classifier to infer the copy number ($n_A$ for the major allele, $n_B$ 
+for the minor) and multiplicity $m$ of mutations from read-count data.
 
-This test is based on a model of the sequencing outcome following either a Binomial or a Beta-Binomial process, in which the number of reads with a variant represents the number of successes over a total number of trials corresponding to sequencing coverage. 
+The classifier is based on a Beta-Binomial mixture model, in which the number of reads with a variant ($NV$) is the number of events
+and the sequencing depth $DP$ is the total number of trials.
 
-A clonal variant affecting a genome site of ploidy $p$, with multiplicity $m \in \{1,2\}$ in a sample of purity $\pi$
+A mutation on a genomic site of ploidy $p = n_A+n_B$, with multiplicity $m\leq \max(n_A,n_B)$, in a sample of purity $\pi$
 has an expected VAF of
 \[
 \mathbb{E}[\text{VAF}] = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
 \] 
 
-In the (Beta-)Binomial process this represents the success probability of the counting process. Therefore, if we assume Binomial model for each possible combination of ploidy $p$ and multiplicity $m$, and consider for every input mutation
+In the read counting process this represents the event probability. Therefore, based
+on mutation data
 
 - $NV$ reads with the variant at the locus;
 - $DP$ coverage at the locus;
 - sample purity $\pi$;
 
-then the likelihood of observing $NV$ reads with the variant is
+the likelihood of observing $NV$ reads with the variant is
 \[
-P(X = NV) = Bin\left(NV \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\left(1-\pi\right)}\right)
+P(X = NV | \theta_\eta,\rho, DP) = \text{Beta-Binonmial}\left(NV \;\large\mid\;\normalsize \theta_\eta, \rho, DP\right)
 \] 
 
-> The Beta-Binomial case simply follows $P(X = NV) = \textit{Beta-Bin}\left(NV \;\large\mid\;\normalsize DP, \frac{m\pi}{p\pi + 2\left(1-\pi\right)}\right)$ for some overdipsersion $\rho$. A Beta-Binomial distribution can be used to take into account the overdispersion of the sequencing assay. 
+> Setting $\rho = 0$ corresponds to using a pure Binomial model with no model of the sequencer overdispersion. 
 
 ## Example 
 
-In the following example, the classification task is run using both the Binomial and Beta-Binomial models - do appreciate the difference across the width of the acceptance regions of each class. 
+In the following example, the classification task is run using the default setting $\rho = 0.01$.
 
 The input must be prepared using function `init`:
 ```{r}
