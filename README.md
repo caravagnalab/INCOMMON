@@ -1,22 +1,22 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# TAPACLOTH <a href="caravagnalab.github.io/TAPACLOTH"><img src="man/figures/logo.png" align="right" height="139" /></a>
+# INCOMMON <a href="caravagnalab.github.io/INCOMMON"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-TAPACLOTH is a tool that uses targeted sequencing data to classify
-somatic mutations as either subclonal, clonal heterozygous or clonal
-with loss of heterozygosity. Two types of tests are available: an exact
-one based on Binomial or Beta-Binomial modelling of sequencing read
-counts, and approximate based on allelic frequencies. The former is
-parametrised by a p-value. Additionally, TAPACLOTH can infer sample
-purity, an information used to carry out variant classification. Since
-the two tests are independent, one can first estimate sample purity and
-then use it as input for the classification task.
+INCOMMON is a tool for the INference of COpy number and 
+Mutation Multiplicity in ONcology. INCOMMON infers the copy number
+and multiplicity of somatic mutations from tumour-only
+read count data, and can applied to classify mutations from
+large-size datasets in an efficient and fast way. Mutations are classified
+as either Tier-1 (present in 100% cells) without copy-number alterations (heterozygous mutant diploid HMD),
+with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), or Tier-2 (subclonal
+or with high ploidy and low multiplicity). 
+
 
 #### Help and support
 
@@ -24,12 +24,12 @@ then use it as input for the classification task.
 
 ## Installation
 
-You can install the development version of TAPACLOTH from
+You can install the development version of INCOMMON from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("caravagnalab/TAPACLOTH")
+devtools::install_github("caravagnalab/INCOMMON")
 ```
 
 #### Copyright and contacts
