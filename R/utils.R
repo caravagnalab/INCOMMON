@@ -1,157 +1,112 @@
-get_data = function(x){
+data = function(x){
   return(x$data)
 }
 
-get_sample = function(x){
+samples = function(x){
   return(x$sample)
 }
 
-get_purity = function(x){
+purity = function(x){
   return(unique(x$purity))
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get significant classification data for the specified model, if already tested.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used in the test from which to get classification data.
-#' @return A tibble.
-#' @export
-get_classes = function(x, model){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  y = x$classifier[[model]]$data %>% 
-    dplyr::select(chr, from, to, ref, alt, karyotype, multiplicity, outcome)
-  return(y)
+tumor_type = function(x){
+  return(unique(x$tumor_type))
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get model parameters of the performed classification tests.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @return A tibble containing parameters for all the models used in the classification.
-#' @export
-#' 
-get_params = function(x) {
-  stopifnot(inherits(x, "TAPACLOTH"))
-  x$classifier$params
-}
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get classification data for a specific gene.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param gene_id The name of the gene.
-#' @return A tibble with gene-specific classification data.
-#' @export
-gene_label = function(x, gene_id){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  x = idify(x)
-  y = x$classifier$data %>% 
-    dplyr::filter(gene == gene_id)
-  return(tibble(id = y$id,
-                label = y$label))
-}
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get point and mean classification entropy data for a specific gene.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param gene_id The name of the gene.
-#' @return A tibble with gene-specific classification data.
-#' @export
-gene_entropy = function(x, gene_id){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  x = idify(x)
-  y = x$classifier$data %>% 
-    dplyr::filter(gene == gene_id)
-  return(tibble(id = y$id,
-                entropy = y$entropy,
-                mean_entropy = y$mean_entropy))
-}
-
-#' Getter for class \code{'TAPACLOTH'}.
+#' Getter for class \code{'INCOMMON'}.
 #' @description
 #' Get classification data for specific selected model.
-#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param x An obj of class \code{'INCOMMON'}.
 #' @param model Model used in the test from which to get classification data.
 #' @return A tibble with classification data.
 #' @export
-get_classifier = function(x, model = NULL) {
-  stopifnot(inherits(x, "TAPACLOTH"))
-  stopifnot("classifier" %in% names(x))
-  x$classifier
-  }
+classification = function(x) {
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("fit" %in% names(x))
+  stopifnot("classification" %in% names(x$fit))
+  x$fit$classification
+}
+
+#' Getter for class \code{'INCOMMON'}.
+#' @description
+#' Get model parameters of the performed classification tests.
+#' @param x An obj of class \code{'INCOMMON'}.
+#' @return A tibble containing parameters for all the models used in the classification.
+#' @export
+#' 
+parameters = function(x) {
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("fit" %in% names(x))
+  stopifnot("params" %in% names(x$fit))
+  x$fit$params
+}
+
+
+#' Getter for class \code{'INCOMMON'}.
+#' @description
+#' Get model parameters of the performed classification tests.
+#' @param x An obj of class \code{'INCOMMON'}.
+#' @return A tibble containing parameters for all the models used in the classification.
+#' @export
+#' 
+posterior = function(x, id) {
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("fit" %in% names(x))
+  stopifnot("posterior" %in% names(x$fit))
+  stopifnot(id %in% names(x$fit$posterior))
+  x$fit$posterior[[id]]
+}
 
 idify = function(x){
-  y = get_data(x)
-  y = y %>% 
+  x$data = data(x) %>% 
     mutate(id = paste(chr,from,to,ref,alt,sep = ":"))
-  x$data = y
   return(x)
 }
 
 unidify = function(x){
-  y = get_data(x)
-  y = y %>% 
+  x$data = data(x) %>% 
     dplyr::select(-id)
-  x$data = y
   return(x)
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get coverage for a specific mutation in the sample.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param mutation_id Coordinates of mutation in the form of a string 
-#' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
-#' @return DP of the mutation.
-#' @export
-get_DP = function(x, id){
+ids = function(x){
+  if(!("id" %in% colnames(data(x)))) x = idify(x)
+  data(x) %>% pull(id) %>% unique()
+}
+
+info = function(x, mutation_id){
+  if(!("id" %in% colnames(data(x)))) x = idify(x)
+  out = data(x) %>% dplyr::filter(id == mutation_id)
+  if("fit" %in% names(x)) out = classification(x) %>% dplyr::filter(id == mutation_id)
+  out
+}
+
+
+DP = function(x, id){
   x = idify(x)
-  x$data %>% 
+  data(x) %>% 
     dplyr::filter(id == !!id) %>% 
     pull(DP)
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get number of reads with variant for a specific mutation in the sample.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param mutation_id Coordinates of mutation in the form of a string 
-#' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
-#' @return NV of the mutation.
-#' @export
-get_NV = function(x, id){
+NV = function(x, id){
   x = idify(x)
-  x$data %>% 
+  data(x) %>% 
     dplyr::filter(id == !!id) %>% 
     pull(NV)
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get variant allele frequency (VAF) for a specific mutation in the sample.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param mutation_id Coordinates of mutation in the form of a string 
-#' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
-#' @return VAF of the mutation.
-#' @export
-get_VAF = function(x, mutation_id){
+
+VAF = function(x, mutation_id){
   x = idify(x)
-  x$data %>% 
+  data(x) %>% 
     dplyr::filter(id == mutation_id) %>% 
     pull(VAF)
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get ID of the gene affected by the specified mutation.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param mutation_id Coordinates of mutation in the form of a string 
-#' containing `chr`,`from`,`to`,`alt`,`ref` coordinates, colon separated.
-#' @return A tibble with the name of the gene affected by the specified mutation.
-#' @export
-get_gene = function(x, mutation_id){
+gene = function(x, mutation_id){
   x = idify(x)
   x$data %>% 
     dplyr::filter(id == mutation_id) %>% 
@@ -165,47 +120,17 @@ get_gene_role = function(x, id){
     pull(gene_role)
 }
 
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get coordinates of mutation(s) mapped on a specified gene.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param gene_name Name of the gene affected by the mutation.
-#' @return A list of mutation coordinates.
-#' @export
-get_coord = function(x, gene_name){
-  x %>% 
-    idify() %>% 
-    get_data() %>% 
-    dplyr::filter(gene == gene_name) %>% 
-    pull(id) %>% 
-    strsplit(., split = ":")
-}
 
-get_mass = function(x, null_model, id){
-  y = null_model$test %>% 
-    dplyr::select(karyotype, multiplicity, l_a, r_a)
-  
-  y$id = id
-  
-  y$mass = sapply(null_model$test$inputs, function(s) {
-    s$p[get_NV(x, id)]
-  })
-  
-  y$gene = get_gene(x, id)
-  
-  return(y)
-}
-
-#' Plot function for class \code{'TAPACLOTH'}.
+#' Plot function for class \code{'INCOMMON'}.
 #' @description
 #' Plot results of the classification under the specified model and for the specified gene.
-#' @param x An obj of class \code{'TAPACLOTH'}.
+#' @param x An obj of class \code{'INCOMMON'}.
 #' @param gene_name Name of gene affected by the mutation.
 #' @param model Model used for classification.
 #' @return A tibble with classification data for the specified mutation.
 #' @export
 plot_gene = function(x,model,gene_name){
-  stopifnot(inherits(x, "TAPACLOTH"))
+  stopifnot(inherits(x, "INCOMMON"))
   model = model %>% tolower()
   ids = get_id(x,gene_name)
   lapply(ids, function(i){
@@ -213,130 +138,29 @@ plot_gene = function(x,model,gene_name){
   })
 }
 
-#' Plot function for class \code{'TAPACLOTH'}.
-#' @description
-#' Plot results of the BMix fit used for purity estimation, under the specified model.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used for purity estimate
-#' @return A plot of BMix fit.
-#' @export
-plot_bmix = function(x){
-  y = x$purity_estimate$plot_bmix
-  return(y)
-}
-
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Extract data and parameters of purity estimation.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used for purity estimation
-#' @return Purity estimate data.
-#' @export
-get_purity_estimate = function(x){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  y = x$purity_estimate
-  return(y)
-}
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Extract the sample purity as estimated using the specified model
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used for purity estimation
-#' @return Sample purity as obtained by BMix purity estimation procedure.
-#' @export
-get_purity_bmix = function(x){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  y = get_purity_estimate(x)
-  return(y$purity)
-}
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Extract reliability of input sample purity as compared to TAPACLOTH estimate using the specified model.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param model Model used for purity estimation
-#' @return Reliability of input purity estimate.
-#' @export
-get_reliability = function(x){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  y = get_purity_estimate(x)
-  return(y$reliability)
-}
-
-get_threshold = function(x, model){
-  y = get_classifier(x, model)
-  y$params$threshold
-}
-
-get_rho = function(x){
-  y = get_classifier(x, model = "beta-binomial")
-  y$params$rho
-}
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' List models used for classification tests.
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @return Model names.
-#' @export
-models_avail = function(x){
-  stopifnot(inherits(x, "TAPACLOTH"))
-  return(names(x$classifier))
-}
-
-get_ploidy = function(k){
-  stringr::str_split(k, pattern = ":")[[1]] %>% as.integer() %>% sum()}
-
-#' Getter for class \code{'TAPACLOTH'}.
-#' @description
-#' Get ID of the mutation(s) affecting the specified gene
-#' @param x An obj of class \code{'TAPACLOTH'}.
-#' @param gene_name Name of the selected gene.
-#' @return ID( of mutation(s).
-#' @export
-get_id = function(x, gene_name){
-  x = idify(x)
-  x$data %>% 
-    dplyr::filter(gene == gene_name) %>% 
-    pull(id)
-}
-
-closer_dist = function(null_model, nv, karyotypes) {
-  i = null_model$test %>% 
-    rowwise() %>%
-    mutate(dist = min(nv - l_a, nv - r_a)) %>% 
-    pull(dist) %>% 
-    abs() %>% 
-    which.min()
-  return(i)
-}
-
-# Maxima
-maximise = function(x)
-{
-  x %>%
-    group_by(NV) %>%
-    filter(density == max(density)) %>%
-    ungroup()
-}
-
 # Prior getter
 
-get_prior = function(x, gene, label){
+get_prior = function(x, gene, tumor_type){
   
   if(is.null(x)) {
     cli::cli_alert("No prior probabilities provided")
     return(1)
-  } else {
-    out = x %>% filter(gene == !!gene, label == !!label) %>% pull(p)
-  if(out %>% length() == 0){
-    cli::cli_alert("No prior probabilitiy specified for {.field {gene}}")
+  }
+  
+  if(!(gene %in% x$gene)) {
+    cli::cli_alert("No prior probability specified for {.field {gene}}")
     return(1)
   }
-  else if (out %>% length() > 0) return(out)
-    }
+  
+  if(tumor_type %in% (x %>% dplyr::filter(gene == !!gene) %>% dplyr::pull(tumor_type))) {
+    out = x %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  } else {
+    cli::cli_alert("No {.field {tumor_type}}-specific prior probability specified for {.field {gene}}")
+    cli::cli_alert("Using a pan-cancer prior")
+    out = x %>% dplyr::filter(gene == !!gene, tumor_type == 'PANCA')
+    } 
+  
+  return(out)
 }
 
 
@@ -350,7 +174,7 @@ check_input = function(x){
     cli::cli_abort("Unrecogniseable gene names, will not proceed.")
   
   if(x$data$gene_role %>% class() != "character" | 
-     setdiff(x$data$gene_role,c("TSG", "oncogene")) %>% length() != 0) 
+     setdiff(x$data$gene_role, c("TSG", "oncogene", NA)) %>% length() != 0) 
     cli::cli_abort("Unrecogniseable gene roles, will not proceed.")
   
   if(x$data$chr %>% class() != "character") 
@@ -410,3 +234,17 @@ add_per_state_probabilities = function(x, NV){
            p_assign_all = list(probs))
   }) %>% do.call(rbind, .)
 } 
+
+remove_mutation = function(x, mutation_id){
+  x$data = x$data %>% dplyr::filter(id != mutation_id)
+  if('fit' %in% names(x)) x$fit = x$fit %>% dplyr::filter(id != mutation_id)
+}
+
+# Palettes
+
+ploidy_colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
+ploidy_colors = ploidy_colors[c("1:0","1:1","2:1","2:2")]
+names(ploidy_colors) = sapply(names(ploidy_colors), function(n){
+  strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
+})
+ploidy_colors = c(ploidy_colors, "Tier-2" = 'gray')

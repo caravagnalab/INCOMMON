@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 INCOMMON is a tool for the INference of COpy number and 
@@ -20,7 +20,7 @@ or with high ploidy and low multiplicity).
 
 #### Help and support
 
-## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/TAPACLOTH/-yellow.svg)](https://caravagnalab.github.io/TAPACLOTH)
+## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
 
 ## Installation
 

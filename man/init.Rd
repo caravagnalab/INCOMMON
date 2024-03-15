@@ -2,31 +2,39 @@
 % Please edit documentation in R/init.R
 \name{init}
 \alias{init}
-\title{Prepare input for analyses with \code{'TAPACLOTH'}.}
+\title{Prepare input for analyses with \code{'INCOMMON'}.}
 \usage{
-init(mutations, sample, purity, gene_roles = TAPACLOTH::cancer_gene_census)
+init(
+  mutations,
+  sample,
+  tumor_type,
+  purity,
+  gene_roles = INCOMMON::cancer_gene_census
+)
 }
 \arguments{
-\item{mutations}{a tibble with columns chromosome \code{chr}, start position \code{from}, end position \code{to},
-reference \code{ref} and alternative \code{alt} alleles, coverage \code{DP}, number
-of reads with variant \code{NV}, variant allelic frequency \code{VAF} gene name \code{gene}
+\item{mutations}{a tibble with columns mutant chromosome \code{chr}, mutation start position \code{from}, mutation end position \code{to},
+reference allel \code{ref}, alternative allele \code{alt}, integer sequencing depth \code{DP}, integer number
+of reads with variant \code{NV}, variant allelic frequency \code{VAF} and gene name \code{gene}
 as Hugo Symbol.}
 
-\item{sample}{Sample name.}
+\item{sample}{Sample name or ID.}
 
-\item{purity}{Sample purity.}
+\item{tumor_type}{Tumor type of the sample.}
 
-\item{gene_roles}{A tibble reporting a list of gene names \code{gene} and associated
-role \code{gene_role} among "oncogene", "TSG" and "fusion". Default is taken from COSMIC cancer gene census.}
+\item{purity}{Purity of the sample.}
+
+\item{gene_roles}{A tibble reporting a list of \code{gene} names and associated
+\code{gene_role} among "oncogene", "TSG" and "fusion". The default is taken from COSMIC Cancer Gene Census.}
 }
 \value{
-An object of class \code{TAPACLOTH}.
+An object of class \code{INCOMMON}.
 }
 \description{
-Process input data into an object of class \code{'TAPACLOTH'}, ready for
-analyses with \code{run_classifier} and \code{estimate_purity} functions.
+Process input data into an object of class \code{'INCOMMON'}, ready for
+dwonstream analyses (e.g. \code{classify_sample}).
 }
 \examples{
-input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity)
+input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity, tumor_type = example_data$tumor_type)
 print(input)
 }

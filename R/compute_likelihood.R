@@ -1,4 +1,4 @@
-compute_density = function(NV, DP, prob, rho) {
+compute_likelihood = function(NV, DP, prob, rho) {
   density = VGAM::dbetabinom(
     x = 1:DP,
     size = DP,

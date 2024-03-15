@@ -1,0 +1,71 @@
+---
+title: "INCOMMON"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{INCOMMON}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=F)
+```
+
+
+INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology.
+INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, 
+and can be applied to classify mutations from large-size datasets in an efficient and fast way. 
+Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations 
+(heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH),
+amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity).
+
+> The INCOMMON model is designed to work with high-resolution targeted data such as 
+targeted panels but, in principle, it can be used with any sequencing assay. INCOMMON
+is helpful also to analyse sequencing data from tumor-only assays, in paricular when alignment
+files (fastq, bam, etc.) are not availble.
+However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster, https://github.com/caravagnalab/CNAqc). 
+
+## Copy number and mutation multiplicity assessment
+
+INCOMMON will assess, for every mutation, any of the following statuses:
+
+- Ploidy among 
+  - 1 (loss of heterozygosity LOH), 
+  - 2 (heterozygous and homozygous),
+  - 3 (trisomy), 
+  - 4 (tetrasomy);
+- Multiplicity between 1 and 2;
+
+INCOMMON implements [a classifier based on maximum a posteriori estimation](Classify_Mutations.html); the required inputs are:
+
+- read counts of a mutation
+- purity of the tumour sample $\pi > 0$
+
+> Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other bioinformatics approach outside INCOMMON. INCOMMON assumes that the input purity is correct.
+
+##  Input format
+
+Input must be prepared using the function `init`. The input to this function must contain:
+
+- `mutations`: a tibble or dataframe containing the mutations in a sample. Columns should indicate coordinates (chromosome `chr`, start position `from`,
+end position `to`), type of substitution (reference `ref` and alternative `alt` alleles), sequencing coverage `DP`, number
+of reads with the variant `NV`, variant allelic frequency `VAF` and gene name `gene` (preferably as Hugo Symbol)
+- `sample`:  name or ID of the sample
+- `purity`, tumor sample purity
+
+This is an example input dataset.
+
+```{r, include=FALSE}
+x = init(
+  mutations = example_data$data,
+  sample = example_data$sample,
+  purity = example_data$purity,
+  tumor_type = example_data$tumor_type
+)
+print.INCOMMON(x)
+```

@@ -4,7 +4,13 @@
 \alias{plot_summary}
 \title{Plotting function for class \code{'TAPACLOTH'}.}
 \usage{
-plot_summary(x, model = "binomial")
+plot_summary(
+  x,
+  model = "binomial",
+  out_file = "./tapacloth_pheatmap.pdf",
+  main = "summary statistics of classification",
+  n_frequency_colors = 4
+)
 }
 \arguments{
 \item{x}{A list of obj of class \code{'TAPACLOTH'} containing a \code{classifier}.}

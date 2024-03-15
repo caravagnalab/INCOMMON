@@ -1,8 +1,8 @@
 ---
-title: "Classify karyotype and multiplicity"
+title: "Classify mutations from a targeted sequencing sample"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Classify clonality and zygosity}
+  %\VignetteIndexEntry{Classify mutations from a targeted sequencing sample}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,10 +18,10 @@ options(crayon.enabled=TRUE)
 
 ```{r setup}
 library(dplyr)
-library(TAPACLOTH)
+library(INCOMMON)
 ```
 
-We work with the [example TAPACLOTH `data`](TAPACLOTH.html).
+We work with the [example INCOMMON `data`](INCOMMON.html).
 
 ```{r, include=FALSE}
 print(example_data)
@@ -64,49 +64,50 @@ The input must be prepared using function `init`:
 input = init(mutations = example_data$data,
              sample = example_data$sample,
              purity = example_data$purity,
+             tumor_type = example_data$tumor_type,
              gene_roles = cancer_gene_census)
 print(input)
 ```
-A column `gene_role` is attached to the input data, indicating the function of the
-affected gene as described in COSMIC Cancer Gene Census (default). Other descriptions can
-be input by the user through option `gene_role` of function `init`.
+A column `gene_role` is extracted from the COSMIC Cancer Gene Census (default) catalogue and 
+attached to the input data according to gene names. Other sources for gene roles can
+be input by the user through option `gene_roles` of function `init`.
 
-A cut-off $\alpha$ on the likelihood can be used in the classification in order to
-discard classifications with poor likelihoods.
-For each run of `run_classifier` using a certain model, a `classifier` object is 
-attached to the input, containing the model parameters (cut-off, overdispersion) and 
-the outcome of the classifier, including a measure of classification uncertainty.
-By default, ploidies corresponding to karyotypes 1:0, 1:1, 2:0, 2:1 and 2:2 are 
-tested. Other karyotypes can be provided by the user through option `karyotypes`.
+INCOMMON classification of a sample can be performed using function `classify`. 
 
 ```{r}
-out = run_classifier(
+out = classify(
   x = input,
-  cutoff = 0.75,
-  model = "Binomial"
+  priors = pcawg_priors,
+  entropy_cutoff = NULL,
+  rho = 0.01
 )
-
-out = run_classifier(
-    x = out,
-    cutoff = 0.75,
-    model = "Beta-Binomial",
-    rho = 0.01
-    )
-
 print(out)
 ```
 The results of the classification task can be visualized using the internal 
-plotting function. Here is an example using the Binomial model:
+plotting function. Here is an example:
 ```{r}
-plots = plot_test(out, model = "binomial")
-plots[[1]]
+plot_classification(out)
 ```
-And the Beta-Binomial model:
+All mutations are classified as with amplification. However visual inspection of the plots
+suggest that some of the mutations are hard to classify because of uncertainty. The number of
+reads with the variant $NV$ (vertical line) in these cases is compatible with multiple copy number
+configurations, which are assigned similar posterior probabilities.
+
+One can make the classification stricter by using the entropy cut-off in function `classify`.
+Mutations with classification entropy above this cutoff will be flagged as Tier-2.
+The default entropy cutoff is 0.20.
+
 ```{r}
-plots = plot_test(out, model = "beta-binomial")
-plots[[1]]
+out = classify(
+  x = input,
+  priors = pcawg_priors,
+  entropy_cutoff = 0.2,
+  rho = 0.01
+)
+print(out)
 ```
 
-This example shows differences in the classification task in terms of expected distributions 
-under the Binomial and the Beta-Binomial models. In this case the assigned class is the same,
-but the classification uncertainty is shown to be larger for the Beta-Binomial case.
+In this scenario, all mutations are flagged as Tier-2, except KRAS that is classified as an amplified mutation (AM).
+```{r}
+plot_classification(out)
+```

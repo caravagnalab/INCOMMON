@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{plot_gene}
 \alias{plot_gene}
-\title{Plot function for class \code{'TAPACLOTH'}.}
+\title{Plot function for class \code{'INCOMMON'}.}
 \usage{
 plot_gene(x, model, gene_name)
 }
 \arguments{
-\item{x}{An obj of class \code{'TAPACLOTH'}.}
+\item{x}{An obj of class \code{'INCOMMON'}.}
 
 \item{model}{Model used for classification.}
 
