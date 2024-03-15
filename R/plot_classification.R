@@ -45,50 +45,51 @@ plot_classification = function(x, assembly = F){
     scaleFactor = ifelse(is.infinite(scaleFactor), 1, scaleFactor)
     
     plot = toplot %>% 
-      ggplot() +
-      geom_line(aes(x = NV, y = value), 
+      ggplot2::ggplot() +
+      ggplot2::geom_line(ggplot2::aes(x = NV, y = value), 
                 color = 'white',  
                 size = .5, 
                 alpha = 0)+
-      geom_line(
-        aes(x = NV, y = entropy * scaleFactor),
+      ggplot2::geom_line(
+        ggplot2::aes(x = NV, y = entropy * scaleFactor),
         color = "deeppink4",
         size = 0.5,
         linetype = "longdash",
         alpha = .4
       ) +
-      geom_point(data = highlight,
-                 aes(x = NV,
+      ggplot2::geom_point(data = highlight,
+                          ggplot2::aes(x = NV,
                      y = value,
                      color = ploidy,
                      shape = multiplicity
                  ),
                  size = 1) +
-      geom_line(data = highlight,
-                 aes(x = NV,
+      ggplot2::geom_line(data = highlight,
+                         ggplot2::aes(x = NV,
                      y = value,
                      color = ploidy,
                      group = label
                  ),
                  size = .5) +
-      geom_vline(
+      ggplot2::geom_vline(
         xintercept = NV(x, id),
         color = 'black',
         linetype = 'dashed',
         size = .5
       )+
-      scale_size_manual(values = c("1"=.3,"2"=.3))+
-      scale_y_continuous("Classification Probability", 
+      ggplot2::scale_size_manual(values = c("1"=.3,"2"=.3))+
+      ggplot2::scale_y_continuous("Classification Probability", 
                          sec.axis = sec_axis(~./scaleFactor, name = "Classification Entropy"), 
                          limits = c(0,max(toplot$value)))+
-      scale_color_manual(values = ploidy_colors)+
+      ggplot2::scale_color_manual(values = ploidy_colors)+
       CNAqc:::my_ggplot_theme() +
-      theme(axis.title.y.right = element_text(color="deeppink4"),
-            axis.text.y.right = element_text(color="deeppink4"))+
-      guides(size = "none",
-             shape = guide_legend(title = 'Multiplicity', ncol = 1),
-             color = guide_legend(title = 'Ploidy', ncol = 2))+
-      labs(title = paste0(info(x, id)$gene, ' (', info(x, id)$state, ')'),
+      ggplot2::theme(
+        axis.title.y.right = element_text(color="deeppink4"),
+        axis.text.y.right = element_text(color="deeppink4"))+
+      ggplot2::guides(size = "none",
+             shape = ggplot2::guide_legend(title = 'Multiplicity', ncol = 1),
+             color = ggplot2::guide_legend(title = 'Ploidy', ncol = 2))+
+      ggplot2::labs(title = paste0(info(x, id)$gene, ' (', info(x, id)$state, ')'),
            subtitle = paste0(x$sample, ' (Purity = ', purity(x), '); ', info(x, id)$chr, '; ', info(x, id)$from, '; ', info(x, id)$ref, '>', info(x, id)$alt),
            caption = paste0('Entropy cut-off: ', parameters(x)$entropy_cutoff, '; Overdispersion: ', parameters(x)$rho))
       
