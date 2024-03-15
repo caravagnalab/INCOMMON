@@ -84,14 +84,15 @@ plot_classification = function(x, assembly = F){
       ggplot2::scale_color_manual(values = ploidy_colors)+
       CNAqc:::my_ggplot_theme() +
       ggplot2::theme(
-        axis.title.y.right = element_text(color="deeppink4"),
-        axis.text.y.right = element_text(color="deeppink4"))+
+        axis.title.y.right = ggplot2::element_text(color="deeppink4"),
+        axis.text.y.right = ggplot2::element_text(color="deeppink4"))+
       ggplot2::guides(size = "none",
              shape = ggplot2::guide_legend(title = 'Multiplicity', ncol = 1),
              color = ggplot2::guide_legend(title = 'Ploidy', ncol = 2))+
-      ggplot2::labs(title = paste0(info(x, id)$gene, ' (', info(x, id)$state, ')'),
-           subtitle = paste0(x$sample, ' (Purity = ', purity(x), '); ', info(x, id)$chr, '; ', info(x, id)$from, '; ', info(x, id)$ref, '>', info(x, id)$alt),
-           caption = paste0('Entropy cut-off: ', parameters(x)$entropy_cutoff, '; Overdispersion: ', parameters(x)$rho))
+      ggplot2::labs(
+        title = paste0(info(x, id)$gene, ' (', info(x, id)$state, ')'),
+        subtitle = paste0(x$sample, ' (Purity = ', purity(x), '); ', info(x, id)$chr, '; ', info(x, id)$from, '; ', info(x, id)$ref, '>', info(x, id)$alt),
+        caption = paste0('Entropy cut-off: ', parameters(x)$entropy_cutoff, '; Overdispersion: ', parameters(x)$rho))
       
   })
   if(assembly){
