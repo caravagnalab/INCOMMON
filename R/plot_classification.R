@@ -79,7 +79,7 @@ plot_classification = function(x, assembly = F){
       )+
       ggplot2::scale_size_manual(values = c("1"=.3,"2"=.3))+
       ggplot2::scale_y_continuous("Classification Probability", 
-                         sec.axis = sec_axis(~./scaleFactor, name = "Classification Entropy"), 
+                         sec.axis = ggplot2::sec_axis(~./scaleFactor, name = "Classification Entropy"), 
                          limits = c(0,max(toplot$value)))+
       ggplot2::scale_color_manual(values = ploidy_colors)+
       CNAqc:::my_ggplot_theme() +
