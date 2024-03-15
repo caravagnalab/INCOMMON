@@ -28,7 +28,7 @@
 #' entropy_cutoff = 0.2,
 #' rho = 0.01,
 #' karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
-)
+#')
 
 compute_posterior = function(NV,
                          DP,
