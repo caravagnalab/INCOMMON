@@ -16,6 +16,9 @@ knitr::opts_chunk$set(
 options(crayon.enabled=F)
 ```
 
+```{r setup}
+library(INCOMMON)
+```
 
 INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology.
 INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, 
@@ -60,12 +63,12 @@ of reads with the variant `NV`, variant allelic frequency `VAF` and gene name `g
 
 This is an example input dataset.
 
-```{r, include=FALSE}
+```{r}
 x = init(
   mutations = example_data$data,
   sample = example_data$sample,
   purity = example_data$purity,
   tumor_type = example_data$tumor_type
 )
-print.INCOMMON(x)
+print(x)
 ```

@@ -1,7 +1,8 @@
 #' Classify mutations using a Beta-Binomial model-based test.
 #'
 #' @param x An object of class \code{'INCOMMON'} generated with function `init`.
-#' @param priors 
+#' @param priors A tibble or data frame with columns `gene`, `tumor_type`, `label` and `p` indicating tumor-specific
+#' or pan-cancer (PANCA) prior probabilities. 
 #' @param entropy_cutoff Entropy cut-off for Tier-1 vs Tier-2 assignment.
 #' @param rho Over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.

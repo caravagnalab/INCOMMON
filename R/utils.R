@@ -18,10 +18,23 @@ tumor_type = function(x){
 #' Getter for class \code{'INCOMMON'}.
 #' @description
 #' Get classification data for specific selected model.
-#' @param x An obj of class \code{'INCOMMON'}.
-#' @param model Model used in the test from which to get classification data.
-#' @return A tibble with classification data.
+#' @param x An object of class \code{'INCOMMON'}.
+#' @return A table with classified data.
 #' @export
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @examples
+#' x = init(mutations = example_data$data,
+#'          sample = example_data$sample,
+#'          purity = example_data$purity,
+#'          tumor_type = example_data$tumor_type)
+#' x = classify(
+#'     x = x, 
+#'     priors = priors,
+#'     entropy_cutoff = 0.2,
+#'     rho = 0.01,
+#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#'     )
+#' classification(x)
 classification = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("fit" %in% names(x))
@@ -35,7 +48,20 @@ classification = function(x) {
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @return A tibble containing parameters for all the models used in the classification.
 #' @export
-#' 
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @examples
+#' x = init(mutations = example_data$data,
+#'          sample = example_data$sample,
+#'          purity = example_data$purity,
+#'          tumor_type = example_data$tumor_type)
+#' x = classify(
+#'     x = x, 
+#'     priors = NULL,
+#'     entropy_cutoff = 0.2,
+#'     rho = 0.01,
+#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#'     )
+#' parameters(x)
 parameters = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("fit" %in% names(x))
@@ -46,10 +72,23 @@ parameters = function(x) {
 
 #' Getter for class \code{'INCOMMON'}.
 #' @description
-#' Get model parameters of the performed classification tests.
+#' Get the model posterior distribution of a mutation.
 #' @param x An obj of class \code{'INCOMMON'}.
-#' @return A tibble containing parameters for all the models used in the classification.
+#' @return A table showing posterior distribution and entropy.
 #' @export
+#' @examples
+#' x = init(mutations = example_data$data,
+#'          sample = example_data$sample,
+#'          purity = example_data$purity,
+#'          tumor_type = example_data$tumor_type)
+#' x = classify(
+#'     x = x, 
+#'     priors = NULL,
+#'     entropy_cutoff = 0.2,
+#'     rho = 0.01,
+#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+#'     )
+#' posterior(x, ids(x)[1])
 #' 
 posterior = function(x, id) {
   stopifnot(inherits(x, "INCOMMON"))
@@ -120,23 +159,6 @@ get_gene_role = function(x, id){
     pull(gene_role)
 }
 
-
-#' Plot function for class \code{'INCOMMON'}.
-#' @description
-#' Plot results of the classification under the specified model and for the specified gene.
-#' @param x An obj of class \code{'INCOMMON'}.
-#' @param gene_name Name of gene affected by the mutation.
-#' @param model Model used for classification.
-#' @return A tibble with classification data for the specified mutation.
-#' @export
-plot_gene = function(x,model,gene_name){
-  stopifnot(inherits(x, "INCOMMON"))
-  model = model %>% tolower()
-  ids = get_id(x,gene_name)
-  lapply(ids, function(i){
-    x$classifier[[model]]$plot_test[[i]]
-  })
-}
 
 # Prior getter
 
