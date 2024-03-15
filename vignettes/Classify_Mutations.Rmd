@@ -77,7 +77,7 @@ INCOMMON classification of a sample can be performed using function `classify`.
 ```{r}
 out = classify(
   x = input,
-  priors = pcawg_priors,
+  priors = NULL,
   entropy_cutoff = NULL,
   rho = 0.01
 )

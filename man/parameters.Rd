@@ -15,3 +15,17 @@ A tibble containing parameters for all the models used in the classification.
 \description{
 Get model parameters of the performed classification tests.
 }
+\examples{
+x = init(mutations = example_data$data,
+         sample = example_data$sample,
+         purity = example_data$purity,
+         tumor_type = example_data$tumor_type)
+x = classify(
+    x = x, 
+    priors = NULL,
+    entropy_cutoff = 0.2,
+    rho = 0.01,
+    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+    )
+parameters(x)
+}

@@ -15,7 +15,8 @@ classify(
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} generated with function \code{init}.}
 
-\item{priors}{}
+\item{priors}{A tibble or data frame with columns \code{gene}, \code{tumor_type}, \code{label} and \code{p} indicating tumor-specific
+or pan-cancer (PANCA) prior probabilities.}
 
 \item{entropy_cutoff}{Entropy cut-off for Tier-1 vs Tier-2 assignment.}
 

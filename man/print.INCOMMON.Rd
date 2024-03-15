@@ -22,9 +22,10 @@ x = init(mutations = example_data$data,
          sample = example_data$sample,
          purity = example_data$purity,
          tumor_type = example_data$tumor_type)
+print(x)
 x = classify(
     x = x, 
-    priors = priors,
+    priors = NULL,
     entropy_cutoff = 0.2,
     rho = 0.01,
     karyotypes = c("1:0","1:1","2:0","2:1","2:2")

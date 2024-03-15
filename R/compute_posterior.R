@@ -53,9 +53,11 @@ compute_posterior = function(NV,
       # Classification label
       label = paste0(Major + minor, 'N (Mutated: ', p, "N)")
       
-      if(!(label %in% priors$label)) cli::cli_alert_danger("Incomplete prior distribution!")
-      stopifnot(label %in% priors$label)
-      prior = prior %>% dplyr::filter(label == !!label) %>% dplyr::pull(p)
+      if(prior != 1){
+        if(!(label %in% priors$label)) cli::cli_alert_danger("Incomplete prior distribution!")
+        stopifnot(label %in% priors$label)
+        prior = prior %>% dplyr::filter(label == !!label) %>% dplyr::pull(p)
+      }
       
       # Expected VAF peak of mixture component
       expected_peak = expected_peaks[p]

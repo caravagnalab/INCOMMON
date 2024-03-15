@@ -13,8 +13,7 @@ compute_posterior(
   purity,
   entropy_cutoff,
   rho = 0.01,
-  karyotypes,
-  assign_extremes
+  karyotypes
 )
 }
 \arguments{
@@ -42,19 +41,22 @@ or "Beta-Binomial" (over-dispersion included), that will be used as the expected
 distribution for the number of reads with variant at fixed coverage and purity.}
 }
 \value{
-A tibble including ploidy, multiplicity, proportion of wt alleles,
-uncertainty  of the class assignment, model density.
+A table including ploidy, multiplicity, posterior probability,
+and classification entropy.
 }
 \description{
 Compute model likelihood, posterior and entropy
 }
 \examples{
-binomial_test(test = 220,
-DP = 500,
-purity = 0.98,
-cutoff = 0.9,
-model = "Beta-Binomial",
+compute_posterior(
+NV = 170,
+DP 200,
+gene = 'TP53',
+priors = NULL,
+tumor_type = 'BRCA',
+purity = 0.9,
+entropy_cutoff = 0.2,
 rho = 0.01,
-karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
 }

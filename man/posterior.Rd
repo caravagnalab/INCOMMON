@@ -10,8 +10,23 @@ posterior(x, id)
 \item{x}{An obj of class \code{'INCOMMON'}.}
 }
 \value{
-A tibble containing parameters for all the models used in the classification.
+A table showing posterior distribution and entropy.
 }
 \description{
-Get model parameters of the performed classification tests.
+Get the model posterior distribution of a mutation.
+}
+\examples{
+x = init(mutations = example_data$data,
+         sample = example_data$sample,
+         purity = example_data$purity,
+         tumor_type = example_data$tumor_type)
+x = classify(
+    x = x, 
+    priors = NULL,
+    entropy_cutoff = 0.2,
+    rho = 0.01,
+    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+    )
+posterior(x, ids(x)[1])
+
 }

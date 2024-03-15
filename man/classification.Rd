@@ -7,13 +7,25 @@
 classification(x)
 }
 \arguments{
-\item{x}{An obj of class \code{'INCOMMON'}.}
-
-\item{model}{Model used in the test from which to get classification data.}
+\item{x}{An object of class \code{'INCOMMON'}.}
 }
 \value{
-A tibble with classification data.
+A table with classified data.
 }
 \description{
 Get classification data for specific selected model.
+}
+\examples{
+x = init(mutations = example_data$data,
+         sample = example_data$sample,
+         purity = example_data$purity,
+         tumor_type = example_data$tumor_type)
+x = classify(
+    x = x, 
+    priors = priors,
+    entropy_cutoff = 0.2,
+    rho = 0.01,
+    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
+    )
+classification(x)
 }

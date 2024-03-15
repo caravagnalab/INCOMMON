@@ -74,7 +74,7 @@ classify = function(x,
       purity = purity(x),
       entropy_cutoff = entropy_cutoff,
       rho = rho,
-      karyotypes = karyotypes,
+      karyotypes = karyotypes
     )
   })
   
