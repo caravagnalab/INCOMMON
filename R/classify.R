@@ -1,7 +1,7 @@
 #' Classify mutations using a Beta-Binomial model-based test.
 #'
 #' @param x An object of class \code{'INCOMMON'} generated with function `init`.
-#' @param priors A tibble or data frame with columns `gene`, `tumor_type`, `label` and `p` indicating tumor-specific
+#' @param priors A dplyr::tibble or data frame with columns `gene`, `tumor_type`, `label` and `p` indicating tumor-specific
 #' or pan-cancer (PANCA) prior probabilities. 
 #' @param entropy_cutoff Entropy cut-off for Tier-1 vs Tier-2 assignment.
 #' @param rho Over-dispersion parameter.
@@ -106,7 +106,7 @@ classify = function(x,
   # Add fit object
     output$fit = list(
       classification = dplyr::bind_cols(data(x), map_estimates),
-      params = tibble(entropy_cutoff = entropy_cutoff,
+      params = dplyr::tibble(entropy_cutoff = entropy_cutoff,
                       rho = rho),
       posterior = tests
     )

@@ -46,7 +46,7 @@ classification = function(x) {
 #' @description
 #' Get model parameters of the performed classification tests.
 #' @param x An obj of class \code{'INCOMMON'}.
-#' @return A tibble containing parameters for all the models used in the classification.
+#' @return A dplyr::tibble containing parameters for all the models used in the classification.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 
 #' @examples
@@ -252,7 +252,7 @@ add_per_state_probabilities = function(x, NV){
       group_by(state) %>% 
       dplyr::reframe(p_assign = sum(p_assign)) %>% 
       tidyr::pivot_wider(names_from = state, values_from = p_assign)
-    tibble(x[i,],
+    dplyr::tibble(x[i,],
            p_assign_all = list(probs))
   }) %>% do.call(rbind, .)
 } 

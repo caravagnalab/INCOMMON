@@ -98,7 +98,7 @@ compute_posterior = function(NV,
     cli_alert_warning(text = 
                         "With purity {.field {purity}} classification is not possible."
     )
-    return(tibble(ploidy = NA,
+    return(dplyr::tibble(ploidy = NA,
                   multiplicity = NA,
                   entropy = NA,
                   label = NA,
