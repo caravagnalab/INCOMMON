@@ -28,5 +28,5 @@ x = classify(
     rho = 0.01,
     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
     )
-plot_classification(x = x, id = ids(x)[1])
+plot_classification(x = x)
 }
