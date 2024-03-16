@@ -53,9 +53,9 @@ compute_posterior = function(NV,
       # Classification label
       label = paste0(Major + minor, 'N (Mutated: ', p, "N)")
       
-      if(prior != 1){
-        if(!(label %in% priors$label)) cli::cli_alert_danger("Incomplete prior distribution!")
-        stopifnot(label %in% priors$label)
+      if(is.data.frame(prior)){
+        if(!(label %in% prior$label)) cli::cli_alert_danger("Incomplete prior distribution!")
+        stopifnot(label %in% prior$label)
         prior = prior %>% dplyr::filter(label == !!label) %>% dplyr::pull(p)
       }
       
@@ -119,7 +119,7 @@ compute_posterior = function(NV,
        prior =  prior, 
        gene = gene)
   }) %>% 
-    bind_rows()
+    dplyr::bind_rows()
   
   # Compute entropy
   posterior = posterior %>% 
