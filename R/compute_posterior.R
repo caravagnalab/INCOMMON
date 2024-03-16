@@ -91,7 +91,7 @@ compute_posterior = function(NV,
       out
       
     }) %>%
-      do.call(bind_rows, .)
+      do.call(dplyr::bind_rows, .)
   }
   
   if(is.na(purity)){
