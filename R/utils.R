@@ -112,7 +112,7 @@ unidify = function(x){
 
 ids = function(x){
   if(!("id" %in% colnames(data(x)))) x = idify(x)
-  data(x) %>% pull(id) %>% unique()
+  data(x) %>% dplyr::pull(id) %>% unique()
 }
 
 info = function(x, mutation_id){
@@ -127,14 +127,14 @@ DP = function(x, id){
   x = idify(x)
   data(x) %>% 
     dplyr::filter(id == !!id) %>% 
-    pull(DP)
+    dplyr::pull(DP)
 }
 
 NV = function(x, id){
   x = idify(x)
   data(x) %>% 
     dplyr::filter(id == !!id) %>% 
-    pull(NV)
+    dplyr::pull(NV)
 }
 
 
@@ -142,21 +142,21 @@ VAF = function(x, mutation_id){
   x = idify(x)
   data(x) %>% 
     dplyr::filter(id == mutation_id) %>% 
-    pull(VAF)
+    dplyr::pull(VAF)
 }
 
 gene = function(x, mutation_id){
   x = idify(x)
   x$data %>% 
     dplyr::filter(id == mutation_id) %>% 
-    pull(gene)
+    dplyr::pull(gene)
 }
 
 get_gene_role = function(x, id){
   x = idify(x)
   x$data %>% 
     dplyr::filter(id == !!id) %>% 
-    pull(gene_role)
+    dplyr::pull(gene_role)
 }
 
 
