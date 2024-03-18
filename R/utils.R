@@ -88,7 +88,7 @@ parameters = function(x) {
 #'     rho = 0.01,
 #'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
 #'     )
-#' posterior(x, ids(x)[1])
+#' posterior(x, "chr12:25398285:25398285:C:A")
 #' 
 posterior = function(x, id) {
   stopifnot(inherits(x, "INCOMMON"))
