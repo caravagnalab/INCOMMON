@@ -11,7 +11,7 @@
 INCOMMON is a tool for the INference of COpy number and 
 Mutation Multiplicity in ONcology. INCOMMON infers the copy number
 and multiplicity of somatic mutations from tumour-only
-read count data, and can applied to classify mutations from
+read count data, and can be applied to classify mutations from
 large-size datasets in an efficient and fast way. Mutations are classified
 as either Tier-1 (present in 100% cells) without copy-number alterations (heterozygous mutant diploid HMD),
 with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), or Tier-2 (subclonal
