@@ -26,14 +26,13 @@ Imports:
     crayon,
     ggplot2,
     ggpubr,
-    ggridges,
     ggsci,
     stringr,
     CNAqc,
     BMix,
     dplyr,
+    tidyr,
     VGAM,
-    pheatmap
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
