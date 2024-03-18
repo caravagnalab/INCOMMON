@@ -100,19 +100,8 @@
 <dd><p>Cut-off on entropy for Tier-1/Tier-2 distinction.</p></dd>
 
 
-<dt>rho</dt>
-<dd><p>If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
-of the expected distribution used for the classification.</p></dd>
-
-
 <dt>karyotypes</dt>
 <dd><p>Karyotypes to be included among the possible classes.</p></dd>
-
-
-<dt>model</dt>
-<dd><p>Model used for the classification task, either "Binomial" (no over-dispersion)
-or "Beta-Binomial" (over-dispersion included), that will be used as the expected
-distribution for the number of reads with variant at fixed coverage and purity.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -125,7 +114,33 @@ and classification entropy.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">compute_posterior</span><span class="op">(</span></span></span>
+<span class="r-in"><span>NV <span class="op">=</span> <span class="fl">170</span>,</span></span>
+<span class="r-in"><span>DP <span class="op">=</span> <span class="fl">200</span>,</span></span>
+<span class="r-in"><span>gene <span class="op">=</span> <span class="st">'TP53'</span>,</span></span>
+<span class="r-in"><span>priors <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
+<span class="r-in"><span>tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>,</span></span>
+<span class="r-in"><span>purity <span class="op">=</span> <span class="fl">0.9</span>,</span></span>
+<span class="r-in"><span>entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
+<span class="r-in"><span>rho <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
+<span class="r-in"><span>karyotypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1:0"</span>, <span class="st">"1:1"</span>, <span class="st">"2:0"</span>, <span class="st">"2:1"</span>, <span class="st">"2:2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,600 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       NV    value Major minor ploidy multiplicity karyotype label  peak  entropy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 1.26<span style="color: #949494;">e</span><span style="color: #BB0000;">-54</span>     1     0      1            1 1:0       1N (… 0.818 3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 2.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-24</span>     1     1      2            1 1:1       2N (… 0.45  3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1 2.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-24</span>     2     0      2            1 2:0       2N (… 0.45  3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1 2.40<span style="color: #949494;">e</span><span style="color: #BB0000;">-64</span>     2     0      2            2 2:0       2N (… 0.9   3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1 8.71<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span>     2     1      3            1 2:1       3N (… 0.310 3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1 1.36<span style="color: #949494;">e</span><span style="color: #BB0000;">-36</span>     2     1      3            2 2:1       3N (… 0.621 3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1 1.08<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span>     2     2      4            1 2:2       4N (… 0.237 3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1 6.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-26</span>     2     2      4            2 2:2       4N (… 0.474 3.92<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     2 4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">-53</span>     1     0      1            1 1:0       1N (… 0.818 3.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     2 4.24<span style="color: #949494;">e</span><span style="color: #BB0000;">-23</span>     1     1      2            1 1:1       2N (… 0.45  3.18<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,590 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: state &lt;chr&gt;</span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
