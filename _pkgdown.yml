@@ -2,3 +2,35 @@ url: caravagnalab.github.io/INCOMMON
 template:
   bootstrap: 5
 
+reference:
+- title: Available data
+  desc:  Datasets included in the package.
+  contents:
+  - example_data
+  - pcawg_priors
+  - cancer_gene_census
+  
+- title: INCOMMON classification
+  desc:  Main functions to classify mutations
+  contents:
+  - init
+  - classify
+  
+- title: Visualisation
+  desc: Functions to plot INCOMMON classification results
+  contents:
+  - plot_classification
+  - print.INCOMMON
+  
+- title: Getter Functions
+  desc:  Functions to extract model information
+  contents:
+  - classification
+  - parameters
+  - posterior
+  
+- title: INCOMMON Model
+  desc: Functions to compute model likelihood and posterior distributions
+  contents:
+  - compute_likelihood
+  - compute_posterior

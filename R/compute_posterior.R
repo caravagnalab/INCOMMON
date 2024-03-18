@@ -1,4 +1,4 @@
-#' Compute model likelihood, posterior and entropy
+#' Compute model posterior and entropy
 #'
 #' @param NV Number of reads with the variant.
 #' @param DP Sequencing coverage of the mutated genome site.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_posterior.R
 \name{compute_posterior}
 \alias{compute_posterior}
-\title{Compute model likelihood, posterior and entropy}
+\title{Compute model posterior and entropy}
 \usage{
 compute_posterior(
   NV,
@@ -38,7 +38,7 @@ A table including ploidy, multiplicity, posterior probability,
 and classification entropy.
 }
 \description{
-Compute model likelihood, posterior and entropy
+Compute model posterior and entropy
 }
 \examples{
 compute_posterior(

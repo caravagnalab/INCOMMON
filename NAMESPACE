@@ -3,6 +3,7 @@
 S3method(print,INCOMMON)
 export(classification)
 export(classify)
+export(compute_likelihood)
 export(compute_posterior)
 export(init)
 export(parameters)
