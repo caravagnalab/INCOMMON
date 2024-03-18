@@ -31,14 +31,7 @@ compute_posterior(
 
 \item{entropy_cutoff}{Cut-off on entropy for Tier-1/Tier-2 distinction.}
 
-\item{rho}{If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
-of the expected distribution used for the classification.}
-
 \item{karyotypes}{Karyotypes to be included among the possible classes.}
-
-\item{model}{Model used for the classification task, either "Binomial" (no over-dispersion)
-or "Beta-Binomial" (over-dispersion included), that will be used as the expected
-distribution for the number of reads with variant at fixed coverage and purity.}
 }
 \value{
 A table including ploidy, multiplicity, posterior probability,
@@ -50,7 +43,7 @@ Compute model likelihood, posterior and entropy
 \examples{
 compute_posterior(
 NV = 170,
-DP 200,
+DP = 200,
 gene = 'TP53',
 priors = NULL,
 tumor_type = 'BRCA',
