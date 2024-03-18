@@ -17,7 +17,7 @@
 #'          tumor_type = example_data$tumor_type)
 #' x = classify(
 #'     x = x, 
-#'     priors = priors,
+#'     priors = pcawg_priors,
 #'     entropy_cutoff = 0.2,
 #'     rho = 0.01,
 #'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
@@ -69,7 +69,7 @@ classify = function(x,
       NV = NV(x, id),
       DP = DP(x, id),
       gene = gene(x, id),
-      priors = priors,
+      priors = pcawg_priors,
       tumor_type = tumor_type(x),
       purity = purity(x),
       entropy_cutoff = entropy_cutoff,
