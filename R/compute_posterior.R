@@ -7,11 +7,6 @@
 #' @param purity Purity of the sample.
 #' @param tumor_type Tumor type of the sample.
 #' @param entropy_cutoff Cut-off on entropy for Tier-1/Tier-2 distinction.
-#' @param model Model used for the classification task, either "Binomial" (no over-dispersion) 
-#' or "Beta-Binomial" (over-dispersion included), that will be used as the expected 
-#' distribution for the number of reads with variant at fixed coverage and purity.
-#' @param rho If "Beta-Binomial" model is selected, this parameter tunes the over-dispersion
-#' of the expected distribution used for the classification.
 #' @param karyotypes Karyotypes to be included among the possible classes.
 #' @return A table including ploidy, multiplicity, posterior probability, 
 #' and classification entropy.
