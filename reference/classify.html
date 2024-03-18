@@ -105,7 +105,7 @@ the classification data and parameters.</p>
 <span class="r-in"><span>         tumor_type <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">tumor_type</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu">classify</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    x <span class="op">=</span> <span class="va">x</span>, </span></span>
-<span class="r-in"><span>    priors <span class="op">=</span> <span class="va">priors</span>,</span></span>
+<span class="r-in"><span>    priors <span class="op">=</span> <span class="va">pcawg_priors</span>,</span></span>
 <span class="r-in"><span>    entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
 <span class="r-in"><span>    rho <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
 <span class="r-in"><span>    karyotypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1:0"</span>,<span class="st">"1:1"</span>,<span class="st">"2:0"</span>,<span class="st">"2:1"</span>,<span class="st">"2:2"</span><span class="op">)</span></span></span>
@@ -114,16 +114,25 @@ the classification data and parameters.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">INCOMMON inference of copy number and mutation multiplicity for sample </span><span style="color: #00BB00; font-weight: bold;">P-0002</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing classification</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'priors' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">KRAS</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Using a pan-cancer prior</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">TP53</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Using a pan-cancer prior</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">STK11</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Using a pan-cancer prior</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">SMARCA4</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> → Using a pan-cancer prior</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Sample <span style="color: #00BB00;">P-0002081-T01-IM3</span> (<span style="color: #00BB00;">LUAD</span>), with purity <span style="color: #00BB00;">0.6</span> ──────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 10</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   chr       from       to ref   alt   gene       NV    DP   VAF gene_role</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> chr12 25<span style="text-decoration: underline;">398</span>285 25<span style="text-decoration: underline;">398</span>285 C     A     KRAS      378   743 0.509 oncogene </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> chr17  7<span style="text-decoration: underline;">577</span>139  7<span style="text-decoration: underline;">577</span>139 G     A     TP53      116   246 0.472 TSG      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> chr19  1<span style="text-decoration: underline;">221</span>293  1<span style="text-decoration: underline;">221</span>293 C     A     STK11     122   260 0.469 TSG      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> chr19 11<span style="text-decoration: underline;">141</span>472 11<span style="text-decoration: underline;">141</span>473 -     C     SMARCA4   133   271 0.491 TSG      </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations using Beta-binomial model with overdispers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   chr      from     to ref   alt   gene     NV    DP   VAF gene_role id    label</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> chr12  2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     A     KRAS    378   743 0.509 oncogene  chr1… 3N (…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> chr17  7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     A     TP53    116   246 0.472 TSG       chr1… 3N (…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> chr19  1.22<span style="color: #949494;">e</span>6 1.22<span style="color: #949494;">e</span>6 C     A     STK11   122   260 0.469 TSG       chr1… 3N (…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> chr19  1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 -     C     SMAR…   133   271 0.491 TSG       chr1… 3N (…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: state &lt;chr&gt;, posterior &lt;dbl&gt;, entropy &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
