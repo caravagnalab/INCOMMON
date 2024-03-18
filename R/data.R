@@ -1,3 +1,4 @@
+#' Example INCOMMON dataset.
 #' @docType data
 #'
 #' @usage data(example_data)
@@ -54,7 +55,9 @@
 #' }
 #'
 #' @source MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021
+"example_data"
 
+#' Priors from PCAWG
 #' @docType data
 #'
 #' @usage data(pcawg_priors)
@@ -72,7 +75,9 @@
 #' @examples
 #' data(pcawg_priors)
 #' pcawg_priors
- 
+"pcawg_priors"
+
+#' Gene roles from COSMIC Cancer Gene Census
 #' @docType Data
 #'
 #' @description This table contains gene roles in cancer, as obtained from the COSMIC Cancer
@@ -90,3 +95,4 @@
 #' @examples
 #' data(cancer_gene_census)
 #' cancer_gene_census
+"cancer_gene_census"
