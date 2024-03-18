@@ -25,13 +25,22 @@
     <loc>caravagnalab.github.io/INCOMMON/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/cancer_gene_census.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/classification.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/classify.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/compute_likelihood.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/compute_posterior.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/example_data.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/index.html</loc>
@@ -41,6 +50,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/parameters.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/pcawg_priors.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc>
