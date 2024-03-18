@@ -1,5 +1,5 @@
 Package: INCOMMON
-Title: Targeted panel-oriented test for clonality and heterozygosity
+Title: Inference of copy number and mutation multiplicity in oncology
 Version: 0.0.1
 Author: Nicola Calonaci
 Maintainer: Nicola Calonaci <nicola.calonaci@gmail.com>
