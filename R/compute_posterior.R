@@ -20,7 +20,7 @@
 #' @examples
 #'compute_posterior(
 #' NV = 170,
-#' DP 200,
+#' DP = 200,
 #' gene = 'TP53',
 #' priors = NULL,
 #' tumor_type = 'BRCA',
