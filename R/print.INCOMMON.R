@@ -43,6 +43,6 @@ print.INCOMMON = function(x, ...) {
         ))
       print(classification(x))
   } else{
-    data(x)
+    print(data(x))
   }
 }
