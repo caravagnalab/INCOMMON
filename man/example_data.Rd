@@ -6,11 +6,11 @@
 \title{Example INCOMMON dataset.}
 \format{
 A named list with the following components:
-\describe{
-\item{mutations}{A data frame containing mutations.}
-\item{sample}{A string indicating the name of the sample.}
-\item{tumor_type}{A string indicating the tumor type.}
-\item{purity}{A numeric indicating the fraction of tumor in sample.}
+\item \code{mutations}: A data frame containing mutations from sample P-0002081-T01-IM3
+of the MSK-MET cohort with columns \code{chr}, \code{from}, \code{to}, \code{ref}, \code{alt}, \code{gene}, \code{NV}, \code{DP} and \code{VAF}.
+\item \code{sample}: The name of the sample.
+\item \code{tumor_type}: The tumor type of the sample.
+\item \code{purity}: The purity of the tumor sample (fraction).
 }
 
 The columns in the data frame (\code{mutations}) are:
@@ -34,16 +34,6 @@ data(example_data)
 }
 \description{
 Genomic data from sample P-0002081-T01-IM3 of the MSK-MET cohort.
-}
-\details{
-This list consists the following components:
-\itemize{
-\item \code{mutations}: A data frame containing mutations from sample P-0002081-T01-IM3
-of the MSK-MET cohort with columns \code{chr}, \code{from}, \code{to}, \code{ref}, \code{alt}, \code{gene}, \code{NV}, \code{DP} and \code{VAF}.
-\item \code{sample}: The name of the sample.
-\item \code{tumor_type}: The tumor type of the sample.
-\item \code{purity}: The purity of the tumor sample (fraction).
-}
 }
 \examples{
 data(example_data)
