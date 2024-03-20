@@ -84,9 +84,8 @@ classify = function(x,
   map_estimates = lapply(ids(x), function(id){
     
     map = tests[[id]] %>% 
-      dplyr::group_by(NV) %>% 
-      dplyr::filter(value == max(value)) %>% 
       dplyr::filter(NV == NV(x, id)) %>% 
+      dplyr::filter(value == max(value)) %>% 
       dplyr::ungroup()
 
     if(nrow(map)>1){
