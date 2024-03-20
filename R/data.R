@@ -6,11 +6,11 @@
 #' @description Genomic data from sample P-0002081-T01-IM3 of the MSK-MET cohort.
 #' 
 #' @format A named list with the following components:
-#' \describe{
-#'   \item{mutations}{A data frame containing mutations.}
-#'   \item{sample}{A string indicating the name of the sample.}
-#'   \item{tumor_type}{A string indicating the tumor type.}
-#'   \item{purity}{A numeric indicating the fraction of tumor in sample.}
+#'   \item \code{mutations}: A data frame containing mutations from sample P-0002081-T01-IM3 
+#'   of the MSK-MET cohort with columns `chr`, `from`, `to`, `ref`, `alt`, `gene`, `NV`, `DP` and `VAF`.
+#'   \item \code{sample}: The name of the sample.
+#'   \item \code{tumor_type}: The tumor type of the sample.
+#'   \item \code{purity}: The purity of the tumor sample (fraction).
 #' }
 #'
 #' The columns in the data frame (\code{mutations}) are:
@@ -24,15 +24,6 @@
 #'   \item{NV}{Number of reads with the variant}
 #'   \item{DP}{Total number of reads (sequencing depth)}
 #'   \item{VAF}{Variant allele frequency of the mutation.}
-#' }
-#'
-#' @details This list consists the following components:
-#' \itemize{
-#'   \item \code{mutations}: A data frame containing mutations from sample P-0002081-T01-IM3 
-#'   of the MSK-MET cohort with columns `chr`, `from`, `to`, `ref`, `alt`, `gene`, `NV`, `DP` and `VAF`.
-#'   \item \code{sample}: The name of the sample.
-#'   \item \code{tumor_type}: The tumor type of the sample.
-#'   \item \code{purity}: The purity of the tumor sample (fraction).
 #' }
 #' 
 #' @examples
@@ -96,3 +87,19 @@
 #' data(cancer_gene_census)
 #' cancer_gene_census
 "cancer_gene_census"
+
+#' Mutation data of the MSK-MetTropism cohort
+#' @docType Data
+#'
+#' @description This table contains read counts data and other information
+#' from the MSK-MetTropism cohort.
+#' 
+#' @usage data(data_MSK)
+#' 
+#' @format A data frame with 224890 rows and 21 columns:
+#' 
+#' @source MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021
+#' @examples
+#' data(data_MSK)
+#' data_MSK
+"data_MSK"
