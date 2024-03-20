@@ -270,3 +270,14 @@ names(ploidy_colors) = sapply(names(ploidy_colors), function(n){
   strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
 })
 ploidy_colors = c(ploidy_colors, "Tier-2" = 'gray')
+
+# INCOMMON state coloring 
+scale_color_INCOMMON_class = function(aes = 'fill'){
+  colors = c("steelblue", "#00468BFF" , "indianred3", "forestgreen", "gainsboro" )
+  names(colors) = c("LOH","CNLOH", "AM", "HMD", "Tier-2")
+  if(aes == 'fill') {
+    scale_fill_manual(values = colors)
+  } else {
+    scale_color_manual(values = colors)
+  }
+}
