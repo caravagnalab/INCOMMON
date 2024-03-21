@@ -3,11 +3,12 @@
 #'
 #' @param x A list of objects of class \code{'INCOMMON'} containing the classification results for
 #' multiple samples, as produced by using function `classify`.
-#' @return An object or a list of class \code{'ggplot2'}.
+#' @return An object or a list of class \code{'ggplot2'} showing Kaplan-Meier curves and 
+#' Cox regression forest plot.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
 
-survival_fit = function(x, tumor_type, gene, cox_covariates = c('age', 'sex', 'tmb')){
+plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age', 'sex', 'tmb')){
   
   km_fit = kaplan_meier_fit(x, tumor_type, gene)
   

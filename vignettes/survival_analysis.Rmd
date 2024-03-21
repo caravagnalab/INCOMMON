@@ -73,7 +73,7 @@ cox_fit(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', covariates = c(
 Plot survival fit
 
 ```{r}
-survival_fit(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', cox_covariates = c('age', 'sex', 'tmb'))
+plot_survival_analysis(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', cox_covariates = c('age', 'sex', 'tmb'))
 ```
 
 

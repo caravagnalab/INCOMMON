@@ -329,55 +329,6 @@ prepare_km_fit_input = function(x, tumor_type, gene){
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
 
-# Kaplan-Meier fit
-
-kaplan_meier_fit = function(x, tumor_type, gene) {
-  
-  data = prepare_km_fit_input(x, tumor_type, gene)
-  data = data %>%
-    dplyr::mutate(group = factor(group,
-                                 levels = c(
-                                   grep('WT', unique(data$group), value = T),
-                                   grep('Mutant', unique(data$group), value = T) %>% grep('with', ., invert = T, value = T),
-                                   grep('Mutant', unique(data$group), value = T) %>% grep('with', ., value = T)
-                                 )))
-  fit = survival::survfit(formula = survival::Surv(OS_MONTHS, OS_STATUS) ~ group, data = data)
-  
-  return(tibble(gene = gene, tumor_type = tumor_type, data = list(data), fit = list(fit)))
-}
-
-# Multivariate Cox regression
-
-cox_fit = function(x, gene, tumor_type, covariates = c('age', 'sex', 'tmb')){
-  
-  x = prepare_km_fit_input(x, tumor_type, gene)
-  
-  formula = 'survival::Surv(OS_MONTHS, OS_STATUS) ~ group'
-  
-  for(c in covariates) {
-    what = grep(c, colnames(x), ignore.case = T, value = TRUE)
-    for(w in what) {
-      if(is.numeric(x[[w]])){
-        q =  quantile(x[w], na.rm = T)['50%']
-        x[[w]] = ifelse(x[[w]] > q, paste0('>', round(q, 0)), paste0('<=', round(q, 0)))
-        x[[w]] = factor(x[[w]])
-        x[[w]] = relevel(x[[w]], ref = grep('<=', unique(x[[w]]), value = T))
-      }
-      formula = paste(formula, w, sep = ' + ')
-    }
-  }
-  
-  fit = survival::coxph(
-    formula = formula %>% as.formula(),
-    data = x %>%
-      dplyr::mutate(group = factor(group)) %>% 
-      dplyr::mutate(group = relevel(group, ref = grep('WT', unique(x$group), value = T))) %>% 
-      as.data.frame()
-  )
-  
-  return(fit)
-}
-
 
 forest_plot = function(x, tumor_types = FALSE){
   
