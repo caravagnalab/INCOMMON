@@ -1,8 +1,10 @@
-#' Generate a multipanel figure with Kaplan-Meier survival curves
-#' and forest plot of the Multivariate Cox regression, based on INCOMMON classes.
+#' Visualise survival analysis based on INCOMMON classes.
 #'
 #' @param x A list of objects of class \code{'INCOMMON'} containing the classification results for
 #' multiple samples, as produced by using function `classify`.
+#' @param tumor_type The selected tumour type.
+#' @param gene The selected gene.
+#' @param cox_covariates A character vector listing the covariates to be used in the multivariarte regression.
 #' @return An object or a list of class \code{'ggplot2'} showing Kaplan-Meier curves and 
 #' Cox regression forest plot.
 #' @export

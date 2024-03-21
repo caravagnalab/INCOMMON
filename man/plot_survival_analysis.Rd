@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot_survival_analysis.R
 \name{plot_survival_analysis}
 \alias{plot_survival_analysis}
-\title{Generate a multipanel figure with Kaplan-Meier survival curves
-and forest plot of the Multivariate Cox regression, based on INCOMMON classes.}
+\title{Visualise survival analysis based on INCOMMON classes.}
 \usage{
 plot_survival_analysis(
   x,
@@ -15,12 +14,17 @@ plot_survival_analysis(
 \arguments{
 \item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results for
 multiple samples, as produced by using function \code{classify}.}
+
+\item{tumor_type}{The selected tumour type.}
+
+\item{gene}{The selected gene.}
+
+\item{cox_covariates}{A character vector listing the covariates to be used in the multivariarte regression.}
 }
 \value{
 An object or a list of class \code{'ggplot2'} showing Kaplan-Meier curves and
 Cox regression forest plot.
 }
 \description{
-Generate a multipanel figure with Kaplan-Meier survival curves
-and forest plot of the Multivariate Cox regression, based on INCOMMON classes.
+Visualise survival analysis based on INCOMMON classes.
 }

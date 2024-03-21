@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   Classify_Mutations: Classify_Mutations.html
   INCOMMON: INCOMMON.html
-last_built: 2024-03-18T13:38Z
+  survival_analysis: survival_analysis.html
+last_built: 2024-03-21T16:56Z
 urls:
   reference: caravagnalab.github.io/INCOMMON/reference
   article: caravagnalab.github.io/INCOMMON/articles

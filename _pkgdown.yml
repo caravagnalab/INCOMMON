@@ -9,6 +9,7 @@ reference:
   - example_data
   - pcawg_priors
   - cancer_gene_census
+  - data_MSK
   
 - title: INCOMMON classification
   desc:  Main functions to classify mutations
@@ -21,6 +22,7 @@ reference:
   contents:
   - plot_classification
   - print.INCOMMON
+  - plot_class_fraction
   
 - title: Getter Functions
   desc:  Functions to extract model information
@@ -35,3 +37,10 @@ reference:
   - compute_likelihood
   - compute_posterior
   
+- title: Survival analysis with INCOMMON classes
+  desc: Functions to perform survival analysis with patient stratificaiton based on INCOMMON classes
+  contents:
+  - kaplan_meier_fit
+  - cox_fit
+  - plot_survival_analysis
+

@@ -6,12 +6,13 @@
 #' @description Genomic data from sample P-0002081-T01-IM3 of the MSK-MET cohort.
 #' 
 #' @format A named list with the following components:
-#'   \item \code{mutations}: A data frame containing mutations from sample P-0002081-T01-IM3 
-#'   of the MSK-MET cohort with columns `chr`, `from`, `to`, `ref`, `alt`, `gene`, `NV`, `DP` and `VAF`.
-#'   \item \code{sample}: The name of the sample.
-#'   \item \code{tumor_type}: The tumor type of the sample.
-#'   \item \code{purity}: The purity of the tumor sample (fraction).
-#' }
+#' \describe{
+#'   \item{\code{mutations}}{A data frame containing mutations from sample P-0002081-T01-IM3 
+#'   of the MSK-MET cohort with columns `chr`, `from`, `to`, `ref`, `alt`, `gene`, `NV`, `DP` and `VAF`.}
+#'   \item{\code{sample}{The name of the sample.}
+#'   \item{\code{tumor_type}{The tumor type of the sample.}
+#'   \item{\code{purity}{The purity of the tumor sample (fraction).}
+#'}
 #'
 #' The columns in the data frame (\code{mutations}) are:
 #' \describe{

@@ -1,5 +1,5 @@
 ---
-title: "Survival analysis of KRAS mutations in PAAD samples from the MSK-MetTropism Cohort"
+title: "Survival analysis of the MSK-MetTropism Cohort"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{classify_msk}
