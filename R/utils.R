@@ -231,8 +231,8 @@ check_input = function(x){
 
 reduce_classes = function(x) {
   x %>%
-    mutate(
-      state = case_when(
+    dplyr::mutate(
+      state = dplyr::case_when(
         label %in% c("2N (Mutated: 1N)") ~ "HMD",
         label %in% c("4N (Mutated: 1N)", "3N (Mutated: 1N)") ~ "LOW MUT/WT",
         label %in% c("1N (Mutated: 1N)") ~ "LOH",
@@ -242,24 +242,20 @@ reduce_classes = function(x) {
     )
 }
 
-# Extract assignment probability for each higher-level class
+# Analysis functions
 
-add_per_state_probabilities = function(x, NV){
-  lapply(1:nrow(x), function(i){
-    probs = x[i,]$density[[1]] %>% 
-      dplyr::filter(NV == x[i,]$NV) %>% 
-      reduce_classes() %>% 
-      group_by(state) %>% 
-      dplyr::reframe(p_assign = sum(p_assign)) %>% 
-      tidyr::pivot_wider(names_from = state, values_from = p_assign)
-    dplyr::tibble(x[i,],
-           p_assign_all = list(probs))
-  }) %>% do.call(rbind, .)
-} 
-
-remove_mutation = function(x, mutation_id){
-  x$data = x$data %>% dplyr::filter(id != mutation_id)
-  if('fit' %in% names(x)) x$fit = x$fit %>% dplyr::filter(id != mutation_id)
+class_frequency = function(x, tumor_type, gene){
+  frequency_table = lapply(x, function(x) {
+    stopifnot(inherits(x, 'INCOMMON'))
+    classification(x) %>% 
+      dplyr::mutate(sample = samples(x))
+  }) %>% do.call(rbind, .) %>% 
+    dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>% 
+    dplyr::group_by(state) %>% 
+    dplyr::reframe(n = unique(length(sample))) %>% 
+    dplyr::mutate(N = sum(n), frequency = n/N)
+  frequency_table = cbind(tibble(gene = gene, tumor_type = tumor_type), frequency_table)
+  return(frequency_table)
 }
 
 # Palettes
