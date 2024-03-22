@@ -9,11 +9,21 @@ A named list with the following components:
 \describe{
 \item{\code{mutations}}{A data frame containing mutations from sample P-0002081-T01-IM3
 of the MSK-MET cohort with columns \code{chr}, \code{from}, \code{to}, \code{ref}, \code{alt}, \code{gene}, \code{NV}, \code{DP} and \code{VAF}.}
-\item{\code{sample}{The name of the sample.}
-\item{\code{tumor_type}{The tumor type of the sample.}
-\item{\code{purity}{The purity of the tumor sample (fraction).}
+\item{\code{sample}}{The name of the sample.}
+\item{\code{tumor_type}}{The tumor type of the sample.}
+\item{\code{purity}}{The purity of the tumor sample (fraction).}
 }
-
+}
+\source{
+MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021
+}
+\usage{
+data(example_data)
+}
+\description{
+Genomic data from sample P-0002081-T01-IM3 of the MSK-MET cohort.
+}
+\details{
 The columns in the data frame (\code{mutations}) are:
 \describe{
 \item{chr}{Chromosome harbouring the mutation.}
@@ -26,15 +36,6 @@ The columns in the data frame (\code{mutations}) are:
 \item{DP}{Total number of reads (sequencing depth)}
 \item{VAF}{Variant allele frequency of the mutation.}
 }
-}
-\source{
-MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021
-}
-\usage{
-data(example_data)
-}
-\description{
-Genomic data from sample P-0002081-T01-IM3 of the MSK-MET cohort.
 }
 \examples{
 data(example_data)

@@ -9,6 +9,8 @@
 #' Cox regression forest plot.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
+#' @importFrom survminer ggsurvplot
+#' @importFrom patchwork wrap_plots plot_layout
 
 plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age', 'sex', 'tmb')){
   

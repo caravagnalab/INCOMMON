@@ -33,6 +33,9 @@ Imports:
     dplyr,
     tidyr,
     VGAM,
+    survival,
+    survminer,
+    patchwork
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
