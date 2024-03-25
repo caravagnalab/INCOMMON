@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
+    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -89,6 +90,46 @@
 <span class="r-in"><span>prob <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
 <span class="r-in"><span>rho <span class="op">=</span> <span class="fl">0.01</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 1.040151e-27 2.111717e-26 2.911856e-25 3.066789e-24 2.630540e-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [6] 1.913488e-22 1.213698e-21 6.850297e-21 3.493984e-20 1.630064e-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] 7.024155e-19 2.818165e-18 1.059802e-17 3.756882e-17 1.261479e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] 4.029069e-16 1.228547e-15 3.587907e-15 1.006449e-14 2.718618e-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] 7.087614e-14 1.787056e-13 4.365843e-13 1.035194e-12 2.385972e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] 5.353141e-12 1.170607e-11 2.497968e-11 5.207275e-11 1.061501e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 2.117987e-10 4.139966e-10 7.933992e-10 1.491887e-09 2.754452e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] 4.996610e-09 8.910966e-09 1.563272e-08 2.699236e-08 4.589507e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] 7.688102e-08 1.269397e-07 2.066746e-07 3.319434e-07 5.261316e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] 8.232574e-07 1.272146e-06 1.941956e-06 2.929389e-06 4.367947e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] 6.439631e-06 9.389509e-06 1.354354e-05 1.933005e-05 2.730510e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [56] 3.818204e-05 5.286503e-05 7.248653e-05 9.844805e-05 1.324633e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 1.766024e-04 2.333354e-04 3.055731e-04 3.967020e-04 5.106101e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [66] 6.517014e-04 8.248933e-04 1.035595e-03 1.289660e-03 1.593318e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] 1.953067e-03 2.375544e-03 2.867357e-03 3.434889e-03 4.084073e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] 4.820142e-03 5.647359e-03 6.568743e-03 7.585790e-03 8.698205e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] 9.903660e-03 1.119759e-02 1.257303e-02 1.402053e-02 1.552812e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [86] 1.708137e-02 1.866355e-02 2.025584e-02 2.183765e-02 2.338705e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 2.488122e-02 2.629699e-02 2.761144e-02 2.880245e-02 2.984936e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [96] 3.073354e-02 3.143890e-02 3.195240e-02 3.226443e-02 3.236910e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] 3.226443e-02 3.195240e-02 3.143890e-02 3.073354e-02 2.984936e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] 2.880245e-02 2.761144e-02 2.629699e-02 2.488122e-02 2.338705e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111] 2.183765e-02 2.025584e-02 1.866355e-02 1.708137e-02 1.552812e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116] 1.402053e-02 1.257303e-02 1.119759e-02 9.903660e-03 8.698205e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] 7.585790e-03 6.568743e-03 5.647359e-03 4.820142e-03 4.084073e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] 3.434889e-03 2.867357e-03 2.375544e-03 1.953067e-03 1.593318e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131] 1.289660e-03 1.035595e-03 8.248933e-04 6.517014e-04 5.106101e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] 3.967020e-04 3.055731e-04 2.333354e-04 1.766024e-04 1.324633e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141] 9.844805e-05 7.248653e-05 5.286503e-05 3.818204e-05 2.730510e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146] 1.933005e-05 1.354354e-05 9.389509e-06 6.439631e-06 4.367947e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 2.929389e-06 1.941956e-06 1.272146e-06 8.232574e-07 5.261316e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156] 3.319434e-07 2.066746e-07 1.269397e-07 7.688102e-08 4.589507e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161] 2.699236e-08 1.563272e-08 8.910966e-09 4.996610e-09 2.754452e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166] 1.491887e-09 7.933992e-10 4.139966e-10 2.117987e-10 1.061501e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [171] 5.207275e-11 2.497968e-11 1.170607e-11 5.353141e-12 2.385972e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176] 1.035194e-12 4.365843e-13 1.787056e-13 7.087614e-14 2.718618e-14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] 1.006449e-14 3.587907e-15 1.228547e-15 4.029069e-16 1.261479e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [186] 3.756882e-17 1.059802e-17 2.818165e-18 7.024155e-19 1.630064e-19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [191] 3.493984e-20 6.850297e-21 1.213698e-21 1.913488e-22 2.630540e-23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196] 3.066789e-24 2.911856e-25 2.111717e-26 1.040151e-27 2.610884e-29</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

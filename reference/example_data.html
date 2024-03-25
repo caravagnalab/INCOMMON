@@ -28,6 +28,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
+    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -62,20 +63,28 @@
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A named list with the following components:</p><dl><dt>mutations</dt>
-<dd><p>A data frame containing mutations.</p></dd>
+    <p>A named list with the following components:</p><dl><dt><code>mutations</code></dt>
+<dd><p>A data frame containing mutations from sample P-0002081-T01-IM3
+of the MSK-MET cohort with columns <code>chr</code>, <code>from</code>, <code>to</code>, <code>ref</code>, <code>alt</code>, <code>gene</code>, <code>NV</code>, <code>DP</code> and <code>VAF</code>.</p></dd>
 
-<dt>sample</dt>
-<dd><p>A string indicating the name of the sample.</p></dd>
+<dt><code>sample</code></dt>
+<dd><p>The name of the sample.</p></dd>
 
-<dt>tumor_type</dt>
-<dd><p>A string indicating the tumor type.</p></dd>
+<dt><code>tumor_type</code></dt>
+<dd><p>The tumor type of the sample.</p></dd>
 
-<dt>purity</dt>
-<dd><p>A numeric indicating the fraction of tumor in sample.</p></dd>
+<dt><code>purity</code></dt>
+<dd><p>The purity of the tumor sample (fraction).</p></dd>
 
 
-</dl><p>The columns in the data frame (<code>mutations</code>) are:</p><dl><dt>chr</dt>
+</dl></div>
+    <div class="section level2">
+    <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
+    <p>MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The columns in the data frame (<code>mutations</code>) are:</p><dl><dt>chr</dt>
 <dd><p>Chromosome harbouring the mutation.</p></dd>
 
 <dt>from</dt>
@@ -104,18 +113,6 @@
 
 
 </dl></div>
-    <div class="section level2">
-    <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
-    <p>MSK-MET at cBioPortal https://www.cbioportal.org/study/summary?id=msk_met_2021</p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This list consists the following components:</p><ul><li><p><code>mutations</code>: A data frame containing mutations from sample P-0002081-T01-IM3
-of the MSK-MET cohort with columns <code>chr</code>, <code>from</code>, <code>to</code>, <code>ref</code>, <code>alt</code>, <code>gene</code>, <code>NV</code>, <code>DP</code> and <code>VAF</code>.</p></li>
-<li><p><code>sample</code>: The name of the sample.</p></li>
-<li><p><code>tumor_type</code>: The tumor type of the sample.</p></li>
-<li><p><code>purity</code>: The purity of the tumor sample (fraction).</p></li>
-</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

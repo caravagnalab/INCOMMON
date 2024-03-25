@@ -19,6 +19,9 @@
     <loc>caravagnalab.github.io/INCOMMON/articles/index.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/survival_analysis.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/authors.html</loc>
   </url>
   <url>
@@ -40,6 +43,12 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/compute_posterior.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/cox_fit.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/data_MSK.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/example_data.html</loc>
   </url>
   <url>
@@ -49,13 +58,22 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/init.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/parameters.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/pcawg_priors.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_class_fraction.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_survival_analysis.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/posterior.html</loc>
