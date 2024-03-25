@@ -27,12 +27,12 @@
 plot_class_fraction = function(x, tumor_type, gene){
   toplot = class_frequency(classified_data, tumor_type, gene)
   toplot %>% 
-    ggplot()+
-    geom_bar(aes(x = '', y = frequency, fill = state), stat = 'identity')+
+    ggplot2::ggplot()+
+    ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = state), stat = 'identity')+
     scale_color_INCOMMON_class(aes = 'fill')+
-    xlab('')+ylab('Fraction')+
-    coord_flip()+
+    ggplot2::xlab('')+ggplot2::ylab('Fraction')+
+    ggplot2::coord_flip()+
     CNAqc:::my_ggplot_theme(cex = .8)+
-    guides(fill = guide_legend(title = 'INCOMMON class'))+
-    labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
+    ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'))+
+    ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
 }

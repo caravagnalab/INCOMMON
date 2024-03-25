@@ -427,9 +427,9 @@ scale_color_INCOMMON_class = function(aes = 'fill'){
   colors = c("steelblue", "#00468BFF" , "indianred3", "forestgreen", "gainsboro" )
   names(colors) = c("LOH","CNLOH", "AM", "HMD", "Tier-2")
   if(aes == 'fill') {
-    scale_fill_manual(values = colors)
+    ggplot2::scale_fill_manual(values = colors)
   } else {
-    scale_color_manual(values = colors)
+    ggplot2::scale_color_manual(values = colors)
   }
 }
 
