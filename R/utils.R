@@ -332,6 +332,13 @@ prepare_km_fit_input = function(x, tumor_type, gene){
 }
 
 
+#' Forest plot suitable for \code{'INCOMMON'} classes.
+#' @description
+#' Forest plot for multivariate Cox regression based on INCOMMON classes.
+#' @param x An object of class \code{'coxph'}.
+#' @return A \code{'ggplot2'} object.
+#' @importFrom dplyr filter mutate rename select %>% 
+#' @importFrom scales pretty_breaks
 forest_plot = function(x, tumor_types = FALSE){
   
   if(is.null(x)) return(NULL)
