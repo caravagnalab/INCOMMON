@@ -63,25 +63,38 @@ We first look at the distribution of INCOMMON classes across PAAD samples:
 plot_class_fraction(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS')
 ```
 
-Fit survival with Kaplan-Meier.
+Nearly 30% of KRAS mutations are associated with amplification of the mutant allele, through CNLOH.
+Next we stratify PAAD patients as KRAS WT, Mutant KRAS without amplification and Mutant KRAS with amplification, and
+we fit survival data (overall survival status versus overall survival months) using the Kaplan-Meier estimator.
 
 ```{r}
 km_fit = kaplan_meier_fit(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS')
 km_fit$fit[[1]]
 ```
-Fit survival with multivariate Cox regression.
+
+The median survival time decreases from 21.5 months for the KRAS WT group to 18.2 months
+for Mutant KRAS without amplification and further to 11.7 months for Mutant KRAS with amplification
+patients.
+
+In order to estimate the hazard ratio associated with these groups, we fit the same survival 
+data, this time using a multivariate Cox proportional hazards regression model. Here, we include
+the age of patients at death, sex and tumor mutational burden as model covariates.
 
 ```{r}
 cox_fit(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', covariates = c('age', 'sex', 'tmb'))
 ```
 
-Plot survival fit
+This analysis reveals that, whereas KRAS mutation alone (without amplification) is not 
+enough, the presence of amplification significantly increases the hazard ratio (HR = 1.43, p-value = 0.009) 
+with respect to the WT group. Moreover, age seems to play a significant role, as patients younger 
+than 68 (median age) emerge as being more at risk (HR = 0.87, p-value = 0.036) than the older ones.
+
+Kaplan-Meier estimation and multivariate Cox regression can be run and visualized straightforwardly
+using the following function.
 
 ```{r}
 plot_survival_analysis(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', cox_covariates = c('age', 'sex', 'tmb'))
 ```
-
-
-
-
+The plot displays Kaplan-Meier survival curves and risk table, and the forest plot 
+for the Cox regression coefficients, where significant covariates are shown in red. 
 
