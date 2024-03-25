@@ -104,7 +104,7 @@
 <p>We work with the <a href="INCOMMON.html">example INCOMMON
 <code>data</code></a>.</p>
 <div class="section level2">
-<h2 id="exact-read-counts-based-test">Exact read-counts based test<a class="anchor" aria-label="anchor" href="#exact-read-counts-based-test"></a>
+<h2 id="a-beta-binomial-mixture-model-for-classification">A Beta-Binomial mixture model for classification<a class="anchor" aria-label="anchor" href="#a-beta-binomial-mixture-model-for-classification"></a>
 </h2>
 <p>INCOMMON implements a maximum a posteriori classifier to infer the
 copy number (<span class="math inline">\(n_A\)</span> for the major
@@ -140,9 +140,10 @@ P(X = NV | \theta_\eta,\rho, DP) = \text{Beta-Binonmial}\left(NV
 using a pure Binomial model with no model of the sequencer
 overdispersion.</p>
 </blockquote>
-<div class="section level3">
-<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <p>In the following example, the classification task is run using the
 default setting <span class="math inline">\(\rho = 0.01\)</span>.</p>
 <p>The input must be prepared using function <code>init</code>:</p>
@@ -161,13 +162,16 @@ default setting <span class="math inline">\(\rho = 0.01\)</span>.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> chr17  7<span style="text-decoration: underline;">577</span>139  7<span style="text-decoration: underline;">577</span>139 G     A     TP53      116   246 0.472 TSG      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr19  1<span style="text-decoration: underline;">221</span>293  1<span style="text-decoration: underline;">221</span>293 C     A     STK11     122   260 0.469 TSG      </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> chr19 11<span style="text-decoration: underline;">141</span>472 11<span style="text-decoration: underline;">141</span>473 -     C     SMARCA4   133   271 0.491 TSG</span></span></code></pre></div>
-<p>A column <code>gene_role</code> is extracted from the COSMIC Cancer
-Gene Census (default) catalogue and attached to the input data according
-to gene names. Other sources for gene roles can be input by the user
-through option <code>gene_roles</code> of function
-<code>init</code>.</p>
+<p>This is a lung adenocarcinoma (LUAD) sample “P-0002081-T01-IM3” from
+the MSK-MetTropsim dataset. The sample has purity <span class="math inline">\(\pi = 0.6\)</span> and contains mutations called
+on genes KRAS, TP53, STK11 and SMARCA4. A column <code>gene_role</code>
+is extracted from the COSMIC Cancer Gene Census (default) catalogue and
+attached to the input data according to gene names. Other sources for
+gene roles can be input by the user through option
+<code>gene_roles</code> of function <code>init</code>.</p>
 <p>INCOMMON classification of a sample can be performed using function
-<code>classify</code>.</p>
+<code>classify</code>. Here we do not use any prior knowledge and no
+cut-off on the classification entropy.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">input</span>,</span>
@@ -190,7 +194,7 @@ through option <code>gene_roles</code> of function
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr19  1.22<span style="color: #949494;">e</span>6 1.22<span style="color: #949494;">e</span>6 C     A     STK11   122   260 0.469 TSG       chr1… 3N (…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> chr19  1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 -     C     SMAR…   133   271 0.491 TSG       chr1… 3N (…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: state &lt;chr&gt;, posterior &lt;dbl&gt;, entropy &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>The results of the classification task can be visualized using the
+<p>The results of the classification can be visualized using the
 internal plotting function. Here is an example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_classification.html">plot_classification</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
@@ -204,27 +208,61 @@ internal plotting function. Here is an example:</p>
 <p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-5-3.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span></code></pre>
-<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-5-4.png" width="700">
-All mutations are classified as with amplification. However visual
-inspection of the plots suggest that some of the mutations are hard to
-classify because of uncertainty. The number of reads with the variant
-<span class="math inline">\(NV\)</span> (vertical line) in these cases
-is compatible with multiple copy number configurations, which are
-assigned similar posterior probabilities.</p>
-<p>One can make the classification stricter by using the entropy cut-off
-in function <code>classify</code>. Mutations with classification entropy
-above this cutoff will be flagged as Tier-2. The default entropy cutoff
-is 0.20.</p>
+<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-5-4.png" width="700"></p>
+<p>All mutations are classified as with amplification. However, visual
+inspection of the plots suggest that only the mutation on KRAS has low
+entropy <span class="math inline">\(H(x) \leq 0.2\)</span>. In effect,
+it is the only mutation with high sequencing depth <span class="math inline">\(DP\geq500\)</span>.</p>
+<p>Given the lower depth, the number of reads with the variant <span class="math inline">\(NV\)</span> (vertical line) for the other
+mutations is compatible with multiple copy number configurations, which
+are thus assigned similar posterior probabilities.</p>
+</div>
+<div class="section level2">
+<h2 id="using-priors-and-the-entropy-cut-off-">Using priors and the entropy cut-off.<a class="anchor" aria-label="anchor" href="#using-priors-and-the-entropy-cut-off-"></a>
+</h2>
+<p>The classification can be made easier by injecting prior knowledge
+into the model. In function <code>classify</code>, the user can provide
+a table as argument <code>prior</code>. INCOMMON provides an internal
+table of prior distributions obtained from PCAWG whole-genomes:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pcawg_priors</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4,466 × 4</span></span></span>
+<span><span class="co">#&gt;    gene  tumor_type label                 p</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> ALB   HCC        1N (Mutated: 1N) 0.151 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> ALB   HCC        2N (Mutated: 1N) 0.593 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> ALB   HCC        2N (Mutated: 2N) 0.047<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> ALB   HCC        3N (Mutated: 1N) 0.072<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> ALB   HCC        3N (Mutated: 2N) 0.048<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> ALB   HCC        4N (Mutated: 1N) 0.019<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> ALB   HCC        4N (Mutated: 2N) 0.068<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> APOB  HCC        1N (Mutated: 1N) 0.151 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> APOB  HCC        2N (Mutated: 1N) 0.593 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> APOB  HCC        2N (Mutated: 2N) 0.047<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4,456 more rows</span></span></span></code></pre></div>
+<p>We know classify mutations using this priors. Since we are biasing
+the classification with prior knowledge, it is now reasonable also to
+make the classification stricter by using a cut-off on the entropy. The
+default value for <code>entropy_cutoff</code> is <span class="math inline">\(0.20\)</span>. Mutations with classification
+entropy above this cutoff will be flagged as Tier-2.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">input</span>,</span>
-<span>  priors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  priors <span class="op">=</span> <span class="va">pcawg_priors</span>,</span>
 <span>  entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fl">0.01</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">INCOMMON inference of copy number and mutation multiplicity for sample </span><span style="color: #00BB00; font-weight: bold;">P-0002</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Performing classification</span></span>
+<span><span class="co">#&gt; → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">KRAS</span></span></span>
+<span><span class="co">#&gt; → Using a pan-cancer prior</span></span>
+<span><span class="co">#&gt; → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">TP53</span></span></span>
+<span><span class="co">#&gt; → Using a pan-cancer prior</span></span>
+<span><span class="co">#&gt; → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">STK11</span></span></span>
+<span><span class="co">#&gt; → Using a pan-cancer prior</span></span>
+<span><span class="co">#&gt; → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">SMARCA4</span></span></span>
+<span><span class="co">#&gt; → Using a pan-cancer prior</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Sample <span style="color: #00BB00;">P-0002081-T01-IM3</span> (<span style="color: #00BB00;">LUAD</span>), with purity <span style="color: #00BB00;">0.6</span> ──────────────</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations using Beta-binomial model with overdispers</span></span>
@@ -232,26 +270,28 @@ is 0.20.</p>
 <span><span class="co">#&gt;   chr      from     to ref   alt   gene     NV    DP   VAF gene_role id    label</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> chr12  2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     A     KRAS    378   743 0.509 oncogene  chr1… 3N (…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> chr17  7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     A     TP53    116   246 0.472 TSG       chr1… 3N (…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr19  1.22<span style="color: #949494;">e</span>6 1.22<span style="color: #949494;">e</span>6 C     A     STK11   122   260 0.469 TSG       chr1… 3N (…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> chr19  1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 -     C     SMAR…   133   271 0.491 TSG       chr1… 3N (…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> chr17  7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     A     TP53    116   246 0.472 TSG       chr1… 1N (…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr19  1.22<span style="color: #949494;">e</span>6 1.22<span style="color: #949494;">e</span>6 C     A     STK11   122   260 0.469 TSG       chr1… 1N (…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> chr19  1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 -     C     SMAR…   133   271 0.491 TSG       chr1… 1N (…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3 more variables: state &lt;chr&gt;, posterior &lt;dbl&gt;, entropy &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>In this scenario, all mutations are flagged as Tier-2, except KRAS
-that is classified as an amplified mutation (AM).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>Tumour suppressor genes TP53, STK11 and SMARCA4 have high frequency
+of LOH in PCAWG, and low frequency of amplification. Injecting this
+prior knowledge into the model pushes the classification outcome towards
+this states. The effect of using the prior is evident from the
+classification plots:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_classification.html">plot_classification</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span></code></pre></div>
-<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span></code></pre>
-<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-7-2.png" width="700"></p>
+<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[3]]</span></span></code></pre>
-<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-7-3.png" width="700"></p>
+<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-8-3.png" width="700"></p>
 <pre><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[4]]</span></span></code></pre>
-<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-7-4.png" width="700"></p>
-</div>
+<p><img src="Classify_Mutations_files/figure-html/unnamed-chunk-8-4.png" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
