@@ -68,7 +68,6 @@ compute_posterior = function(NV,
       # }
       
       posterior = prior*likelihood
-      posterior = posterior/sum(posterior) # Normalise
       
       # Output
       out = data.frame(
@@ -115,11 +114,12 @@ compute_posterior = function(NV,
        gene = gene)
   }) %>% 
     dplyr::bind_rows()
-  
+
   # Compute entropy
   posterior = posterior %>% 
     dplyr::group_by(NV) %>% 
-    dplyr::reframe(value, NV, Major, minor, ploidy, multiplicity, karyotype, label, peak, entropy = -sum(value*log2(value)))
+    dplyr::reframe(value, NV, Major, minor, ploidy, multiplicity, karyotype, label, peak, 
+                   entropy = -sum(value*log2(value)))
   
   # Apply entropy cutoff
   posterior = posterior %>% 

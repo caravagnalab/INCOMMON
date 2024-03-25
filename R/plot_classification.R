@@ -26,7 +26,9 @@ plot_classification = function(x, assembly = F){
     
     # Get posterior of specific classified mutations in easy-to-plot format
     toplot = posterior(x, id = id)
-    toplot = toplot %>% dplyr::group_by(NV) %>% dplyr::reframe(max = (value == max(value)), dplyr::across(dplyr::everything()))
+    toplot = toplot %>% 
+      dplyr::group_by(NV) %>% 
+      dplyr::reframe(max = (value == max(value)), dplyr::across(dplyr::everything()))
       
     toplot$multiplicity = factor(toplot$multiplicity)
     toplot$ploidy = factor(toplot$ploidy)

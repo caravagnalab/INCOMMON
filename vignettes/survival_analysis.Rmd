@@ -16,16 +16,21 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(INCOMMON)
-library(tidyverse)
+library(dplyr)
 ```
 
-Some comment about what's in the example MSK data (tujmor types, genes, n samples, n mutations).
+In this example we perform survival analysis using INCOMMON classification of 1742
+samples from pancreatic adenocarcinoma (PAAD) patients of the MSK-MetTropsim cohort.
 
 ```{r}
 data = data_MSK %>% filter(tumor_type == 'PAAD')
+print(data)
+print(paste0('N samples = ', data$sample %>% unique() %>% length()))
 ```
 
-Classify mutations in example data, with no entropy cut-off.
+First, we classify all the mutations in these samples, exploiting prior knowledge
+from PCAWG. In order to retrieve groups with a large enough number of patients to 
+achieve statistical significance, we use no cut-off on entropy.
 
 ```{r, message=FALSE}
 classified_data = lapply((data$sample %>% unique()), function(s){
@@ -51,8 +56,8 @@ classified_data = lapply((data$sample %>% unique()), function(s){
   return(output)
 })
 ```
-
-Plot class distribution
+Here, we want to estimate the prognostic power of KRAS mutations with amplification of the mutant allele.  
+We first look at the distribution of INCOMMON classes across PAAD samples:
 
 ```{r}
 plot_class_fraction(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS')

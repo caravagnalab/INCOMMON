@@ -189,16 +189,17 @@ get_prior = function(x, gene, tumor_type){
 # Get mutant samples by tumour type and gene
 
 mutant_samples = function(x, tumor_type, gene) {
-  add_genotypes(x) %>%
+  add_genotypes(x) %>% 
     dplyr::filter(tumor_type == !!tumor_type) %>%
     tidyr::separate_rows(genotype, sep = ",\\s*") %>%
     dplyr::filter(grepl(!!gene, genotype, ignore.case = TRUE)) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
+    dplyr::select(-c(chr, from, to, ref, alt, NV, DP, VAF, id, gene_role, group, label, state, posterior, entropy, class, HGVSp_Short, SAMPLE_TYPE, dplyr::starts_with('MET'))) %>% 
     dplyr::summarise(group = toString(genotype), across(everything())) %>%
+    dplyr::select(-genotype) %>% 
     dplyr::ungroup() %>%
     dplyr::mutate(gene = !!gene) %>% 
-    dplyr::select(-gene_role) %>% 
     dplyr::left_join(cancer_gene_census, by = 'gene') %>% 
     dplyr::filter(!grepl('Tier-2', group))
 }
@@ -210,7 +211,8 @@ wt_samples = function(x, tumor_type, gene) {
     dplyr::filter(tumor_type == !!tumor_type) %>%
     dplyr::filter(!grepl(!!gene, genotype)) %>%
     dplyr::mutate(gene = !!gene) %>% 
-    dplyr::select(-gene_role) %>% 
+    dplyr::select(-c(chr, from, to, ref, alt, NV, DP, VAF, id, gene_role, group, label, state, posterior, entropy, class, HGVSp_Short, genotype, SAMPLE_TYPE, dplyr::starts_with('MET'))) %>% 
+    unique() %>% 
     dplyr::left_join(cancer_gene_census, by = 'gene') %>% 
     dplyr::mutate(group = paste0(gene, ' WT'))
 }
@@ -369,7 +371,11 @@ forest_plot = function(x, tumor_types = FALSE){
       TRUE ~ var
     )) 
   
-  levels = c(x$xlevels$group %>% unique())
+  levels = c(
+    grep('WT', unique(x$xlevels$group), value = T),
+    grep('without', unique(x$xlevels$group), value = T),
+    grep('with ', unique(x$xlevels$group), value = T)
+  )
   for(c in names(x$xlevels)[-1]){
     levels = c(levels, grep(c, toplot$var, value = T, ignore.case = T) %>% rev())
   }

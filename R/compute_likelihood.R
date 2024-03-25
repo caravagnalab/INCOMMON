@@ -19,4 +19,5 @@ compute_likelihood = function(NV, DP, prob, rho) {
     prob = prob,
     rho = rho
   )
+  return(density)
 }
