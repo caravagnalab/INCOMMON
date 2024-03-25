@@ -27,7 +27,7 @@ We work with the [example INCOMMON `data`](INCOMMON.html).
 print(example_data)
 ```
 
-# Exact read-counts based test
+## A Beta-Binomial mixture model for classification
 
 INCOMMON implements a maximum a posteriori classifier to infer the copy number ($n_A$ for the major allele, $n_B$ 
 for the minor) and multiplicity $m$ of mutations from read-count data.
@@ -68,11 +68,14 @@ input = init(mutations = example_data$data,
              gene_roles = cancer_gene_census)
 print(input)
 ```
+This is a lung adenocarcinoma (LUAD) sample "P-0002081-T01-IM3" from the MSK-MetTropsim dataset.
+The sample has purity $\pi = 0.6$ and contains mutations called on genes KRAS, TP53, STK11 and SMARCA4.
 A column `gene_role` is extracted from the COSMIC Cancer Gene Census (default) catalogue and 
 attached to the input data according to gene names. Other sources for gene roles can
 be input by the user through option `gene_roles` of function `init`.
 
 INCOMMON classification of a sample can be performed using function `classify`. 
+Here we do not use any prior knowledge and no cut-off on the classification entropy.
 
 ```{r}
 out = classify(
@@ -83,31 +86,48 @@ out = classify(
 )
 print(out)
 ```
-The results of the classification task can be visualized using the internal 
+The results of the classification  can be visualized using the internal 
 plotting function. Here is an example:
 ```{r}
 plot_classification(out)
 ```
-All mutations are classified as with amplification. However visual inspection of the plots
-suggest that some of the mutations are hard to classify because of uncertainty. The number of
-reads with the variant $NV$ (vertical line) in these cases is compatible with multiple copy number
-configurations, which are assigned similar posterior probabilities.
 
-One can make the classification stricter by using the entropy cut-off in function `classify`.
+All mutations are classified as with amplification. However, visual inspection of the plots
+suggest that only the mutation on KRAS has low entropy $H(x) \leq 0.2$. In effect, it is the only
+mutation with high sequencing depth $DP\geq500$.
+
+Given the lower depth, the number of reads with the variant $NV$ (vertical line) for the other mutations is compatible with multiple copy number
+configurations, which are thus assigned similar posterior probabilities.
+
+## Using priors and the entropy cut-off.
+
+The classification can be made easier by injecting prior knowledge into the model.
+In function `classify`, the user can provide a table as argument `prior`. INCOMMON
+provides an internal table of prior distributions obtained from PCAWG whole-genomes:
+
+```{r}
+pcawg_priors
+```
+
+We know classify mutations using this priors. Since we are biasing the classification
+with prior knowledge, it is now reasonable also to make the classification stricter
+by using a cut-off on the entropy. The default value for `entropy_cutoff` is $0.20$.
 Mutations with classification entropy above this cutoff will be flagged as Tier-2.
-The default entropy cutoff is 0.20.
 
 ```{r}
 out = classify(
   x = input,
-  priors = NULL,
+  priors = pcawg_priors,
   entropy_cutoff = 0.2,
   rho = 0.01
 )
 print(out)
 ```
 
-In this scenario, all mutations are flagged as Tier-2, except KRAS that is classified as an amplified mutation (AM).
+Tumour suppressor genes TP53, STK11 and SMARCA4 have high frequency of LOH in PCAWG,
+and low frequency of amplification. Injecting this prior knowledge into the model
+pushes the classification outcome towards this states. The effect of using the prior 
+is evident from the classification plots:
 ```{r}
 plot_classification(out)
 ```

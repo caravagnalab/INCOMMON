@@ -95,6 +95,7 @@ using the following function.
 ```{r}
 plot_survival_analysis(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS', cox_covariates = c('age', 'sex', 'tmb'))
 ```
+
 The plot displays Kaplan-Meier survival curves and risk table, and the forest plot 
 for the Cox regression coefficients, where significant covariates are shown in red. 
 
