@@ -346,7 +346,7 @@ forest_plot = function(x, tumor_types = FALSE){
   
   reference_table =
     lapply(names(x$xlevels), function(n) {
-      tibble(
+      dplyr::tibble(
         var = paste0(n, x$xlevels[n][[1]][1]),
         value = 1,
         low = 1,
@@ -355,7 +355,7 @@ forest_plot = function(x, tumor_types = FALSE){
       )
     }) %>% do.call(rbind, .)
   
-  toplot = tibble(
+  toplot = dplyr::tibble(
     var = what$var,
     value = what$`exp(coef)`,
     low = what$`lower .95`,
@@ -365,7 +365,7 @@ forest_plot = function(x, tumor_types = FALSE){
     rbind(reference_table)
   
   toplot = toplot %>% 
-    mutate(var = case_when(
+    dplyr::mutate(var = dplyr::case_when(
       grepl('group', var) ~ gsub('group', '', var),
       grepl('Sex', var, ignore.case = T) ~ gsub('Sex', 'Sex: ', var, ignore.case = T),
       TRUE ~ var
@@ -388,28 +388,28 @@ forest_plot = function(x, tumor_types = FALSE){
   toplot$var = factor(toplot$var, levels = levels(toplot$var) %>% rev())
   
   pp = toplot %>% 
-    mutate(num_label = toplot$var %>% seq_along()) %>% 
-    mutate(stripe = (num_label%%2==0)) %>% 
-    ggplot(aes(y = var, x = value))+
-    geom_point(aes(color = p.value <= .05))+
-    geom_errorbar(aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
-    geom_rect(aes(
+    dplyr::mutate(num_label = toplot$var %>% seq_along()) %>% 
+    dplyr::mutate(stripe = (num_label%%2==0)) %>% 
+    ggplot2::ggplot(ggplot2::aes(y = var, x = value))+
+    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
+    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
+    ggplot2::geom_rect(ggplot2::aes(
       ymax = num_label + .5,
       ymin = num_label - .5,
       xmin = -Inf,
       xmax = Inf,
       fill = stripe
     ), alpha = .4)+
-    geom_vline(xintercept = 1, linetype = 'longdash', alpha = .5)+
-    scale_fill_manual(values = c('gainsboro', 'white'))+
-    geom_point(aes(color = p.value <= .05))+
-    geom_errorbar(aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
-    scale_color_manual(values = c('indianred3','black') %>% rev())+
-    scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
+    ggplot2::geom_vline(xintercept = 1, linetype = 'longdash', alpha = .5)+
+    ggplot2::scale_fill_manual(values = c('gainsboro', 'white'))+
+    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
+    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
+    ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
     CNAqc:::my_ggplot_theme(cex = .8)+
-    ylab('')+
-    xlab('Hazard Ratio')+
-    guides(fill = 'none')
+    ggplot2::ylab('')+
+    ggplot2::xlab('Hazard Ratio')+
+    ggplot2::guides(fill = 'none')
   pp
 }
 

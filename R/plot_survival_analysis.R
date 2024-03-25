@@ -42,8 +42,8 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
   km_plot$plot$data$tumor_type = unique(data$tumor_type)
   km_plot$data.survplot$tumor_type = unique(data$tumor_type)
   
-  km_plot$plot = km_plot$plot + xlab('') + guides(color = 'none') + facet_wrap(~tumor_type)
-  km_plot$table = km_plot$table + ylab('') + theme(legend.position = 'none')
+  km_plot$plot = km_plot$plot + ggplot2::xlab('') + ggplot2::guides(color = 'none') + ggplot2::facet_wrap(~tumor_type)
+  km_plot$table = km_plot$table + ggplot2::ylab('') + ggplot2::theme(legend.position = 'none')
   
 cox_fit = cox_fit(x, gene, tumor_type, cox_covariates)
 
