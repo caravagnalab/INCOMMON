@@ -21,54 +21,139 @@ library(INCOMMON)
 ```
 
 INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology.
-INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, 
+INCOMMON infers the copy number and multiplicity of somatic mutations from tumor-only read count data, 
 and can be applied to classify mutations from large-size datasets in an efficient and fast way. 
 Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations 
 (heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH),
-amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity).
+amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity). 
 
-> The INCOMMON model is designed to work with high-resolution targeted data such as 
+In addition, INCOMMON offers 
+a genome interpretation framework, in which the full
+inactivation of tumor suppressor genes (TSG) through mutations
+with LOH, and the enhanced activation of oncogenes through
+mutations with amplification can be detected. These events
+can then be used to perform augmented analysis of survival and metastatic patterns.
+
+> The INCOMMON model is designed to work with high coverage sequencing data such as 
 targeted panels but, in principle, it can be used with any sequencing assay. INCOMMON
 is helpful also to analyse sequencing data from tumor-only assays, in paricular when alignment
-files (fastq, bam, etc.) are not availble.
+files (fastq, sam/bam, etc.) are not availble.
 However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster, https://github.com/caravagnalab/CNAqc). 
 
-## Copy number and mutation multiplicity assessment
+## Mutation copy number and multiplicity inference
 
-INCOMMON will assess, for every mutation, any of the following statuses:
+INCOMMON assesses, for every mutation, copy number configurations identified by triples $(n_A,n_B,m)$ where
+$n_A$ is the major allele copy number, $n_B$ is the minor and
+the mutation is present in $m$ copies. The supported configurations are:
 
-- Ploidy among 
-  - 1 (loss of heterozygosity LOH), 
-  - 2 (heterozygous and homozygous),
-  - 3 (trisomy), 
-  - 4 (tetrasomy);
-- Multiplicity between 1 and 2;
+  - Loss of heterozygosity in monosomy LOH: $(n_A=1,n_B=0, m=1)$
+  - Copy-neutral loss of heterozygosity CNLOH: $(n_A=2,  n_B=0 , m=2)$
+  - Amplification AM: $(n_A=3,  n_B=2 , m=2)$ or $(n_A=4,  n_B=2 , m=2)$
+  - Heterozygous mutant diploid HMD: $(n_A=2,  n_B=1 , m=1)$ 
 
-INCOMMON implements [a classifier based on maximum a posteriori estimation](Classify_Mutations.html); the required inputs are:
+INCOMMON implements [a classifier based on maximum a posteriori estimation](Classify_Mutations.html) to infer the copy number and multiplicity
+of mutations from read-count data.
 
-- read counts of a mutation
-- purity of the tumour sample $\pi > 0$
+The classifier is based on a Beta-Binomial mixture model, in which the number of reads with a variant ($n$) is the number of events
+and the sequencing depth $N$ is the total number of trials.
+
+A mutation on a genomic site of ploidy $p = n_A+n_B$, with multiplicity $m\leq \max(n_A,n_B)$, in a sample of purity $\pi$
+has an expected VAF of
+\[
+\theta_{m,p}\left(\pi\right) = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
+\] 
 
 > Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other bioinformatics approach outside INCOMMON. INCOMMON assumes that the input purity is correct.
 
+In the read counting process this represents the event probability. Therefore, the likelihood of observing:
+
+- $n$ reads with the variant at the locus
+- $N$ coverage at the locus
+- sample purity $\pi$
+
+given ploidy $p$ and multiplicity $m$ is
+
+\[
+P(n | N, \theta_{m,p}\left(\pi\right),\rho) = \text{Beta-Binonmial}\left(n \;\large\mid\;\normalsize N,\theta_{m,p}\left(\pi\right), \rho\right)
+\] 
+
+where $\rho$ models the overdispersion of the sequencer.
+
+> Setting $\rho = 0$ corresponds to using a pure Binomial model with no model of the sequencer overdispersion. 
+
+
 ##  Input format
 
-Input must be prepared using the function `init`. The input to this function must contain:
+The input required for INCOMMMON classification consists of two data tables:
 
-- `mutations`: a tibble or dataframe containing the mutations in a sample. Columns should indicate coordinates (chromosome `chr`, start position `from`,
-end position `to`), type of substitution (reference `ref` and alternative `alt` alleles), sequencing coverage `DP`, number
-of reads with the variant `NV`, variant allelic frequency `VAF` and gene name `gene` (preferably as Hugo Symbol)
-- `sample`:  name or ID of the sample
-- `purity`, tumor sample purity
+- `genomic_data`: a data table of annotated mutations with columns indicating,
+for each mutation, the sample name `sample`, mutant chromosome `chr`, 
+start position `from`, end position `to`, reference allele `ref`, alternative allele `alt`, sequencing depth `DP`, number of reads with variant `NV`, variant allele frequency `VAF`, mutant gene name `gene` Hugo Symbol, and possibly the protein sequence of the variant in HGVS recommended format (preferably 1-letter amino-acid code `HGVSp_Short`).
 
-This is an example input dataset.
+- `clinical_data`: a data table of clinical data with matched sample names `sample` and purity `purity` (required), and clinical features like tumor type (ONCOTREE code) `tumor_type` (required for tumor specific priors), survival data such as `OS_STATUS` and time `OS_MONTHS` (required for survival analysis), metastasis data such as `SAMPLE_TYPE` (Primary or Metastasis), number of metastases `MET_COUNT` (required for metastatic propensity analysis) and metastatic site `METASTATIC_SITE` (required for metastatic tropism analysis), plus any other useful covariate.
+
+- `gene_roles`: a data table reporting gene names `gene` and associated roles `gene_role` ("oncogene" or "TSG"). INCOMMON provides a set of gene roles extracted from the COSMIC Cancer Gene Census (v98) as default.
+
+The input for downstream analysis is checked and cast in the expected format through the function `init`.
+
+INCOMMON provides data from the publicly available MSK-MetTropism cohort
+in the correct format. The following example shows how this input is 
+pre-processed by INCOMMON:
 
 ```{r}
+data(MSK_genomic_data)
+data(MSK_clinical_data)
+data(cancer_gene_census)
+
 x = init(
-  mutations = example_data$data,
-  sample = example_data$sample,
-  purity = example_data$purity,
-  tumor_type = example_data$tumor_type
+  genomic_data = MSK_genomic_data,
+  clinical_data = MSK_clinical_data,
+  gene_roles = cancer_gene_census
 )
+
 print(x)
 ```
+## Genome interprter
+
+Downstream of INCOMMON classification, the mutant genome can be
+interpreted in terms of full inactivation of tumor suppressor genes (TSG) through mutations with LOH, and enhanced activation of oncogenes through
+mutations with amplification. 
+
+For TSGs, full inactivation states include all the copy number configurations
+with loss of the wild-type (WT) allele (multiplicity equal to ploidy
+$m=p$):
+
+- Mutations with LOH
+- Mutations with CNLOH
+
+For oncogenes, enhanced activation states include all the copy number configurations with amplification of the mutant allele (multiplicity
+$m = 2$):
+
+- Mutations with AM (trisomy or tetrasomy)
+- Mutations with CNLOH
+
+Even if the intepretation of CNLOH as an oncogene activating event might sound
+unusual, it is based on the intuition that, for an oncogene, the presence
+of multiple mutant copies is relevant, whereas the absence of the WT is not.
+
+## Survival analysis
+
+If patients' survival status and time are provided as features in the clinical 
+data table `clinical_table`, survival analysis can be performed. Downstream of
+classification, INCOMMON can stratify patients based on the mutational and 
+copy number state of a TSG or an oncogene of interest. 
+
+INCOMMON provide the following functions, dedicated to fitting survival data:
+
+- `kaplan_meier_fit` uses the Kaplan-Meier estimator to fit survival data from
+  patients stratified with respect to the status of a specific `tumor_type` and
+  `gene` (Mutant TSG with/without LOH for suppressors, 
+  Mutant oncogene with/without amplification for oncogenes, with the WT group as
+  reference)
+- `cox_fit` uses a Cox proportional hazard ratio model to fit survival data. 
+  In addition to arguments `tumor_type` and `gene`, it accepts other `covariates`,
+  given the are provided in the provided `clinical_table`.
+
+
+
+
