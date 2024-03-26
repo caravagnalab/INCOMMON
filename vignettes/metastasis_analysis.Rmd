@@ -1,0 +1,253 @@
+---
+title: "Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{metastasis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dplyr)
+library(INCOMMON)
+```
+
+In this example we perform an analysis of metastatic propensity and tropism using INCOMMON 
+classification of 2484 samples from breast cancer (BRCA) patients of the MSK-MetTropsim cohort.
+
+```{r}
+data = data_MSK %>% filter(tumor_type == 'BRCA')
+print(data)
+print(paste0('N samples = ', data$sample %>% unique() %>% length()))
+```
+## Classification of 2484 MSK-MetTropism BRCA samples
+
+First, we classify all the mutations in these samples, exploiting prior knowledge
+from PCAWG. In order to retrieve groups with a large enough number of patients to 
+achieve statistical significance, we use no cut-off on entropy.
+
+```{r, message=FALSE}
+classified_data = lapply((data$sample %>% unique()), function(s){
+  
+  what = data %>% filter(sample == s)
+
+  x = init(
+    mutations = what,
+    sample = s,
+    tumor_type = unique(what$tumor_type),
+    purity = unique(what$purity),
+    gene_roles = cancer_gene_census
+  )
+  
+  x = classify(
+    x = x,
+    priors = pcawg_priors,
+    entropy_cutoff = 1,
+    rho = 0.01
+  )
+  
+  output = x
+  return(output)
+})
+```
+
+## Logistic regression test of metastatic propensity 
+
+For the analysis of metastatic propensity, we select only primary tumour samples 
+and separate them into samples from metastatic (`metastatic` = 1) and non metastatic 
+(`metastatic` = 0) patients. We also keep only genes with Tier-1 mutations in at least 100 samples.
+
+```{r}
+what = classification_cohort(classified_data) %>% 
+  INCOMMON:::reduce_classes() %>% 
+  dplyr::filter(class != 'Tier-2') %>% 
+  dplyr::filter(SAMPLE_TYPE == 'Primary') %>% 
+  dplyr::mutate(metastatic = 1*(MET_COUNT > 0)) %>% 
+  dplyr::select(sample, tumor_type, gene, class, metastatic)
+
+what = what %>% 
+  dplyr::group_by(tumor_type, gene) %>% 
+  dplyr::reframe(sample, N = length(unique(sample)), class, metastatic) %>% 
+  dplyr::filter(N >= 100)
+
+print(what)
+```
+For each gene, we perform logistic regression using the `stast::glm` function for generalized linear model
+fitting. We then adjust p-values using the Benjamini-Hochberg correction for multiple hypotheses testing.
+
+```{r}
+out = lapply(what$gene %>% unique(), function(g){
+  
+  what = what %>%
+    dplyr::filter(gene == g) 
+  
+  what = what %>%
+    dplyr::mutate(class = factor(class)) %>%
+    dplyr::mutate(class = stats::relevel(class, ref = grep('without', unique(what$class), value = T)))
+  
+  model = stats::glm(data = what, metastatic ~ class, family = binomial(link = 'logit'))
+  
+  fit = cbind(summary(model)$coefficients, confint(model)) %>% as_tibble()
+  fit$var = rownames(confint(model)) %>% gsub('class', '', .)
+  
+  dplyr::tibble(
+    gene = g,
+    N = unique(what$N),
+    class = fit[2,]$var,
+    OR = fit[2,]$Estimate %>% exp(),
+    low = fit[2,]$`2.5 %` %>% exp(),
+    up = fit[2,]$`97.5 %` %>% exp(),
+    p.value = fit[2,]$`Pr(>|z|)`
+  )
+}) %>% do.call(rbind, .)
+
+out$p.adjust = stats::p.adjust(out$p.value, method = 'BH')
+
+print(out)
+```
+
+Finally, we visualize the fitted odds ratios (OR) in a volcano plot.
+
+```{r}
+ plot_volcano = out %>% 
+  ggplot2::ggplot(ggplot2::aes(x = log2(OR), y = -log10(p.value)))+
+  ggplot2::geom_hline(data = out %>% filter(p.value <= 0.05),
+             yintercept = -log10(0.05),
+             linetype = 'longdash',
+             color = 'indianred3')+
+  ggplot2::geom_vline(xintercept = log2(.5),
+             linetype = 'longdash',
+             color = 'indianred3')+
+  ggplot2::geom_vline(xintercept = log2(2),
+             linetype = 'longdash',
+             color = 'indianred3')+
+  ggplot2::geom_point(ggplot2::aes(size = N, color = class))+
+  scale_color_INCOMMON_high_level_class(aes = 'color')+
+  ggplot2::xlab('Odds Ratio (log2)')+
+  ggplot2::ylab('Adjusted p-value (log10)')+
+  CNAqc:::my_ggplot_theme(cex = .8)+
+  ggrepel::geom_label_repel(data = out %>% filter(p.value<=0.05),
+                            ggplot2::aes(label = gene),
+                            size = 2.5,
+                            min.segment.length = 0.3,
+                            force = 150,
+                            ylim = c(1.5, NA), show.legend = F)
+
+plot_volcano
+```
+
+## Logistic regression test of metastatic tropism
+
+For the analysis of metastatic tropism, we select only tumour samples from metastatic patients
+whose metastatic site is specified. 
+We also keep only genes with Tier-1 mutations in at least 100 samples, and restrict the analysis
+to sites which at least 100 samples metastasize to.
+
+```{r}
+what = classification_cohort(classified_data) %>% 
+  reduce_classes() %>% 
+  dplyr::filter(class != 'Tier-2') %>% 
+  dplyr::filter(!is.na(METASTATIC_SITE), METASTATIC_SITE != 'Unspecified') %>%
+  dplyr::select(sample, tumor_type, gene, class, METASTATIC_SITE)
+
+genes = what %>% 
+  dplyr::group_by(tumor_type, gene) %>% 
+  dplyr::reframe(N = length(unique(sample))) %>% 
+  dplyr::filter(N >= 100) %>% dplyr::pull(gene) %>% unique()
+
+met_sites = what %>% 
+  dplyr::group_by(tumor_type, METASTATIC_SITE) %>% 
+  dplyr::reframe(N = length(unique(sample))) %>% 
+  dplyr::filter(N >= 100) %>% dplyr::pull(METASTATIC_SITE) %>% unique()
+
+what = what %>% 
+  dplyr::filter(gene %in% genes, METASTATIC_SITE %in% met_sites)
+
+print(what)
+```
+
+For each gene, we perform logistic regression using the `stast::glm` function for generalized linear model
+fitting. We then adjust p-values using the Benjamini-Hochberg correction for multiple hypotheses testing.
+
+```{r}
+out = lapply(what$gene %>% unique(), function(g) {
+  lapply(what$METASTATIC_SITE %>% unique(), function(m) {
+    
+    what = what %>%
+      dplyr::filter(gene == g) %>%
+      dplyr::mutate(tropic = 1 * (METASTATIC_SITE == m))
+    
+    what = what %>%
+      dplyr::mutate(class = factor(class)) %>%
+      dplyr::mutate(class = stats::relevel(class, ref = grep('without', unique(what$class), value = T)))
+    
+    model = stats::glm(data = what,
+                       tropic ~ class,
+                       family = binomial(link = 'logit'))
+    
+    
+    fit = cbind(summary(model)$coefficients, confint(model)) %>% as_tibble()
+    fit$var = rownames(confint(model)) %>% gsub('class', '', .)
+    
+    dplyr::tibble(
+      gene = g,
+      METASTATIC_SITE = m,
+      N = unique(what$N),
+      class = fit[2, ]$var,
+      OR = fit[2, ]$Estimate %>% exp(),
+      low = fit[2, ]$`2.5 %` %>% exp(),
+      up = fit[2, ]$`97.5 %` %>% exp(),
+      p.value = fit[2, ]$`Pr(>|z|)`
+    )
+  }) %>% do.call(rbind, .)
+}) %>% do.call(rbind, .)
+
+
+out$p.adjust = stats::p.adjust(out$p.value, method = 'BH')
+
+print(out)
+```
+Finally, we visualize the fitted odds ratios (OR) in a volcano plot.
+
+```{r}
+plot = out %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(
+    prevalent = dplyr::case_when(
+      p.value <= .05 & OR < 1 ~ 'without LOH',
+      p.value <= .05 & OR >= 1 & class == 'with LOH' ~ 'with LOH',
+      p.value <= .05 & OR >= 1 & class == 'with AMP' ~  'with AMP',
+      TRUE ~ 'ns'
+    )
+  ) %>%
+  ggplot2::ggplot(ggplot2::aes(x = log2(OR), y = gene)) +
+  ggplot2::geom_vline(xintercept = 0,
+                      linetype = 'longdash',
+                      color = 'indianred') +
+  
+  ggplot2::geom_errorbar(ggplot2::aes(
+    xmin = log2(low),
+    xmax = log2(up),
+    color = prevalent
+  ), width = .2) +
+  ggplot2::geom_point(ggplot2::aes(fill = prevalent, color = prevalent), shape = 21) +
+  scale_color_INCOMMON_high_level_class(aes = 'fill') +
+  scale_color_INCOMMON_high_level_class(aes = 'color') +
+  ggplot2::xlab('Odds Ratio (log2)') +
+  ggplot2::ylab('') +
+  ggplot2::facet_wrap(~ METASTATIC_SITE) +
+  CNAqc:::my_ggplot_theme(cex = 1)+
+  ggplot2::guides(color  = ggplot2::guide_legend(title = 'Class'),
+                  fill  = ggplot2::guide_legend(title = 'Class'))
+
+plot
+```
+Only TP53 and CDH1 present a significant association between the mutant with LOH state and 
+a tropism towards liver and bone metastases, respectively.

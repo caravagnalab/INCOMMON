@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 library(INCOMMON)
 library(dplyr)
 ```
-
 In this example we perform survival analysis using INCOMMON classification of 1742
 samples from pancreatic adenocarcinoma (PAAD) patients of the MSK-MetTropsim cohort.
 
@@ -27,6 +26,8 @@ data = data_MSK %>% filter(tumor_type == 'PAAD')
 print(data)
 print(paste0('N samples = ', data$sample %>% unique() %>% length()))
 ```
+
+## Classification of 1742 MSK-MetTropism PAAD samples
 
 First, we classify all the mutations in these samples, exploiting prior knowledge
 from PCAWG. In order to retrieve groups with a large enough number of patients to 
@@ -56,12 +57,15 @@ classified_data = lapply((data$sample %>% unique()), function(s){
   return(output)
 })
 ```
+
 Here, we want to estimate the prognostic power of KRAS mutations with amplification of the mutant allele.  
 We first look at the distribution of INCOMMON classes across PAAD samples:
 
 ```{r}
 plot_class_fraction(x = classified_data, tumor_type = 'PAAD', gene = 'KRAS')
 ```
+
+## Survival Analysis
 
 Nearly 30% of KRAS mutations are associated with amplification of the mutant allele, through CNLOH.
 Next we stratify PAAD patients as KRAS WT, Mutant KRAS without amplification and Mutant KRAS with amplification, and

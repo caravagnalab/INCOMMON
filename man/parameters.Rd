@@ -21,7 +21,7 @@ x = init(mutations = example_data$data,
          purity = example_data$purity,
          tumor_type = example_data$tumor_type)
 x = classify(
-    x = x, 
+    x = x,
     priors = pcawg_priors,
     entropy_cutoff = 0.2,
     rho = 0.01,

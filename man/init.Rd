@@ -4,35 +4,27 @@
 \alias{init}
 \title{Prepare input for analyses with \code{'INCOMMON'}.}
 \usage{
-init(
-  mutations,
-  sample,
-  tumor_type,
-  purity,
-  gene_roles = INCOMMON::cancer_gene_census
-)
+init(genomic_data, clinical_data, gene_roles = INCOMMON::cancer_gene_census)
 }
 \arguments{
-\item{mutations}{a tibble with columns mutant chromosome \code{chr}, mutation start position \code{from}, mutation end position \code{to},
-reference allel \code{ref}, alternative allele \code{alt}, integer sequencing depth \code{DP}, integer number
-of reads with variant \code{NV}, variant allelic frequency \code{VAF} and gene name \code{gene}
-as Hugo Symbol.}
+\item{genomic_data}{a data table of annotated mutations with columns sample name \code{sample}, mutant chromosome \code{chr}, mutation start position \code{from}, mutation end position \code{to},
+reference allele \code{ref}, alternative allele \code{alt}, integer sequencing depth \code{DP}, integer number
+of reads with variant \code{NV}, variant allele frequency \code{VAF} and gene name \code{gene}
+as Hugo Symbol,  protein sequence of the variant in HGVS recommended format, preferably 1-letter amino-acid code \code{HGVSp_Short}.}
 
-\item{sample}{Sample name or ID.}
+\item{clinical_data}{a data table of clinical data with compulsory matching sample names \code{sample} and sample purity \code{purity}, and optional
+clinical features like tumor type ONCOTREE code \code{tumor_type} (required for tumor specific priors), overall survival status \code{OS_STATUS} and time \code{OS_MONTHS}
+(required for survival analysis), \code{SAMPLE_TYPE} (Primary or Metastasis) and  number of metastases \code{MET_COUNT} (required for metastatic propensity analysis),
+metastatic site \code{METASTATIC_SITE} (required for metastatic tropism analysis), plus any other useful covariate.}
 
-\item{tumor_type}{Tumor type of the sample.}
-
-\item{purity}{Purity of the sample.}
-
-\item{gene_roles}{A tibble reporting a list of \code{gene} names and associated
-\code{gene_role} among "oncogene", "TSG" and "fusion". The default is taken from COSMIC Cancer Gene Census.}
+\item{gene_roles}{A data table reporting \code{gene} names and associated \code{gene_role} ("oncogene" or "TSG"). The default is taken from COSMIC Cancer Gene Census v98.}
 }
 \value{
 An object of class \code{INCOMMON}.
 }
 \description{
 Process input data into an object of class \code{'INCOMMON'}, ready for
-dwonstream analyses (e.g. \code{classify_sample}).
+downstream analyses (e.g. \code{classify}).
 }
 \examples{
 input = init(mutations = example_data$data, sample = example_data$sample, purity = example_data$purity, tumor_type = example_data$tumor_type)
