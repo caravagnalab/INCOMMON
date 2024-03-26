@@ -1,18 +1,30 @@
 # 1. GETTERS
-data = function(x){
-  return(x$data)
+genomic_data = function(x, PASS = TRUE){
+  if(PASS) {out = x$genomic_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$genomic_data}
+  return(out)
+}
+
+clinical_data = function(x, PASS = TRUE){
+  if(PASS) {out = x$clinical_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$clinical_data}
+  return(out)
+}
+
+input = function(x){
+  return(x$input)
 }
 
 samples = function(x){
   return(x$sample)
 }
 
-purity = function(x){
-  return(unique(x$purity))
+purity = function(x, id){
+  pi = info(x, id = id) %>% dplyr::pull(purity)
+  return(pi)
 }
 
-tumor_type = function(x){
-  return(unique(x$tumor_type))
+tumor_type = function(x, id){
+  ttype = info(x, id = id) %>% dplyr::pull(tumor_type)
+  return(ttype)
 }
 
 
@@ -38,9 +50,9 @@ tumor_type = function(x){
 #' classification(x)
 classification = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("fit" %in% names(x))
-  stopifnot("classification" %in% names(x$fit))
-  x$fit$classification
+  stopifnot("classification" %in% names(x))
+  stopifnot("fit" %in% names(x$classification))
+  x$classification$fit
 }
 
 #' Getter for class \code{'INCOMMON'}.
@@ -65,9 +77,9 @@ classification = function(x) {
 #' parameters(x)
 parameters = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("fit" %in% names(x))
-  stopifnot("params" %in% names(x$fit))
-  x$fit$params
+  stopifnot("classification" %in% names(x))
+  stopifnot("parameters" %in% names(x$classification))
+  x$classification$parameters
 }
 
 
@@ -100,40 +112,40 @@ posterior = function(x, id) {
 }
 
 idify = function(x){
-  x$data = data(x) %>%
-    mutate(id = paste(chr,from,to,ref,alt,sep = ":"))
+  x$input = input(x) %>%
+    dplyr::mutate(id = paste(sample,chr,from,to,ref,alt,NV,DP, sep = ":"))
   return(x)
 }
 
 unidify = function(x){
-  x$data = data(x) %>%
+  x$genomic_data = genomic_data(x) %>%
     dplyr::select(-id)
   return(x)
 }
 
 ids = function(x){
-  if(!("id" %in% colnames(data(x)))) x = idify(x)
-  data(x) %>% dplyr::pull(id)
+  if(!("id" %in% colnames(input(x)))) x = idify(x)
+  input(x) %>% dplyr::pull(id)
 }
 
-info = function(x, mutation_id){
-  if(!("id" %in% colnames(data(x)))) x = idify(x)
-  out = data(x) %>% dplyr::filter(id == mutation_id)
-  if("fit" %in% names(x)) out = classification(x) %>% dplyr::filter(id == mutation_id)
+info = function(x, id){
+  if(!("id" %in% colnames(input(x)))) x = idify(x)
+  out = input(x) %>% dplyr::filter(id == !!id)
+  if("classification" %in% names(x) & length(x$classification) > 0) out = classification(x) %>% dplyr::filter(id == !!id)
   out
 }
 
 
 DP = function(x, id){
   x = idify(x)
-  data(x) %>%
+  input(x) %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(DP)
 }
 
 NV = function(x, id){
   x = idify(x)
-  data(x) %>%
+  input(x) %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(NV)
 }
@@ -141,15 +153,15 @@ NV = function(x, id){
 
 VAF = function(x, mutation_id){
   x = idify(x)
-  data(x) %>%
+  input(x) %>%
     dplyr::filter(id == mutation_id) %>%
     dplyr::pull(VAF)
 }
 
-gene = function(x, mutation_id){
+gene = function(x, id){
   x = idify(x)
-  x$data %>%
-    dplyr::filter(id == mutation_id) %>%
+  input(x) %>%
+    dplyr::filter(id == !!id) %>%
     dplyr::pull(gene)
 }
 
@@ -220,36 +232,36 @@ wt_samples = function(x, tumor_type, gene) {
 # 2. CHEKS AND SANITISERS
 
 check_input = function(x){
-  if(x$sample %>% class() != "character")
-    cli::cli_abort("Unrecogniseable sample id, will not proceed.")
+  if(genomic_data(x)$sample %>% class() != "character")
+    cli::cli_abort("Sample names must be characters, classification aborted.")
 
-  if(x$data$gene %>% class() != "character")
-    cli::cli_abort("Unrecogniseable gene names, will not proceed.")
+  if(genomic_data(x)$gene %>% class() != "character")
+    cli::cli_abort("Gene names must be characters, classification aborted.")
 
-  if(x$data$gene_role %>% class() != "character" |
-     setdiff(x$data$gene_role, c("TSG", "oncogene", NA)) %>% length() != 0)
-    cli::cli_abort("Unrecogniseable gene roles, will not proceed.")
+  if(genomic_data(x)$gene_role %>% class() != "character" |
+     setdiff(genomic_data(x)$gene_role, c("TSG", "oncogene", NA)) %>% length() != 0)
+    cli::cli_abort("Gene roles must be \'TSG\' or \'onocgene\', classification aborted.")
 
-  if(x$data$chr %>% class() != "character")
-    cli::cli_abort("Unrecogniseable chromosome names, will not proceed.")
+  if(genomic_data(x)$chr %>% class() != "character")
+    cli::cli_abort("Chromosome names must be characters, classification aborted.")
 
-  if(x$data$ref %>% class() != "character")
-    cli::cli_abort("Unrecogniseable reference alleles, will not proceed.")
+  if(genomic_data(x)$ref %>% class() != "character")
+    cli::cli_abort("Reference/Alternative allele names must be characters, classification aborted.")
 
-  if(x$data$alt %>% class() != "character")
-    cli::cli_abort("Unrecogniseable alternative alleles, will not proceed.")
+  if(genomic_data(x)$alt %>% class() != "character")
+    cli::cli_abort("Reference/Alternative allele names must be characters, classification aborted.")
 
-  if(x$data$VAF %>% class() != "numeric")
-    cli::cli_abort("Unrecogniseable VAF, will not proceed.")
+  if(genomic_data(x)$VAF %>% class() != "numeric")
+    cli::cli_abort("VAF must be numeric, classification aborted.")
 
-  if(x$data$DP %>% class() != "integer")
-    cli::cli_abort("Unrecogniseable DP, will not proceed.")
+  if(genomic_data(x)$DP %>% class() != "integer")
+    cli::cli_abort("DP must be integer, classification aborted.")
 
-  if(x$data$NV %>% class() != "integer")
-    cli::cli_abort("Unrecogniseable NV, will not proceed.")
+  if(genomic_data(x)$NV %>% class() != "integer")
+    cli::cli_abort("NV must be integer, classification aborted.")
 
-  if(is.na(x$purity) | x$purity < 0 | !is.numeric(x$purity))
-    cli::cli_abort("Unrecogniseable sample purity, will not proceed.")
+  if(any(is.na(clinical_data(x)$purity)) | any(clinical_data(x)$purity < 0 ) | any(!is.numeric(clinical_data(x)$purity)))
+    cli::cli_abort("Sample purity must be a non-negative number, classification aborted.")
 }
 
 # 3. FORMAT EDITING
@@ -298,25 +310,17 @@ add_genotypes = function(x){
 
 # 4. ANALYSIS TOOLS
 
-# Get classification data for an intere cohort
-
-classification_cohort = function(x){
-  lapply(x, function(x) {
-    stopifnot(inherits(x, 'INCOMMON'))
-    classification(x) %>%
-      dplyr::mutate(sample = samples(x))
-  }) %>% do.call(rbind, .)
-}
 
 # Get class distribution for an intere cohort
 
 class_frequency = function(x, tumor_type, gene){
-  frequency_table = classification_cohort(x) %>%
+  frequency_table = classification(x) %>%
+    dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
     dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
     dplyr::group_by(state) %>%
     dplyr::reframe(n = unique(length(sample))) %>%
     dplyr::mutate(N = sum(n), frequency = n/N)
-  frequency_table = cbind(tibble(gene = gene, tumor_type = tumor_type), frequency_table)
+  frequency_table = cbind(dplyr::tibble(gene = gene, tumor_type = tumor_type), frequency_table)
   return(frequency_table)
 }
 

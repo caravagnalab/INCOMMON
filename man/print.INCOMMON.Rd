@@ -18,17 +18,12 @@ Nothing.
 Print for class \code{'INCOMMON'}.
 }
 \examples{
-x = init(mutations = example_data$data,
-         sample = example_data$sample,
-         purity = example_data$purity,
-         tumor_type = example_data$tumor_type)
-print(x)
-x = classify(
-    x = x, 
-    priors = NULL,
-    entropy_cutoff = 0.2,
-    rho = 0.01,
-    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-    )
+# Example input data from the MSK-MetTropism cohort, released with the package
+data(MSK_genomic_data)
+print(MSK_genomic_data)
+data(MSK_clinical_data)
+print(MSK_clinical_data)
+# Initialize the INCOMMON object (note the outputs to screen)
+x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
 print(x)
 }
