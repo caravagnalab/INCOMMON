@@ -1,7 +1,7 @@
 #' Visualize prior distribution for a gene (tumor-specific or pancancer).
 #'
 #' @param x A prior distribution in the format required for \code{INCOMMON}, 
-#' sucha as \code{INCOMMON::pcawg_priors}.
+#' such as \code{INCOMMON::pcawg_priors}.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 
