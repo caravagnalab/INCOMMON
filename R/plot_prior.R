@@ -5,7 +5,7 @@
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 
-plot_prior = function(pcawg_priors, gene, tumor_type){
+plot_prior = function(x, gene, tumor_type){
   
   get_ploidy <- function(label) {
     numbers <- unlist(strsplit(label, " and "))
@@ -14,7 +14,7 @@ plot_prior = function(pcawg_priors, gene, tumor_type){
     return(total)
   }
   
-  INCOMMON:::get_prior(pcawg_priors, gene, tumor_type) %>% 
+  INCOMMON:::get_prior(x, gene, tumor_type) %>% 
     dplyr::mutate(
       state = dplyr::case_when(
         label %in% c("2N (Mutated: 1N)") ~ "HMD",

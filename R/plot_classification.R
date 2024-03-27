@@ -88,10 +88,10 @@ plot_classification = function(x, sample, assembly = F){
   })
   if(assembly){
     
-    toplot = lapply(ids(x), function(id){posterior(x, id = id) %>% dplyr::mutate(id = id)}) %>% 
+    toplot = lapply(ids(x), function(id){posterior(x, id = id) %>% dplyr::mutate(gene = gene(x, id))}) %>% 
                       do.call(rbind, .)
     toplot = toplot %>% 
-      dplyr::group_by(id, NV) %>% 
+      dplyr::group_by(gene, NV) %>% 
       dplyr::reframe(max = (value == max(value)), dplyr::across(dplyr::everything()))
     
     toplot$multiplicity = factor(toplot$multiplicity)
@@ -138,7 +138,7 @@ plot_classification = function(x, sample, assembly = F){
                          ),
                          size = .5) +
       ggplot2::geom_vline(
-        data = lapply(ids(x), function(id) tibble(id = id, NV = NV(x, id))) %>% do.call(rbind, .),
+        data = lapply(ids(x), function(id) tibble(id = id, gene = gene(x, id), NV = NV(x, id))) %>% do.call(rbind, .),
         ggplot2::aes(xintercept = NV),
         color = 'black',
         linetype = 'dashed',
@@ -149,7 +149,7 @@ plot_classification = function(x, sample, assembly = F){
                                   sec.axis = ggplot2::sec_axis(~./scaleFactor, name = "Classification Entropy"), 
                                   limits = c(0,max(toplot$value)))+
       ggplot2::scale_color_manual(values = ploidy_colors)+
-      ggplot2::facet_wrap(~id) +
+      ggplot2::facet_wrap(~gene) +
       CNAqc:::my_ggplot_theme() +
       ggplot2::theme(
         axis.title.y.right = ggplot2::element_text(color="deeppink4"),
