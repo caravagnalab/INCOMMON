@@ -5,19 +5,6 @@
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 
-#' @examples
-#' x = init(mutations = example_data$data,
-#'          sample = example_data$sample,
-#'          purity = example_data$purity,
-#'          tumor_type = example_data$tumor_type)
-#' x = classify(
-#'     x = x, 
-#'     priors = NULL,
-#'     entropy_cutoff = 0.2,
-#'     rho = 0.01,
-#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-#'     )
-#' plot_classification(x = x)
 plot_classification = function(x, sample, assembly = F){
   
   stopifnot(inherits(x,"INCOMMON"))
