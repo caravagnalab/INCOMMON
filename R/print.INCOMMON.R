@@ -50,14 +50,12 @@ print.INCOMMON = function(x, ...) {
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ INCOMMON ] ")),
-          'Classified mutations using Beta-Binomial model',
-                 'with overdispersion parameter {.field {parameters(x)$rho}} and entropy cutoff {.field {parameters(x)$entropy_cutoff}}',
+          'Classified mutations with overdispersion parameter {.field {parameters(x)$rho}} and entropy cutoff {.field {parameters(x)$entropy_cutoff}}',
           ''
         ))
-
-    lapply(classification(x)$tumor_type %>% unique(), class_frequency(x, tumor_type = tumor_type, gene = gene))
-
-      print(classification(x))
+    
+    
+    print(classification(x))
   } else{
 
     print(x$input)

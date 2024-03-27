@@ -52,7 +52,12 @@ classification = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
   stopifnot("fit" %in% names(x$classification))
-  x$classification$fit
+  x$classification$fit %>%
+    dplyr::full_join(input(x) %>%
+                       dplyr::select(sample, tumor_type, purity) %>% unique(), 
+                     by = 'sample') %>% 
+    dplyr::select(sample, tumor_type, purity, dplyr::everything())
+    
 }
 
 #' Getter for class \code{'INCOMMON'}.
@@ -105,10 +110,10 @@ parameters = function(x) {
 #'
 posterior = function(x, id) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("fit" %in% names(x))
-  stopifnot("posterior" %in% names(x$fit))
-  stopifnot(id %in% names(x$fit$posterior))
-  x$fit$posterior[[id]]
+  stopifnot("classification" %in% names(x))
+  stopifnot("posterior" %in% names(x$classification))
+  stopifnot(id %in% names(x$classification$posterior))
+  x$classification$posterior[[id]]
 }
 
 idify = function(x){
@@ -131,7 +136,8 @@ ids = function(x){
 info = function(x, id){
   if(!("id" %in% colnames(input(x)))) x = idify(x)
   out = input(x) %>% dplyr::filter(id == !!id)
-  if("classification" %in% names(x) & length(x$classification) > 0) out = classification(x) %>% dplyr::filter(id == !!id)
+  if("classification" %in% names(x) & length(x$classification) > 0) 
+    out = classification(x) %>% dplyr::filter(id == !!id)
   out
 }
 
@@ -227,6 +233,30 @@ wt_samples = function(x, tumor_type, gene) {
     unique() %>%
     dplyr::left_join(cancer_gene_census, by = 'gene') %>%
     dplyr::mutate(group = paste0(gene, ' WT'))
+}
+
+# Subset object by sample
+
+subset_sample = function(x, sample){
+  stopifnot(inherits(x, 'INCOMMON'))
+  samples = unique(x$input$sample)
+  stopifnot(sample %in% samples)
+  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
+  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
+  ip = input(x) %>% dplyr::filter(sample == !!sample)
+  out = list(genomic_data = gd,
+             clinical_data = cd,
+             input = ip)
+  class(out) = 'INCOMMON'
+  if('classification' %in% names(x)) {
+    cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
+    pr = x$classification$parameters
+    
+    out$classification$fit = cl
+    out$classification$parameters = pr
+    out$classification$posterior = x$classification$posterior[ids(out)]
+  }
+  return(out)
 }
 
 # 2. CHEKS AND SANITISERS
