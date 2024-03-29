@@ -14,20 +14,32 @@
 
 plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age', 'sex', 'tmb')){
   
-  km_fit = kaplan_meier_fit(x, tumor_type, gene)
+  stopifnot(inherits(x, 'INCOMMON'))
   
-  fit = km_fit$fit[[1]]
-  data = km_fit$data[[1]]
+  stopifnot('survival' %in% names(x))
+  stopifnot(tumor_type %in% names(x$survival))
+  stopifnot(gene %in% names(x$survival[[tumor_type]]))
+  stopifnot('kaplan-meier' %in% names(x$survival[[tumor_type]][[gene]]))
+  stopifnot('cox_regression' %in% names(x$survival[[tumor_type]][[gene]]))
   
-  stopifnot(inherits(fit, 'survfit'))
   
-  names(fit$strata) = gsub(fit$strata %>% names(), pattern='group=',replacement='')
+  km_fit = x$survival[[tumor_type]][[gene]]$`kaplan-meier`
+  
+  km_data = prepare_km_fit_input(x, tumor_type, gene)
+  
+  km_data = km_data %>%
+    dplyr::mutate(group = factor(class,
+                                 levels = c(
+                                   grep('WT', unique(km_data$class), value = T),
+                                   grep('Mutant', unique(km_data$class), value = T) %>% grep('with', ., invert = T, value = T),
+                                   grep('Mutant', unique(km_data$class), value = T) %>% grep('with', ., value = T)
+                                 )))
   
   km_plot = survminer::ggsurvplot(
-    fit = fit,
+    fit = km_fit,
     censor = F,
     conf.int = F,
-    data = data,
+    data = km_data,
     ylab = "Overall Survival",
     xlab = "Time (months)",
     fontsize = 4,
@@ -36,16 +48,21 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
     table.fontsize = 0.1,
     ggtheme = CNAqc:::my_ggplot_theme(cex = .8),
     tables.theme = CNAqc:::my_ggplot_theme(cex = .8),
-    palette = surv_colors(unique(data$gene_role))
+    palette = surv_colors(unique(km_data$gene_role))
   ) 
   
-  km_plot$plot$data$tumor_type = unique(data$tumor_type)
-  km_plot$data.survplot$tumor_type = unique(data$tumor_type)
+  km_plot$plot$data$tumor_type = unique(km_data$tumor_type)
+  km_plot$data.survplot$tumor_type = unique(km_data$tumor_type)
   
-  km_plot$plot = km_plot$plot + ggplot2::xlab('') + ggplot2::guides(color = 'none') + ggplot2::facet_wrap(~tumor_type)
-  km_plot$table = km_plot$table + ggplot2::ylab('') + ggplot2::theme(legend.position = 'none')
+  km_plot$plot = km_plot$plot + 
+    ggplot2::xlab('') + 
+    ggplot2::guides(color = 'none') + ggplot2::facet_wrap(~tumor_type)
   
-cox_fit = cox_fit(x, gene, tumor_type, cox_covariates)
+  km_plot$table = km_plot$table + 
+    ggplot2::ylab('') + 
+    ggplot2::theme(legend.position = 'none')
+  
+cox_fit = x$survival[[tumor_type]][[gene]]$`cox_regression`
 
 forest_plot = forest_plot(cox_fit)
 

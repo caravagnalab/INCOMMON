@@ -33,6 +33,7 @@ Imports:
     dplyr,
     tidyr,
     VGAM,
+    scales,
     survival,
     survminer,
     patchwork

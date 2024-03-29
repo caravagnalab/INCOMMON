@@ -8,15 +8,21 @@
 [![R-CMD-check](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-INCOMMON is a tool for the INference of COpy number and 
-Mutation Multiplicity in ONcology. INCOMMON infers the copy number
-and multiplicity of somatic mutations from tumour-only
-read count data, and can be applied to classify mutations from
-large-size datasets in an efficient and fast way. Mutations are classified
-as either Tier-1 (present in 100% cells) without copy-number alterations (heterozygous mutant diploid HMD),
-with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), or Tier-2 (subclonal
-or with high ploidy and low multiplicity). 
+INCOMMON is a tool for the INference of COpy number and Mutation
+Multiplicity in ONcology. INCOMMON infers the copy number and
+multiplicity of somatic mutations from tumor-only read count data, and
+can be applied to classify mutations from large-size datasets in an
+efficient and fast way. Mutations are classified as either Tier-1
+(present in 100% cells) without copy-number alterations (heterozygous
+mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH
+(CNLOH), amplification (AM), or Tier-2 (subclonal or with high ploidy
+and low multiplicity).
 
+In addition, INCOMMON offers a genome interpretation framework, in which
+the full inactivation of tumor suppressor genes (TSG) through mutations
+with LOH, and the enhanced activation of oncogenes through mutations
+with amplification can be detected. These events can then be used to
+perform augmented analysis of survival and metastatic patterns.
 
 #### Help and support
 
@@ -24,8 +30,7 @@ or with high ploidy and low multiplicity).
 
 ## Installation
 
-You can install the development version of INCOMMON from
-[GitHub](https://github.com/) with:
+You can install the INCOMMON from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")

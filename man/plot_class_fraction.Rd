@@ -9,29 +9,14 @@ plot_class_fraction(x, tumor_type, gene)
 \arguments{
 \item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results, as
 produced by using function \code{classify}.}
+
+\item{tumor_type}{Tumor type for tumor-specific prior ('PANCA' for pan-cancer).}
+
+\item{gene}{Gene for gene-specific prior.}
 }
 \value{
 An object or a list of class \code{'ggplot2'}.
 }
 \description{
 Visualize frequency distribution of INCOMMON classes.
-}
-\examples{
-data = data_MSK \%>\% filter(gene == 'KRAS', tumor_type 'PAAD')
-samples = unique(data$sample)[1:10]
-classified_data = lapply(samples, function(s){
-x = init(mutations = data \%>\% filter(sample==s),
-         sample = s,
-         purity = data \%>\% filter(sample==s) \%>\% purity(),
-         tumor_type = data \%>\% filter(sample==s) \%>\% tumor_type())
-x = classify(
-    x = x, 
-    priors = NULL,
-    entropy_cutoff = 0.2,
-    rho = 0.01,
-    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-    )
-})
-plot_class_fraction(x, tumor_type = 'PAAD', gene = 'KRAS')
-
 }

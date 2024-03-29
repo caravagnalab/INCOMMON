@@ -2,6 +2,8 @@
 #'
 #' @param x A prior distribution in the format required for \code{INCOMMON}, 
 #' such as \code{INCOMMON::pcawg_priors}.
+#' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
+#' @param gene Gene for gene-specific prior.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 

@@ -15,18 +15,3 @@ A table showing posterior distribution and entropy.
 \description{
 Get the model posterior distribution of a mutation.
 }
-\examples{
-x = init(mutations = example_data$data,
-         sample = example_data$sample,
-         purity = example_data$purity,
-         tumor_type = example_data$tumor_type)
-x = classify(
-    x = x,
-    priors = NULL,
-    entropy_cutoff = 0.2,
-    rho = 0.01,
-    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-    )
-posterior(x, "chr12:25398285:25398285:C:A")
-
-}

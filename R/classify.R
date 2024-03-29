@@ -10,17 +10,6 @@
 #' the classification data and parameters.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
-#' @examples
-#' # Example input data from the MSK-MetTropism cohort, released with the package
-#' data(MSK_genomic_data)
-#' print(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' print(MSK_clinical_data)
-#' # Initialize the INCOMMON object (note the outputs to screen)
-#' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
-#' # Classify mutations in the first sample
-#'
-#' print(x),
 
 classify = function(x,
                     priors = pcawg_priors,

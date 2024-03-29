@@ -9,6 +9,11 @@ plot_classification(x, sample, assembly = F)
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} containing the classification results, as
 produced by function \code{classify}.}
+
+\item{sample}{Sample name from the dataset.}
+
+\item{assembly}{Whether to assemble plots of mutations from the same sample in
+a multi-faceted plot.}
 }
 \value{
 An object or a list of objects of class \code{'ggplot2'}.

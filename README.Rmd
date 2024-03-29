@@ -13,28 +13,39 @@ knitr::opts_chunk$set(
 )
 ```
 
-# TAPACLOTH <a href="caravagnalab.github.io/TAPACLOTH"><img src="man/figures/logo.png" align="right" height="139" /></a>
+# INCOMMON <a href="caravagnalab.github.io/INCOMMON"><img src="man/figures/logo.png" align="right" height="139" /></a>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/TAPACLOTH/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-TAPACLOTH is a tool that uses targeted sequencing data to determine the clonality status of tumour mutations while estimating their copy number state and multiplicity (LOH in monosomy, copy-neutral LOH, amplifications with trisomy and tetrasomy, diploid heterozygous are the supported configurations). 
-The implemented classifier is based on Binomial or Beta-Binomial modelling of sequencing read counts,
-parametrised by a likelihood cut-off. Additionally, TAPACLOTH can infer sample purity, an information used to carry out variant classification. Since the two tests are independent, one can first estimate sample purity and then use it as input for the classification task.
+INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology.
+INCOMMON infers the copy number and multiplicity of somatic mutations from tumor-only read count data, 
+and can be applied to classify mutations from large-size datasets in an efficient and fast way. 
+Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations 
+(heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH),
+amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity). 
+
+In addition, INCOMMON offers 
+a genome interpretation framework, in which the full
+inactivation of tumor suppressor genes (TSG) through mutations
+with LOH, and the enhanced activation of oncogenes through
+mutations with amplification can be detected. These events
+can then be used to perform augmented analysis of survival and metastatic patterns.
+
     
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/TAPACLOTH/-yellow.svg)](https://caravagnalab.github.io/TAPACLOTH)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
 -----
 
 ## Installation
 
-You can install the TAPACLOTH from [GitHub](https://github.com/) with:
+You can install the INCOMMON from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("caravagnalab/TAPACLOTH")
+devtools::install_github("caravagnalab/INCOMMON")
 ```
 
 #### Copyright and contacts

@@ -3,6 +3,7 @@
 #' @param NV Number of reads with the variant.
 #' @param DP Sequencing coverage of the mutated genome site.
 #' @param prob Success probability (expected VAF).
+#' @param rho The over-dispersion parameter.
 #' @return A vector of probability densities (from NV = 1 to NV = DP).
 #' @export
 #' @examples

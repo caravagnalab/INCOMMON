@@ -9,6 +9,10 @@ plot_prior(x, gene, tumor_type)
 \arguments{
 \item{x}{A prior distribution in the format required for \code{INCOMMON},
 such as \code{INCOMMON::pcawg_priors}.}
+
+\item{gene}{Gene for gene-specific prior.}
+
+\item{tumor_type}{Tumor type for tumor-specific prior ('PANCA' for pan-cancer).}
 }
 \value{
 An object or a list of objects of class \code{'ggplot2'}.

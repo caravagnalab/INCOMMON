@@ -143,7 +143,7 @@ data table `clinical_table`, survival analysis can be performed. Downstream of
 classification, INCOMMON can stratify patients based on the mutational and 
 copy number state of a TSG or an oncogene of interest. 
 
-INCOMMON provide the following functions, dedicated to fitting survival data:
+INCOMMON provides the following functions, dedicated to fitting survival data:
 
 - `kaplan_meier_fit` uses the Kaplan-Meier estimator to fit survival data from
   patients stratified with respect to the status of a specific `tumor_type` and
@@ -152,7 +152,24 @@ INCOMMON provide the following functions, dedicated to fitting survival data:
   reference)
 - `cox_fit` uses a Cox proportional hazard ratio model to fit survival data. 
   In addition to arguments `tumor_type` and `gene`, it accepts other `covariates`,
-  given the are provided in the provided `clinical_table`.
+  given they are provided in the `clinical_table`.
+
+## Metastatic patterns
+
+If information about metastatisation is provided, such as type of the sample
+(primary tumor or metastasis), whether patients are metastatic or not, and sites
+of metastatisation for primary tumors, in the clinical 
+data table `clinical_table`, analysis of metastatic propensity and tropism based
+on INCOMMON classification and genome interpretation can be performed.
+
+INCOMMON provides the following functions for analysis of metastases:
+
+- `met_propensity`: uses a logistic regression test to compute the odds ratio
+  (OR) of metastatisation between patients identified by the two mutational statuses
+  of a `gene`  (Mutant TSG with versus without LOH and Mutant oncogene with versus without         amplification) for specific types of primary tumors `tumor_type`.
+
+- `met_tropism`: uses a logistic regression test to compute the odds ratio
+  (OR) to metastatise to a specific site `METASTATIC_SITE` between patients identified by the two mutational statuses of a `gene`  (Mutant TSG with versus without LOH and Mutant oncogene with versus without amplification) for specific types of primary tumors `tumor_type`.
 
 
 

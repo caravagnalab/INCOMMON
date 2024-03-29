@@ -7,16 +7,6 @@
 #' @import crayon
 #' @importFrom dplyr filter mutate rename select %>%
 #' @export
-#'
-#' @examples
-#' # Example input data from the MSK-MetTropism cohort, released with the package
-#' data(MSK_genomic_data)
-#' print(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' print(MSK_clinical_data)
-#' # Initialize the INCOMMON object (note the outputs to screen)
-#' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
-#' print(x)
 print.INCOMMON = function(x, ...) {
 
   stopifnot(inherits(x, "INCOMMON"))

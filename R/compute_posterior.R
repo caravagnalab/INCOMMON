@@ -7,6 +7,7 @@
 #' @param purity Purity of the sample.
 #' @param tumor_type Tumor type of the sample.
 #' @param entropy_cutoff Cut-off on entropy for Tier-1/Tier-2 distinction.
+#' @param rho The over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
 #' @return A table including ploidy, multiplicity, posterior probability, 
 #' and classification entropy.

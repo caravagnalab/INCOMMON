@@ -2,6 +2,9 @@
 #'
 #' @param x An object of class \code{'INCOMMON'} containing the classification results, as 
 #' produced by function `classify`.
+#' @param sample Sample name from the dataset.
+#' @param assembly Whether to assemble plots of mutations from the same sample in
+#' a multi-faceted plot. 
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>% 

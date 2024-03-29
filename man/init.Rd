@@ -35,5 +35,5 @@ print(MSK_clinical_data)
 # Initialize the INCOMMON object (note the outputs to screen)
 x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
 # An S3 method can be used to report to screen what is in the object
-print(x),
+print(x)
 }
