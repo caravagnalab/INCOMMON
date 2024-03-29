@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -63,9 +64,14 @@
 
       <dl><dt>
           
-          <code><a href="example_data.html">example_data</a></code> 
+          <code><a href="MSK_genomic_data.html">MSK_genomic_data</a></code> 
         </dt>
-        <dd>Example INCOMMON dataset.</dd>
+        <dd>Genomic data of the MSK-MetTropism cohort</dd>
+      </dl><dl><dt>
+          
+          <code><a href="MSK_clinical_data.html">MSK_clinical_data</a></code> 
+        </dt>
+        <dd>Genomic data of the MSK-MetTropism cohort</dd>
       </dl><dl><dt>
           
           <code><a href="pcawg_priors.html">pcawg_priors</a></code> 
@@ -76,11 +82,6 @@
           <code><a href="cancer_gene_census.html">cancer_gene_census</a></code> 
         </dt>
         <dd>Gene roles from COSMIC Cancer Gene Census</dd>
-      </dl><dl><dt>
-          
-          <code><a href="data_MSK.html">data_MSK</a></code> 
-        </dt>
-        <dd>Mutation data of the MSK-MetTropism cohort</dd>
       </dl></div><div class="section level2">
       <h2 id="incommon-classification">INCOMMON classification<a class="anchor" aria-label="anchor" href="#incommon-classification"></a></h2>
       
@@ -128,6 +129,11 @@
           <code><a href="plot_class_fraction.html">plot_class_fraction()</a></code> 
         </dt>
         <dd>Visualize frequency distribution of INCOMMON classes.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_prior.html">plot_prior()</a></code> 
+        </dt>
+        <dd>Visualize prior distribution for a gene (tumor-specific or pancancer).</dd>
       </dl></div><div class="section level2">
       <h2 id="getter-functions">Getter Functions<a class="anchor" aria-label="anchor" href="#getter-functions"></a></h2>
       
@@ -175,6 +181,11 @@
           <code><a href="compute_posterior.html">compute_posterior()</a></code> 
         </dt>
         <dd>Compute model posterior and entropy</dd>
+      </dl><dl><dt>
+          
+          <code><a href="genome_interpreter.html">genome_interpreter()</a></code> 
+        </dt>
+        <dd>Visualize frequency distribution of INCOMMON classes.</dd>
       </dl></div><div class="section level2">
       <h2 id="survival-analysis-with-incommon-classes">Survival analysis with INCOMMON classes<a class="anchor" aria-label="anchor" href="#survival-analysis-with-incommon-classes"></a></h2>
       
@@ -201,6 +212,27 @@
           <code><a href="plot_survival_analysis.html">plot_survival_analysis()</a></code> 
         </dt>
         <dd>Visualise survival analysis based on INCOMMON classes.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="metastatic-pattern-analysis-with-incommon-classes">Metastatic pattern analysis with INCOMMON classes<a class="anchor" aria-label="anchor" href="#metastatic-pattern-analysis-with-incommon-classes"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to perform metastatic propensity and tropism analysis with INCOMMON interpreted tumor genomes</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="met_propensity.html">met_propensity()</a></code> 
+        </dt>
+        <dd>Logistic regression of metastatic propensity based on INCOMMON classes.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="met_tropism.html">met_tropism()</a></code> 
+        </dt>
+        <dd>Logistic regression of metastatic tropism based on INCOMMON classes.</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

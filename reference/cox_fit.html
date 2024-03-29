@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -58,33 +59,48 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cox_fit</span><span class="op">(</span><span class="va">x</span>, <span class="va">gene</span>, <span class="va">tumor_type</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"tmb"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cox_fit</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">gene</span>,</span>
+<span>  <span class="va">tumor_type</span>,</span>
+<span>  <span class="va">survival_time</span>,</span>
+<span>  <span class="va">survival_status</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"sex"</span>, <span class="st">"tmb"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A list of objects of class <code>'INCOMMON'</code> containing the classification results for
-multiple samples, as produced by using function <code>classify</code>.</p></dd>
+<dd><p>An object of class <code>'INCOMMON'</code> containing the classification results
+as produced by function <code>classify</code>.</p></dd>
 
 
 <dt>gene</dt>
-<dd><p>The selected gene.</p></dd>
+<dd><p>The gene on which patient's stratification is based.</p></dd>
 
 
 <dt>tumor_type</dt>
-<dd><p>The selected tumor type.</p></dd>
+<dd><p>The tumor type of patients to stratify.</p></dd>
+
+
+<dt>survival_time</dt>
+<dd><p>The variable in <code>clincal_data</code> to be used as survival time.</p></dd>
+
+
+<dt>survival_status</dt>
+<dd><p>The variable in <code>clincal_data</code> to be used as survival status.</p></dd>
 
 
 <dt>covariates</dt>
-<dd><p>Covariates used in the multivariate regression.</p></dd>
+<dd><p>The other covariates to be used in the mutlivariate regression.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>An object of class <code>coxph</code>.</p>
+<p>An object of class <code>'INCOMMON'</code> containing an additional object <code>survival</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

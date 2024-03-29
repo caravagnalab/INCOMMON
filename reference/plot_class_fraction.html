@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -67,6 +68,14 @@
 <dd><p>A list of objects of class <code>'INCOMMON'</code> containing the classification results, as
 produced by using function <code>classify</code>.</p></dd>
 
+
+<dt>tumor_type</dt>
+<dd><p>Tumor type for tumor-specific prior ('PANCA' for pan-cancer).</p></dd>
+
+
+<dt>gene</dt>
+<dd><p>Gene for gene-specific prior.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -75,10 +84,6 @@ produced by using function <code>classify</code>.</p></dd>
 <p>An object or a list of class <code>'ggplot2'</code>.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

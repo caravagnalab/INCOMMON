@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -74,42 +75,6 @@
 <p>A table showing posterior distribution and entropy.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span>mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span></span>
-<span class="r-in"><span>         sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span></span>
-<span class="r-in"><span>         purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span></span>
-<span class="r-in"><span>         tumor_type <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">tumor_type</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    x <span class="op">=</span> <span class="va">x</span>, </span></span>
-<span class="r-in"><span>    priors <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>    entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>    rho <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
-<span class="r-in"><span>    karyotypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1:0"</span>,<span class="st">"1:1"</span>,<span class="st">"2:0"</span>,<span class="st">"2:1"</span>,<span class="st">"2:2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">INCOMMON inference of copy number and mutation multiplicity for sample </span><span style="color: #00BB00; font-weight: bold;">P-0002</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing classification</span>
-<span class="r-in"><span><span class="fu">posterior</span><span class="op">(</span><span class="va">x</span>, <span class="st">"chr12:25398285:25398285:C:A"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5,944 × 11</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       NV    value Major minor ploidy multiplicity karyotype label  peak  entropy</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1 6.85<span style="color: #949494;">e</span><span style="color: #BB0000;">-43</span>     1     0      1            1 1:0       1N (… 0.429 9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1 6.60<span style="color: #949494;">e</span><span style="color: #BB0000;">-29</span>     1     1      2            1 1:1       2N (… 0.3   9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1 6.60<span style="color: #949494;">e</span><span style="color: #BB0000;">-29</span>     2     0      2            1 2:0       2N (… 0.3   9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1 1.73<span style="color: #949494;">e</span><span style="color: #BB0000;">-63</span>     2     0      2            2 2:0       2N (… 0.6   9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1 8.27<span style="color: #949494;">e</span><span style="color: #BB0000;">-22</span>     2     1      3            1 2:1       3N (… 0.231 9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1 1.16<span style="color: #949494;">e</span><span style="color: #BB0000;">-46</span>     2     1      3            2 2:1       3N (… 0.462 9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1 1.62<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span>     2     2      4            1 2:2       4N (… 0.187 9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1 6.26<span style="color: #949494;">e</span><span style="color: #BB0000;">-37</span>     2     2      4            2 2:2       4N (… 0.375 9.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-16</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     2 1.38<span style="color: #949494;">e</span><span style="color: #BB0000;">-41</span>     1     0      1            1 1:0       1N (… 0.429 7.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     2 9.28<span style="color: #949494;">e</span><span style="color: #BB0000;">-28</span>     1     1      2            1 1:1       2N (… 0.3   7.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 5,934 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: state &lt;chr&gt;</span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

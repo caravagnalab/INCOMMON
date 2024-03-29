@@ -2,10 +2,11 @@ pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  Classify_Mutations: Classify_Mutations.html
   INCOMMON: INCOMMON.html
-  survival_analysis: survival_analysis.html
-last_built: 2024-03-25T15:43Z
+  a1_classify_mutations: a1_classify_mutations.html
+  a2_survival_analysis: a2_survival_analysis.html
+  a3_metastasis_analysis: a3_metastasis_analysis.html
+last_built: 2024-03-29T17:22Z
 urls:
   reference: caravagnalab.github.io/INCOMMON/reference
   article: caravagnalab.github.io/INCOMMON/articles

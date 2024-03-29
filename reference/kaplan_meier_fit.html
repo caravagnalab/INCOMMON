@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -64,24 +65,23 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A list of objects of class <code>'INCOMMON'</code> containing the classification results for
-multiple samples, as produced by using function <code>classify</code>.</p></dd>
+<dd><p>An object of class <code>'INCOMMON'</code> containing the classification results
+as produced by function <code>classify</code>.</p></dd>
 
 
 <dt>tumor_type</dt>
-<dd><p>The selected tumor type.</p></dd>
+<dd><p>The tumor type of patients to stratify.</p></dd>
 
 
 <dt>gene</dt>
-<dd><p>The selected gene.</p></dd>
+<dd><p>The gene on which patient's stratification is based.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>An table containing the selected gene, tumor_type, the data table used to
-fit the model and an object of class <code>'survfit'</code>.</p>
+<p>An object of class <code>'INCOMMON'</code> containing an additional object <code>survival</code>.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

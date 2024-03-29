@@ -27,8 +27,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -58,7 +59,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_classification</span><span class="op">(</span><span class="va">x</span>, assembly <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_classification</span><span class="op">(</span><span class="va">x</span>, <span class="va">sample</span>, assembly <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,6 +67,15 @@
     <dl><dt>x</dt>
 <dd><p>An object of class <code>'INCOMMON'</code> containing the classification results, as
 produced by function <code>classify</code>.</p></dd>
+
+
+<dt>sample</dt>
+<dd><p>Sample name from the dataset.</p></dd>
+
+
+<dt>assembly</dt>
+<dd><p>Whether to assemble plots of mutations from the same sample in
+a multi-faceted plot.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -75,38 +85,6 @@ produced by function <code>classify</code>.</p></dd>
 <p>An object or a list of objects of class <code>'ggplot2'</code>.</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span>mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span></span>
-<span class="r-in"><span>         sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span></span>
-<span class="r-in"><span>         purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span></span>
-<span class="r-in"><span>         tumor_type <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">tumor_type</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="classify.html">classify</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    x <span class="op">=</span> <span class="va">x</span>, </span></span>
-<span class="r-in"><span>    priors <span class="op">=</span> <span class="cn">NULL</span>,</span></span>
-<span class="r-in"><span>    entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>    rho <span class="op">=</span> <span class="fl">0.01</span>,</span></span>
-<span class="r-in"><span>    karyotypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1:0"</span>,<span class="st">"1:1"</span>,<span class="st">"2:0"</span>,<span class="st">"2:1"</span>,<span class="st">"2:2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">INCOMMON inference of copy number and mutation multiplicity for sample </span><span style="color: #00BB00; font-weight: bold;">P-0002</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Performing classification</span>
-<span class="r-in"><span><span class="fu">plot_classification</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-plt img"><img src="plot_classification-1.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-plt img"><img src="plot_classification-2.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-plt img"><img src="plot_classification-3.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-plt img"><img src="plot_classification-4.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

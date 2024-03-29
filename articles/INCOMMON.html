@@ -51,8 +51,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Classify_Mutations.html">Classify mutations from a targeted sequencing sample</a>
-    <a class="dropdown-item" href="../articles/survival_analysis.html">Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a1_classify_mutations.html">1. Inference of copy number and mutation multiplicity</a>
+    <a class="dropdown-item" href="../articles/a2_survival_analysis.html">2. Survival analysis of the MSK-MetTropism Cohort</a>
+    <a class="dropdown-item" href="../articles/a3_metastasis_analysis.html">3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort</a>
   </div>
 </li>
       </ul>
@@ -94,91 +95,267 @@
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span></code></pre></div>
 <p>INCOMMON is a tool for the INference of COpy number and Mutation
 Multiplicity in ONcology. INCOMMON infers the copy number and
-multiplicity of somatic mutations from tumour-only read count data, and
+multiplicity of somatic mutations from tumor-only read count data, and
 can be applied to classify mutations from large-size datasets in an
 efficient and fast way. Mutations are classified as either Tier-1
 (present in 100% cells) without copy-number alterations (heterozygous
 mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH
 (CNLOH), amplification (AM), or Tier-2 (subclonal or with high ploidy
 and low multiplicity).</p>
+<p>In addition, INCOMMON offers a genome interpretation framework, in
+which the full inactivation of tumor suppressor genes (TSG) through
+mutations with LOH, and the enhanced activation of oncogenes through
+mutations with amplification can be detected. These events can then be
+used to perform augmented analysis of survival and metastatic
+patterns.</p>
 <blockquote>
-<p>The INCOMMON model is designed to work with high-resolution targeted
+<p>The INCOMMON model is designed to work with high coverage sequencing
 data such as targeted panels but, in principle, it can be used with any
 sequencing assay. INCOMMON is helpful also to analyse sequencing data
-from tumor-only assays, in paricular when alignment files (fastq, bam,
-etc.) are not availble. However, if one can access higher-resolution
-whole-exome or whole-genome assays, specific <a href="https://caravagnalab.github.io/mobster,%20https://github.com/caravagnalab/CNAqc" class="external-link">deconvolution
+from tumor-only assays, in paricular when alignment files (fastq,
+sam/bam, etc.) are not availble. However, if one can access
+higher-resolution whole-exome or whole-genome assays, specific <a href="https://caravagnalab.github.io/mobster,%20https://github.com/caravagnalab/CNAqc" class="external-link">deconvolution
 methodologies should be used</a>.</p>
 </blockquote>
 <div class="section level2">
-<h2 id="copy-number-and-mutation-multiplicity-assessment">Copy number and mutation multiplicity assessment<a class="anchor" aria-label="anchor" href="#copy-number-and-mutation-multiplicity-assessment"></a>
+<h2 id="mutation-copy-number-and-multiplicity-inference">Mutation copy number and multiplicity inference<a class="anchor" aria-label="anchor" href="#mutation-copy-number-and-multiplicity-inference"></a>
 </h2>
-<p>INCOMMON will assess, for every mutation, any of the following
-statuses:</p>
+<p>INCOMMON assesses, for every mutation, copy number configurations
+identified by triples <span class="math inline">\((n_A,n_B,m)\)</span>
+where <span class="math inline">\(n_A\)</span> is the major allele copy
+number, <span class="math inline">\(n_B\)</span> is the minor and the
+mutation is present in <span class="math inline">\(m\)</span> copies.
+The supported configurations are:</p>
 <ul>
-<li>Ploidy among
-<ul>
-<li>1 (loss of heterozygosity LOH),</li>
-<li>2 (heterozygous and homozygous),</li>
-<li>3 (trisomy),</li>
-<li>4 (tetrasomy);</li>
-</ul>
+<li>Loss of heterozygosity in monosomy LOH: <span class="math inline">\((n_A=1,n_B=0, m=1)\)</span>
 </li>
-<li>Multiplicity between 1 and 2;</li>
+<li>Copy-neutral loss of heterozygosity CNLOH: <span class="math inline">\((n_A=2,  n_B=0 , m=2)\)</span>
+</li>
+<li>Amplification AM: <span class="math inline">\((n_A=3,  n_B=2 ,
+m=2)\)</span> or <span class="math inline">\((n_A=4,  n_B=2 ,
+m=2)\)</span>
+</li>
+<li>Heterozygous mutant diploid HMD: <span class="math inline">\((n_A=2,  n_B=1 , m=1)\)</span>
+</li>
 </ul>
 <p>INCOMMON implements <a href="Classify_Mutations.html">a classifier
-based on maximum a posteriori estimation</a>; the required inputs
-are:</p>
-<ul>
-<li>read counts of a mutation</li>
-<li>purity of the tumour sample <span class="math inline">\(\pi &gt;
-0\)</span>
-</li>
-</ul>
+based on maximum a posteriori estimation</a> to infer the copy number
+and multiplicity of mutations from read-count data.</p>
+<p>The classifier is based on a Beta-Binomial mixture model, in which
+the number of reads with a variant (<span class="math inline">\(n\)</span>) is the number of events and the
+sequencing depth <span class="math inline">\(N\)</span> is the total
+number of trials.</p>
+<p>A mutation on a genomic site of ploidy <span class="math inline">\(p
+= n_A+n_B\)</span>, with multiplicity <span class="math inline">\(m\leq
+\max(n_A,n_B)\)</span>, in a sample of purity <span class="math inline">\(\pi\)</span> has an expected VAF of <span class="math display">\[
+\theta_{m,p}\left(\pi\right) = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
+\]</span></p>
 <blockquote>
 <p>Tumour sample purity <span class="math inline">\(\pi\)</span> can be
 estimated by copy number assessment, pathology assessment, or in general
 any other bioinformatics approach outside INCOMMON. INCOMMON assumes
 that the input purity is correct.</p>
 </blockquote>
+<p>In the read counting process this represents the event probability.
+Therefore, the likelihood of observing:</p>
+<ul>
+<li>
+<span class="math inline">\(n\)</span> reads with the variant at the
+locus</li>
+<li>
+<span class="math inline">\(N\)</span> coverage at the locus</li>
+<li>sample purity <span class="math inline">\(\pi\)</span>
+</li>
+</ul>
+<p>given ploidy <span class="math inline">\(p\)</span> and multiplicity
+<span class="math inline">\(m\)</span> is</p>
+<p><span class="math display">\[
+P(n | N, \theta_{m,p}\left(\pi\right),\rho) =
+\text{Beta-Binonmial}\left(n \;\large\mid\;\normalsize
+N,\theta_{m,p}\left(\pi\right), \rho\right)
+\]</span></p>
+<p>where <span class="math inline">\(\rho\)</span> models the
+overdispersion of the sequencer.</p>
+<blockquote>
+<p>Setting <span class="math inline">\(\rho = 0\)</span> corresponds to
+using a pure Binomial model with no model of the sequencer
+overdispersion.</p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="input-format">Input format<a class="anchor" aria-label="anchor" href="#input-format"></a>
 </h2>
-<p>Input must be prepared using the function <code>init</code>. The
-input to this function must contain:</p>
+<p>The input required for INCOMMMON classification consists of two data
+tables:</p>
+<ul>
+<li><p><code>genomic_data</code>: a data table of annotated mutations
+with columns indicating, for each mutation, the sample name
+<code>sample</code>, mutant chromosome <code>chr</code>, start position
+<code>from</code>, end position <code>to</code>, reference allele
+<code>ref</code>, alternative allele <code>alt</code>, sequencing depth
+<code>DP</code>, number of reads with variant <code>NV</code>, variant
+allele frequency <code>VAF</code>, mutant gene name <code>gene</code>
+Hugo Symbol, and possibly the protein sequence of the variant in HGVS
+recommended format (preferably 1-letter amino-acid code
+<code>HGVSp_Short</code>).</p></li>
+<li><p><code>clinical_data</code>: a data table of clinical data with
+matched sample names <code>sample</code> and purity <code>purity</code>
+(required), and clinical features like tumor type (ONCOTREE code)
+<code>tumor_type</code> (required for tumor specific priors), survival
+data such as <code>OS_STATUS</code> and time <code>OS_MONTHS</code>
+(required for survival analysis), metastasis data such as
+<code>SAMPLE_TYPE</code> (Primary or Metastasis), number of metastases
+<code>MET_COUNT</code> (required for metastatic propensity analysis) and
+metastatic site <code>METASTATIC_SITE</code> (required for metastatic
+tropism analysis), plus any other useful covariate.</p></li>
+<li><p><code>gene_roles</code>: a data table reporting gene names
+<code>gene</code> and associated roles <code>gene_role</code>
+(“oncogene” or “TSG”). INCOMMON provides a set of gene roles extracted
+from the COSMIC Cancer Gene Census (v98) as default.</p></li>
+</ul>
+<p>The input for downstream analysis is checked and cast in the expected
+format through the function <code>init</code>.</p>
+<p>INCOMMON provides data from the publicly available MSK-MetTropism
+cohort in the correct format. The following example shows how this input
+is pre-processed by INCOMMON:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_genomic_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_clinical_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cancer_gene_census</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
+<span>  genomic_data <span class="op">=</span> <span class="va">MSK_genomic_data</span>,</span>
+<span>  clinical_data <span class="op">=</span> <span class="va">MSK_clinical_data</span>,</span>
+<span>  gene_roles <span class="op">=</span> <span class="va">cancer_gene_census</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── INCOMMON - Inference of copy number and mutation multiplicity in oncology ───</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Genomic data</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">25659</span> samples, with <span style="color: #00BB00;">224939</span> mutations in <span style="color: #00BB00;">491</span> genes</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No read counts found for <span style="color: #00BB00;">1393</span> mutations in <span style="color: #00BB00;">1393</span> samples</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Gene name not provided for <span style="color: #00BB00;">1393</span> mutations</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #00BB00;">201</span> genes could not be assigned a role (TSG or oncogene)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── <span style="font-weight: bold;">Clinical data</span> ──</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Provided clinical features:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sample (required for classification)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> purity (required for classification)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> tumor_type</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_MONTHS</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_STATUS</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SAMPLE_TYPE</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_COUNT</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> METASTATIC_SITE</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_SITE_COUNT</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PRIMARY_SITE</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SUBTYPE_ABBREVIATION</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GENE_PANEL</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> TMB_NONSYNONYMOUS</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FGA</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> AGE_AT_DEATH</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">25659</span> matching samples</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> No mismatched samples</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">175054</span> PASS mutations across <span style="color: #00BB00;">24018</span> samples, with <span style="color: #00BB00;">290</span> mutant gen</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">649</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 175,054 × 25</span></span></span>
+<span><span class="co">#&gt;    sample    tumor_type purity chr     from     to ref   alt      DP    NV   VAF</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-0028912 CHOL          0.3 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     A       837   133 0.159</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-0028912 CHOL          0.3 chrX  5.32<span style="color: #949494;">e</span>7 5.32<span style="color: #949494;">e</span>7 G     A       832    85 0.102</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-0003698 BLCA          0.2 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 C     A       437   109 0.249</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-0003698 BLCA          0.2 chr5  1.49<span style="color: #949494;">e</span>8 1.49<span style="color: #949494;">e</span>8 C     T       360    36 0.1  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-0003698 BLCA          0.2 chr13 3.29<span style="color: #949494;">e</span>7 3.29<span style="color: #949494;">e</span>7 G     C      <span style="text-decoration: underline;">1</span>027   162 0.158</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-0003698 BLCA          0.2 chr13 3.29<span style="color: #949494;">e</span>7 3.29<span style="color: #949494;">e</span>7 G     C      <span style="text-decoration: underline;">1</span>021   182 0.178</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-0003698 BLCA          0.2 chr19 1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 G     T       573    98 0.171</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-0003698 BLCA          0.2 chr22 4.15<span style="color: #949494;">e</span>7 4.15<span style="color: #949494;">e</span>7 G     A       416    45 0.108</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-0003698 BLCA          0.2 chrX  4.49<span style="color: #949494;">e</span>7 4.49<span style="color: #949494;">e</span>7 C     T       730   194 0.266</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-0003823 BLCA          0.6 chr5  1.30<span style="color: #949494;">e</span>6 1.30<span style="color: #949494;">e</span>6 G     A       218   138 0.633</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 175,044 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, OS_MONTHS &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   OS_STATUS &lt;dbl&gt;, SAMPLE_TYPE &lt;chr&gt;, MET_COUNT &lt;dbl&gt;, METASTATIC_SITE &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   MET_SITE_COUNT &lt;dbl&gt;, PRIMARY_SITE &lt;chr&gt;, SUBTYPE_ABBREVIATION &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   GENE_PANEL &lt;chr&gt;, TMB_NONSYNONYMOUS &lt;dbl&gt;, FGA &lt;dbl&gt;, AGE_AT_DEATH &lt;dbl&gt;</span></span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="genome-interprter">Genome interprter<a class="anchor" aria-label="anchor" href="#genome-interprter"></a>
+</h2>
+<p>Downstream of INCOMMON classification, the mutant genome can be
+interpreted in terms of full inactivation of tumor suppressor genes
+(TSG) through mutations with LOH, and enhanced activation of oncogenes
+through mutations with amplification.</p>
+<p>For TSGs, full inactivation states include all the copy number
+configurations with loss of the wild-type (WT) allele (multiplicity
+equal to ploidy <span class="math inline">\(m=p\)</span>):</p>
+<ul>
+<li>Mutations with LOH</li>
+<li>Mutations with CNLOH</li>
+</ul>
+<p>For oncogenes, enhanced activation states include all the copy number
+configurations with amplification of the mutant allele (multiplicity
+<span class="math inline">\(m = 2\)</span>):</p>
+<ul>
+<li>Mutations with AM (trisomy or tetrasomy)</li>
+<li>Mutations with CNLOH</li>
+</ul>
+<p>Even if the intepretation of CNLOH as an oncogene activating event
+might sound unusual, it is based on the intuition that, for an oncogene,
+the presence of multiple mutant copies is relevant, whereas the absence
+of the WT is not.</p>
+</div>
+<div class="section level2">
+<h2 id="survival-analysis">Survival analysis<a class="anchor" aria-label="anchor" href="#survival-analysis"></a>
+</h2>
+<p>If patients’ survival status and time are provided as features in the
+clinical data table <code>clinical_table</code>, survival analysis can
+be performed. Downstream of classification, INCOMMON can stratify
+patients based on the mutational and copy number state of a TSG or an
+oncogene of interest.</p>
+<p>INCOMMON provides the following functions, dedicated to fitting
+survival data:</p>
 <ul>
 <li>
-<code>mutations</code>: a tibble or dataframe containing the
-mutations in a sample. Columns should indicate coordinates (chromosome
-<code>chr</code>, start position <code>from</code>, end position
-<code>to</code>), type of substitution (reference <code>ref</code> and
-alternative <code>alt</code> alleles), sequencing coverage
-<code>DP</code>, number of reads with the variant <code>NV</code>,
-variant allelic frequency <code>VAF</code> and gene name
-<code>gene</code> (preferably as Hugo Symbol)</li>
+<code>kaplan_meier_fit</code> uses the Kaplan-Meier estimator to fit
+survival data from patients stratified with respect to the status of a
+specific <code>tumor_type</code> and <code>gene</code> (Mutant TSG
+with/without LOH for suppressors, Mutant oncogene with/without
+amplification for oncogenes, with the WT group as reference)</li>
 <li>
-<code>sample</code>: name or ID of the sample</li>
-<li>
-<code>purity</code>, tumor sample purity</li>
+<code>cox_fit</code> uses a Cox proportional hazard ratio model to
+fit survival data. In addition to arguments <code>tumor_type</code> and
+<code>gene</code>, it accepts other <code>covariates</code>, given they
+are provided in the <code>clinical_table</code>.</li>
 </ul>
-<p>This is an example input dataset.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
-<span>  mutations <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">data</span>,</span>
-<span>  sample <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">sample</span>,</span>
-<span>  purity <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">purity</span>,</span>
-<span>  tumor_type <span class="op">=</span> <span class="va">example_data</span><span class="op">$</span><span class="va">tumor_type</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Sample <span style="color: #00BB00;">P-0002081-T01-IM3</span> (<span style="color: #00BB00;">LUAD</span>), with purity <span style="color: #00BB00;">0.6</span> ──────────────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 10</span></span></span>
-<span><span class="co">#&gt;   chr       from       to ref   alt   gene       NV    DP   VAF gene_role</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> chr12 25<span style="text-decoration: underline;">398</span>285 25<span style="text-decoration: underline;">398</span>285 C     A     KRAS      378   743 0.509 oncogene </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> chr17  7<span style="text-decoration: underline;">577</span>139  7<span style="text-decoration: underline;">577</span>139 G     A     TP53      116   246 0.472 TSG      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> chr19  1<span style="text-decoration: underline;">221</span>293  1<span style="text-decoration: underline;">221</span>293 C     A     STK11     122   260 0.469 TSG      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> chr19 11<span style="text-decoration: underline;">141</span>472 11<span style="text-decoration: underline;">141</span>473 -     C     SMARCA4   133   271 0.491 TSG</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="metastatic-patterns">Metastatic patterns<a class="anchor" aria-label="anchor" href="#metastatic-patterns"></a>
+</h2>
+<p>If information about metastatisation is provided, such as type of the
+sample (primary tumor or metastasis), whether patients are metastatic or
+not, and sites of metastatisation for primary tumors, in the clinical
+data table <code>clinical_table</code>, analysis of metastatic
+propensity and tropism based on INCOMMON classification and genome
+interpretation can be performed.</p>
+<p>INCOMMON provides the following functions for analysis of
+metastases:</p>
+<ul>
+<li><p><code>met_propensity</code>: uses a logistic regression test to
+compute the odds ratio (OR) of metastatisation between patients
+identified by the two mutational statuses of a <code>gene</code> (Mutant
+TSG with versus without LOH and Mutant oncogene with versus without
+amplification) for specific types of primary tumors
+<code>tumor_type</code>.</p></li>
+<li><p><code>met_tropism</code>: uses a logistic regression test to
+compute the odds ratio (OR) to metastatise to a specific site
+<code>METASTATIC_SITE</code> between patients identified by the two
+mutational statuses of a <code>gene</code> (Mutant TSG with versus
+without LOH and Mutant oncogene with versus without amplification) for
+specific types of primary tumors <code>tumor_type</code>.</p></li>
+</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
