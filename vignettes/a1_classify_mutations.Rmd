@@ -1,5 +1,5 @@
 ---
-title: "1. Inference of copy number and mutation multiplicity"
+title: "2. Inference of copy number and mutation multiplicity"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{1. Inference of copy number and mutation multiplicity}
@@ -21,8 +21,8 @@ library(INCOMMON)
 library(dplyr)
 ```
 
-In this vignette, we classify mutations from a single sample from the MSK-MetTropsim dataset 
-provided with the package. We will look at the classification entropy and study the effect of
+In this vignette, we classify mutations from a single sample of the MSK-MetTropsim dataset 
+provided within the package. We will look at the classification entropy and study the effect of
 a cut-off on this quantity. In addition, we will see how using the prior obtained from PCAWG
 whole genomes can help the classification of low quality data.
 

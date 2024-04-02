@@ -40,7 +40,7 @@ classification = function(x) {
   stopifnot("classification" %in% names(x))
   stopifnot("fit" %in% names(x$classification))
   x$classification$fit %>%
-    dplyr::full_join(input(x) %>%
+    dplyr::full_join(x$input %>%
                        dplyr::select(sample, tumor_type, purity) %>% unique(), 
                      by = 'sample') %>% 
     dplyr::select(sample, tumor_type, purity, dplyr::everything())
@@ -77,7 +77,7 @@ posterior = function(x, id) {
 }
 
 idify = function(x){
-  x$input = input(x) %>%
+  x$input = x$input %>%
     dplyr::mutate(id = paste(sample,chr,from,to,ref,alt,NV,DP, sep = ":"))
   return(x)
 }
@@ -89,13 +89,13 @@ unidify = function(x){
 }
 
 ids = function(x){
-  if(!("id" %in% colnames(input(x)))) x = idify(x)
-  input(x) %>% dplyr::pull(id)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
+  x$input %>% dplyr::pull(id)
 }
 
 info = function(x, id){
-  if(!("id" %in% colnames(input(x)))) x = idify(x)
-  out = input(x) %>% dplyr::filter(id == !!id)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
+  out = x$input %>% dplyr::filter(id == !!id)
   if("classification" %in% names(x) & length(x$classification) > 0) 
     out = classification(x) %>% dplyr::filter(id == !!id)
   out
@@ -104,14 +104,14 @@ info = function(x, id){
 
 DP = function(x, id){
   x = idify(x)
-  input(x) %>%
+  x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(DP)
 }
 
 NV = function(x, id){
   x = idify(x)
-  input(x) %>%
+  x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(NV)
 }
@@ -128,14 +128,14 @@ entropy = function(x, id){
 
 VAF = function(x, id){
   x = idify(x)
-  input(x) %>%
+  x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(VAF)
 }
 
 gene = function(x, id){
   x = idify(x)
-  input(x) %>%
+  x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(gene)
 }
@@ -214,7 +214,7 @@ subset_sample = function(x, sample){
   stopifnot(sample %in% samples)
   gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
   cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  ip = input(x) %>% dplyr::filter(sample == !!sample)
+  ip = x$input %>% dplyr::filter(sample == !!sample)
   out = list(genomic_data = gd,
              clinical_data = cd,
              input = ip)

@@ -80,9 +80,9 @@ classify = function(x,
 
       map = map[1., ]
     }
-
+    
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
-
+    
     list(
       fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id'),
       posterior = posterior
