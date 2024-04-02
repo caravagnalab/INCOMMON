@@ -116,6 +116,15 @@ NV = function(x, id){
     dplyr::pull(NV)
 }
 
+entropy = function(x, id){
+  x = idify(x)
+  posterior(x, id) %>%
+    dplyr::filter(NV == NV(x, id)) %>%
+    dplyr::arrange(desc(value)) %>% 
+    dplyr::slice_head(n = 1) %>% 
+    dplyr::pull(entropy)
+}
+
 
 VAF = function(x, id){
   x = idify(x)

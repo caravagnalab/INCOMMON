@@ -71,6 +71,12 @@ plot_classification = function(x, sample, assembly = F){
         linetype = 'dashed',
         size = .5
       )+
+      ggplot2::geom_hline(
+        yintercept = entropy(x, id)*scaleFactor,
+        color = 'deeppink4',
+        linetype = 'dashed',
+        size = .5
+      )+
       ggplot2::scale_size_manual(values = c("1"=.3,"2"=.3))+
       ggplot2::scale_y_continuous("Classification Probability", 
                          sec.axis = ggplot2::sec_axis(~./scaleFactor, name = "Classification Entropy"), 
@@ -144,6 +150,13 @@ plot_classification = function(x, sample, assembly = F){
         data = lapply(ids(x), function(id) tibble(id = id, gene = gene(x, id), NV = NV(x, id))) %>% do.call(rbind, .),
         ggplot2::aes(xintercept = NV),
         color = 'black',
+        linetype = 'dashed',
+        size = .5
+      )+
+      ggplot2::geom_hline(
+        data = lapply(ids(x), function(id) tibble(id = id, gene = gene(x, id), entropy = entropy(x, id)*scaleFactor)) %>% do.call(rbind, .),
+        ggplot2::aes(yintercept = entropy),
+        color = 'deeppink4',
         linetype = 'dashed',
         size = .5
       )+
