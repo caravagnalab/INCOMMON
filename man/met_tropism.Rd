@@ -4,7 +4,7 @@
 \alias{met_tropism}
 \title{Logistic regression of metastatic tropism based on INCOMMON classes.}
 \usage{
-met_tropism(x, gene, tumor_type, metastic_site)
+met_tropism(x, gene, tumor_type, metastatic_site)
 }
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} containing the classification results

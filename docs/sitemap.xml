@@ -19,10 +19,25 @@
     <loc>caravagnalab.github.io/INCOMMON/articles/a1_classify_mutations.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a1_pcawg_priors.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a2_classify_mutations.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/a2_survival_analysis.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a3_genome_interpreter.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/a3_metastasis_analysis.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/classify-and-plot.html</loc>
@@ -106,6 +121,9 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_met_volcano.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_prior.html</loc>
   </url>
   <url>
@@ -113,6 +131,9 @@
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_tapacloth.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_tropism.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/posterior.html</loc>

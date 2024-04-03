@@ -92,7 +92,7 @@ From this analysis it emerges that Mutant TP53 with LOH patients have more than 
 
 We extend this analysis to multiple genes, focusing on the 50 most frequently mutated ones.
 
-```{r, message=FALSE, results='hide', error=FALSE}
+```{r, message=FALSE, results='hide', error=FALSE, warning=FALSE}
 top_genes = classification(x) %>% 
   dplyr::filter(state != 'Tier-2') %>% 
   dplyr::group_by(gene) %>% 

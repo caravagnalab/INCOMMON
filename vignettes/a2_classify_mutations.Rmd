@@ -33,7 +33,8 @@ The minimal input for INCOMMON analyses consists of two pieces.
 
 First we need a table
 of `genomic_data` (mutations) with required columns `chr`, `from`, `to`, `ref`, `alt`,
-`DP`, `NV`, `VAF`, and `gene` as described in the [Get Started section](INCOMMON.html).
+`DP`, `NV`, `VAF`, and `gene`.
+
 The following example is taken from the internal dataset obtained from the MSK-MetTropism
 cohort:
 
