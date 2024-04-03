@@ -71,9 +71,9 @@ with amplification. In addition, 2510 mutations were classified as Tier-2, eithe
 because of entropy being larger than cutoff or because of a low number of mutant
 alleles relative to the wild-type.
 
-## 5.2 Metastatic patterns of BRCA samples
+## 5.2 Metastatic propensity of BRCA samples
 
-### 5.2.1 Metastatic propnesity
+### 5.2.1 Metastatic propensity of fully incactivated TP53
 
 We can analyse the metastatic propensity of primary breast tumor genomes 
 containing TP53 mutations by using function `met_propensity`. This function
@@ -86,17 +86,19 @@ x = met_propensity(x, tumor_type = 'BRCA', gene = 'TP53')
 ```
 
 From this analysis it emerges that Mutant TP53 with LOH patients have more than 150% increased risk to metastatise
-(OR = 1.6, p.value = 0.01) with respect to mutant samples without LOH.
+(OR = 1.64, p.value = 0.01) with respect to mutant samples without LOH.
 
-We can extend this analysis to multiple genes, focussing on the 10 most frequently mutated ones.
+### 5.2.2 Metastatic propensity for the top mutant genes in BRCA
 
-```{r, message=FALSE, results='hide'}
+We extend this analysis to multiple genes, focusing on the 50 most frequently mutated ones.
+
+```{r, message=FALSE, results='hide', error=FALSE}
 top_genes = classification(x) %>% 
   dplyr::filter(state != 'Tier-2') %>% 
   dplyr::group_by(gene) %>% 
   dplyr::reframe(N = length(unique(sample))) %>% 
   dplyr::arrange(dplyr::desc(N)) %>% 
-  dplyr::slice_head(n = 10) %>% 
+  dplyr::slice_head(n = 50) %>% 
   pull(gene)
 
 print(top_genes)
@@ -107,10 +109,19 @@ for(g in top_genes){
 
 ```
 
+### 5.2.2 Visualising metastatic propensity odds ratio
+
+INCOMMON provides the function `plot_met_volcano` to visualise metastatic propensity odds ratios in a volcano plot.
+
 ```{r}
-plot_met_
+plot_met_volcano(x = x, tumor_type = 'BRCA')
 ```
-## Metastatic tropism of Mutant TP53 with LOH patients
+
+In addition to TP53, among the 50 most frequently mutant genes in BRCA the complete inactivation (Mutation with LOH) of ARID1A significantly increases the risk of metastasis (OR = 9.33, p.value = 0.04), whereas among the oncogenes, only for PIK3CA the full activation (Mutation with AMP) leads to higher risks of metastases (OR = 2.00, p.value = 0.0007).
+
+## 5.3 Metastatic tropism of BRCA samples
+
+### 5.3.1 Tropism of fully inactivated TP53 BRCA samples to the Liver
 
 We can analyse the metastatic organotropism of metastatic breast tumor genomes 
 containing TP53 mutations by using function `met_tropsim`. Similarly to the
@@ -120,9 +131,37 @@ site (here the Liver, as example), based on the interpreted mutant genome, with 
 CNA (here, Mutant TP53 without LOH) as reference.
 
 ```{r}
-x = met_tropism(x, tumor_type = 'BRCA', gene = 'TP53', metastic_site = 'Liver')
+x = met_tropism(x, tumor_type = 'BRCA', gene = 'TP53', metastatic_site = 'Liver')
 ```
 
-There is odds ratio (OR) of metastatising to the Liver for Mutant TP53 with LOH breast cancer is 
-almost two-fold (OR = 1.9, p.value = 0.03) with respect to mutant samples without LOH.
+There is odds ratio (OR) of metastatising to the Liver for Mutant TP53 with LOH breast cancer is almost two-fold (OR = 1.9, p.value = 0.03) with respect to mutant samples without LOH.
 
+### 5.3.2 Tropism of top mutant genes in BRCA to the Liver
+
+We extend this analysis to multiple genes, focusing on the 10 most frequently mutated ones and the top 10 most frequent metastatic sites.
+
+```{r, message=FALSE, results='hide', warning=FALSE}
+top_sites = x$clinical_data %>% 
+  dplyr::group_by(METASTATIC_SITE) %>% 
+  dplyr::reframe(N = length(unique(sample))) %>% 
+  dplyr::arrange(dplyr::desc(N)) %>% 
+  dplyr::slice_head(n = 10) %>% 
+  pull(METASTATIC_SITE)
+
+for(g in top_genes[1:10]){
+  for(m in top_sites){
+   x = met_tropism(x, gene = g, tumor_type = 'BRCA', metastatic_site = m) 
+  }
+}
+
+```
+
+### 5.3.3 Visualising metastatic tropism
+
+INCOMMON provides the function `plot_tropism` to visualise metastatic tropism odds ratios by metastatic site.
+
+```{r, fig.height=10, fig.width=8}
+plot_tropism(x = x, tumor_type = 'BRCA')
+```
+
+Interestingly, the complete inactivation of TP53 seems to be related with tropism from primary breast tumours to the Liver and CNS/Brain. Mutations of CDH1 seem to be more frequently without LOH in association with metastasis to the lymphatic system.

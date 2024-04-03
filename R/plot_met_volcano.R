@@ -12,15 +12,18 @@
 plot_met_volcano = function(x, tumor_type){
   stopifnot(inherits(x, 'INCOMMON'))
   stopifnot('metastatic_propensity' %in% names(x))
+
   if(tumor_type != 'PANCA'){
     stopifnot(tumor_type %in% names(x$metastatic_propensity))
-    toplot = x$metastatic_propensity[[tumor_type]] %>% do.call(rbind, .)
+    toplot = x$metastatic_propensity[[tumor_type]] %>%
+      purrr::discard(is.null) %>%
+      do.call(rbind, .)
   } else{
     toplot = lapply(x$metastatic_propensity, function(x) x) %>%
       unlist(recursive = F) %>%
+      purrr::discard(is.null) %>%
       do.call(rbind, .)
   }
-}
 
 toplot = toplot %>%
   dplyr::mutate(
@@ -54,3 +57,4 @@ toplot %>%
                                                override.aes = list(color=NA)
                                                ),
                   color = ggplot2::guide_legend(title = 'INCOMMON class'))
+}

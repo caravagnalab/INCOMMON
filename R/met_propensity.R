@@ -13,28 +13,36 @@
 met_propensity = function(x, gene, tumor_type){
   stopifnot(inherits(x, 'INCOMMON'))
   if(!("genotype" %in% (classification(x) %>% names()))) x = genome_interpreter(x)
-  
+
   data = classification(x) %>%
     dplyr::filter(tumor_type == !!tumor_type,
                   gene == !!gene) %>%
-    dplyr::filter(!grepl('Tier-2', class)) %>% 
+    dplyr::filter(!grepl('Tier-2', class)) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
-    dplyr::reframe(class = unique(class)) %>% 
-    dplyr::left_join(clinical_data(x), by = 'sample') %>% 
-    dplyr::filter(SAMPLE_TYPE == 'Primary') %>% 
-    dplyr::mutate(metastatic = 1*(MET_COUNT > 0)) %>% 
+    dplyr::reframe(class = unique(class)) %>%
+    dplyr::left_join(clinical_data(x), by = 'sample') %>%
+    dplyr::filter(SAMPLE_TYPE == 'Primary') %>%
+    dplyr::mutate(metastatic = 1*(MET_COUNT > 0)) %>%
     dplyr::select(class, metastatic)
-  
-  data = data %>% 
+
+  if(length(unique(data$class))<2 | length(unique(data$metastatic))<2) {
+
+    x$metastatic_propensity[[tumor_type]][[gene]] = NULL
+
+    return(x)
+  }
+
+  data = data %>%
     dplyr::mutate(class = factor(class)) %>%
     dplyr::mutate(class = stats::relevel(class, ref = grep('without', unique(data$class), value = T)))
-  
+
+
   model = stats::glm(data = data, metastatic ~ class, family = binomial(link = 'logit'))
-  
+
   fit = cbind(summary(model)$coefficients, confint(model)) %>% as_tibble()
   fit$var = rownames(confint(model)) %>% gsub('class', '', .)
-  
+
   fit = dplyr::tibble(
     gene = gene,
     class = fit[2,]$var,
@@ -43,14 +51,14 @@ met_propensity = function(x, gene, tumor_type){
     up = fit[2,]$`97.5 %` %>% exp(),
     p.value = fit[2,]$`Pr(>|z|)`
   )
-  
+
   if(!('metastatic_propensity' %in% names(x))) x$metastatic_propensity = list()
   if(!(tumor_type %in% names(x$metastatic_propensity))) x$metastatic_propensity[[tumor_type]] = list()
   if(!(gene %in% names(x$metastatic_propensity[[tumor_type]]))) x$metastatic_propensity[[tumor_type]][[gene]] = list()
-  
+
   x$metastatic_propensity[[tumor_type]][[gene]] = fit
-  
+
   print(fit)
-  
+
   return(x)
 }
