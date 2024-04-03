@@ -41,10 +41,10 @@ classification = function(x) {
   stopifnot("fit" %in% names(x$classification))
   x$classification$fit %>%
     dplyr::full_join(x$input %>%
-                       dplyr::select(sample, tumor_type, purity) %>% unique(), 
-                     by = 'sample') %>% 
+                       dplyr::select(sample, tumor_type, purity) %>% unique(),
+                     by = 'sample') %>%
     dplyr::select(sample, tumor_type, purity, dplyr::everything())
-    
+
 }
 
 #' Getter for class \code{'INCOMMON'}.
@@ -96,7 +96,7 @@ ids = function(x){
 info = function(x, id){
   if(!("id" %in% colnames(x$input))) x = idify(x)
   out = x$input %>% dplyr::filter(id == !!id)
-  if("classification" %in% names(x) & length(x$classification) > 0) 
+  if("classification" %in% names(x) & length(x$classification) > 0)
     out = classification(x) %>% dplyr::filter(id == !!id)
   out
 }
@@ -120,8 +120,8 @@ entropy = function(x, id){
   x = idify(x)
   posterior(x, id) %>%
     dplyr::filter(NV == NV(x, id)) %>%
-    dplyr::arrange(desc(value)) %>% 
-    dplyr::slice_head(n = 1) %>% 
+    dplyr::arrange(desc(value)) %>%
+    dplyr::slice_head(n = 1) %>%
     dplyr::pull(entropy)
 }
 
@@ -182,9 +182,9 @@ mutant_samples = function(x, tumor_type, gene) {
                   gene == !!gene) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
-    dplyr::reframe(class = unique(class)) %>% 
-    dplyr::filter(!grepl('Tier-2', class)) %>% 
-    dplyr::left_join(clinical_data(x), by = 'sample') %>% 
+    dplyr::reframe(class = unique(class)) %>%
+    dplyr::filter(!grepl('Tier-2', class)) %>%
+    dplyr::left_join(clinical_data(x), by = 'sample') %>%
     dplyr::mutate(gene = !!gene) %>%
     dplyr::left_join(cancer_gene_census, by = 'gene')
 }
@@ -198,11 +198,11 @@ wt_samples = function(x, tumor_type, gene) {
     dplyr::filter(!grepl(!!gene, genotype)) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
-    dplyr::reframe(class = unique(class)) %>% 
+    dplyr::reframe(class = unique(class)) %>%
     dplyr::mutate(gene = !!gene) %>%
-    dplyr::left_join(clinical_data(x), by = 'sample') %>% 
-    dplyr::mutate(class = paste0(gene, ' WT')) %>% 
-    dplyr::ungroup() %>% 
+    dplyr::left_join(clinical_data(x), by = 'sample') %>%
+    dplyr::mutate(class = paste0(gene, ' WT')) %>%
+    dplyr::ungroup() %>%
     dplyr::left_join(cancer_gene_census, by = 'gene')
 }
 
@@ -222,7 +222,7 @@ subset_sample = function(x, sample){
   if('classification' %in% names(x)) {
     cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
     pr = x$classification$parameters
-    
+
     out$classification$fit = cl
     out$classification$parameters = pr
     out$classification$posterior = x$classification$posterior[ids(out)]
@@ -270,15 +270,15 @@ check_input = function(x){
 # Genome interpreter
 #' Visualize frequency distribution of INCOMMON classes.
 #'
-#' @param x An object of class \code{'INCOMMON'} containing the classification results, as 
+#' @param x An object of class \code{'INCOMMON'} containing the classification results, as
 #' produced by  function `classify`.
 #' @return An object or a list of class \code{INCOMMON} with additional columns
 #' in `classification`.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>% 
+#' @importFrom dplyr filter mutate rename select %>%
 genome_interpreter = function(x){
   stopifnot(inherits(x, 'INCOMMON'))
-  x$classification$fit = x$classification$fit %>% 
+  x$classification$fit = x$classification$fit %>%
     dplyr::mutate(
       class = dplyr::case_when(
         gene_role == "TSG" & state %in% c("LOH", "CNLOH") ~ paste0("Mutant ", gene, " with LOH"),
@@ -287,26 +287,26 @@ genome_interpreter = function(x){
         gene_role == "oncogene" & state == "HMD" ~ paste0("Mutant ", gene, " without AMP"),
         TRUE ~ paste0(paste0(gene, " Tier-2"))
       )
-    ) %>% dplyr::group_by(sample) %>% 
+    ) %>% dplyr::group_by(sample) %>%
     dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
-  
-  genotype_table = classification(x) %>% 
-    dplyr::group_by(genotype) %>% 
-    dplyr::reframe(N = length(unique(sample))) %>% 
-    dplyr::arrange(dplyr::desc(N)) %>% 
+
+  genotype_table = classification(x) %>%
+    dplyr::group_by(genotype) %>%
+    dplyr::reframe(N = length(unique(sample))) %>%
+    dplyr::arrange(dplyr::desc(N)) %>%
     dplyr::mutate(frequency = N/sum(N))
-  
+
   cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
   cli::cli_alert_info('The most abundant genotypes are:')
   for(i in 1:3){
-    cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype, 
+    cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
                                    paste0("(",genotype_table[i,]$N, " Samples, "),
                                    paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
                                    )
                        )
                      )
   }
-  
+
   return(x)
 }
 
@@ -368,10 +368,10 @@ class_frequency = function(x, tumor_type, gene){
       # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
       dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
       dplyr::group_by(state, class)
-  } 
+  }
   frequency_table = frequency_table %>%
     dplyr::reframe(n = unique(length(sample)), gene_role) %>%
-    unique() %>% 
+    unique() %>%
     dplyr::mutate(N = sum(n), frequency = n/N)
   frequency_table = cbind(dplyr::tibble(gene = gene, tumor_type = tumor_type), frequency_table)
   return(frequency_table)
@@ -387,7 +387,6 @@ prepare_km_fit_input = function(x, tumor_type, gene){
   ) %>%
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
-
 
 forest_plot = function(x){
 
@@ -504,11 +503,29 @@ surv_colors = function(gene_role) {
 
 # INCOMMON state coloring
 scale_color_INCOMMON_high_level_class = function(aes = 'fill'){
-  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1', 'with AMP' = 'purple3', 'Tier-2' = 'gainsboro')
+  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1',
+                   'with AMP' = 'purple3', 'Tier-2' = 'gainsboro', 'ns' = 'gainsboro')
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = class_colors)
   } else {
     ggplot2::scale_color_manual(values = class_colors)
+  }
+}
+
+# Tumour types
+scale_color_ttypes = function(aes = 'fill'){
+  tumor_colors = c("BRCA" = "#7D629E",
+                   "CHOL" = "#B96461",
+                   "PAAD" = "#EAB578",
+                   "CRC" = "#E4A6A7",
+                   "UCEC" = "#ABD5D0",
+                   "PRAD" = "#31482F",
+                   "MEL" = "#099668"
+  )
+  if(aes == 'fill') {
+    ggplot2::scale_fill_manual(values = tumor_colors)
+  } else {
+    ggplot2::scale_color_manual(values = tumor_colors)
   }
 }
 

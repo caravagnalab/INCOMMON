@@ -36,7 +36,8 @@ Imports:
     scales,
     survival,
     survminer,
-    patchwork
+    patchwork,
+    ggrepel
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc

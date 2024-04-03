@@ -1,8 +1,8 @@
 ---
-title: "3. Analysis of metastatic propensity and tropism of the MSK-MetTropism Cohort"
+title: "5. Analysis of metastatic patterns of MSK-MetTropism"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Analysis of metastatic patterns}
+  %\VignetteIndexEntry{5. Analysis of metastatic patterns of MSK-MetTropism}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,6 +20,12 @@ library(INCOMMON)
 ```
 
 In this vignette we carry out survival analysis based on INCOMMON classification of samples of breast cancer (BRCA) patients of the MSK-MetTropsim cohort.
+
+## 5.1 Classification of 2462 breast cancer samples
+
+In order to study patterns of metastatisation (propensity and organotropism) related to the INCOMMON interpreted genomes, we first need to classify all the mutations in these samples.
+
+### 5.1.1 Input intialisation
 
 First we prepare the input using function `init`:
 
@@ -40,7 +46,7 @@ print(x)
 There are 9916 mutations with average sequencing depth 681 
 across 2462 samples with average purity 0.42.
 
-## Classification of 2462 MSK-MetTropism BRCA samples
+### 5.1.2 Classification
 
 We then classify the mutations using PCAWG priors and the default entropy cutoff and
 overdispersion parameter:
@@ -65,7 +71,9 @@ with amplification. In addition, 2510 mutations were classified as Tier-2, eithe
 because of entropy being larger than cutoff or because of a low number of mutant
 alleles relative to the wild-type.
 
-## Metastatic propensity of Mutant TP53 with LOH patients
+## 5.2 Metastatic patterns of BRCA samples
+
+### 5.2.1 Metastatic propnesity
 
 We can analyse the metastatic propensity of primary breast tumor genomes 
 containing TP53 mutations by using function `met_propensity`. This function
@@ -77,9 +85,31 @@ CNA (here, Mutant TP53 without LOH) as reference.
 x = met_propensity(x, tumor_type = 'BRCA', gene = 'TP53')
 ```
 
-The odds ratio (OR) of metastatising for Mutant TP53 with LOH breast cancer is 
-1.6 (p.value = 0.01) with respect to mutant samples without LOH.
+From this analysis it emerges that Mutant TP53 with LOH patients have more than 150% increased risk to metastatise
+(OR = 1.6, p.value = 0.01) with respect to mutant samples without LOH.
 
+We can extend this analysis to multiple genes, focussing on the 10 most frequently mutated ones.
+
+```{r, message=FALSE, results='hide'}
+top_genes = classification(x) %>% 
+  dplyr::filter(state != 'Tier-2') %>% 
+  dplyr::group_by(gene) %>% 
+  dplyr::reframe(N = length(unique(sample))) %>% 
+  dplyr::arrange(dplyr::desc(N)) %>% 
+  dplyr::slice_head(n = 10) %>% 
+  pull(gene)
+
+print(top_genes)
+
+for(g in top_genes){
+  x = met_propensity(x, tumor_type = 'BRCA', gene = g)
+}
+
+```
+
+```{r}
+plot_met_
+```
 ## Metastatic tropism of Mutant TP53 with LOH patients
 
 We can analyse the metastatic organotropism of metastatic breast tumor genomes 
@@ -95,3 +125,4 @@ x = met_tropism(x, tumor_type = 'BRCA', gene = 'TP53', metastic_site = 'Liver')
 
 There is odds ratio (OR) of metastatising to the Liver for Mutant TP53 with LOH breast cancer is 
 almost two-fold (OR = 1.9, p.value = 0.03) with respect to mutant samples without LOH.
+

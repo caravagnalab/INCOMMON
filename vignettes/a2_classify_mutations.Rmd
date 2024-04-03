@@ -117,14 +117,14 @@ x = classify(x = x,
              entropy_cutoff = 0.2,
              rho = 0.01)
 ```
-There are 2 heterozygous mutant diploid (HMD) genes and 2 mutant genes with loss of heterozygosty (LOH). The average entropy is quite good, and the classifcation with the largest uncertainty
-has still a reasonable entropy of 0.07.
+There are 3 mutant genes with loss of heterozygosty (LOH) 1 with amplification of the mutant allele (AM). The average entropy of 0.04 indicates a high confidence of the classification, with the largest uncertainty being 0.07.
 
 ```{r}
 print(x)
 ```
 
-The two HMD genes are KRAS and SMARCA4, whereas TP53 and STK11 are in LOH.
+The only mutant oncogene in the sample is KRAS, that is mutated with amplification,
+whereas all the TSGs (TP53, SMARCA4, STK11) are in LOH.
 
 ## 2.3 Visualising INCOMMON classification 
 

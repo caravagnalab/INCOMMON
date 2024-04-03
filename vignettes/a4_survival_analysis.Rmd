@@ -1,0 +1,142 @@
+---
+title: "4. Survival analysis of MSK-MetTropism"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. Survival analysis of MSK-MetTropism}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(INCOMMON)
+library(dplyr)
+```
+
+In this vignette we carry out survival analysis based on INCOMMON classification of samples of pancreatic adenocarcinoma (PAAD) patients from the MSK-MetTropsim cohort.
+
+## 4.1 Classification of 1740 prostate adenocarcinoma samples
+
+In order to stratify patients based on the INCOMMON interpreted genomes, we first need to classify all the mutations in these samples.
+
+### 4.1.1 Input intialisation
+
+First we prepare the input using function `init`:
+
+```{r}
+data(MSK_genomic_data)
+data(MSK_clinical_data)
+data(cancer_gene_census)
+
+x = init(
+  genomic_data = MSK_genomic_data,
+  clinical_data = MSK_clinical_data %>% filter(tumor_type == 'PAAD'),
+  gene_roles = cancer_gene_census
+)
+
+print(x)
+```
+There are 6779 mutations with average sequencing depth 623 
+across 1740 samples with average purity 0.26.
+
+### 4.1.2 Classification
+
+We then classify the mutations using PCAWG priors and the default entropy cutoff and
+overdispersion parameter:
+
+```{r, message=FALSE}
+x = classify(
+  x = x,
+  priors = pcawg_priors,
+  entropy_cutoff = 0.2,
+  rho = 0.01
+)
+```
+
+```{r}
+print(x)
+```
+
+There are 2611 heterozygous diploid mutations (HMD), 558 mutations with loss of 
+heterozygosity (LOH), 1988 mutations with copy-neutral LOH (CNLOH), 283 mutations
+with amplification. In addition, 1339 mutations were classified as Tier-2, either 
+because of entropy being larger than cutoff or because of a low number of mutant
+alleles relative to the wild-type.
+
+## 4.2 Survival analysis of Mutant KRAS patients
+
+In order to obtain a grouping of patients based on the mutational status of KRAS, we need first to annotate the genotype of each sample and interpret mutant KRAS genomes.
+
+### 4.2.1 Genome Interpretation
+
+We use the function `genome_interpreter` to add INCOMMON classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2) `class` and annotate each sample with a `genotype` summarising all the interpreted mutations found in the sample.
+
+```{r}
+x = genome_interpreter(x = x)
+```
+
+Across the PAAD samples that we classified, there are 1288 different genotypes, the
+most abundant ones being different combinations of TP53 with/without LOH and KRAS 
+mutations with/without amplifications.
+
+We investigate the impact on survival of the Mutant KRAS with/without amplification genomes with respect to KRAS WT patients.
+
+We first look at the distribution of INCOMMON copy number states across PAAD samples for KRAS, using function `plot_class_fraction`:
+
+```{r}
+plot_class_fraction(x = x, tumor_type = 'PAAD', gene = 'KRAS')
+```
+
+Across 1644 samples, a large fraction of KRAS mutations (35%) is associated with amplification of the mutant allele, always through CNLOH (amplification in diploid state). A slightly higher number (38%) of mutant KRAS samples is without amplification, whereas 26% of the samples has a Tier-2 KRAS mutation.
+
+### 4.2.2 Kaplan-Meier survival esitmates
+
+Next we use function `kaplan_meier_fit` to fit survival data (overall survival
+status versus overall survival months in this case) using the Kaplan-Meier estimator.
+
+```{r}
+x = kaplan_meier_fit(x = x, tumor_type = 'PAAD', gene = 'KRAS')
+```
+
+The median overall survival time decreases from 21.5 months for the KRAS WT group to 18.2 months for Mutant KRAS without amplification and further to 11.7 months for Mutant KRAS with amplification patients.
+
+### 4.2.3 Hazard Ratio estimates with Cox regression
+
+In order to estimate the hazard ratio associated with these groups, we fit the same survival data, this time using a multivariate Cox proportional hazards regression model. Here, we include the age of patients at death, sex and tumor mutational burden as model covariates.
+
+```{r}
+x = cox_fit(x = x,
+        tumor_type = 'PAAD',
+        gene = 'KRAS',
+        survival_time = 'OS_MONTHS',
+        survival_status = 'OS_STATUS',
+        covariates = c('age', 'sex', 'tmb'))
+```
+
+This analysis reveals that, whereas KRAS mutation alone (without amplification) is not
+enough, the presence of amplification significantly increases the hazard ratio (HR = 1.41, p-value = 0.012)
+with respect to the WT group. Moreover, tumor mutational burden (TMB_NONSYNONYMOUS)
+also gives a significant albeit weak contribution, as patients with more than 4 non-synonymous mutations
+(median TMB_NONSYNONYMOUS) emerge as being more at risk (HR = 1.16, p-value = 0.038).
+
+### 4.2.4 Visualising survival analysis
+
+Kaplan-Meier estimation and multivariate Cox regression can be visualized straightforwardly
+using the `plot_survival_analysis` function:
+
+```{r, fig.width=6,fig.height=8}
+plot_survival_analysis(x = x,
+                       tumor_type = 'PAAD',
+                       gene = 'KRAS')
+```
+
+The plot displays Kaplan-Meier survival curves and risk table, and a forest plot for
+Cox multivariate regression coefficients, highlighting in red the covariates that
+have a statistically significant contribution to differences in hazard risks.
+

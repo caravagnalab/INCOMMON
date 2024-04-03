@@ -1,0 +1,120 @@
+---
+title: "3. Genome Interpreter"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{3. Genome Interpreter}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=TRUE)
+```
+
+```{r setup}
+library(INCOMMON)
+library(dplyr)
+```
+
+Downstream of classification, INCOMMON can interpret the mutant genome in terms of
+heterozygous mutant diploid (HMD) genes, completely inactivated tumor suppressor genes (TSG), completely activated oncogenes and Tier-2 mutations (uncertain/hard to interpret mutations). 
+
+Full inactivation of tumor suppressor genes (TSG) is detected as
+mutations with loss of the wild-type (WT) allele, either through pure loss of heterozygosity (LOH) or with copy-neutral LOH (CNLOH). Full activation of oncogenes is identified as 
+mutations with amplification of the mutant allele. In addition to amplifications in trisomy 
+and tetrasomy (AM), CNLOH events are interpreted for oncogenes as amplifications in disomy,
+since the mutant allele is found in double copy.
+
+## 3.1 Genome interpretation of 1880 prostate adenocarcinoma samples
+
+### 3.1.1 INCOMMON classification
+
+First, we classify samples of prostate adenocarcinoma (PRAD). As a first step, we select samples of this type from the MSK-MetTropsim dataset:
+
+```{r}
+data(MSK_genomic_data)
+data(MSK_clinical_data)
+data(cancer_gene_census)
+
+x = init(
+  genomic_data = MSK_genomic_data,
+  clinical_data = MSK_clinical_data %>% filter(tumor_type == 'PRAD'),
+  gene_roles = cancer_gene_census
+)
+
+print(x)
+```
+
+We can classify 7194 mutations across 1880 samples. The quality of these data is quite good, with average purity 0.41 and average sequencing depth 613.
+
+```{r, message=FALSE}
+x = classify(
+  x = x,
+  priors = pcawg_priors,
+  entropy_cutoff = 0.2,
+  rho = 0.01
+)
+```
+
+```{r}
+print(x)
+```
+
+There are 3029 heterozygous diploid mutations (HMD), 352 mutations with loss of 
+heterozygosity (LOH), 1345 mutations with copy-neutral LOH (CNLOH), 694 mutations
+with amplification. In addition, 1774 mutations were classified as Tier-2, either 
+because of entropy being larger than the cutoff or because of a low number of mutant
+alleles relative to the WT.
+
+### 3.1.2 Genome Interpreter
+
+The function `genome_interpreter` adds two variables to the `classification` object:
+the `class`, indicating for each mutant gene whether it is with LOH or amplification,
+depending on the gene role. In addition, each sample is annotated with a `genotype` 
+that summarises all the interpreted mutation found in the sample.
+
+```{r}
+x = genome_interpreter(x = x)
+```
+
+Across the PRAD samples that we classified, there are 1525 different genotypes, the
+most abundant ones being full inactivation of TP53 ('Mutant TP53 with LOH'), partial 
+inactivation of TP53 ('Mutant TP53 without LOH') and mutations of the TSG SPOP without LOH. 
+Notice that these alterations can be found in other genotypes, combined with mutations in other genes.
+
+### 3.1.3 Visulasing the distribution of INCOMMON classes
+
+We can visualise the distribution of INCOMMON classes for a specific gene and tumour
+type using the function `plot_class_fraction`.
+
+Here, we have classified prostate adenocarcinoma samples, so we set the `tumor_type` to PRAD and we can look at the distribution of INCOMMON states and interpreted classes for different genes.
+
+For instance, TP53 that characterizes the most abundant genotypes:  
+
+```{r}
+plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'TP53')
+```
+
+There is high incidence (60%) of mutations with LOH in 609 mutant TP53 samples, the majority of which (51%) being copy-neutral (CNLOH). TP53 mutations without LOH represent 29% of the total, with a small fraction (9.8%) being Tier-2 mutations.
+
+We can also look at SPOP:
+
+```{r}
+plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'SPOP')
+```
+Across 285 samples, the majority (57%) of SPOP mutations are without LOH, whereas a smaller fraction (20%) is combined with LOH, with 17% being CNLOH. The fraction of Tier-2 mutations (21%) for this gene is much higher than TP53.
+
+For oncogenes, in addition to mutations with amplification in trisomy/tetrasomy (AM), mutations with CNLOH are interpreted as amplifications in disomy, since the mutant allele is present in double copy.
+
+Let's take a look at KRAS:
+
+```{r}
+plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'KRAS')
+```
+
+The majority of mutations with amplifications (26% across 19 samples) consist of double mutant alleles in a trisomy or tetrasomy context (21%) plus a 5% of cases with disomy. A significant fraction (21%) of mutations are Tier-2, whereas 53% of mutations are in a heterozygous diploid context.
