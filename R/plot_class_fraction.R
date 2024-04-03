@@ -43,6 +43,8 @@ plot_class_fraction = function(x, tumor_type, gene){
       ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
   }
   
+  cli::cli_alert_info('The frequency of states {.field {toplot$state}} are {.field {round(toplot$frequency,2)}}')
+  
   return(p)
   
 }
