@@ -45,6 +45,13 @@ print.INCOMMON = function(x, ...) {
         ))
     
     
+    cli::cli_alert_info('There are: ')
+    for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
+      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
+      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
+    }
+    
+    
     print(classification(x))
   } else{
 
