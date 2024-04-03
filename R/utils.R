@@ -357,11 +357,21 @@ add_genotypes = function(x){
 # Get class distribution for an intere cohort
 
 class_frequency = function(x, tumor_type, gene){
-  frequency_table = classification(x) %>%
-    # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
-    dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
-    dplyr::group_by(state) %>%
-    dplyr::reframe(n = unique(length(sample))) %>%
+  if('state' %in% colnames(classification(x))){
+    frequency_table = classification(x) %>%
+      # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
+      dplyr::group_by(state)
+  }
+  if('class' %in% colnames(classification(x))){
+    frequency_table = classification(x) %>%
+      # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
+      dplyr::group_by(state, class)
+  } 
+  frequency_table = frequency_table %>%
+    dplyr::reframe(n = unique(length(sample)), gene_role) %>%
+    unique() %>% 
     dplyr::mutate(N = sum(n), frequency = n/N)
   frequency_table = cbind(dplyr::tibble(gene = gene, tumor_type = tumor_type), frequency_table)
   return(frequency_table)
@@ -494,7 +504,7 @@ surv_colors = function(gene_role) {
 
 # INCOMMON state coloring
 scale_color_INCOMMON_high_level_class = function(aes = 'fill'){
-  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1', 'with AMP' = 'purple3', 'ns' = 'gainsboro')
+  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1', 'with AMP' = 'purple3', 'Tier-2' = 'gainsboro')
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = class_colors)
   } else {
