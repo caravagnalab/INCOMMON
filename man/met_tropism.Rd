@@ -14,7 +14,7 @@ as produced by function \code{classify}.}
 
 \item{tumor_type}{The tumor type of patients to stratify.}
 
-\item{metastic_site}{The target organ of metastatic diffusion.}
+\item{metastatic_site}{The target organ of metastatic diffusion.}
 }
 \value{
 An object of class \code{'INCOMMON'} containing an additional object \code{survival}.

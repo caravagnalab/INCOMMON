@@ -7,7 +7,7 @@
 #' @param rho Over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
 #' @param parallel Whether to run the classification in parallel (default: FALSE)
-#' @param num_coures The number of cores to use for parallel classification.
+#' @param num_cores The number of cores to use for parallel classification.
 #' By default, it takes 80% of the available cores.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
@@ -16,7 +16,7 @@
 #' @importFrom parallel mclapply detectCores
 
 classify = function(x,
-                    priors = pcawg_priors,
+                    priors = INCOMMON::pcawg_priors,
                     entropy_cutoff = 0.2,
                     rho = 0.01,
                     parallel = FALSE,
@@ -53,7 +53,7 @@ classify = function(x,
       info(x, id)
 
       cli_alert_warning(text = "Keeping first row by default (check your input data)")
-      w = which(data(x)$id==id)
+      w = which(ids(x)==id)
       x$data = x$data[-w[2:length(w)],]
     }
 

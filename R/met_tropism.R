@@ -11,7 +11,7 @@
 #' as produced by function `classify`.
 #' @param tumor_type The tumor type of patients to stratify.
 #' @param gene The gene on which patient's stratification is based.
-#' @param metastic_site The target organ of metastatic diffusion.
+#' @param metastatic_site The target organ of metastatic diffusion.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit

@@ -12,42 +12,43 @@
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit
+#' @importFrom stats relevel quantile as.formula
 
 cox_fit = function(x, gene, tumor_type, survival_time, survival_status, covariates = c('age', 'sex', 'tmb')){
-  
+
   data = prepare_km_fit_input(x, tumor_type, gene)
   data = data %>% dplyr::mutate(group = factor(class))
   data = data %>% dplyr::mutate(group = relevel(group, ref = grep('WT', unique(data$group), value = T)))
-  
-  
+
+
   formula = paste0('survival::Surv(',survival_time,', ',survival_status,') ~ group')
-  
+
   for(c in covariates) {
     what = grep(c, colnames(data), ignore.case = T, value = TRUE)
     for(w in what) {
       if(is.numeric(data[[w]])){
-        q =  quantile(data[w], na.rm = T)['50%']
+        q =  stats::quantile(data[w], na.rm = T)['50%']
         data[[w]] = ifelse(data[[w]] > q, paste0('>', round(q, 0)), paste0('<=', round(q, 0)))
         data[[w]] = factor(data[[w]])
-        data[[w]] = relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
+        data[[w]] = stats::relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
       }
       formula = paste(formula, w, sep = ' + ')
     }
   }
-  
+
   fit = survival::coxph(
-    formula = formula %>% as.formula(),
+    formula = formula %>% stats::as.formula(),
     data = data %>%
       as.data.frame()
   )
-  
+
   if(!('survival' %in% names(x))) x$survival = list()
   if(!(tumor_type %in% names(x$survival))) x$survival[[tumor_type]] = list()
   if(!(gene %in% names(x$survival[[tumor_type]]))) x$survival[[tumor_type]][[gene]] = list()
-  
+
   x$survival[[tumor_type]][[gene]]$`cox_regression` = fit
-  
+
   print(fit)
-  
+
   return(x)
 }

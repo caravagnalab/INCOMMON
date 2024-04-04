@@ -21,25 +21,23 @@ RoxygenNote: 7.3.1
 Suggests: 
     knitr,
     rmarkdown,
+    DT
 Imports:
     cli,
     crayon,
     ggplot2,
     ggpubr,
-    ggsci,
-    stringr,
     CNAqc,
-    BMix,
     dplyr,
-    tidyr,
     VGAM,
     scales,
+    stats,
     survival,
     survminer,
     patchwork,
     ggrepel,
-    DT,
-    parallel
+    parallel,
+    purrr
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc

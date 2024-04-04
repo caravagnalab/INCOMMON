@@ -1,22 +1,22 @@
 #' Visualize prior distribution for a gene (tumor-specific or pancancer).
 #'
-#' @param x A prior distribution in the format required for \code{INCOMMON}, 
+#' @param x A prior distribution in the format required for \code{INCOMMON},
 #' such as \code{INCOMMON::pcawg_priors}.
 #' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
 #' @param gene Gene for gene-specific prior.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>% 
+#' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
-  
+
   get_ploidy <- function(label) {
     numbers <- unlist(strsplit(label, " and "))
     numbers <- as.numeric(numbers)
     total <- sum(numbers, na.rm = TRUE)
     return(total)
   }
-  
-  INCOMMON:::get_prior(x, gene, tumor_type) %>% 
+
+  get_prior(x, gene, tumor_type) %>%
     dplyr::mutate(
       state = dplyr::case_when(
         label %in% c("2N (Mutated: 1N)") ~ "HMD",
@@ -25,7 +25,7 @@ plot_prior = function(x, gene, tumor_type){
         label %in% c("2N (Mutated: 2N)") ~ "CNLOH",
         label %in% c("3N (Mutated: 2N)", "4N (Mutated: 2N)") ~ "AM"
       )
-    ) %>% 
+    ) %>%
     ggplot2::ggplot()+
     ggplot2::geom_bar(ggplot2::aes(
       x = '',

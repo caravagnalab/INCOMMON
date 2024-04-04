@@ -1,5 +1,5 @@
 #' Genomic data of the MSK-MetTropism cohort
-#' @docType Data
+#' @docType data
 #'
 #' @description This table contains sample names and corresponding read counts data from the MSK-MetTropism cohort.
 #'
@@ -14,7 +14,7 @@
 "MSK_genomic_data"
 
 #' Genomic data of the MSK-MetTropism cohort
-#' @docType Data
+#' @docType data
 #'
 #' @description This table contains sample names and corresponding clinical data from the MSK-MetTropism cohort.
 #'
@@ -49,7 +49,7 @@
 "pcawg_priors"
 
 #' Gene roles from COSMIC Cancer Gene Census
-#' @docType Data
+#' @docType data
 #'
 #' @description This table contains gene roles in cancer, as obtained from the COSMIC Cancer
 #' Gene Census v98. Data were curated such that each gene in list is assigned

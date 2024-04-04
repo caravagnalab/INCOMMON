@@ -6,8 +6,9 @@
 #' @param gene The gene on which patient's stratification is based.
 #' @return An object of class \code{'INCOMMON'} containing an additional object `survival`.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>%
+#' @importFrom dplyr filter mutate rename select %>% as_tibble
 #' @importFrom survival Surv survfit
+#' @importFrom stats glm binomial confint
 
 
 met_propensity = function(x, gene, tumor_type){
@@ -38,9 +39,9 @@ met_propensity = function(x, gene, tumor_type){
     dplyr::mutate(class = stats::relevel(class, ref = grep('without', unique(data$class), value = T)))
 
 
-  model = stats::glm(data = data, metastatic ~ class, family = binomial(link = 'logit'))
+  model = stats::glm(data = data, metastatic ~ class, family = stats::binomial(link = 'logit'))
 
-  fit = cbind(summary(model)$coefficients, confint(model)) %>% as_tibble()
+  fit = cbind(summary(model)$coefficients, stats::confint(model)) %>% dplyr::as_tibble()
   fit$var = rownames(confint(model)) %>% gsub('class', '', .)
 
   fit = dplyr::tibble(

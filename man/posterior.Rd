@@ -8,6 +8,8 @@ posterior(x, id)
 }
 \arguments{
 \item{x}{An obj of class \code{'INCOMMON'}.}
+
+\item{id}{An identifier for the mutation as created by function \code{idify}.}
 }
 \value{
 A table showing posterior distribution and entropy.

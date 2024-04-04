@@ -66,6 +66,7 @@ parameters = function(x) {
 #' @description
 #' Get the model posterior distribution of a mutation.
 #' @param x An obj of class \code{'INCOMMON'}.
+#' @param id An identifier for the mutation as created by function `idify`.
 #' @return A table showing posterior distribution and entropy.
 #' @export
 posterior = function(x, id) {
@@ -120,7 +121,7 @@ entropy = function(x, id){
   x = idify(x)
   posterior(x, id) %>%
     dplyr::filter(NV == NV(x, id)) %>%
-    dplyr::arrange(desc(value)) %>%
+    dplyr::arrange(dplyr::desc(value)) %>%
     dplyr::slice_head(n = 1) %>%
     dplyr::pull(entropy)
 }
@@ -383,7 +384,7 @@ forest_plot = function(x){
   x_limits = c(s$conf.int[,'lower .95'] %>% min(),
                s$conf.int[,'upper .95'] %>% max())
 
-  what = s$conf.int %>% as_tibble()
+  what = s$conf.int %>% dplyr::as_tibble()
   what$var = rownames(s$conf.int)
   what$p.value = s$coefficients[,ncol(s$coefficients)]
 

@@ -48,8 +48,8 @@ toplot %>%
                             ggplot2::aes(label = gene, fill = tumor_type),
                             size = 3)+
   ggplot2::xlim(-4,4)+
-  INCOMMON:::scale_color_INCOMMON_high_level_class(aes = 'color')+
-  INCOMMON:::scale_color_ttypes(aes = 'fill')+
+  scale_color_INCOMMON_high_level_class(aes = 'color')+
+  scale_color_ttypes(aes = 'fill')+
   CNAqc:::my_ggplot_theme(cex = .8)+
   ggplot2::xlab('Odds Ratio (log2)')+
   ggplot2::ylab('P-value (-log10)')+

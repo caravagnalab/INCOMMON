@@ -53,7 +53,7 @@ overdispersion parameter:
 ```{r, message=FALSE}
 x = classify(
   x = x,
-  priors = pcawg_priors,
+  priors = INCOMMON::pcawg_priors,
   entropy_cutoff = 0.2,
   rho = 0.01,
   parallel = TRUE, 
