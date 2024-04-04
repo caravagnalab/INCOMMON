@@ -6,15 +6,21 @@
 #' @param entropy_cutoff Entropy cut-off for Tier-1 vs Tier-2 assignment.
 #' @param rho Over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
+#' @param parallel Whether to run the classification in parallel (default: FALSE)
+#' @param num_coures The number of cores to use for parallel classification.
+#' By default, it takes 80% of the available cores.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
+#' @importFrom parallel mclapply detectCores
 
 classify = function(x,
                     priors = pcawg_priors,
                     entropy_cutoff = 0.2,
                     rho = 0.01,
+                    parallel = FALSE,
+                    num_cores = NULL,
                     karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
   {
@@ -27,7 +33,7 @@ classify = function(x,
   output = x
 
   output$classification = list()
-   
+
   cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
     )
@@ -80,18 +86,32 @@ classify = function(x,
 
       map = map[1., ]
     }
-    
+
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
-    
+
     list(
       fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id'),
       posterior = posterior
     )
   }
 
+  if(parallel){
+
+    if(is.null(num_cores)) num_cores = as.integer(0.8*parallel::detectCores())
+
+    tests = parallel::mclapply(X = ids(x),
+                               FUN = classify_single_mutation,
+                               x = x,
+                               mc.cores = num_cores)
+
+    tests = do.call(rbind, tests) %>% t()
+  } else {
+
     tests = sapply(ids(x), function(id) {
       classify_single_mutation(x = x, id = id)
     })
+
+  }
 
     output$classification$fit = tests['fit', ] %>% do.call(rbind, .)
     output$classification$posterior = tests['posterior', ]
@@ -102,15 +122,15 @@ classify = function(x,
       N  = classification(output) %>% dplyr::filter(state == !!state) %>% nrow()
       cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
     }
-    
+
     mean_ent = classification(output) %>% dplyr::pull(entropy) %>% mean()
     min_ent = classification(output) %>% dplyr::pull(entropy) %>% min()
     max_ent = classification(output) %>% dplyr::pull(entropy) %>% max()
-    
+
     cli::cli_alert_info(
       'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
       )
-    
+
   return(output)
 }
 

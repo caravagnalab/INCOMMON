@@ -338,19 +338,6 @@ reduce_classes = function(x) {
  return(x)
 }
 
-# Add genotypes
-
-add_genotypes = function(x){
-  classification_cohort(x) %>%
-    reduce_classes() %>%
-    dplyr::mutate(group = dplyr::case_when(
-      class != 'Tier-2' ~ paste('Mutant', gene, class),
-      TRUE ~ paste(class, gene)
-    )) %>%
-    dplyr::group_by(sample) %>%
-    dplyr::reframe(genotype = paste(group, collapse = ','), dplyr::across(dplyr::everything()))
-}
-
 # 4. ANALYSIS TOOLS
 
 

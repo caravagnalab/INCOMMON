@@ -37,7 +37,9 @@ Imports:
     survival,
     survminer,
     patchwork,
-    ggrepel
+    ggrepel,
+    DT,
+    parallel
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
