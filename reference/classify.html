@@ -63,7 +63,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">classify</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  priors <span class="op">=</span> <span class="va">pcawg_priors</span>,</span>
+<span>  priors <span class="op">=</span> <span class="fu">INCOMMON</span><span class="fu">::</span><span class="va"><a href="pcawg_priors.html">pcawg_priors</a></span>,</span>
 <span>  entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -89,6 +89,15 @@ or pan-cancer (PANCA) prior probabilities.</p></dd>
 
 <dt>rho</dt>
 <dd><p>Over-dispersion parameter.</p></dd>
+
+
+<dt>parallel</dt>
+<dd><p>Whether to run the classification in parallel (default: FALSE)</p></dd>
+
+
+<dt>num_cores</dt>
+<dd><p>The number of cores to use for parallel classification.
+By default, it takes 80% of the available cores.</p></dd>
 
 
 <dt>karyotypes</dt>

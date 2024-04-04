@@ -190,7 +190,7 @@ entropy cutoff and overdispersion parameter:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>
-<span>  priors <span class="op">=</span> <span class="va">pcawg_priors</span>,</span>
+<span>  priors <span class="op">=</span> <span class="fu">INCOMMON</span><span class="fu">::</span><span class="va"><a href="../reference/pcawg_priors.html">pcawg_priors</a></span>,</span>
 <span>  entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fl">0.01</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>, </span>
@@ -306,7 +306,7 @@ covariates.</p>
 <span>        survival_status <span class="op">=</span> <span class="st">'OS_STATUS'</span>,</span>
 <span>        covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'age'</span>, <span class="st">'sex'</span>, <span class="st">'tmb'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; survival::coxph(formula = formula %&gt;% as.formula(), data = data %&gt;% </span></span>
+<span><span class="co">#&gt; survival::coxph(formula = formula %&gt;% stats::as.formula(), data = data %&gt;% </span></span>
 <span><span class="co">#&gt;     as.data.frame())</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                                  coef exp(coef) se(coef)      z      p</span></span>
