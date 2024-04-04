@@ -57,9 +57,9 @@ x = classify(
   x = x,
   priors = INCOMMON::pcawg_priors,
   entropy_cutoff = 0.2,
-  rho = 0.01,
-  parallel = TRUE, 
-  num_cores = 8
+  rho = 0.01
+  # parallel = TRUE, # uncomment these to run in parallel
+  # num_cores = 8
 )
 ```
 
