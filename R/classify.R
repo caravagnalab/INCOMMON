@@ -16,7 +16,7 @@
 #' @importFrom parallel mclapply detectCores
 
 classify = function(x,
-                    priors = INCOMMON::pcawg_priors,
+                    priors = pcawg_priors,
                     entropy_cutoff = 0.2,
                     rho = 0.01,
                     parallel = FALSE,
@@ -116,6 +116,7 @@ classify = function(x,
     output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff,
                                                      rho = rho,
                                                      karyotypes = list(karyotypes))
+    output$classification$priors = priors
 
     cli::cli_alert_info('There are: ')
     for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
