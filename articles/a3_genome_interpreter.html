@@ -207,11 +207,11 @@ sequencing depth 613.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">613</span></span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations with overdispersion parameter <span style="color: #00BB00;">0.01</span> and ent</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 3029 mutations (HMD)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 352 mutations (LOH)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 3111 mutations (HMD)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 359 mutations (LOH)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1345 mutations (CNLOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 694 mutations (AM)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1774 mutations (Tier-2)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 695 mutations (AM)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1684 mutations (Tier-2)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7,194 × 18</span></span></span>
 <span><span class="co">#&gt;    sample   tumor_type purity chr     from     to ref   alt      DP    NV    VAF</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -246,11 +246,11 @@ depending on the gene role. In addition, each sample is annotated with a
 in the sample.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/genome_interpreter.html">genome_interpreter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">1525</span> different genotypes</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">1524</span> different genotypes</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 with LOH (58 Samples, Frequency 0.03)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 without LOH (35 Samples, Frequency 0.02)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant SPOP without LOH (25 Samples, Frequency 0.01)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 without LOH (36 Samples, Frequency 0.02)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant SPOP without LOH (26 Samples, Frequency 0.01)</span></span></code></pre></div>
 <p>Across the PRAD samples that we classified, there are 1525 different
 genotypes, the most abundant ones being full inactivation of TP53
 (‘Mutant TP53 with LOH’), partial inactivation of TP53 (‘Mutant TP53
@@ -271,7 +271,7 @@ of INCOMMON states and interpreted classes for different genes.</p>
 genotypes:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_class_fraction.html">plot_class_fraction</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'PRAD'</span>, gene <span class="op">=</span> <span class="st">'TP53'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.51</span>, <span style="color: #00BB00;">0.29</span>, <span style="color: #00BB00;">0.1</span>, and <span style="color: #00BB00;">0.1</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.51</span>, <span style="color: #00BB00;">0.3</span>, <span style="color: #00BB00;">0.1</span>, and <span style="color: #00BB00;">0.09</span></span></span></code></pre></div>
 <p><img src="a3_genome_interpreter_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>There is high incidence (60%) of mutations with LOH in 609 mutant
 TP53 samples, the majority of which (51%) being copy-neutral (CNLOH).
@@ -280,7 +280,7 @@ fraction (9.8%) being Tier-2 mutations.</p>
 <p>We can also look at SPOP:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_class_fraction.html">plot_class_fraction</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'PRAD'</span>, gene <span class="op">=</span> <span class="st">'SPOP'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">AM</span>, <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.01</span>, <span style="color: #00BB00;">0.17</span>, <span style="color: #00BB00;">0.57</span>, <span style="color: #00BB00;">0.04</span>, and <span style="color: #00BB00;">0.21</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">AM</span>, <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.01</span>, <span style="color: #00BB00;">0.17</span>, <span style="color: #00BB00;">0.59</span>, <span style="color: #00BB00;">0.04</span>, and <span style="color: #00BB00;">0.19</span></span></span></code></pre></div>
 <p><img src="a3_genome_interpreter_files/figure-html/unnamed-chunk-7-1.png" width="700">
 Across 285 samples, the majority (57%) of SPOP mutations are without
 LOH, whereas a smaller fraction (20%) is combined with LOH, with 17%

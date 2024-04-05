@@ -203,11 +203,11 @@ entropy cutoff and overdispersion parameter:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">623</span></span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations with overdispersion parameter <span style="color: #00BB00;">0.01</span> and ent</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2611 mutations (HMD)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 558 mutations (LOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1988 mutations (CNLOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 283 mutations (AM)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1339 mutations (Tier-2)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2759 mutations (HMD)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 564 mutations (LOH)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1990 mutations (CNLOH)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 284 mutations (AM)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1182 mutations (Tier-2)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6,779 × 18</span></span></span>
 <span><span class="co">#&gt;    sample   tumor_type purity chr     from     to ref   alt      DP    NV    VAF</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -247,11 +247,11 @@ classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2)
 summarising all the interpreted mutations found in the sample.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/genome_interpreter.html">genome_interpreter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">1288</span> different genotypes</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">1286</span> different genotypes</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP,Mutant TP53 without LOH (59 Samples, Frequency 0.03)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP,Mutant TP53 without LOH (68 Samples, Frequency 0.04)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS with AMP,Mutant TP53 with LOH (53 Samples, Frequency 0.03)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP (44 Samples, Frequency 0.03)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP (52 Samples, Frequency 0.03)</span></span></code></pre></div>
 <p>Across the PAAD samples that we classified, there are 1288 different
 genotypes, the most abundant ones being different combinations of TP53
 with/without LOH and KRAS mutations with/without amplifications.</p>
@@ -262,7 +262,7 @@ across PAAD samples for KRAS, using function
 <code>plot_class_fraction</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_class_fraction.html">plot_class_fraction</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'KRAS'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.35</span>, <span style="color: #00BB00;">0.38</span>, <span style="color: #00BB00;">0.1</span>, and <span style="color: #00BB00;">0.17</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.35</span>, <span style="color: #00BB00;">0.41</span>, <span style="color: #00BB00;">0.1</span>, and <span style="color: #00BB00;">0.14</span></span></span></code></pre></div>
 <p><img src="a4_survival_analysis_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Across 1644 samples, a large fraction of KRAS mutations (35%) is
 associated with amplification of the mutant allele, always through CNLOH
@@ -283,7 +283,7 @@ case) using the Kaplan-Meier estimator.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                           n events median 0.95LCL 0.95UCL</span></span>
 <span><span class="co">#&gt; KRAS WT                 109     63   21.5   18.86    30.8</span></span>
-<span><span class="co">#&gt; Mutant KRAS without AMP 626    391   18.1   15.84    20.7</span></span>
+<span><span class="co">#&gt; Mutant KRAS without AMP 673    418   18.6   16.23    21.0</span></span>
 <span><span class="co">#&gt; Mutant KRAS with AMP    573    394   11.7    9.69    13.2</span></span></code></pre></div>
 <p>The median overall survival time decreases from 21.5 months for the
 KRAS WT group to 18.2 months for Mutant KRAS without amplification and
@@ -308,15 +308,15 @@ covariates.</p>
 <span><span class="co">#&gt; survival::coxph(formula = formula %&gt;% stats::as.formula(), data = data %&gt;% </span></span>
 <span><span class="co">#&gt;     as.data.frame())</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                                  coef exp(coef) se(coef)      z      p</span></span>
-<span><span class="co">#&gt; groupMutant KRAS with AMP     0.34419   1.41085  0.13798  2.495 0.0126</span></span>
-<span><span class="co">#&gt; groupMutant KRAS without AMP  0.03665   1.03733  0.13762  0.266 0.7900</span></span>
-<span><span class="co">#&gt; AGE_AT_DEATH&gt;67              -0.12559   0.88197  0.07054 -1.781 0.0750</span></span>
-<span><span class="co">#&gt; TMB_NONSYNONYMOUS&gt;4           0.14600   1.15719  0.07035  2.075 0.0380</span></span>
+<span><span class="co">#&gt;                                  coef exp(coef) se(coef)      z     p</span></span>
+<span><span class="co">#&gt; groupMutant KRAS with AMP     0.35041   1.41965  0.13777  2.544 0.011</span></span>
+<span><span class="co">#&gt; groupMutant KRAS without AMP  0.02362   1.02390  0.13694  0.172 0.863</span></span>
+<span><span class="co">#&gt; AGE_AT_DEATH&gt;67              -0.11306   0.89309  0.06927 -1.632 0.103</span></span>
+<span><span class="co">#&gt; TMB_NONSYNONYMOUS&gt;3           0.10474   1.11042  0.06884  1.522 0.128</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Likelihood ratio test=28.06  on 4 df, p=1.214e-05</span></span>
-<span><span class="co">#&gt; n= 838, number of events= 838 </span></span>
-<span><span class="co">#&gt;    (470 observations deleted due to missingness)</span></span></code></pre></div>
+<span><span class="co">#&gt; Likelihood ratio test=27.71  on 4 df, p=1.43e-05</span></span>
+<span><span class="co">#&gt; n= 864, number of events= 864 </span></span>
+<span><span class="co">#&gt;    (491 observations deleted due to missingness)</span></span></code></pre></div>
 <p>This analysis reveals that, whereas KRAS mutation alone (without
 amplification) is not enough, the presence of amplification
 significantly increases the hazard ratio (HR = 1.41, p-value = 0.012)

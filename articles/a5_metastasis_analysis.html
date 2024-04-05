@@ -203,11 +203,11 @@ entropy cutoff and overdispersion parameter:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">681</span></span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations with overdispersion parameter <span style="color: #00BB00;">0.01</span> and ent</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 4147 mutations (HMD)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 578 mutations (LOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2018 mutations (CNLOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 663 mutations (AM)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2510 mutations (Tier-2)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 4238 mutations (HMD)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 581 mutations (LOH)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2019 mutations (CNLOH)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 666 mutations (AM)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2412 mutations (Tier-2)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9,916 × 18</span></span></span>
 <span><span class="co">#&gt;    sample    tumor_type purity chr     from     to ref   alt      DP    NV   VAF</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
@@ -246,17 +246,17 @@ based on the interpreted mutant genome, with the mutant gene without CNA
 (here, Mutant TP53 without LOH) as reference.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_propensity.html">met_propensity</a></span><span class="op">(</span><span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>, gene <span class="op">=</span> <span class="st">'TP53'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">2112</span> different genotypes</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">2115</span> different genotypes</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 with LOH (54 Samples, Frequency 0.02)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 without LOH (36 Samples, Frequency 0.01)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant PIK3CA without AMP (33 Samples, Frequency 0.01)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 without LOH (33 Samples, Frequency 0.01)</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
 <span><span class="co">#&gt;   gene  class                   OR   low    up p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Mutant TP53 with LOH  1.64  1.12  2.41  0.010<span style="text-decoration: underline;">5</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Mutant TP53 with LOH  1.63  1.11  2.38  0.011<span style="text-decoration: underline;">8</span></span></span></code></pre></div>
 <p>From this analysis it emerges that Mutant TP53 with LOH patients have
 more than 150% increased risk to metastatise (OR = 1.64, p.value = 0.01)
 with respect to mutant samples without LOH.</p>
@@ -288,7 +288,7 @@ frequently mutated ones.</p>
 visualise metastatic propensity odds ratios in a volcano plot.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_met_volcano.html">plot_met_volcano</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 13 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 14 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a5_metastasis_analysis_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <p>In addition to TP53, among the 50 most frequently mutant genes in
@@ -321,7 +321,7 @@ without LOH) as reference.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
 <span><span class="co">#&gt;   gene  metastatic_site class                   OR   low    up p.value</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Liver           Mutant TP53 with LOH  1.90  1.07  3.54  0.034<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Liver           Mutant TP53 with LOH  1.95  1.10  3.63  0.027<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
 <p>There is odds ratio (OR) of metastatising to the Liver for Mutant
 TP53 with LOH breast cancer is almost two-fold (OR = 1.9, p.value =
 0.03) with respect to mutant samples without LOH.</p>
