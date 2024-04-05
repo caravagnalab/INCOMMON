@@ -89,10 +89,9 @@ classify = function(x,
 
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
 
-    list(
-      fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
-      # posterior = posterior
-    )
+    fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
+
+    return(fit)
   }
 
   if(parallel){
@@ -107,13 +106,13 @@ classify = function(x,
     tests = do.call(rbind, tests) %>% t()
   } else {
 
-    tests = sapply(ids(x), function(id) {
+    tests = lapply(ids(x), function(id) {
       classify_single_mutation(x = x, id = id)
     })
 
   }
 
-    output$classification$fit = tests['fit', ] %>% do.call(rbind, .)
+    output$classification$fit = tests %>% do.call(rbind, .)
     output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff,
                                                      rho = rho,
                                                      karyotypes = list(karyotypes))
