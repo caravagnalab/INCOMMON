@@ -105,6 +105,8 @@ classify = function(x,
                                mc.cores = num_cores)
 
     tests = do.call(rbind, tests) %>% t()
+
+    colnames(tests) = ids(x)
   } else {
 
     tests = sapply(ids(x), function(id) {
