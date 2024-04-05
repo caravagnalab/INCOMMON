@@ -72,9 +72,20 @@ parameters = function(x) {
 posterior = function(x, id) {
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
-  stopifnot("posterior" %in% names(x$classification))
-  stopifnot(id %in% names(x$classification$posterior))
-  x$classification$posterior[[id]]
+  stopifnot("parameters" %in% names(x$classification))
+  posterior = compute_posterior(
+    NV = NV(x, id),
+    DP = DP(x, id),
+    gene = gene(x, id),
+    priors = priors,
+    tumor_type = tumor_type(x, id),
+    purity = purity(x, id),
+    entropy_cutoff = parameters(x)$entropy_cutoff,
+    rho = parameters(x)$rho,
+    karyotypes = unlist(parameters(x)$karyotypes)
+  )
+
+  return(posterior)
 }
 
 idify = function(x){

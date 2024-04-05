@@ -90,8 +90,8 @@ classify = function(x,
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
 
     list(
-      fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id'),
-      posterior = posterior
+      fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
+      # posterior = posterior
     )
   }
 
@@ -114,8 +114,9 @@ classify = function(x,
   }
 
     output$classification$fit = tests['fit', ] %>% do.call(rbind, .)
-    output$classification$posterior = tests['posterior', ]
-    output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff, rho = rho)
+    output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff,
+                                                     rho = rho,
+                                                     karyotypes = list(karyotypes))
 
     cli::cli_alert_info('There are: ')
     for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
