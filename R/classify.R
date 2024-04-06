@@ -103,7 +103,7 @@ classify = function(x,
                                x = x,
                                mc.cores = num_cores)
 
-    tests = do.call(rbind, tests) %>% t()
+    tests = do.call(rbind, tests)
   } else {
 
     tests = lapply(ids(x), function(id) {
