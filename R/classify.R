@@ -28,12 +28,6 @@ classify = function(x,
   stopifnot(inherits(x, "INCOMMON"))
   if(is.null(entropy_cutoff)) entropy_cutoff = 1
 
-  # Output
-
-  output = x
-
-  output$classification = list()
-
   cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
     )
@@ -110,21 +104,27 @@ classify = function(x,
 
   }
 
-    output$classification$fit = tests %>% do.call(rbind, .)
-    output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff,
-                                                     rho = rho,
-                                                     karyotypes = list(karyotypes))
-    output$classification$priors = priors
+  # Output
+
+  x$classification = list()
+
+  x$classification$fit = tests %>% do.call(rbind, .)
+  x$classification$parameters = dplyr::tibble(
+    entropy_cutoff = entropy_cutoff,
+    rho = rho,
+    karyotypes = list(karyotypes)
+  )
+  x$classification$priors = priors
 
     cli::cli_alert_info('There are: ')
     for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
-      N  = classification(output) %>% dplyr::filter(state == !!state) %>% nrow()
+      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
       cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
     }
 
-    mean_ent = classification(output) %>% dplyr::pull(entropy) %>% mean()
-    min_ent = classification(output) %>% dplyr::pull(entropy) %>% min()
-    max_ent = classification(output) %>% dplyr::pull(entropy) %>% max()
+    mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
+    min_ent = classification(x) %>% dplyr::pull(entropy) %>% min()
+    max_ent = classification(x) %>% dplyr::pull(entropy) %>% max()
 
     cli::cli_alert_info(
       'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'

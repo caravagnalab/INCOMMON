@@ -132,21 +132,21 @@ info = function(x, id){
 
 
 DP = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(DP)
 }
 
 NV = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(NV)
 }
 
 entropy = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   posterior(x, id) %>%
     dplyr::filter(NV == NV(x, id)) %>%
     dplyr::arrange(dplyr::desc(value)) %>%
@@ -156,21 +156,21 @@ entropy = function(x, id){
 
 
 VAF = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(VAF)
 }
 
 gene = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(gene)
 }
 
 get_gene_role = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$data %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(gene_role)
