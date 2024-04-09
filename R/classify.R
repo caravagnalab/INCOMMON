@@ -130,7 +130,7 @@ classify = function(x,
       'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
       )
 
-  return(output)
+  return(x)
 }
 
 
