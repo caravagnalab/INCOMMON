@@ -16,7 +16,7 @@
 #' @importFrom parallel mclapply detectCores
 
 classify = function(x,
-                    priors = INCOMMON::pcawg_priors,
+                    priors = pcawg_priors,
                     entropy_cutoff = 0.2,
                     rho = 0.01,
                     parallel = FALSE,
@@ -27,12 +27,6 @@ classify = function(x,
 
   stopifnot(inherits(x, "INCOMMON"))
   if(is.null(entropy_cutoff)) entropy_cutoff = 1
-
-  # Output
-
-  output = x
-
-  output$classification = list()
 
   cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
@@ -89,10 +83,9 @@ classify = function(x,
 
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
 
-    list(
-      fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
-      # posterior = posterior
-    )
+    fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
+
+    return(fit)
   }
 
   if(parallel){
@@ -103,36 +96,41 @@ classify = function(x,
                                FUN = classify_single_mutation,
                                x = x,
                                mc.cores = num_cores)
-
-    tests = do.call(rbind, tests) %>% t()
   } else {
 
-    tests = sapply(ids(x), function(id) {
+    tests = lapply(ids(x), function(id) {
       classify_single_mutation(x = x, id = id)
     })
 
   }
 
-    output$classification$fit = tests['fit', ] %>% do.call(rbind, .)
-    output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff,
-                                                     rho = rho,
-                                                     karyotypes = list(karyotypes))
+  # Output
+
+  x$classification = list()
+
+  x$classification$fit = tests %>% do.call(rbind, .)
+  x$classification$parameters = dplyr::tibble(
+    entropy_cutoff = entropy_cutoff,
+    rho = rho,
+    karyotypes = list(karyotypes)
+  )
+  x$classification$priors = priors
 
     cli::cli_alert_info('There are: ')
     for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
-      N  = classification(output) %>% dplyr::filter(state == !!state) %>% nrow()
+      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
       cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
     }
 
-    mean_ent = classification(output) %>% dplyr::pull(entropy) %>% mean()
-    min_ent = classification(output) %>% dplyr::pull(entropy) %>% min()
-    max_ent = classification(output) %>% dplyr::pull(entropy) %>% max()
+    mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
+    min_ent = classification(x) %>% dplyr::pull(entropy) %>% min()
+    max_ent = classification(x) %>% dplyr::pull(entropy) %>% max()
 
     cli::cli_alert_info(
       'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
       )
 
-  return(output)
+  return(x)
 }
 
 

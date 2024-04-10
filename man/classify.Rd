@@ -6,7 +6,7 @@
 \usage{
 classify(
   x,
-  priors = INCOMMON::pcawg_priors,
+  priors = pcawg_priors,
   entropy_cutoff = 0.2,
   rho = 0.01,
   parallel = FALSE,

@@ -1,7 +1,7 @@
 inst/doc
 docs
 .Rproj.user
-.Rhistory
+.Rhistory*
 logo.ai
 /doc/
 /Meta/

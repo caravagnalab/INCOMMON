@@ -32,7 +32,9 @@ reference:
   contents:
   - classification
   - parameters
+  - priors
   - posterior
+
 
 - title: INCOMMON Model
   desc: Functions to compute model likelihood and posterior distributions

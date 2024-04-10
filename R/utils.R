@@ -64,20 +64,37 @@ parameters = function(x) {
 
 #' Getter for class \code{'INCOMMON'}.
 #' @description
+#' Get model priors used for classification.
+#' @param x An obj of class \code{'INCOMMON'}.
+#' @return A dplyr::tibble containing prior distributions.
+#' @export
+#' @importFrom dplyr filter mutate rename select %>%
+priors = function(x) {
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("classification" %in% names(x))
+  stopifnot("priors" %in% names(x$classification))
+  x$classification$priors
+}
+
+
+#' Getter for class \code{'INCOMMON'}.
+#' @description
 #' Get the model posterior distribution of a mutation.
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @param id An identifier for the mutation as created by function `idify`.
 #' @return A table showing posterior distribution and entropy.
 #' @export
 posterior = function(x, id) {
+
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
   stopifnot("parameters" %in% names(x$classification))
+
   posterior = compute_posterior(
     NV = NV(x, id),
     DP = DP(x, id),
     gene = gene(x, id),
-    priors = priors,
+    priors = priors(x),
     tumor_type = tumor_type(x, id),
     purity = purity(x, id),
     entropy_cutoff = parameters(x)$entropy_cutoff,
@@ -115,21 +132,21 @@ info = function(x, id){
 
 
 DP = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(DP)
 }
 
 NV = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(NV)
 }
 
 entropy = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   posterior(x, id) %>%
     dplyr::filter(NV == NV(x, id)) %>%
     dplyr::arrange(dplyr::desc(value)) %>%
@@ -139,21 +156,21 @@ entropy = function(x, id){
 
 
 VAF = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(VAF)
 }
 
 gene = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(gene)
 }
 
 get_gene_role = function(x, id){
-  x = idify(x)
+  if(!("id" %in% colnames(x$input))) x = idify(x)
   x$data %>%
     dplyr::filter(id == !!id) %>%
     dplyr::pull(gene_role)
@@ -233,11 +250,13 @@ subset_sample = function(x, sample){
   class(out) = 'INCOMMON'
   if('classification' %in% names(x)) {
     cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
-    pr = x$classification$parameters
+    pm = x$classification$parameters
+    pr = x$classification$priors
+
 
     out$classification$fit = cl
-    out$classification$parameters = pr
-    out$classification$posterior = x$classification$posterior[ids(out)]
+    out$classification$parameters = pm
+    out$classification$priors = pr
   }
   return(out)
 }
