@@ -4,13 +4,14 @@
 #' produced by using function `classify`.
 #' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
 #' @param gene Gene for gene-specific prior.
+#' @param ... Default S3 method parameter.
 #' @return An object or a list of class \code{'ggplot2'}.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom patchwork wrap_plots
-plot_class_fraction = function(x, tumor_type, gene){
+plot_class_fraction = function(x, tumor_type, gene, ...){
 
-  toplot = class_frequency(x, tumor_type, gene)
+  toplot = class_frequency(x, tumor_type, gene, ...)
 
   if('state' %in% colnames(toplot)){
     p = toplot %>%

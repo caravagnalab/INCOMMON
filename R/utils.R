@@ -355,17 +355,23 @@ reduce_classes = function(x) {
 
 # Get class distribution for an intere cohort
 
-class_frequency = function(x, tumor_type, gene){
+class_frequency = function(x, tumor_type, gene, tier_1 = FALSE){
   if('state' %in% colnames(classification(x))){
     frequency_table = classification(x) %>%
-      # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+
+    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(state != 'Tier-2')
+
+    frequency_table = frequency_table %>%
       dplyr::group_by(state)
   }
   if('class' %in% colnames(classification(x))){
     frequency_table = classification(x) %>%
-      # dplyr::left_join(clinical_data(x) %>% dplyr::select(sample, tumor_type, purity), by = 'sample') %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type) %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+
+    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(!grepl('Tier-2', class))
+
+    frequency_table = frequency_table %>%
       dplyr::group_by(state, class)
   }
   frequency_table = frequency_table %>%
