@@ -9,6 +9,8 @@ classify(
   priors = pcawg_priors,
   entropy_cutoff = 0.2,
   rho = 0.01,
+  parallel = FALSE,
+  num_cores = NULL,
   karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
 }
@@ -21,6 +23,11 @@ or pan-cancer (PANCA) prior probabilities.}
 \item{entropy_cutoff}{Entropy cut-off for Tier-1 vs Tier-2 assignment.}
 
 \item{rho}{Over-dispersion parameter.}
+
+\item{parallel}{Whether to run the classification in parallel (default: FALSE)}
+
+\item{num_cores}{The number of cores to use for parallel classification.
+By default, it takes 80\% of the available cores.}
 
 \item{karyotypes}{Karyotypes to be included among the possible classes.}
 }

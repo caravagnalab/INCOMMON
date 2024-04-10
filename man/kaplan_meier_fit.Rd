@@ -7,16 +7,15 @@
 kaplan_meier_fit(x, tumor_type, gene)
 }
 \arguments{
-\item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results for
-multiple samples, as produced by using function \code{classify}.}
+\item{x}{An object of class \code{'INCOMMON'} containing the classification results
+as produced by function \code{classify}.}
 
-\item{tumor_type}{The selected tumor type.}
+\item{tumor_type}{The tumor type of patients to stratify.}
 
-\item{gene}{The selected gene.}
+\item{gene}{The gene on which patient's stratification is based.}
 }
 \value{
-An table containing the selected gene, tumor_type, the data table used to
-fit the model and an object of class \code{'survfit'}.
+An object of class \code{'INCOMMON'} containing an additional object \code{survival}.
 }
 \description{
 Fit Kaplan-Meier survival model based on INCOMMON classes.

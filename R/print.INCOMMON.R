@@ -7,16 +7,6 @@
 #' @import crayon
 #' @importFrom dplyr filter mutate rename select %>%
 #' @export
-#'
-#' @examples
-#' # Example input data from the MSK-MetTropism cohort, released with the package
-#' data(MSK_genomic_data)
-#' print(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' print(MSK_clinical_data)
-#' # Initialize the INCOMMON object (note the outputs to screen)
-#' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
-#' print(x)
 print.INCOMMON = function(x, ...) {
 
   stopifnot(inherits(x, "INCOMMON"))
@@ -50,14 +40,19 @@ print.INCOMMON = function(x, ...) {
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ INCOMMON ] ")),
-          'Classified mutations using Beta-Binomial model',
-                 'with overdispersion parameter {.field {parameters(x)$rho}} and entropy cutoff {.field {parameters(x)$entropy_cutoff}}',
+          'Classified mutations with overdispersion parameter {.field {parameters(x)$rho}} and entropy cutoff {.field {parameters(x)$entropy_cutoff}}',
           ''
         ))
-
-    lapply(classification(x)$tumor_type %>% unique(), class_frequency(x, tumor_type = tumor_type, gene = gene))
-
-      print(classification(x))
+    
+    
+    cli::cli_alert_info('There are: ')
+    for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
+      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
+      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
+    }
+    
+    
+    print(classification(x))
   } else{
 
     print(x$input)

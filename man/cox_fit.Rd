@@ -4,20 +4,31 @@
 \alias{cox_fit}
 \title{Fit multivariate Cox regression model based on INCOMMON classes.}
 \usage{
-cox_fit(x, gene, tumor_type, covariates = c("age", "sex", "tmb"))
+cox_fit(
+  x,
+  gene,
+  tumor_type,
+  survival_time,
+  survival_status,
+  covariates = c("age", "sex", "tmb")
+)
 }
 \arguments{
-\item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results for
-multiple samples, as produced by using function \code{classify}.}
+\item{x}{An object of class \code{'INCOMMON'} containing the classification results
+as produced by function \code{classify}.}
 
-\item{gene}{The selected gene.}
+\item{gene}{The gene on which patient's stratification is based.}
 
-\item{tumor_type}{The selected tumor type.}
+\item{tumor_type}{The tumor type of patients to stratify.}
 
-\item{covariates}{Covariates used in the multivariate regression.}
+\item{survival_time}{The variable in \code{clincal_data} to be used as survival time.}
+
+\item{survival_status}{The variable in \code{clincal_data} to be used as survival status.}
+
+\item{covariates}{The other covariates to be used in the mutlivariate regression.}
 }
 \value{
-An object of class \code{coxph}.
+An object of class \code{'INCOMMON'} containing an additional object \code{survival}.
 }
 \description{
 Fit multivariate Cox regression model based on INCOMMON classes.

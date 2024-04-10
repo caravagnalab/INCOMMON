@@ -22,7 +22,7 @@
 #' # Initialize the INCOMMON object (note the outputs to screen)
 #' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
 #' # An S3 method can be used to report to screen what is in the object
-#' print(x),
+#' print(x)
 init = function(genomic_data,
                 clinical_data,
                 gene_roles = INCOMMON::cancer_gene_census) {
@@ -102,7 +102,7 @@ init = function(genomic_data,
   unmatched_samples = c(setdiff(genomic_data$sample, clinical_data$sample), setdiff(clinical_data$sample, genomic_data$sample)) %>% unique()
 
   cli::cli_alert_success("Found {.field {length(matching_samples)}} matching samples")
-  if(length(unmatched_samples) != 0) cli::cli_alert_danger("Found {.field {length(unmatched_samples)}} matching samples") else  cli::cli_alert_success("No mismatched samples")
+  if(length(unmatched_samples) != 0) cli::cli_alert_danger("Found {.field {length(unmatched_samples)}} unmatched samples") else  cli::cli_alert_success("No mismatched samples")
 
   # Flag unusable mutations
 

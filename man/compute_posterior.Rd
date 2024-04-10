@@ -31,6 +31,8 @@ compute_posterior(
 
 \item{entropy_cutoff}{Cut-off on entropy for Tier-1/Tier-2 distinction.}
 
+\item{rho}{The over-dispersion parameter.}
+
 \item{karyotypes}{Karyotypes to be included among the possible classes.}
 }
 \value{

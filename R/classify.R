@@ -6,39 +6,27 @@
 #' @param entropy_cutoff Entropy cut-off for Tier-1 vs Tier-2 assignment.
 #' @param rho Over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
+#' @param parallel Whether to run the classification in parallel (default: FALSE)
+#' @param num_cores The number of cores to use for parallel classification.
+#' By default, it takes 80% of the available cores.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
-#' @examples
-#' # Example input data from the MSK-MetTropism cohort, released with the package
-#' data(MSK_genomic_data)
-#' print(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' print(MSK_clinical_data)
-#' # Initialize the INCOMMON object (note the outputs to screen)
-#' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
-#' # Classify mutations in the first sample
-#'
-#' print(x),
+#' @importFrom parallel mclapply detectCores
 
 classify = function(x,
                     priors = pcawg_priors,
                     entropy_cutoff = 0.2,
                     rho = 0.01,
+                    parallel = FALSE,
+                    num_cores = NULL,
                     karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
 )
   {
 
   stopifnot(inherits(x, "INCOMMON"))
   if(is.null(entropy_cutoff)) entropy_cutoff = 1
-
-  # Output
-
-  output = x
-
-  if (!("classification" %in% names(output)))
-    output$classification = list()
 
   cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
@@ -59,7 +47,7 @@ classify = function(x,
       info(x, id)
 
       cli_alert_warning(text = "Keeping first row by default (check your input data)")
-      w = which(data(x)$id==id)
+      w = which(ids(x)==id)
       x$data = x$data[-w[2:length(w)],]
     }
 
@@ -95,21 +83,54 @@ classify = function(x,
 
     map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
 
-    list(
-      fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id'),
-      posterior = posterior
-    )
+    fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
+
+    return(fit)
   }
 
-    tests = sapply(ids(x), function(id) {
+  if(parallel){
+
+    if(is.null(num_cores)) num_cores = as.integer(0.8*parallel::detectCores())
+
+    tests = parallel::mclapply(X = ids(x),
+                               FUN = classify_single_mutation,
+                               x = x,
+                               mc.cores = num_cores)
+  } else {
+
+    tests = lapply(ids(x), function(id) {
       classify_single_mutation(x = x, id = id)
     })
 
-    output$classification$fit = tests['fit', ] %>% do.call(rbind, .)
-    output$classification$posterior = tests['posterior', ]
-    output$classification$parameters = dplyr::tibble(entropy_cutoff = entropy_cutoff, rho = rho)
+  }
 
-  return(output)
+  # Output
+
+  x$classification = list()
+
+  x$classification$fit = tests %>% do.call(rbind, .)
+  x$classification$parameters = dplyr::tibble(
+    entropy_cutoff = entropy_cutoff,
+    rho = rho,
+    karyotypes = list(karyotypes)
+  )
+  x$classification$priors = priors
+
+    cli::cli_alert_info('There are: ')
+    for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
+      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
+      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
+    }
+
+    mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
+    min_ent = classification(x) %>% dplyr::pull(entropy) %>% min()
+    max_ent = classification(x) %>% dplyr::pull(entropy) %>% max()
+
+    cli::cli_alert_info(
+      'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
+      )
+
+  return(x)
 }
 
 

@@ -1,38 +1,52 @@
 #' Visualize frequency distribution of INCOMMON classes.
 #'
-#' @param x A list of objects of class \code{'INCOMMON'} containing the classification results, as 
+#' @param x A list of objects of class \code{'INCOMMON'} containing the classification results, as
 #' produced by using function `classify`.
+#' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
+#' @param gene Gene for gene-specific prior.
 #' @return An object or a list of class \code{'ggplot2'}.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>% 
-#' @examples
-#' data = data_MSK %>% filter(gene == 'KRAS', tumor_type 'PAAD')
-#' samples = unique(data$sample)[1:10]
-#' classified_data = lapply(samples, function(s){
-#' x = init(mutations = data %>% filter(sample==s),
-#'          sample = s,
-#'          purity = data %>% filter(sample==s) %>% purity(),
-#'          tumor_type = data %>% filter(sample==s) %>% tumor_type())
-#' x = classify(
-#'     x = x, 
-#'     priors = NULL,
-#'     entropy_cutoff = 0.2,
-#'     rho = 0.01,
-#'     karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-#'     )
-#' })
-#
-#' plot_class_fraction(x, tumor_type = 'PAAD', gene = 'KRAS')
-#' 
+#' @importFrom dplyr filter mutate rename select %>%
+#' @importFrom patchwork wrap_plots
 plot_class_fraction = function(x, tumor_type, gene){
-  toplot = class_frequency(classified_data, tumor_type, gene)
-  toplot %>% 
-    ggplot2::ggplot()+
-    ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = state), stat = 'identity')+
-    scale_color_INCOMMON_class(aes = 'fill')+
-    ggplot2::xlab('')+ggplot2::ylab('Fraction')+
-    ggplot2::coord_flip()+
-    CNAqc:::my_ggplot_theme(cex = .8)+
-    ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'))+
-    ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
+
+  toplot = class_frequency(x, tumor_type, gene)
+
+  if('state' %in% colnames(toplot)){
+    p = toplot %>%
+      ggplot2::ggplot()+
+      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = state), stat = 'identity')+
+      scale_color_INCOMMON_class(aes = 'fill')+
+      ggplot2::xlab('')+ggplot2::ylab('Fraction')+
+      ggplot2::coord_flip()+
+      CNAqc:::my_ggplot_theme(cex = .8)+
+      ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON state'))+
+      ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
+  }
+
+  if('class' %in% colnames(toplot)){
+    p2 = toplot %>%
+      dplyr::mutate(class = dplyr::case_when(
+        grepl('with LOH', class) ~ 'with LOH',
+        grepl('without LOH', class) ~ 'without LOH',
+        grepl('with AMP', class) ~ 'with AMP',
+        grepl('without AMP', class) ~ 'without AMP',
+        grepl('Tier-2', class) ~ 'Tier-2',
+      )) %>%
+      ggplot2::ggplot()+
+      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = class), stat = 'identity')+
+      scale_color_INCOMMON_high_level_class(aes = 'fill')+
+      ggplot2::xlab('')+ggplot2::ylab('Fraction')+
+      ggplot2::coord_flip()+
+      CNAqc:::my_ggplot_theme(cex = .8)+
+      ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'))+
+      ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
+
+    p = patchwork::wrap_plots(p, p2, ncol = 1)
+  }
+
+  cli::cli_alert_info('The frequency of states {.field {toplot$state}} are {.field {round(toplot$frequency,2)}}')
+
+  return(p)
+
 }

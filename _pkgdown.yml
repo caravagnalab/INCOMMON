@@ -6,41 +6,53 @@ reference:
 - title: Available data
   desc:  Datasets included in the package.
   contents:
-  - example_data
+  - MSK_genomic_data
+  - MSK_clinical_data
   - pcawg_priors
   - cancer_gene_census
-  - data_MSK
-  
+
 - title: INCOMMON classification
   desc:  Main functions to classify mutations
   contents:
   - init
   - classify
-  
+
 - title: Visualisation
   desc: Functions to plot INCOMMON classification results
   contents:
   - plot_classification
   - print.INCOMMON
   - plot_class_fraction
-  
+  - plot_prior
+  - plot_met_volcano
+  - plot_tropism
+
 - title: Getter Functions
   desc:  Functions to extract model information
   contents:
   - classification
   - parameters
+  - priors
   - posterior
-  
+
+
 - title: INCOMMON Model
   desc: Functions to compute model likelihood and posterior distributions
   contents:
   - compute_likelihood
   - compute_posterior
-  
+  - genome_interpreter
+
 - title: Survival analysis with INCOMMON classes
   desc: Functions to perform survival analysis with patient stratificaiton based on INCOMMON classes
   contents:
   - kaplan_meier_fit
   - cox_fit
   - plot_survival_analysis
+
+- title: Metastatic pattern analysis with INCOMMON classes
+  desc: Functions to perform metastatic propensity and tropism analysis with INCOMMON interpreted tumor genomes
+  contents:
+  - met_propensity
+  - met_tropism
 

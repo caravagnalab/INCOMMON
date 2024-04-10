@@ -1,0 +1,140 @@
+---
+title: "2. Inference of copy number and mutation multiplicity"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{2. Inference of copy number and mutation multiplicity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=TRUE)
+```
+
+```{r setup}
+library(INCOMMON)
+library(dplyr)
+library(DT)
+```
+
+In this vignette, we classify mutations from a single sample of the MSK-MetTropsim dataset 
+provided within the package.
+
+## 2.1 Input preparation
+
+The minimal input for INCOMMON analyses consists of two pieces.
+
+### 2.1.1 Genomic data
+
+First we need a table
+of `genomic_data` (mutations) with required columns `chr`, `from`, `to`, `ref`, `alt`,
+`DP`, `NV`, `VAF`, and `gene`.
+
+The following example is taken from the internal dataset obtained from the MSK-MetTropism
+cohort:
+
+
+```{r, echo = FALSE}
+data('MSK_genomic_data')
+
+datatable(head(MSK_genomic_data, n = 500), filter = 'top')
+```
+
+### 2.1.2 Clinical data
+
+Second, we need a table of clinical data with at least the columns  `sample` (sample names matching the ones in `genomic_data`) and `purity` (purity of each sample).
+For the INCOMMMON classification task, it might be helpful to have also 
+a column `tumor_type` specifying the tumour type of the sample, required
+for using tumour-specific priors. The following example is taken from the internal dataset obtained from the MSK-MetTropism
+cohort:
+
+```{r, echo = FALSE}
+data('MSK_clinical_data')
+
+datatable(head(MSK_clinical_data, n = 500), filter = 'top')
+```
+
+## 2.2 Classification of sample 'P-0002081'
+
+We now focus on a specific sample:
+
+```{r}
+sample = 'P-0002081'
+
+genomic_data = MSK_genomic_data %>% filter(sample == !!sample)
+clinical_data = MSK_clinical_data %>% filter(sample == !!sample)
+
+print(genomic_data)
+print(clinical_data)
+```
+
+By inspecting the clinical data table, we can see that this is a sample of a metastatic lung adenocarcinoma (LUAD), with purity 0.6, sequenced through the MSK-IMPACT targeted panel version 341.
+
+The genomic data table contains 4 mutations affecting KRAS, TP53, STK11 and SMARCA4 genes.
+
+### 2.2.1 Initialisation of the input
+
+The first thing to do is to initialise the input so that we will have it in INCOMMON format, through function `init`. This function takes as input the tables of `genomic_data` and
+`clinical_data`, plus optionally, a list of gene roles.
+
+INCOMMON provides a default list `cancer_gene_census` obtained from the COSMIC Cancer Gene Census v.98. The required format is as following:
+
+```{r, echo = FALSE}
+data("cancer_gene_census")
+
+datatable(cancer_gene_census, filter = 'top')
+```
+
+Let's have a look at the output of function `init`:
+
+```{r}
+x = init(genomic_data = genomic_data, 
+         clinical_data = clinical_data, 
+         gene_roles = cancer_gene_census)
+
+print(x)
+```
+
+All the requirements for INCOMMON classification are satisfied. The average sequencing
+depth is 380. Mutations flagged are PASS are the ones that satisfy the requirements
+for INCOMMON classification: available, non-negative sample purity, integer sequencing 
+depth and number of reads with the variant, character gene names etc. In this sample,
+all 4 mutations have all the required information.
+
+### 2.2.2 Running the INCOMMON classifier
+
+We now run the classification step through function `classify`, using the default
+priors (see the [dedicated section](a1_pcawg_priors.html)), entropy cutoff, and
+over-dispersion parameter. 
+
+```{r}
+x = classify(x = x, 
+             priors = pcawg_priors, 
+             entropy_cutoff = 0.2,
+             rho = 0.01)
+```
+There are 3 mutant genes with loss of heterozygosty (LOH) 1 with amplification of the mutant allele (AM). The average entropy of 0.04 indicates a high confidence of the classification, with the largest uncertainty being 0.07.
+
+```{r}
+print(x)
+```
+
+The only mutant oncogene in the sample is KRAS, that is mutated with amplification,
+whereas all the TSGs (TP53, SMARCA4, STK11) are in LOH.
+
+## 2.3 Visualising INCOMMON classification 
+
+INCOMMON allows visualising a representation of the maximum a posteriori
+classification through function `plot_classification`.
+
+```{r}
+plot_classification(x, sample = sample, assembly = T)
+```
+
+These plots show the posterior mixtures of Beta-Binomial distributions (one for each INCOMMON
+class) spanning the total sequencing depth of the mutation site. Each color and marker shape identify a different combination of ploidy and multiplicity. The vertical dashed line corresponds to the number of reads with the variant $NV$, whereas the horizontal line corresponds to the value of the classification entropy. 

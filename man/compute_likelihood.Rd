@@ -12,6 +12,8 @@ compute_likelihood(NV, DP, prob, rho)
 \item{DP}{Sequencing coverage of the mutated genome site.}
 
 \item{prob}{Success probability (expected VAF).}
+
+\item{rho}{The over-dispersion parameter.}
 }
 \value{
 A vector of probability densities (from NV = 1 to NV = DP).

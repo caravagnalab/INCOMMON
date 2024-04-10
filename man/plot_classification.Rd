@@ -4,29 +4,20 @@
 \alias{plot_classification}
 \title{Visualize classification results for individual observations.}
 \usage{
-plot_classification(x, assembly = F)
+plot_classification(x, sample, assembly = F)
 }
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} containing the classification results, as
 produced by function \code{classify}.}
+
+\item{sample}{Sample name from the dataset.}
+
+\item{assembly}{Whether to assemble plots of mutations from the same sample in
+a multi-faceted plot.}
 }
 \value{
 An object or a list of objects of class \code{'ggplot2'}.
 }
 \description{
 Visualize classification results for individual observations.
-}
-\examples{
-x = init(mutations = example_data$data,
-         sample = example_data$sample,
-         purity = example_data$purity,
-         tumor_type = example_data$tumor_type)
-x = classify(
-    x = x, 
-    priors = NULL,
-    entropy_cutoff = 0.2,
-    rho = 0.01,
-    karyotypes = c("1:0","1:1","2:0","2:1","2:2")
-    )
-plot_classification(x = x)
 }

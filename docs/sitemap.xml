@@ -16,10 +16,37 @@
     <loc>caravagnalab.github.io/INCOMMON/articles/INCOMMON.html</loc>
   </url>
   <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a1_classify_mutations.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a1_pcawg_priors.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a2_classify_mutations.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a2_survival_analysis.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a3_genome_interpreter.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a3_metastasis_analysis.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.html</loc>
+  </url>
+  <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/classify-and-plot.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/articles/metastasis_analysis.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/articles/survival_analysis.html</loc>
@@ -31,7 +58,10 @@
     <loc>caravagnalab.github.io/INCOMMON/index.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/binomial_test.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/MSK_clinical_data.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/MSK_genomic_data.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/cancer_gene_census.html</loc>
@@ -61,43 +91,7 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/example_data.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/gene_classification.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_DP.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_NV.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_VAF.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_classes.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_classifier.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_coord.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_gene.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_id.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_params.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_purity_bmix.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_purity_estimate.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/get_reliability.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/genome_interpreter.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/index.html</loc>
@@ -109,7 +103,10 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/models_avail.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/met_propensity.html</loc>
+  </url>
+  <url>
+    <loc>caravagnalab.github.io/INCOMMON/reference/met_tropism.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/parameters.html</loc>
@@ -118,28 +115,16 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/pcawg_priors.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot.INCOMMON.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot.TAPACLOTH.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_bmix.html</loc>
-  </url>
-  <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_class_fraction.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_gene.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_met_volcano.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_heatmap.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_summary.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_prior.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_survival_analysis.html</loc>
@@ -148,7 +133,7 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/plot_tapacloth.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_test.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/plot_tropism.html</loc>
   </url>
   <url>
     <loc>caravagnalab.github.io/INCOMMON/reference/posterior.html</loc>
@@ -157,12 +142,6 @@
     <loc>caravagnalab.github.io/INCOMMON/reference/print.INCOMMON.html</loc>
   </url>
   <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/print.TAPACLOTH.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/run_classifier.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/test_setup.html</loc>
+    <loc>caravagnalab.github.io/INCOMMON/reference/priors.html</loc>
   </url>
 </urlset>

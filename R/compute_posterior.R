@@ -7,11 +7,12 @@
 #' @param purity Purity of the sample.
 #' @param tumor_type Tumor type of the sample.
 #' @param entropy_cutoff Cut-off on entropy for Tier-1/Tier-2 distinction.
+#' @param rho The over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
-#' @return A table including ploidy, multiplicity, posterior probability, 
+#' @return A table including ploidy, multiplicity, posterior probability,
 #' and classification entropy.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>% 
+#' @importFrom dplyr filter mutate rename select %>%
 #' @examples
 #'compute_posterior(
 #' NV = 170,
@@ -36,39 +37,39 @@ compute_posterior = function(NV,
                          karyotypes)
 {
   NV_x = 1:DP
-  
+
   # Density
   db = function(Major, minor, prior, gene)
   {
-    
+
     expected_peaks = CNAqc:::expected_vaf_peak(Major, minor, purity)$peak
-    
+
     lapply(expected_peaks %>% seq_along(), function(p) {
-      
+
       # Classification label
       label = paste0(Major + minor, 'N (Mutated: ', p, "N)")
-      
+
       if(is.data.frame(prior)){
         if(!(label %in% prior$label)) cli::cli_alert_danger("Incomplete prior distribution!")
         stopifnot(label %in% prior$label)
         prior = prior %>% dplyr::filter(label == !!label) %>% dplyr::pull(p)
       }
-      
+
       # Expected VAF peak of mixture component
       expected_peak = expected_peaks[p]
-      
+
       # Beta-Binomial likelihood distribution
       likelihood = compute_likelihood(NV = NV_x, DP = DP, prob = expected_peak, rho = rho)
-      
+
       # # Posterior distribution
       # if (is.null(priors)){
       #   prior = 1
       # } else {
       #   prior = get_prior(priors, gene, tumor_type, label)
       # }
-      
+
       posterior = prior*likelihood
-      
+
       # Output
       out = data.frame(
         value = posterior,
@@ -81,15 +82,15 @@ compute_posterior = function(NV,
         label = label,
         peak = expected_peak
       )
-      
+
       out
-      
+
     }) %>%
       do.call(dplyr::bind_rows, .)
   }
-  
+
   if(is.na(purity)){
-    cli_alert_warning(text = 
+    cli_alert_warning(text =
                         "With purity {.field {purity}} classification is not possible."
     )
     return(dplyr::tibble(ploidy = NA,
@@ -98,7 +99,7 @@ compute_posterior = function(NV,
                   label = NA,
                   density = list(NULL)))
   }
-  
+
   # Compute posterior distribution of 0 < NV <= DP for each component of the mixture (karyotype)
   # Prior distribution
   if (is.null(priors)){
@@ -108,21 +109,22 @@ compute_posterior = function(NV,
   }
   posterior = lapply(karyotypes, function(k) {
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
-    db(Major = alleles[1], 
-       minor = alleles[2], 
-       prior =  prior, 
+    db(Major = alleles[1],
+       minor = alleles[2],
+       prior =  prior,
        gene = gene)
-  }) %>% 
+  }) %>%
     dplyr::bind_rows()
 
   # Compute entropy
-  posterior = posterior %>% 
-    dplyr::group_by(NV) %>% 
-    dplyr::reframe(value, NV, Major, minor, ploidy, multiplicity, karyotype, label, peak, 
-                   entropy = -sum(value*log2(value)))
-  
+  posterior = posterior %>%
+    dplyr::group_by(NV) %>%
+    dplyr::reframe(value, NV, Major, minor, ploidy, multiplicity, karyotype, label, peak,
+                   entropy = -sum(value*log2(max(value, .Machine$double.xmin)))) # entropy formula replacing zeros with minimum
+                                                                                 # machine floating number
+
   # Apply entropy cutoff
-  posterior = posterior %>% 
+  posterior = posterior %>%
     dplyr::mutate(state = dplyr::case_when(
       label %in% c('4N (Mutated: 1N)', '3N (Mutated: 1N)') | entropy > entropy_cutoff ~ 'Tier-2',
       entropy <= entropy_cutoff & label %in% c("2N (Mutated: 1N)") ~ "HMD",
@@ -130,7 +132,7 @@ compute_posterior = function(NV,
       entropy <= entropy_cutoff & label %in% c("2N (Mutated: 2N)") ~ "CNLOH",
       entropy <= entropy_cutoff & label %in% c("3N (Mutated: 2N)", "4N (Mutated: 2N)") ~ "AM"
     ))
-  
+
   return(posterior)
 }
-  
+
