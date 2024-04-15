@@ -47,6 +47,8 @@ kaplan_meier_fit = function(x, tumor_type, gene, survival_time, survival_status)
     fit = survival::survfit(formula = formula %>% stats::as.formula(),
                             data = data)
 
+    fit$call$formula = formula
+
     names(fit$strata) = gsub(fit$strata %>% names(),
                              pattern = 'group=',
                              replacement = '')
