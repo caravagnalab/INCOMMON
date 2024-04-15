@@ -412,7 +412,7 @@ prepare_km_fit_input = function(x, tumor_type, gene){
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
 
-forest_plot = function(x){
+forest_plot = function(x, baseline = FALSE){
 
   if(is.null(x)) return(NULL)
   s = summary(x)
@@ -451,11 +451,20 @@ forest_plot = function(x){
       TRUE ~ var
     ))
 
-  levels = c(
-    grep('WT', unique(x$xlevels$group), value = T),
-    grep('without', unique(x$xlevels$group), value = T),
-    grep('with ', unique(x$xlevels$group), value = T)
-  )
+  if(baseline){
+    levels = c(
+      grep('WT', unique(x$xlevels$group), value = T),
+      grep('Mutant', unique(x$xlevels$group), value = T)
+    )
+  } else {
+    levels = c(
+      grep('WT', unique(x$xlevels$group), value = T),
+      grep('without', unique(x$xlevels$group), value = T),
+      grep('with ', unique(x$xlevels$group), value = T)
+    )
+  }
+
+
   for(c in names(x$xlevels)[-1]){
     levels = c(levels, grep(c, toplot$var, value = T, ignore.case = T) %>% rev())
   }
@@ -515,11 +524,15 @@ scale_color_INCOMMON_class = function(aes = 'fill'){
 
 # INCOMMON survival groups
 
-surv_colors = function(gene_role) {
-  if(gene_role == 'TSG')
-    out = c('gainsboro', 'forestgreen','goldenrod1')
-  else
-    out = c('gainsboro', 'forestgreen','purple3')
+surv_colors = function(gene_role, baseline = FALSE) {
+
+  if(baseline)
+  {out = c('gainsboro', 'steelblue')} else {
+    if(gene_role == 'TSG')
+      out = c('gainsboro', 'forestgreen','goldenrod1')
+    else
+      out = c('gainsboro', 'forestgreen','purple3')
+  }
   return(out)
 }
 
