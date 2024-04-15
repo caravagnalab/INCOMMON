@@ -4,6 +4,8 @@
 #' as produced by function `classify`.
 #' @param tumor_type The tumor type of patients to stratify.
 #' @param gene The gene on which patient's stratification is based.
+#' @param survival_time The variable in `clincal_data` to be used as survival time.
+#' @param survival_status The variable in `clincal_data` to be used as survival status.
 #' @return An object of class \code{'INCOMMON'} containing an additional object `survival`.
 #' @export
 #' @importFrom dplyr filter mutate rename select %>%
