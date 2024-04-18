@@ -211,11 +211,11 @@ mutant_samples = function(x, tumor_type, gene) {
                   gene == !!gene) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
-    dplyr::reframe(class = unique(class)) %>%
+    dplyr::reframe(class = unique(class), gene_role) %>%
     dplyr::filter(!grepl('Tier-2', class)) %>%
     dplyr::left_join(clinical_data(x), by = 'sample') %>%
-    dplyr::mutate(gene = !!gene) %>%
-    dplyr::left_join(cancer_gene_census, by = 'gene')
+    dplyr::mutate(gene = !!gene)
+    # dplyr::left_join(cancer_gene_census, by = 'gene')
 }
 
 # Get WT samples by tumour and gene
@@ -231,8 +231,8 @@ wt_samples = function(x, tumor_type, gene) {
     dplyr::mutate(gene = !!gene) %>%
     dplyr::left_join(clinical_data(x), by = 'sample') %>%
     dplyr::mutate(class = paste0(gene, ' WT')) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(cancer_gene_census, by = 'gene')
+    dplyr::ungroup()
+    # dplyr::left_join(cancer_gene_census, by = 'gene')
 }
 
 # Subset object by sample
@@ -405,9 +405,13 @@ class_frequency = function(x, tumor_type, gene, tier_1 = FALSE){
 # Prepare input for Kaplan-Meier fit
 
 prepare_km_fit_input = function(x, tumor_type, gene){
+  mut = mutant_samples(x = x, tumor_type = tumor_type, gene = gene)
+  wt = wt_samples(x = x, tumor_type = tumor_type, gene = gene) %>%
+    dplyr::mutate(gene_role = unique(mut_samples$gene_role))
+
   rbind(
-    mutant_samples(x = x, tumor_type = tumor_type, gene = gene),
-    wt_samples(x = x, tumor_type = tumor_type, gene = gene)
+    mut,
+    wt
   ) %>%
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
