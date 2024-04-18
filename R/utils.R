@@ -407,7 +407,7 @@ class_frequency = function(x, tumor_type, gene, tier_1 = FALSE){
 prepare_km_fit_input = function(x, tumor_type, gene){
   mut = mutant_samples(x = x, tumor_type = tumor_type, gene = gene)
   wt = wt_samples(x = x, tumor_type = tumor_type, gene = gene) %>%
-    dplyr::mutate(gene_role = unique(mut_samples$gene_role))
+    dplyr::mutate(gene_role = unique(mut$gene_role))
 
   rbind(
     mut,
