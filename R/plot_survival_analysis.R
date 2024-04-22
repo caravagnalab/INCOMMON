@@ -96,11 +96,35 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
   baseline_forest_plot = forest_plot(baseline_cox_fit, baseline = TRUE)
   incommon_forest_plot = forest_plot(incommon_cox_fit, baseline = FALSE)
 
+  baseline_forest_plot$data = baseline_forest_plot$data %>%
+    full_join(incommon_forest_plot$data %>%
+                select(var) %>%
+                unique())
+
+  incommon_levels = incommon_forest_plot$data$var %>% levels()
+
+  incommon_forest_plot$data = incommon_forest_plot$data %>%
+    full_join(baseline_forest_plot$data %>%
+                select(var) %>%
+                unique())
+
+  levels = baseline_forest_plot$data$var %>% levels()
+
+
+  levels[(length(levels)-2):length(levels)] =
+    incommon_levels[(length(incommon_levels)-2):length(incommon_levels)]
+
+  baseline_forest_plot$data$var = factor(baseline_forest_plot$data$var, levels = levels)
+  incommon_forest_plot$data$var = factor(incommon_forest_plot$data$var, levels = levels)
+
+  incommon_forest_plot = incommon_forest_plot+
+    theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+
   patchwork::wrap_plots(baseline_km_plot$plot,
                         incommon_km_plot$plot,
                         baseline_km_plot$table,
                         incommon_km_plot$table,
                         baseline_forest_plot,
-                        incommon_forest_plot,
+                        incommon_forest_plot+theme(axis.title.y = element_blank(), axis.text.y = element_blank()),
                         design = 'AB\nAB\nAB\nCD\nEF\nEF')
 }
