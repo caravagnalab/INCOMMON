@@ -60,22 +60,24 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
       fontsize = 4,
       risk.table = TRUE,
       risk.table.col = "strata",
-      table.fontsize = 0.1,
+      risk.table.fontsize = 3,
       ggtheme = CNAqc:::my_ggplot_theme(cex = .8),
       tables.theme = CNAqc:::my_ggplot_theme(cex = .8),
+      risk.table.y.text = FALSE,
       palette = surv_colors(unique(km_data$gene_role), baseline)
     )
 
-    plot$plot$data$tumor_type = unique(km_data$tumor_type)
-    plot$data.survplot$tumor_type = unique(km_data$tumor_type)
+    plot$plot$data$id = paste0(unique(km_data$gene), " (",unique(km_data$tumor_type),")")
+    plot$data.survplot$id = paste0(unique(km_data$gene), " (",unique(km_data$tumor_type),")")
 
     plot$plot = plot$plot +
       ggplot2::xlab('') +
-      ggplot2::guides(color = 'none') + ggplot2::facet_wrap(~tumor_type)
+      ggplot2::guides(color = 'none') +
+      ggplot2::facet_wrap(~id, strip.position = 'right')
 
     plot$table = plot$table +
       ggplot2::ylab('') +
-      ggplot2::theme(legend.position = 'none')
+      ggplot2::theme(legend.position = 'none', title = element_blank())
 
     return(plot)
 
@@ -117,7 +119,11 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
   baseline_forest_plot$data$var = factor(baseline_forest_plot$data$var, levels = levels)
   incommon_forest_plot$data$var = factor(incommon_forest_plot$data$var, levels = levels)
 
+  # Remove unnecessary labels
   incommon_forest_plot = incommon_forest_plot+
+    theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+
+  incommon_km_plot$plot = incommon_km_plot$plot+
     theme(axis.title.y = element_blank(), axis.text.y = element_blank())
 
   patchwork::wrap_plots(baseline_km_plot$plot,
@@ -125,6 +131,6 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
                         baseline_km_plot$table,
                         incommon_km_plot$table,
                         baseline_forest_plot,
-                        incommon_forest_plot+theme(axis.title.y = element_blank(), axis.text.y = element_blank()),
+                        incommon_forest_plot,
                         design = 'AB\nAB\nAB\nCD\nEF\nEF')
 }
