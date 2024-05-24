@@ -77,7 +77,7 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
 
     plot$table = plot$table +
       ggplot2::ylab('') +
-      ggplot2::theme(legend.position = 'none', title = element_blank())
+      ggplot2::theme(legend.position = 'none', title = ggplot2::element_blank())
 
     return(plot)
 
@@ -121,10 +121,10 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
 
   # Remove unnecessary labels
   incommon_forest_plot = incommon_forest_plot+
-    theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+    theme(axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
 
   incommon_km_plot$plot = incommon_km_plot$plot+
-    theme(axis.title.y = element_blank(), axis.text.y = element_blank())
+    theme(axis.title.y = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank())
 
   patchwork::wrap_plots(baseline_km_plot$plot,
                         incommon_km_plot$plot,
