@@ -555,13 +555,15 @@ scale_color_INCOMMON_high_level_class = function(aes = 'fill'){
 
 # Tumour types
 scale_color_ttypes = function(aes = 'fill'){
-  tumor_colors = c("BRCA" = "#7D629E",
-                   "CHOL" = "#B96461",
-                   "PAAD" = "#EAB578",
-                   "CRC" = "#E4A6A7",
-                   "UCEC" = "#ABD5D0",
-                   "PRAD" = "#31482F",
-                   "MEL" = "#099668"
+  tumor_colors = c(
+    "BLCA" = "#A22E29",
+    "BRCA" = "#7D629E",
+    "CHOL" = "#B96461",
+    "PAAD" = "#EAB578",
+    "CRC" =  "#E4A6A7",
+    "UCEC" = "#ABD5D0",
+    "PRAD" = "#31482F",
+    "MEL" =  "#099668"
   )
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = tumor_colors)

@@ -17,7 +17,7 @@
 
 classify = function(x,
                     priors = pcawg_priors,
-                    entropy_cutoff = 0.2,
+                    entropy_cutoff = NULL,
                     rho = 0.01,
                     parallel = FALSE,
                     num_cores = NULL,
@@ -26,7 +26,7 @@ classify = function(x,
   {
 
   stopifnot(inherits(x, "INCOMMON"))
-  if(is.null(entropy_cutoff)) entropy_cutoff = 1
+  if(is.null(entropy_cutoff)) entropy_cutoff = 100
 
   cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
