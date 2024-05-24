@@ -10,6 +10,7 @@ reference:
   - MSK_clinical_data
   - pcawg_priors
   - cancer_gene_census
+  - MSK_classified
 
 - title: INCOMMON classification
   desc:  Main functions to classify mutations

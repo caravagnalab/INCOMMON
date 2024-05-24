@@ -67,3 +67,18 @@
 #' data(cancer_gene_census)
 #' cancer_gene_census
 "cancer_gene_census"
+
+#' Data from the MSK-MetTropism cohort classified with INCOMMON
+#' @docType data
+#'
+#' @description This is an INCOMMON object resulting from the classification of all the example data.
+#'
+#' @usage data(MSK_classified)
+#'
+#' @format An INCOMMON object with genomics, clinical data and classification results.
+#'
+#' @source "msk_classified_with_priors.rds" at Zenodo https://zenodo.org/records/10927218
+#' @examples
+#' data(MSK_classified)
+#' MSK_classified
+"MSK_classified"
