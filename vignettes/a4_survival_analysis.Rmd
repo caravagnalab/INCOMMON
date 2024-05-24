@@ -55,9 +55,9 @@ x = classify(
   x = x,
   priors = INCOMMON::pcawg_priors,
   entropy_cutoff = 0.2,
-  rho = 0.01
-  # parallel = TRUE, # uncomment these to run in parallel
-  # num_cores = 8
+  rho = 0.01,
+  parallel = TRUE, # uncomment these to run in parallel
+  num_cores = 8
 )
 ```
 
@@ -101,9 +101,16 @@ Across 1644 samples, a large fraction of KRAS mutations (35%) is associated with
 
 Next we use function `kaplan_meier_fit` to fit survival data (overall survival
 status versus overall survival months in this case) using the Kaplan-Meier estimator.
+Notice that we must choose the variables from `clinical_data` to be used as survival
+time and survival status ('OS_MONTHS' and 'OS_STATUS' in this case).
 
 ```{r}
-x = kaplan_meier_fit(x = x, tumor_type = 'PAAD', gene = 'KRAS')
+x = kaplan_meier_fit(
+  x = x, 
+  tumor_type = 'PAAD', 
+  gene = 'KRAS', 
+  survival_time = 'OS_MONTHS', 
+  survival_status = 'OS_STATUS')
 ```
 
 The median overall survival time decreases from 21.5 months for the KRAS WT group to 18.2 months for Mutant KRAS without amplification and further to 11.7 months for Mutant KRAS with amplification patients.

@@ -56,10 +56,10 @@ We can classify 7194 mutations across 1880 samples. The quality of these data is
 x = classify(
   x = x,
   priors = INCOMMON::pcawg_priors,
-  entropy_cutoff = 0.2,
-  rho = 0.01
-  # parallel = TRUE, # uncomment these to run in parallel
-  # num_cores = 8
+  entropy_cutoff = NULL,
+  rho = 0.01,
+  parallel = TRUE, # uncomment these to run in parallel
+  num_cores = 8
 )
 ```
 
@@ -67,9 +67,9 @@ x = classify(
 print(x)
 ```
 
-There are 3029 heterozygous diploid mutations (HMD), 352 mutations with loss of 
-heterozygosity (LOH), 1345 mutations with copy-neutral LOH (CNLOH), 694 mutations
-with amplification. In addition, 1774 mutations were classified as Tier-2, either 
+There are 3571 heterozygous diploid mutations (HMD), 387 mutations with loss of 
+heterozygosity (LOH), 1346 mutations with copy-neutral LOH (CNLOH), 696 mutations
+with amplification. In addition, 1194 mutations were classified as Tier-2, either 
 because of entropy being larger than the cutoff or because of a low number of mutant
 alleles relative to the WT.
 
@@ -102,7 +102,7 @@ For instance, TP53 that characterizes the most abundant genotypes:
 plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'TP53')
 ```
 
-There is high incidence (60%) of mutations with LOH in 609 mutant TP53 samples, the majority of which (51%) being copy-neutral (CNLOH). TP53 mutations without LOH represent 29% of the total, with a small fraction (9.8%) being Tier-2 mutations.
+There is high incidence (61%) of mutations with LOH in 609 mutant TP53 samples, the majority of which (51%) being copy-neutral (CNLOH). TP53 mutations without LOH represent 34% of the total, with a small fraction (9.8%) being Tier-2 mutations.
 
 We can also look at SPOP:
 
