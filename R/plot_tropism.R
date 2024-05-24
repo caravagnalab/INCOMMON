@@ -5,18 +5,26 @@
 #' @param tumor_type The tumour type for which classified data is available.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Estimate the metastatic tropism associated with mutant TP53, PIK3CA and CDH1 with vs without CNA,
+#' # in BRCA, with respect to Liver and Lymph
+#' for(g in c('TP53', 'PIK3CA', 'CDH1')){for(m in c('Liver', 'Lymph')){MSK_classified = met_tropism(x = MSK_classified, gene = g, tumor_type = 'BRCA', metastatic_site = m) }
+#' # Plot results in a volcano plot
+#' plot_tropism(x = MSK_classified, tumor_type = 'BRCA')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom ggrepel geom_label_repel
 
 plot_tropism = function(x, tumor_type){
   stopifnot(inherits(x, 'INCOMMON'))
   stopifnot('metastatic_tropism' %in% names(x))
-  
+
   stopifnot(tumor_type %in% names(x$metastatic_tropism))
   toplot = x$metastatic_tropism[[tumor_type]] %>%
     unlist(recursive = F) %>%
     do.call(rbind, .)
-  
+
   toplot = toplot %>%
     dplyr::mutate(
       prevalent = dplyr::case_when(
@@ -27,10 +35,10 @@ plot_tropism = function(x, tumor_type){
         TRUE ~ 'ns'
       )
     )
-  
+
   toplot %>%
     dplyr::filter(!is.na(low),
-                  !is.na(up)) %>% 
+                  !is.na(up)) %>%
     ggplot2::ggplot(ggplot2::aes(
       y = gene, x = log2(OR))) +
     ggplot2::geom_vline(xintercept = 0, linetype = 'longdash', color = 'indianred')+

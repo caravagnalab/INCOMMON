@@ -6,6 +6,11 @@
 #' @param gene The gene on which patient's stratification is based.
 #' @return An object of class \code{'INCOMMON'} containing an additional object `survival`.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Estimate the metastatic propensity associated with mutant TP53 with vs without CNA in BRCA.
+#' MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = 'TP53')
 #' @importFrom dplyr filter mutate rename select %>% as_tibble
 #' @importFrom survival Surv survfit
 #' @importFrom stats glm binomial confint

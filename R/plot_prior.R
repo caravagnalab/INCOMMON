@@ -6,6 +6,11 @@
 #' @param gene Gene for gene-specific prior.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Plot classification results for a specific sample
+#' plot_prior(x = MSK_classified, gene = 'TP53', tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
 

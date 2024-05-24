@@ -8,17 +8,10 @@
 #' @return An object or a list of class \code{'ggplot2'}.
 #' @export
 #' @examples
-#' # First load example data
-#' data(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' # Initialize the INCOMMON object (note the outputs to screen)
-#' x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
-#' # Run INCOMMON classification
-#' x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
-#' # Use the genome interpreter to get intepreted classifications
-#' x = genome_interpreter(x = x)
-#' # Plot the fraction of class
-#' x = genome_interpreter(x = x)
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Plot class fraction for a specific gene and tumour type
+#' plot_class_fraction(x = MSK_classified, tumor_type = 'LUAD', gene = 'KRAS')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom patchwork wrap_plots
 plot_class_fraction = function(x, tumor_type, gene, ...){

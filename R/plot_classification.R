@@ -8,16 +8,10 @@
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @examples
-#' # First load example data
-#' data(MSK_genomic_data)
-#' data(MSK_clinical_data)
-#' # Initialize the INCOMMON object with a specific sample
-#' sample = 'P-0002081'
-#' x = init(genomic_data = MSK_genomic_data %>% filter(sample == !!sample), clinical_data = MSK_clinical_data %>% filter(sample == !!sample))
-#' # Run INCOMMON classification
-#' x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
-#' # An S3 method can be used to report to screen what is in the object
-#' plot_classification(x = x, sample = sample)
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Plot classification results for a specific sample
+#' plot_classification(x = MSK_classified, sample = 'P-0002081')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_classification = function(x, sample, assembly = F){
 
