@@ -42,7 +42,14 @@ cohort:
 ```{r, echo = FALSE}
 data('MSK_genomic_data')
 
-datatable(head(MSK_genomic_data, n = 500), filter = 'top')
+datatable(
+  head(MSK_genomic_data, n = 500), filter = 'top', 
+  extensions = 'FixedColumns',
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    scrollCollapse = TRUE
+))
 ```
 
 ### 2.1.2 Clinical data
@@ -56,7 +63,14 @@ cohort:
 ```{r, echo = FALSE}
 data('MSK_clinical_data')
 
-datatable(head(MSK_clinical_data, n = 500), filter = 'top')
+datatable(
+  head(MSK_clinical_data, n = 500), filter = 'top', 
+  extensions = 'FixedColumns',
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    scrollCollapse = TRUE
+))
 ```
 
 ## 2.2 Classification of sample 'P-0002081'
@@ -109,13 +123,13 @@ all 4 mutations have all the required information.
 ### 2.2.2 Running the INCOMMON classifier
 
 We now run the classification step through function `classify`, using the default
-priors (see the [dedicated section](a1_pcawg_priors.html)), entropy cutoff, and
+priors (see the [dedicated section](a1_pcawg_priors.html)), no entropy cutoff, and
 over-dispersion parameter. 
 
 ```{r}
 x = classify(x = x, 
              priors = pcawg_priors, 
-             entropy_cutoff = 0.2,
+             entropy_cutoff = NULL,
              rho = 0.01)
 ```
 There are 3 mutant genes with loss of heterozygosty (LOH) 1 with amplification of the mutant allele (AM). The average entropy of 0.04 indicates a high confidence of the classification, with the largest uncertainty being 0.07.
