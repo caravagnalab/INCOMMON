@@ -12,6 +12,17 @@
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
+#' @examples
+#' # Example classification run on a single sample
+#' # First load example data
+#' data(MSK_genomic_data)
+#' data(MSK_clinical_data)
+#' # Initialize the INCOMMON object (note the outputs to screen)
+#' x = init(genomic_data = MSK_genomic_data[1:3,], clinical_data = MSK_clinical_data)
+#' # Run INCOMMON classification
+#' x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
+#' # An S3 method can be used to report to screen what is in the object
+#' print(x)
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom parallel mclapply detectCores
 
