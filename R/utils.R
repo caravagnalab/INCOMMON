@@ -34,6 +34,11 @@ tumor_type = function(x, id){
 #' @param x An object of class \code{'INCOMMON'}.
 #' @return A table with classified data.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Get classification results
+#' classification(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
 classification = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
@@ -53,6 +58,11 @@ classification = function(x) {
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @return A dplyr::tibble containing parameters for all the models used in the classification.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Get classification parameters
+#' parameters(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
 parameters = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
@@ -68,6 +78,11 @@ parameters = function(x) {
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @return A dplyr::tibble containing prior distributions.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Get priors used in classification
+#' priors(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
 priors = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
@@ -84,6 +99,11 @@ priors = function(x) {
 #' @param id An identifier for the mutation as created by function `idify`.
 #' @return A table showing posterior distribution and entropy.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Get posterior distribution of a specific mutation using sample:chr:from:to:ref:alt as id
+#' posterior(MSK_classified, id = 'P-0028912-T01-IM6:chr17:7577121:7577121:G:A:133:837')
 posterior = function(x, id) {
 
   stopifnot(inherits(x, "INCOMMON"))
