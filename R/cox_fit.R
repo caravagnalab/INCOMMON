@@ -15,7 +15,7 @@
 #' # First load example classified data
 #' data(MSK_classified)
 #' # Perform Cox regression based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
-#'cox_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS', covariates = c('age', 'sex', 'tmb'), tmb_method = ">10")
+#' cox_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS', covariates = c('age', 'sex', 'tmb'), tmb_method = ">10")
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit
 #' @importFrom stats relevel quantile as.formula
@@ -23,6 +23,8 @@
 cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
                    covariates = c('age', 'sex', 'tmb'),
                    tmb_method = 'median'){
+
+  if(!("genotype" %in% (classification(x) %>% names()))) x = genome_interpreter(x)
 
   data = prepare_km_fit_input(x, tumor_type, gene)
 
