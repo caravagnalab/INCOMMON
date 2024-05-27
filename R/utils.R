@@ -334,7 +334,7 @@ check_input = function(x){
 #' # First load example classified data
 #' data(MSK_classified)
 #' # Note the outputs to screen
-#' genome_intepreter(MSK_classified)
+#' genome_interpreter(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
 genome_interpreter = function(x){
   stopifnot(inherits(x, 'INCOMMON'))

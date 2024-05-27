@@ -2,7 +2,11 @@
 % Please edit documentation in R/utils.R
 \name{genome_interpreter}
 \alias{genome_interpreter}
-\title{Visualize frequency distribution of INCOMMON classes.}
+\title{This function returns, for each mutation, an interpreted state
+depending on the mutant gene role and its copy-number and multiplicity, among
+Mutant TSG with or without LOH, and Mutant oncogene with or without amplification.
+In addition, it assigns an interpreted genome to each sample
+by integrating the interpreted state of each mutant gene in the sample.}
 \usage{
 genome_interpreter(x)
 }
@@ -15,5 +19,15 @@ An object or a list of class \code{INCOMMON} with additional columns
 in \code{classification}.
 }
 \description{
-Visualize frequency distribution of INCOMMON classes.
+This function returns, for each mutation, an interpreted state
+depending on the mutant gene role and its copy-number and multiplicity, among
+Mutant TSG with or without LOH, and Mutant oncogene with or without amplification.
+In addition, it assigns an interpreted genome to each sample
+by integrating the interpreted state of each mutant gene in the sample.
+}
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Note the outputs to screen
+genome_interpreter(MSK_classified)
 }

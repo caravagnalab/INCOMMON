@@ -36,3 +36,9 @@ An object of class \code{'INCOMMON'} containing an additional object \code{survi
 \description{
 Fit multivariate Cox regression model based on INCOMMON classes.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Perform Cox regression based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
+MSK_classified = cox_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS', covariates = c('age', 'sex', 'tmb'), tmb_method = ">10")
+}

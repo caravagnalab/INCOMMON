@@ -2,7 +2,8 @@
 % Please edit documentation in R/kaplan_meier_fit.R
 \name{kaplan_meier_fit}
 \alias{kaplan_meier_fit}
-\title{Fit Kaplan-Meier survival model based on INCOMMON classes.}
+\title{Fit Kaplan-Meier survival model stratifying patients based on INCOMMON classes,
+for a single gene and tumour type.}
 \usage{
 kaplan_meier_fit(x, tumor_type, gene, survival_time, survival_status)
 }
@@ -22,5 +23,12 @@ as produced by function \code{classify}.}
 An object of class \code{'INCOMMON'} containing an additional object \code{survival}.
 }
 \description{
-Fit Kaplan-Meier survival model based on INCOMMON classes.
+Fit Kaplan-Meier survival model stratifying patients based on INCOMMON classes,
+for a single gene and tumour type.
+}
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Perform survival analysis based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
+MSK_classified = kaplan_meier_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
 }
