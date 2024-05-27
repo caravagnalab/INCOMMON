@@ -110,6 +110,34 @@ as produced by function <code>classify</code>.</p></dd>
 <p>An object of class <code>'INCOMMON'</code> containing an additional object <code>survival</code>.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># First load example classified data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_classified</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Perform Cox regression based on the classification of KRAS mutant samples of pancreatic adenocarcinoma</span></span></span>
+<span class="r-in"><span><span class="va">MSK_classified</span> <span class="op">=</span> <span class="fu">cox_fit</span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_classified</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'KRAS'</span>, survival_time <span class="op">=</span> <span class="st">'OS_MONTHS'</span>, survival_status <span class="op">=</span> <span class="st">'OS_STATUS'</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'age'</span>, <span class="st">'sex'</span>, <span class="st">'tmb'</span><span class="op">)</span>, tmb_method <span class="op">=</span> <span class="st">"&gt;10"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">20289</span> different genotypes</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Mutant TP53 with LOH (562 Samples, Frequency 0.02)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP (199 Samples, Frequency 0.01)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP,Mutant TP53 with LOH (149 Samples, Frequency 0.01)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> survival::coxph(formula = formula %&gt;% stats::as.formula(), data = data %&gt;% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     as.data.frame())</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                  coef exp(coef) se(coef)      z        p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> groupMutant KRAS with AMP     0.41896   1.52039  0.13594  3.082  0.00206</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> groupMutant KRAS without AMP  0.13670   1.14649  0.13460  1.016  0.30980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AGE_AT_DEATH&gt;68              -1.32060   0.26698  0.23843 -5.539 3.05e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> AGE_AT_SEQUENCING&gt;67          1.23185   3.42756  0.23771  5.182 2.19e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SEXMale                       0.13644   1.14619  0.06167  2.213  0.02693</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TMB_NONSYNONYMOUS&gt; 10         0.56316   1.75621  0.26202  2.149  0.03161</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Likelihood ratio test=70.61  on 6 df, p=3.068e-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> n= 1066, number of events= 1066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    (656 observations deleted due to missingness)</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
