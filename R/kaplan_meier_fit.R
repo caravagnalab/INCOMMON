@@ -1,4 +1,5 @@
-#' Fit Kaplan-Meier survival model based on INCOMMON classes.
+#' Fit Kaplan-Meier survival model stratifying patients based on INCOMMON classes,
+#' for a single gene and tumour type.
 #'
 #' @param x An object of class \code{'INCOMMON'} containing the classification results
 #' as produced by function `classify`.
@@ -8,6 +9,11 @@
 #' @param survival_status The variable in `clincal_data` to be used as survival status.
 #' @return An object of class \code{'INCOMMON'} containing an additional object `survival`.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Perform survival analysis based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
+#' x = kaplan_meier_fit(x = x, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit
 #' @importFrom stats as.formula
