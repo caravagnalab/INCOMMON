@@ -319,13 +319,22 @@ check_input = function(x){
 # 3. FORMAT EDITING
 
 # Genome interpreter
-#' Visualize frequency distribution of INCOMMON classes.
+#' This function returns, for each mutation, an interpreted state
+#' depending on the mutant gene role and its copy-number and multiplicity, among
+#' Mutant TSG with or without LOH, and Mutant oncogene with or without amplification.
+#' In addition, it assigns an interpreted genome to each sample
+#' by integrating the interpreted state of each mutant gene in the sample.
 #'
 #' @param x An object of class \code{'INCOMMON'} containing the classification results, as
 #' produced by  function `classify`.
 #' @return An object or a list of class \code{INCOMMON} with additional columns
 #' in `classification`.
 #' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_classified)
+#' # Note the outputs to screen
+#' genome_intepreter(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
 genome_interpreter = function(x){
   stopifnot(inherits(x, 'INCOMMON'))
