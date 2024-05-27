@@ -20,3 +20,9 @@ An object or a list of objects of class \code{'ggplot2'}.
 \description{
 Visualize prior distribution for a gene (tumor-specific or pancancer).
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Plot classification results for a specific sample
+plot_prior(x = MSK_classified, gene = 'TP53', tumor_type = 'PAAD')
+}

@@ -4,7 +4,7 @@
 \alias{plot_class_fraction}
 \title{Visualize frequency distribution of INCOMMON classes.}
 \usage{
-plot_class_fraction(x, tumor_type, gene)
+plot_class_fraction(x, tumor_type, gene, ...)
 }
 \arguments{
 \item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results, as
@@ -13,10 +13,18 @@ produced by using function \code{classify}.}
 \item{tumor_type}{Tumor type for tumor-specific prior ('PANCA' for pan-cancer).}
 
 \item{gene}{Gene for gene-specific prior.}
+
+\item{...}{Default S3 method parameter.}
 }
 \value{
 An object or a list of class \code{'ggplot2'}.
 }
 \description{
 Visualize frequency distribution of INCOMMON classes.
+}
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Plot class fraction for a specific gene and tumour type
+plot_class_fraction(x = MSK_classified, tumor_type = 'LUAD', gene = 'KRAS')
 }

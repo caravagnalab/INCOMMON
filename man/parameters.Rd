@@ -15,3 +15,9 @@ A dplyr::tibble containing parameters for all the models used in the classificat
 \description{
 Get model parameters of the performed classification tests.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Get classification parameters
+parameters(MSK_classified)
+}

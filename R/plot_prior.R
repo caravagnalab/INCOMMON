@@ -21,7 +21,9 @@ plot_prior = function(x, gene, tumor_type){
     return(total)
   }
 
-  get_prior(x, gene, tumor_type) %>%
+  priors(x) %>%
+    filter(gene == !!gene,
+           tumor_type == !!tumor_type) %>%
     dplyr::mutate(
       state = dplyr::case_when(
         label %in% c("2N (Mutated: 1N)") ~ "HMD",

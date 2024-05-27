@@ -20,3 +20,9 @@ An object of class \code{'INCOMMON'} containing an additional object \code{survi
 \description{
 Logistic regression of metastatic propensity based on INCOMMON classes.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Estimate the metastatic propensity associated with mutant TP53 with vs without CNA in BRCA.
+MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = 'TP53')
+}

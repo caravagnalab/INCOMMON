@@ -21,3 +21,9 @@ An object or a list of objects of class \code{'ggplot2'}.
 \description{
 Visualize classification results for individual observations.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Plot classification results for a specific sample
+plot_classification(x = MSK_classified, sample = 'P-0002081-T01-IM3')
+}

@@ -18,7 +18,7 @@
 #' data(MSK_clinical_data)
 #' # Initialize the INCOMMON object for a single sample (note the outputs to screen)
 #' sample = 'P-0002081'
-#' x = init(genomic_data = MSK_genomic_data %>% filter(sample == !!sample), clinical_data = MSK_clinical_data %>% filter(sample == !!sample))
+#' x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 #' # Run INCOMMON classification
 #' x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
 #' # An S3 method can be used to report to screen what is in the object

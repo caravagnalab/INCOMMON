@@ -17,3 +17,9 @@ A table showing posterior distribution and entropy.
 \description{
 Get the model posterior distribution of a mutation.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Get posterior distribution of a specific mutation using sample:chr:from:to:ref:alt as id
+posterior(MSK_classified, id = 'P-0028912-T01-IM6:chr17:7577121:7577121:G:A:133:837')
+}

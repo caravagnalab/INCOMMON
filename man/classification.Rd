@@ -15,3 +15,9 @@ A table with classified data.
 \description{
 Get classification data for specific selected model.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Get classification results
+classification(MSK_classified)
+}

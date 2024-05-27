@@ -95,21 +95,15 @@ The only requirement is that the probabilities sum up to one $\sum\limits_{p=1}^
 
 ## 1.3 Visualising priors
 
-The used prior distribution can be visualised using the internal plotting function
-`plot_prior`. 
+The prior distribution used in a fit can be visualised a posteriori using the internal plotting function
+`plot_prior`. We can plot the prior distribution specific to a gene and tumour type used
+in the example classified MSK-MET data.
 
 For example:
 
 ```{r}
-plot_prior(x = pcawg_priors, 
+data("MSK_classified")
+plot_prior(x = MSK_classified, 
            gene = 'KRAS',
            tumor_type = 'PAAD')
-```
-
-or
-
-```{r}
-plot_prior(x = my_priors, 
-           gene = 'my_gene',
-           tumor_type = 'my_tumor_type')
 ```

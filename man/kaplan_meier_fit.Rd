@@ -4,7 +4,7 @@
 \alias{kaplan_meier_fit}
 \title{Fit Kaplan-Meier survival model based on INCOMMON classes.}
 \usage{
-kaplan_meier_fit(x, tumor_type, gene)
+kaplan_meier_fit(x, tumor_type, gene, survival_time, survival_status)
 }
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} containing the classification results
@@ -13,6 +13,10 @@ as produced by function \code{classify}.}
 \item{tumor_type}{The tumor type of patients to stratify.}
 
 \item{gene}{The gene on which patient's stratification is based.}
+
+\item{survival_time}{The variable in \code{clincal_data} to be used as survival time.}
+
+\item{survival_status}{The variable in \code{clincal_data} to be used as survival status.}
 }
 \value{
 An object of class \code{'INCOMMON'} containing an additional object \code{survival}.

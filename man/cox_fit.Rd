@@ -10,7 +10,8 @@ cox_fit(
   tumor_type,
   survival_time,
   survival_status,
-  covariates = c("age", "sex", "tmb")
+  covariates = c("age", "sex", "tmb"),
+  tmb_method = "median"
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ as produced by function \code{classify}.}
 \item{survival_status}{The variable in \code{clincal_data} to be used as survival status.}
 
 \item{covariates}{The other covariates to be used in the mutlivariate regression.}
+
+\item{tmb_method}{The method to define the reference value for tumor mutational burden TMB}
 }
 \value{
 An object of class \code{'INCOMMON'} containing an additional object \code{survival}.

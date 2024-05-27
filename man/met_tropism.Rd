@@ -23,3 +23,10 @@ Logistic regression of metastatic tropism based on INCOMMON classes.
 \description{
 Logistic regression of metastatic tropism based on INCOMMON classes.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Estimate the metastatic propensity associated with mutant TP53 with vs
+# without CNA in BRCA, with respect to the Liver.
+MSK_classified = met_tropism(x = MSK_classified, tumor_type = 'BRCA', gene = 'TP53', metastatic_site = 'Liver')
+}

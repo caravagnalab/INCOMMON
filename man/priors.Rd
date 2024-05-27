@@ -15,3 +15,9 @@ A dplyr::tibble containing prior distributions.
 \description{
 Get model priors used for classification.
 }
+\examples{
+# First load example classified data
+data(MSK_classified)
+# Get priors used in classification
+priors(MSK_classified)
+}

@@ -8,7 +8,7 @@
 #' @return An object or a list of class \code{'ggplot2'} showing Kaplan-Meier curves and
 #' Cox regression forest plot.
 #' @export
-#' @importFrom dplyr filter mutate rename select %>%
+#' @importFrom dplyr filter mutate rename select %>% full_join
 #' @importFrom survminer ggsurvplot
 #' @importFrom patchwork wrap_plots plot_layout
 

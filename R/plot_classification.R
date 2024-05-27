@@ -11,7 +11,7 @@
 #' # First load example classified data
 #' data(MSK_classified)
 #' # Plot classification results for a specific sample
-#' plot_classification(x = MSK_classified, sample = 'P-0002081')
+#' plot_classification(x = MSK_classified, sample = 'P-0002081-T01-IM3')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_classification = function(x, sample, assembly = F){
 
