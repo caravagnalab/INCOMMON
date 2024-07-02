@@ -17,8 +17,11 @@ efficient and fast way.
 INCOMMON is also available as a user-friendly
 [ShinyApp](https://ncalonaci.shinyapps.io/incommon/).
 
+You can download the results of our analysis from [Zenodo](https://zenodo.org/records/12547426).
+
 Check out our preprint on
 [medRxiv](doi.org/10.1101/2024.05.13.24307238)!
+
 
 #### Help and support
 
