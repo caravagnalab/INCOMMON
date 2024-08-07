@@ -199,14 +199,14 @@ get_gene_role = function(x, id){
 
 # Prior getter
 
-get_prior = function(x, gene, tumor_type){
+get_prior = function(x, gene, tumor_type, silent = FALSE){
 
-  if(is.null(x)) {
+  if(is.null(x) & !silent) {
     cli::cli_alert("No prior probabilities provided")
     return(1)
   }
 
-  if(!(gene %in% x$gene)) {
+  if(!(gene %in% x$gene) & !silent) {
     cli::cli_alert("No prior probability specified for {.field {gene}}")
     return(1)
   }
@@ -214,8 +214,10 @@ get_prior = function(x, gene, tumor_type){
   if(tumor_type %in% (x %>% dplyr::filter(gene == !!gene) %>% dplyr::pull(tumor_type))) {
     out = x %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
   } else {
-    cli::cli_alert("No {.field {tumor_type}}-specific prior probability specified for {.field {gene}}")
-    cli::cli_alert("Using a pan-cancer prior")
+    if(!silent){
+      cli::cli_alert("No {.field {tumor_type}}-specific prior probability specified for {.field {gene}}")
+      cli::cli_alert("Using a pan-cancer prior")
+    }
     out = x %>% dplyr::filter(gene == !!gene, tumor_type == 'PANCA')
     }
 

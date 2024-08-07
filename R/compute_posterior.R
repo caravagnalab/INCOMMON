@@ -34,7 +34,8 @@ compute_posterior = function(NV,
                          purity,
                          entropy_cutoff,
                          rho = 0.01,
-                         karyotypes)
+                         karyotypes,
+                         silent = FALSE)
 {
   NV_x = 1:DP
 
@@ -50,7 +51,7 @@ compute_posterior = function(NV,
       label = paste0(Major + minor, 'N (Mutated: ', p, "N)")
 
       if(is.data.frame(prior)){
-        if(!(label %in% prior$label)) cli::cli_alert_danger("Incomplete prior distribution!")
+        if(!(label %in% prior$label) & !silent) cli::cli_alert_danger("Incomplete prior distribution!")
         stopifnot(label %in% prior$label)
         prior = prior %>% dplyr::filter(label == !!label) %>% dplyr::pull(p)
       }
@@ -90,7 +91,7 @@ compute_posterior = function(NV,
   }
 
   if(is.na(purity)){
-    cli_alert_warning(text =
+    if(!silent) cli_alert_warning(text =
                         "With purity {.field {purity}} classification is not possible."
     )
     return(dplyr::tibble(ploidy = NA,
@@ -105,7 +106,7 @@ compute_posterior = function(NV,
   if (is.null(priors)){
     prior = 1
   } else {
-    prior = get_prior(priors, gene, tumor_type)
+    prior = get_prior(priors, gene, tumor_type, silent = silent)
   }
   posterior = lapply(karyotypes, function(k) {
     alleles = strsplit(k, split = ":")[[1]] %>% as.integer()
