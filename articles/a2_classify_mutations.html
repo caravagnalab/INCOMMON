@@ -5,7 +5,6 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="INCOMMON">
 <title>2. Inference of copy number and mutation multiplicity • INCOMMON</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -15,65 +14,49 @@
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Inference of copy number and mutation multiplicity">
-<meta property="og:description" content="INCOMMON">
-<meta property="og:image" content="caravagnalab.github.io/INCOMMON/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="2. Inference of copy number and mutation multiplicity">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">INCOMMON</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/INCOMMON.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/INCOMMON.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/a1_pcawg_priors.html">1. Prior distribution of INCOMMON classes from PCAWG</a>
-    <a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of copy number and mutation multiplicity</a>
-    <a class="dropdown-item" href="../articles/a3_genome_interpreter.html">3. Genome Interpreter</a>
-    <a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a>
-    <a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/a1_pcawg_priors.html">1. Prior distribution of INCOMMON classes from PCAWG</a></li>
+    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of copy number and mutation multiplicity</a></li>
+    <li><a class="dropdown-item" href="../articles/a3_genome_interpreter.html">3. Genome Interpreter</a></li>
+    <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
+    <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/caravagnalab/INCOMMON/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/caravagnalab/INCOMMON/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -92,7 +75,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>2. Inference of copy number and mutation multiplicity</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/HEAD/vignettes/a2_classify_mutations.Rmd" class="external-link"><code>vignettes/a2_classify_mutations.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/vignettes/a2_classify_mutations.Rmd" class="external-link"><code>vignettes/a2_classify_mutations.Rmd</code></a></small>
       <div class="d-none name"><code>a2_classify_mutations.Rmd</code></div>
     </div>
 
@@ -101,9 +84,8 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/INCOMMON" class="external-link">INCOMMON</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
-<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
@@ -111,9 +93,8 @@
 <span><span class="co">#&gt;     filter, lag</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/DT" class="external-link">DT</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/DT" class="external-link">DT</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this vignette, we classify mutations from a single sample of the
 MSK-MetTropsim dataset provided within the package.</p>
 <div class="section level2">
@@ -151,7 +132,7 @@ MSK-MetTropism cohort:</p>
 <h2 id="classification-of-sample-p-0002081">2.2 Classification of sample ‘P-0002081’<a class="anchor" aria-label="anchor" href="#classification-of-sample-p-0002081"></a>
 </h2>
 <p>We now focus on a specific sample:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sample</span> <span class="op">=</span> <span class="st">'P-0002081'</span></span>
 <span></span>
 <span><span class="va">genomic_data</span> <span class="op">=</span> <span class="va">MSK_genomic_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sample</span> <span class="op">==</span> <span class="op">!</span><span class="op">!</span><span class="va">sample</span><span class="op">)</span></span>
@@ -164,9 +145,8 @@ MSK-MetTropism cohort:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> P-0002081 chr12 25<span style="text-decoration: underline;">398</span>285 25<span style="text-decoration: underline;">398</span>285 C     A       743   378 0.509 KRAS   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> P-0002081 chr17  7<span style="text-decoration: underline;">577</span>139  7<span style="text-decoration: underline;">577</span>139 G     A       246   116 0.472 TP53   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> P-0002081 chr19  1<span style="text-decoration: underline;">221</span>293  1<span style="text-decoration: underline;">221</span>293 C     A       260   122 0.469 STK11  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> P-0002081 chr19 11<span style="text-decoration: underline;">141</span>472 11<span style="text-decoration: underline;">141</span>473 -     C       271   133 0.491 SMARCA4</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">clinical_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> P-0002081 chr19 11<span style="text-decoration: underline;">141</span>472 11<span style="text-decoration: underline;">141</span>473 -     C       271   133 0.491 SMARCA4</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">clinical_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 17</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># Rowwise: </span></span></span>
 <span><span class="co">#&gt;   sample    tumor_type purity OS_MONTHS OS_STATUS SAMPLE_TYPE MET_COUNT</span></span>
@@ -193,7 +173,7 @@ obtained from the COSMIC Cancer Gene Census v.98. The required format is
 as following:</p>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-36aa3d2a04d42bbc2145" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200","201","202","203","204","205","206","207","208","209","210","211","212","213","214","215","216","217","218","219","220","221","222","223","224","225","226","227","228","229","230","231","232","233","234","235","236","237","238","239","240","241","242","243","244","245","246","247","248","249","250","251","252","253","254","255","256","257","258","259","260","261","262","263","264","265","266","267","268","269","270","271","272","273","274","275","276","277","278","279","280","281","282","283","284","285","286","287","288","289","290","291","292","293","294","295","296","297","298","299","300","301","302","303","304","305","306","307","308","309","310","311","312","313","314","315","316","317","318","319","320","321","322","323","324","325","326","327","328","329","330","331","332","333","334","335","336","337","338","339","340","341","342","343","344","345","346","347","348","349","350","351","352","353","354","355","356","357","358","359","360","361","362","363","364","365","366","367","368","369","370","371","372","373","374","375","376","377","378","379","380","381","382","383","384","385","386","387","388","389","390","391","392","393","394","395","396","397","398","399","400","401","402","403","404","405","406","407","408","409","410","411","412","413","414","415","416","417","418","419","420","421","422","423","424","425","426","427","428","429","430","431","432","433","434","435","436","437","438","439","440","441","442","443","444","445","446","447","448","449","450","451","452","453","454","455","456","457","458","459","460","461","462","463","464","465","466","467","468","469","470","471","472","473","474","475","476","477","478","479","480","481","482","483","484","485","486","487","488","489","490","491","492","493","494","495","496","497","498","499","500","501","502","503","504","505","506","507","508","509","510","511","512","513","514","515","516","517","518","519","520","521","522","523","524","525","526","527","528","529","530","531","532","533","534","535","536","537","538","539","540","541","542","543","544","545","546","547","548","549","550","551","552","553","554","555","556","557","558","559","560","561","562","563","564","565","566","567","568","569","570","571","572","573","574","575","576","577","578","579","580","581","582","583","584","585","586","587","588","589","590","591","592","593","594","595","596","597","598","599","600","601","602","603","604","605","606","607","608","609","610","611","612","613","614","615","616","617","618","619","620","621","622","623","624","625","626","627","628","629","630","631","632","633","634","635","636","637","638","639","640","641","642","643","644","645","646","647","648","649","650","651","652","653","654","655","656","657","658","659","660","661","662","663","664","665","666","667","668","669","670","671","672","673","674","675","676","677","678","679","680","681","682","683","684","685","686","687","688","689","690","691","692","693","694","695","696","697","698","699","700","701","702","703","704","705","706","707","708","709","710","711","712","713","714","715","716","717","718","719","720","721","722","723","724","725","726","727","728","729","730","731","732","733"],["A1CF","ABI1","ABL1","ABL2","ACKR3","ACSL3","ACSL6","ACVR1","ACVR1B","ACVR2A","AFDN","AFF1","AFF3","AFF4","AKAP9","AKT1","AKT2","AKT3","ALDH2","ALK","AMER1","ANK1","APC","APOBEC3B","AR","ARAF","ARHGAP26","ARHGAP35","ARHGAP5","ARHGEF10","ARHGEF10L","ARHGEF12","ARID1A","ARID1B","ARID2","ARNT","ASPSCR1","ASXL1","ASXL2","ATF1","ATIC","ATM","ATP1A1","ATP2B3","ATR","ATRX","AXIN1","AXIN2","B2M","BAP1","BARD1","BAX","BAZ1A","BCL10","BCL11A","BCL11B","BCL2","BCL2L12","BCL3","BCL6","BCL7A","BCL9","BCL9L","BCLAF1","BCOR","BCORL1","BCR","BIRC3","BIRC6","BLM","BMP5","BMPR1A","BRAF","BRCA1","BRCA2","BRD3","BRD4","BRIP1","BTG1","BTG2","BTK","BUB1B","C15orf65","CACNA1D","CALR","CAMTA1","CANT1","CARD11","CARS","CASP3","CASP8","CASP9","CBFA2T3","CBFB","CBL","CBLB","CBLC","CCDC6","CCNB1IP1","CCNC","CCND1","CCND2","CCND3","CCNE1","CCR4","CCR7","CD209","CD274","CD28","CD74","CD79A","CD79B","CDC73","CDH1","CDH10","CDH11","CDH17","CDK12","CDK4","CDK6","CDKN1A","CDKN1B","CDKN2A","CDKN2C","CDX2","CEBPA","CEP89","CHCHD7","CHD2","CHD4","CHEK2","CHIC2","CHST11","CIC","CIITA","CLIP1","CLP1","CLTC","CLTCL1","CNBD1","CNBP","CNOT3","CNTNAP2","CNTRL","COL1A1","COL2A1","COL3A1","COX6C","CPEB3","CREB1","CREB3L1","CREB3L2","CREBBP","CRLF2","CRNKL1","CRTC1","CRTC3","CSF1R","CSF3R","CSMD3","CTCF","CTNNA1","CTNNA2","CTNNB1","CTNND1","CTNND2","CUL3","CUX1","CXCR4","CYLD","CYP2C8","CYSLTR2","DAXX","DCAF12L2","DCC","DCTN1","DDB2","DDIT3","DDR2","DDX10","DDX3X","DDX5","DDX6","DEK","DGCR8","DICER1","DNAJB1","DNM2","DNMT3A","DROSHA","DUX4L1","EBF1","ECT2L","EED","EGFR","EIF1AX","EIF3E","EIF4A2","ELF3","ELF4","ELK4","ELL","ELN","EML4","EP300","EPAS1","EPHA3","EPHA7","EPS15","ERBB2","ERBB3","ERBB4","ERC1","ERCC2","ERCC3","ERCC4","ERCC5","ERG","ESR1","ETNK1","ETV1","ETV4","ETV5","ETV6","EWSR1","EXT1","EXT2","EZH2","EZR","FAM131B","FAM135B","FAM47C","FANCA","FANCC","FANCD2","FANCE","FANCF","FANCG","FAS","FAT1","FAT3","FAT4","FBLN2","FBXO11","FBXW7","FCGR2B","FCRL4","FEN1","FES","FEV","FGFR1","FGFR1OP","FGFR2","FGFR3","FGFR4","FH","FHIT","FIP1L1","FKBP9","FLCN","FLI1","FLNA","FLT3","FLT4","FNBP1","FOXA1","FOXL2","FOXO1","FOXO3","FOXO4","FOXP1","FOXR1","FSTL3","FUBP1","FUS","GAS7","GATA1","GATA2","GATA3","GLI1","GMPS","GNA11","GNAQ","GNAS","GOLGA5","GOPC","GPC3","GPC5","GPHN","GRIN2A","GRM3","H3F3A","H3F3B","HERPUD1","HEY1","HIF1A","HIP1","HIST1H3B","HIST1H4I","HLA-A","HLF","HMGA1","HMGA2","HMGN2P46","HNF1A","HNRNPA2B1","HOOK3","HOXA11","HOXA13","HOXA9","HOXC11","HOXC13","HOXD11","HOXD13","HRAS","HSP90AA1","HSP90AB1","ID3","IDH1","IDH2","IGF2BP2","IGH","IGK","IGL","IKBKB","IKZF1","IKZF3","IL2","IL21R","IL6ST","IL7R","IRF4","IRS4","ISX","ITGAV","ITK","JAK1","JAK2","JAK3","JAZF1","JUN","KAT6A","KAT6B","KAT7","KCNJ5","KDM5A","KDM5C","KDM6A","KDR","KDSR","KEAP1","KIAA1549","KIF5B","KIT","KLF4","KLF6","KLK2","KMT2A","KMT2C","KMT2D","KNL1","KNSTRN","KRAS","KTN1","LARP4B","LASP1","LATS1","LATS2","LCK","LCP1","LEF1","LEPROTL1","LHFPL6","LIFR","LMNA","LMO1","LMO2","LPP","LRIG3","LRP1B","LSM14A","LYL1","LYN","LZTR1","MACC1","MAF","MAFB","MALAT1","MALT1","MAML2","MAP2K1","MAP2K2","MAP2K4","MAP3K1","MAP3K13","MAPK1","MAX","MB21D2","MDM2","MDM4","MDS2","MECOM","MED12","MEN1","MET","MGMT","MITF","MLF1","MLH1","MLLT1","MLLT10","MLLT11","MLLT3","MLLT6","MN1","MNX1","MPL","MRTFA","MSH2","MSH6","MSI2","MSN","MTCP1","MTOR","MUC1","MUC16","MUC4","MUTYH","MYB","MYC","MYCL","MYCN","MYD88","MYH11","MYH9","MYO5A","MYOD1","N4BP2","NAB2","NACA","NBEA","NBN","NCKIPSD","NCOA1","NCOA2","NCOA4","NCOR1","NCOR2","NDRG1","NF1","NF2","NFATC2","NFE2L2","NFIB","NFKB2","NFKBIE","NIN","NKX2-1","NONO","NOTCH1","NOTCH2","NPM1","NR4A3","NRAS","NRG1","NSD1","NSD2","NSD3","NT5C2","NTHL1","NTRK1","NTRK3","NUMA1","NUP214","NUP98","NUTM1","NUTM2B","NUTM2D","OLIG2","OMD","P2RY8","PABPC1","PAFAH1B2","PALB2","PATZ1","PAX3","PAX5","PAX7","PAX8","PBRM1","PBX1","PCBP1","PCM1","PDCD1LG2","PDE4DIP","PDGFB","PDGFRA","PDGFRB","PER1","PHF6","PHOX2B","PICALM","PIK3CA","PIK3CB","PIK3R1","PIM1","PLAG1","PLCG1","PML","PMS1","PMS2","POLD1","POLE","POLG","POLQ","POLR2A","POT1","POU2AF1","POU5F1","PPARG","PPFIBP1","PPM1D","PPP2R1A","PPP6C","PRCC","PRDM1","PRDM16","PRDM2","PREX2","PRF1","PRKACA","PRKAR1A","PRKCB","PRKD1","PRPF40B","PRRX1","PSIP1","PTCH1","PTEN","PTK6","PTPN11","PTPN13","PTPN6","PTPRB","PTPRC","PTPRD","PTPRK","PTPRT","PWWP2A","QKI","RABEP1","RAC1","RAD17","RAD21","RAD51B","RAF1","RALGDS","RANBP2","RAP1GDS1","RARA","RB1","RBM10","RBM15","RECQL4","REL","RET","RFWD3","RGPD3","RGS7","RHOA","RHOH","RMI2","RNF213","RNF43","ROBO2","ROS1","RPL10","RPL22","RPL5","RPN1","RSPO2","RSPO3","RUNX1","RUNX1T1","S100A7","SALL4","SBDS","SDC4","SDHA","SDHAF2","SDHB","SDHC","SDHD","SEPT5","SEPT6","SEPT9","SET","SETBP1","SETD1B","SETD2","SETDB1","SF3B1","SFPQ","SFRP4","SGK1","SH2B3","SH3GL1","SHTN1","SIRPA","SIX1","SIX2","SKI","SLC34A2","SLC45A3","SMAD2","SMAD3","SMAD4","SMARCA4","SMARCB1","SMARCD1","SMARCE1","SMC1A","SMO","SND1","SNX29","SOCS1","SOX2","SOX21","SPECC1","SPEN","SPOP","SRC","SRGAP3","SRSF2","SRSF3","SS18","SS18L1","SSX1","SSX2","SSX4","STAG1","STAG2","STAT3","STAT5B","STAT6","STIL","STK11","STRN","SUFU","SUZ12","SYK","TAF15","TAL1","TAL2","TBL1XR1","TBX3","TCEA1","TCF12","TCF3","TCF7L2","TCL1A","TEC","TENT5C","TERT","TET1","TET2","TFE3","TFEB","TFG","TFPT","TFRC","TGFBR2","THRAP3","TLX1","TLX3","TMEM127","TMPRSS2","TMSB4X","TNC","TNFAIP3","TNFRSF14","TNFRSF17","TOP1","TP53","TP63","TPM3","TPM4","TPR","TRA","TRAF7","TRB","TRD","TRIM24","TRIM27","TRIM33","TRIP11","TRRAP","TSC1","TSC2","TSHR","U2AF1","UBR5","USP44","USP6","USP8","USP9X","VAV1","VHL","VTI1A","WAS","WDCP","WIF1","WNK2","WRN","WT1","WWTR1","XPA","XPC","XPO1","YWHAE","ZBTB16","ZCCHC8","ZEB1","ZFHX3","ZMYM2","ZMYM3","ZNF331","ZNF384","ZNF429","ZNF479","ZNF521","ZNRF3","ZRSR2"],["oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","TSG","oncogene","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","oncogene","TSG","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","oncogene","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","TSG","TSG","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","TSG","oncogene","TSG","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","TSG","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","TSG","TSG","TSG","oncogene","TSG","TSG","oncogene","TSG","TSG","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","oncogene","TSG","TSG","TSG","TSG","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","TSG","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","oncogene","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","oncogene","oncogene","TSG","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","TSG","oncogene","TSG","oncogene","oncogene","TSG","TSG","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","oncogene","TSG","oncogene","oncogene","oncogene","TSG","TSG","TSG","TSG","oncogene","TSG","TSG","oncogene","TSG","TSG","oncogene","oncogene","TSG","oncogene","TSG","TSG","oncogene","oncogene","oncogene","oncogene","TSG","TSG"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>gene<\/th>\n      <th>gene_role<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"gene","targets":1},{"name":"gene_role","targets":2}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script><p>Let’s have a look at the output of function <code>init</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span>genomic_data <span class="op">=</span> <span class="va">genomic_data</span>, </span>
 <span>         clinical_data <span class="op">=</span> <span class="va">clinical_data</span>, </span>
 <span>         gene_roles <span class="op">=</span> <span class="va">cancer_gene_census</span><span class="op">)</span></span>
@@ -224,9 +204,8 @@ as following:</p>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> AGE_AT_SEQUENCING</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> RACE</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">1</span> matching samples</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> No mismatched samples</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> No mismatched samples</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">4</span> PASS mutations across <span style="color: #00BB00;">1</span> samples, with <span style="color: #00BB00;">4</span> mutant genes across <span style="color: #00BB00;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.6</span></span></span>
@@ -256,7 +235,7 @@ mutations have all the required information.</p>
 <p>We now run the classification step through function
 <code>classify</code>, using the default priors (see the <a href="a1_pcawg_priors.html">dedicated section</a>), no entropy cutoff,
 and over-dispersion parameter.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, </span>
 <span>             priors <span class="op">=</span> <span class="va">pcawg_priors</span>, </span>
 <span>             entropy_cutoff <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -284,7 +263,7 @@ and over-dispersion parameter.</p>
 amplification of the mutant allele (AM). The average entropy of 0.04
 indicates a high confidence of the classification, with the largest
 uncertainty being 0.07.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">4</span> PASS mutations across <span style="color: #00BB00;">1</span> samples, with <span style="color: #00BB00;">4</span> mutant genes across <span style="color: #00BB00;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.6</span></span></span>
@@ -316,7 +295,7 @@ LOH.</p>
 <p>INCOMMON allows visualising a representation of the maximum a
 posteriori classification through function
 <code>plot_classification</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_classification.html">plot_classification</a></span><span class="op">(</span><span class="va">x</span>, sample <span class="op">=</span> <span class="va">sample</span>, assembly <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="co">#&gt; → No <span style="color: #00BB00;">LUAD</span>-specific prior probability specified for <span style="color: #00BB00;">KRAS</span></span></span>
 <span><span class="co">#&gt; → Using a pan-cancer prior</span></span>
@@ -356,10 +335,11 @@ distributions (one for each INCOMMON class) spanning the total
 sequencing depth of the mutation site. Each color and marker shape
 identify a different combination of ploidy and multiplicity. The
 vertical dashed line corresponds to the number of reads with the variant
-<span class="math inline">\(NV\)</span>, whereas the horizontal line
-corresponds to the value of the classification entropy.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">NV</annotation></semantics></math>,
+whereas the horizontal line corresponds to the value of the
+classification entropy.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -370,15 +350,15 @@ corresponds to the value of the classification entropy.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
