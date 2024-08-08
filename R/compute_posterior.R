@@ -9,6 +9,9 @@
 #' @param entropy_cutoff Cut-off on entropy for Tier-1/Tier-2 distinction.
 #' @param rho The over-dispersion parameter.
 #' @param karyotypes Karyotypes to be included among the possible classes.
+#' @param purity_error Standard deviation of the Beta distribution over the
+#' sample purity measure.
+#' @param silent Whether to show printed output.
 #' @return A table including ploidy, multiplicity, posterior probability,
 #' and classification entropy.
 #' @export
@@ -34,7 +37,9 @@ compute_posterior = function(NV,
                          purity,
                          entropy_cutoff,
                          rho = 0.01,
-                         karyotypes)
+                         karyotypes,
+                         purity_error,
+                         silent = FALSE)
 {
   NV_x = 1:DP
 
@@ -42,7 +47,8 @@ compute_posterior = function(NV,
   db = function(Major, minor, prior, gene)
   {
 
-    expected_peaks = CNAqc:::expected_vaf_peak(Major, minor, purity)$peak
+    expected_vaf_data = CNAqc:::expected_vaf_peak(Major, minor, purity)
+    expected_peaks = expected_vaf_data$peak
 
     lapply(expected_peaks %>% seq_along(), function(p) {
 
@@ -57,9 +63,20 @@ compute_posterior = function(NV,
 
       # Expected VAF peak of mixture component
       expected_peak = expected_peaks[p]
+      multiplicity = expected_vaf_data[p,]$mutation_multiplicity
+      ploidy = strsplit(expected_vaf_data[p,]$karyotype, split = ":")[[1]] %>%
+        as.integer() %>% sum()
 
       # Beta-Binomial likelihood distribution
-      likelihood = compute_likelihood(NV = NV_x, DP = DP, prob = expected_peak, rho = rho)
+      likelihood = compute_likelihood(
+        NV = NV_x,
+        DP = DP,
+        m = multiplicity,
+        pl = ploidy,
+        prob = expected_peak,
+        rho = rho,
+        purity = purity,
+        purity_error = purity_error)
 
       # # Posterior distribution
       # if (is.null(priors)){
@@ -80,7 +97,8 @@ compute_posterior = function(NV,
         multiplicity = p,
         karyotype = paste0(Major, ":", minor),
         label = label,
-        peak = expected_peak
+        peak = expected_peak,
+        purity_error = purity_error
       )
 
       out
@@ -120,7 +138,7 @@ compute_posterior = function(NV,
   posterior = posterior %>%
     dplyr::group_by(NV) %>%
     dplyr::reframe(value, NV, Major, minor, ploidy, multiplicity, karyotype, label, peak,
-                   entropy = -sum(value*log2(max(value, .Machine$double.xmin)))) # entropy formula replacing zeros with minimum
+                   entropy = -sum(value*log2(max(value, .Machine$double.xmin))), purity_error) # entropy formula replacing zeros with minimum
                                                                                  # machine floating number
 
   # Apply entropy cutoff

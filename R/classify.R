@@ -9,6 +9,9 @@
 #' @param parallel Whether to run the classification in parallel (default: FALSE)
 #' @param num_cores The number of cores to use for parallel classification.
 #' By default, it takes 80% of the available cores.
+#' @param purity_error Standard deviation of the Beta distribution over the
+#' sample purity measure.
+#' @param silent Whether to show printed output.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
@@ -32,7 +35,8 @@ classify = function(x,
                     rho = 0.01,
                     parallel = FALSE,
                     num_cores = NULL,
-                    karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+                    karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2"),
+                    purity_error = 0.0
 )
   {
 
@@ -50,7 +54,7 @@ classify = function(x,
 
   x = idify(x)
 
-  classify_single_mutation = function(x, id){
+  classify_single_mutation = function(x, id, purity_error){
 
     # Control for duplicates
     if(info(x, id) %>% nrow() > 1){
@@ -73,7 +77,8 @@ classify = function(x,
       purity = purity(x, id),
       entropy_cutoff = entropy_cutoff,
       rho = rho,
-      karyotypes = karyotypes
+      karyotypes = karyotypes,
+      purity_error = purity_error
     )
 
     # Maximum a posteriori classification
@@ -92,9 +97,16 @@ classify = function(x,
       map = map[1., ]
     }
 
-    map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
+    map = map %>%
+      dplyr::select(label, state, value, entropy, purity_error) %>%
+      dplyr::rename(posterior = value) %>%
+      dplyr::mutate(id = id)
 
-    fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
+    fit = dplyr::right_join(
+      input(x) %>%
+        dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id),
+      map,
+      by = 'id')
 
     return(fit)
   }
@@ -106,11 +118,12 @@ classify = function(x,
     tests = parallel::mclapply(X = ids(x),
                                FUN = classify_single_mutation,
                                x = x,
+                               purity_error = purity_error,
                                mc.cores = num_cores)
   } else {
 
     tests = lapply(ids(x), function(id) {
-      classify_single_mutation(x = x, id = id)
+      classify_single_mutation(x = x, id = id, purity_error = purity_error)
     })
 
   }
