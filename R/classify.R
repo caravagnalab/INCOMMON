@@ -36,7 +36,9 @@ classify = function(x,
                     parallel = FALSE,
                     num_cores = NULL,
                     karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2"),
-                    purity_error = 0.0
+                    purity_error = 0.0,
+                    dump = FALSE,
+                    dump_dir = './fits/'
 )
   {
 
@@ -108,7 +110,17 @@ classify = function(x,
       map,
       by = 'id')
 
+    if(dump){
+      saveRDS(object = fit, file = paste0(dump_dir, '/', id, '.rds'))
+    }
+
     return(fit)
+  }
+
+  if(dump){
+    if(!dir.exists(dump_dir)){
+      dir.create(dump_dir, recursive = T)
+    }
   }
 
   if(parallel){
