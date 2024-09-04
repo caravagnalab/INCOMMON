@@ -119,19 +119,19 @@ samples = function(x){
 
 # Subset object by sample
 
-subset_sample = function(x, sample){
+subset_sample = function(x, sample_list){
   stopifnot(inherits(x, 'INCOMMON'))
   samples = unique(x$input$sample)
-  stopifnot(sample %in% samples)
-  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  ip = x$input %>% dplyr::filter(sample == !!sample)
+  stopifnot(length(intersect(samples(x), sample_list))>0)
+  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  ip = x$input %>% dplyr::filter(sample %in% sample_list)
   out = list(genomic_data = gd,
              clinical_data = cd,
              input = ip)
   class(out) = 'INCOMMON'
   if('classification' %in% names(x)) {
-    cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
+    cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
     # pm = x$classification$parameters
     # pr = x$classification$priors
 
