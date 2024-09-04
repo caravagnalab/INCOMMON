@@ -108,7 +108,7 @@ classify = function(
 
       if(is.null(dump_file)) dump_file = './dump.rds'
 
-      saveRDS(object = dump, file = dump_file)
+      saveRDS(object = x, file = dump_file)
     }
 
   })
