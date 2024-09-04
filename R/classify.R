@@ -91,7 +91,7 @@ classify = function(
     out = classify_sample(x = x, sample = s)
 
     if(!('classification' %in% names(x))) x$classification = list()
-    if(!('fit' %in% names(x$classification))) x$classification$fit = tibble(NULL)
+    if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
 
     x$classification$fit <<- rbind(x$classification$fit, out)
 
