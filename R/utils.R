@@ -30,30 +30,6 @@ tumor_type = function(x, id){
 
 #' Getter for class \code{'INCOMMON'}.
 #' @description
-#' Get classification data for specific selected model.
-#' @param x An object of class \code{'INCOMMON'}.
-#' @return A table with classified data.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Get classification results
-#' classification(MSK_classified)
-#' @importFrom dplyr filter mutate rename select %>%
-classification = function(x) {
-  stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("fit" %in% names(x$classification))
-  x$classification$fit %>%
-    dplyr::full_join(x$input %>%
-                       dplyr::select(sample, tumor_type, purity) %>% unique(),
-                     by = 'sample') %>%
-    dplyr::select(sample, tumor_type, purity, dplyr::everything())
-
-}
-
-#' Getter for class \code{'INCOMMON'}.
-#' @description
 #' Get model parameters of the performed classification tests.
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @return A dplyr::tibble containing parameters for all the models used in the classification.
@@ -255,32 +231,6 @@ wt_samples = function(x, tumor_type, gene) {
     dplyr::mutate(class = paste0(gene, ' WT')) %>%
     dplyr::ungroup()
     # dplyr::left_join(cancer_gene_census, by = 'gene')
-}
-
-# Subset object by sample
-
-subset_sample = function(x, sample){
-  stopifnot(inherits(x, 'INCOMMON'))
-  samples = unique(x$input$sample)
-  stopifnot(sample %in% samples)
-  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  ip = x$input %>% dplyr::filter(sample == !!sample)
-  out = list(genomic_data = gd,
-             clinical_data = cd,
-             input = ip)
-  class(out) = 'INCOMMON'
-  if('classification' %in% names(x)) {
-    cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
-    pm = x$classification$parameters
-    pr = x$classification$priors
-
-
-    out$classification$fit = cl
-    out$classification$parameters = pm
-    out$classification$priors = pr
-  }
-  return(out)
 }
 
 # 2. CHEKS AND SANITISERS

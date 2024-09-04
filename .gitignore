@@ -5,3 +5,5 @@ docs
 logo.ai
 /doc/
 /Meta/
+inst/cmdstan/*
+!inst/cmdstan/*.stan

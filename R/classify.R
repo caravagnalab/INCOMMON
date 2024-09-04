@@ -26,111 +26,89 @@
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom parallel mclapply detectCores
 
-classify = function(x,
-                    priors = pcawg_priors,
-                    entropy_cutoff = NULL,
-                    rho = 0.01,
-                    parallel = FALSE,
-                    num_cores = NULL,
-                    karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+classify = function(
+    x,
+    k_max = 8,
+    priors_m_k = pcawg_priors,
+    priors_x = pcawg_priors_x,
+    purity_error = 0.05,
+    num_cores = NULL,
+    iter_warmup = 500,
+    iter_sampling = 1000
 )
   {
 
   stopifnot(inherits(x, "INCOMMON"))
-  if(is.null(entropy_cutoff)) entropy_cutoff = 100
-
-  cli::cli_h1(
-      "INCOMMON inference of copy number and mutation multiplicity for sample {.field {x$sample}}"
-    )
-    cat("\n")
 
   check_input(x)
 
   cli::cli_alert_info("Performing classification")
 
-  x = idify(x)
-
-  classify_single_mutation = function(x, id){
-
-    # Control for duplicates
-    if(info(x, id) %>% nrow() > 1){
-      cli_alert_warning(text = "More than one mutation mapped at: {.field {id}}")
-      info(x, id)
-
-      cli_alert_warning(text = "Keeping first row by default (check your input data)")
-      w = which(ids(x)==id)
-      x$data = x$data[-w[2:length(w)],]
-    }
-
-    # Compute model likelihood, posterior and entropy
-
-    posterior = compute_posterior(
-      NV = NV(x, id),
-      DP = DP(x, id),
-      gene = gene(x, id),
-      priors = priors,
-      tumor_type = tumor_type(x, id),
-      purity = purity(x, id),
-      entropy_cutoff = entropy_cutoff,
-      rho = rho,
-      karyotypes = karyotypes
+  classify_sample = function(x, sample){
+    
+    cli::cli_h1(
+      "INCOMMON inference of copy number and mutation multiplicity for sample {.field {sample}}"
     )
-
-    # Maximum a posteriori classification
-
-    map = posterior %>%
-      dplyr::filter(NV == NV(x, id)) %>%
-      dplyr::filter(value == max(value)) %>%
-      dplyr::ungroup()
-
-    if (nrow(map) > 1) {
-      cli_alert_warning(text =
-                          "With purity {.field {purity(x, id)}} karyotype {.field {map$karyotype}} with multiplicities {.field {map$multiplicity}} have the same likelihood")
-      cli_alert_warning(text =
-                          "Simplest case will be selected: {.field {map$karyotype[1]}}")
-
-      map = map[1., ]
-    }
-
-    map = map %>% dplyr::select(label, state, value, entropy) %>% dplyr::rename(posterior = value) %>% dplyr::mutate(id = id)
-
-    fit = dplyr::right_join(input(x) %>% dplyr::select(colnames(genomic_data(x, PASS = TRUE)), id), map, by = 'id')
-
-    return(fit)
+    cat("\n")
+    
+    x = subset_sample(x = x, sample = sample)
+    
+    M = input(x) %>% nrow()
+    N = input(x)$DP
+    n = input(x)$NV
+    purity_mean = purity(x = x, sample = sample)
+    
+    priors_m_k_sample = get_sample_priors(x = x, N_mutations = M, priors = priors_m_k, k_max = k_max)
+    
+    data = list(
+      M = M,
+      N = N,
+      n = n,
+      k_max = k_max,
+      purity_mean = purity_mean,
+      purity_error = purity_error,
+      alpha_x = priors_x$alpha_x,
+      beta_x = priors_x$beta_x,
+      k_m_prior = priors_m_k_sample
+    )
+    
+    model = get_stan_model()
+    
+    fit = model$sample(
+      data = data,
+      seed = 1992,
+      iter_warmup = iter_warmup,
+      iter_sampling = iter_sampling,
+      parallel_chains = num_cores,
+    )
+    
+    attach_fit_results(x = x, fit = fit)
   }
+  
+  lapply(samples(x), function(s){
+    out = classify_sample(x = x, sample = s)
+    
+    if(!('classification' %in% names(x))) x$classification = list()
+    if(!('fit' %in% names(x$classification))) x$classification$fit = tibble(NULL)
+    
+    x$classification$fit <<- rbind(x$classification$fit, out)
+    
+  })
 
-  if(parallel){
-
-    if(is.null(num_cores)) num_cores = as.integer(0.8*parallel::detectCores())
-
-    tests = parallel::mclapply(X = ids(x),
-                               FUN = classify_single_mutation,
-                               x = x,
-                               mc.cores = num_cores)
-  } else {
-
-    tests = lapply(ids(x), function(id) {
-      classify_single_mutation(x = x, id = id)
-    })
-
-  }
-
-  # Output
-
-  x$classification = list()
-
-  x$classification$fit = tests %>% do.call(rbind, .)
   x$classification$parameters = dplyr::tibble(
-    entropy_cutoff = entropy_cutoff,
-    rho = rho,
-    karyotypes = list(karyotypes)
+    k_max,
+    purity_error,
+    stan_iter_warmup = iter_warmup,
+    stan_stan_iter_sampling = iter_sampling
   )
-  x$classification$priors = priors
+  
+  x$classification$priors_m_k = priors_m_k
+  x$classification$priors_x = priors_x
 
     cli::cli_alert_info('There are: ')
-    for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
-      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
-      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
+    for (map_class in c('m=1', '1<m<k', 'm=k')) {
+      N  = classification(x) %>% dplyr::filter(map_class == !!map_class) %>% nrow()
+      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', map_class, ')')))
     }
 
     mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
