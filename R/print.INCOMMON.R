@@ -40,18 +40,18 @@ print.INCOMMON = function(x, ...) {
       cli::cli_rule(
         paste(
           crayon::bgMagenta(crayon::black("[ INCOMMON ] ")),
-          'Classified mutations with overdispersion parameter {.field {parameters(x)$rho}} and entropy cutoff {.field {parameters(x)$entropy_cutoff}}',
+          'Classified mutations with maximum total CN {.field {parameters(x)$k_max}} and purity error {.field {parameters(x)$purity_error}}',
           ''
         ))
-    
-    
+
+
     cli::cli_alert_info('There are: ')
-    for (state in c('HMD', 'LOH', 'CNLOH', 'AM', 'Tier-2')) {
-      N  = classification(x) %>% dplyr::filter(state == !!state) %>% nrow()
-      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', state, ')')))
+    for (map_class in c('m=1', '1<m<k', 'm=k')) {
+      N  = classification(x) %>% dplyr::filter(map_class == !!map_class) %>% nrow()
+      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', map_class, ')')))
     }
-    
-    
+
+
     print(classification(x))
   } else{
 

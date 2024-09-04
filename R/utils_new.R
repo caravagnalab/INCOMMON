@@ -57,7 +57,7 @@ get_sample_priors = function(x, priors, N_mutations, k_max){
 
     what = what %>% filter(ploidy <= k_max)
     what$p = what$p/sum(what$p)
-    what = what %>% arrange(ploidy)
+    what = what %>% dplyr::arrange(ploidy)
     return(what)
   }) %>% do.call(rbind, .)
 
@@ -131,14 +131,16 @@ subset_sample = function(x, sample_list){
              input = ip)
   class(out) = 'INCOMMON'
   if('classification' %in% names(x)) {
-    cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
-    # pm = x$classification$parameters
-    # pr = x$classification$priors
+    if(length(intersect(classification(x)$sample, sample_list))>0){
+      cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
+      pm = x$classification$parameters
+      pr = x$classification$priors
 
 
-    out$classification$fit = cl
-    # out$classification$parameters = pm
-    # out$classification$priors = pr
+      out$classification$fit = cl
+      out$classification$parameters = pm
+      out$classification$priors = pr
+    }
   }
   return(out)
 }
