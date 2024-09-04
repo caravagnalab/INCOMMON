@@ -94,7 +94,7 @@ attach_fit_results = function(x, fit){
     probs = class_probs[grepl(paste0('class_probs\\[',i,','), class_probs$variable),][,'mean']$mean
     names(probs) = classes
     w = probs %>% which.max()
-    tibble(
+    dplyr::tibble(
       map_class = classes[w],
       map_posterior = probs[w],
       entropy = -sum(probs * log(probs)),
