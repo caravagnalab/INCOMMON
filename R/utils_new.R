@@ -1,78 +1,77 @@
 check_input = function(x){
   if(genomic_data(x)$sample %>% class() != "character")
     cli::cli_abort("Sample names must be characters, classification aborted.")
-  
+
   if(genomic_data(x)$gene %>% class() != "character")
     cli::cli_abort("Gene names must be characters, classification aborted.")
-  
+
   if(genomic_data(x)$gene_role %>% class() != "character" |
      setdiff(genomic_data(x)$gene_role, c("TSG", "oncogene", NA)) %>% length() != 0)
     cli::cli_abort("Gene roles must be \'TSG\' or \'onocgene\', classification aborted.")
-  
+
   if(genomic_data(x)$chr %>% class() != "character")
     cli::cli_abort("Chromosome names must be characters, classification aborted.")
-  
+
   if(genomic_data(x)$ref %>% class() != "character")
     cli::cli_abort("Reference/Alternative allele names must be characters, classification aborted.")
-  
+
   if(genomic_data(x)$alt %>% class() != "character")
     cli::cli_abort("Reference/Alternative allele names must be characters, classification aborted.")
-  
+
   if(genomic_data(x)$VAF %>% class() != "numeric")
     cli::cli_abort("VAF must be numeric, classification aborted.")
-  
+
   if(genomic_data(x)$DP %>% class() != "integer")
     cli::cli_abort("DP must be integer, classification aborted.")
-  
+
   if(genomic_data(x)$NV %>% class() != "integer")
     cli::cli_abort("NV must be integer, classification aborted.")
-  
+
   if(any(is.na(clinical_data(x)$purity)) | any(clinical_data(x)$purity < 0 ) | any(!is.numeric(clinical_data(x)$purity)))
     cli::cli_abort("Sample purity must be a non-negative number, classification aborted.")
 }
 
 get_sample_priors = function(x, priors, N_mutations, k_max){
   out = lapply(1:nrow(input(x)), function(i){
-    
+
     gene = input(x)[i,]$gene
     gene_role = input(x)[i,]$gene_role
     tumor_type = input(x)[i,]$tumor_type
-    
+
     what = priors %>% filter(gene == !!gene, tumor_type == !!tumor_type)
-    
+
     if(nrow(what) == 0){
-      
+
       what = priors %>% filter(gene == !!gene, tumor_type == 'PANCA')
-      
+
       if(nrow(what) == 0){
-        
+
         if(!is.na(gene_role)){
           what = priors %>% filter(gene == 'other genes', gene_role == !!gene_role, tumor_type == 'PANCA')
         } else {
           what = priors %>% filter(gene == 'other genes', tumor_type == 'PANCA')
         }
-        
+
       }
     }
-    
+
     what = what %>% filter(ploidy <= k_max)
     what$p = what$p/sum(what$p)
     what = what %>% arrange(ploidy)
     return(what)
   }) %>% do.call(rbind, .)
-  
+
   out = lapply(split(out, rep(1:N_mutations, each = k_max*k_max)), function(x){
     c(x$p)
   }) %>% do.call(rbind, .)
-  
+
 }
 
 
 get_stan_model = function(){
   model_path = system.file("cmdstan", 'model.stan', package = "INCOMMON", mustWork = T)
-  cmdstanr::cmdstan_model(model_path)
+  model = cmdstanr::cmdstan_model(model_path)
   # tmp = utils::capture.output(suppressMessages(model <- cmdstanr::cmdstan_model(model_path)))
-  model
 }
 
 get_fit_posterior_per_class = function(fit){
@@ -104,7 +103,7 @@ attach_fit_results = function(x, fit){
       x_fit = get_fit_x(fit)[,'median']$median
     )
   }) %>% do.call(rbind, .)
-  
+
   dplyr::bind_cols(input(x), outcome)
 }
 
@@ -115,7 +114,7 @@ purity = function(x, sample){
 }
 
 samples = function(x){
-  input(x) %>% pull(sample) %>% unique()
+  input(x) %>% dplyr::pull(sample) %>% unique()
 }
 
 # Subset object by sample
@@ -135,8 +134,8 @@ subset_sample = function(x, sample){
     cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
     # pm = x$classification$parameters
     # pr = x$classification$priors
-    
-    
+
+
     out$classification$fit = cl
     # out$classification$parameters = pm
     # out$classification$priors = pr
@@ -165,5 +164,5 @@ classification = function(x) {
     #                    dplyr::select(sample, tumor_type, purity) %>% unique(),
     #                  by = 'sample') %>%
     dplyr::select(sample, tumor_type, purity, dplyr::everything())
-  
+
 }
