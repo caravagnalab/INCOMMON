@@ -34,7 +34,9 @@ classify = function(
     purity_error = 0.05,
     num_cores = NULL,
     iter_warmup = 500,
-    iter_sampling = 1000
+    iter_sampling = 1000,
+    dump = FALSE,
+    dump_file = NULL
 )
   {
 
@@ -45,21 +47,21 @@ classify = function(
   cli::cli_alert_info("Performing classification")
 
   classify_sample = function(x, sample){
-    
+
     cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {sample}}"
     )
     cat("\n")
-    
+
     x = subset_sample(x = x, sample = sample)
-    
+
     M = input(x) %>% nrow()
     N = input(x)$DP
     n = input(x)$NV
     purity_mean = purity(x = x, sample = sample)
-    
+
     priors_m_k_sample = get_sample_priors(x = x, N_mutations = M, priors = priors_m_k, k_max = k_max)
-    
+
     data = list(
       M = M,
       N = N,
@@ -71,9 +73,9 @@ classify = function(
       beta_x = priors_x$beta_x,
       k_m_prior = priors_m_k_sample
     )
-    
+
     model = get_stan_model()
-    
+
     fit = model$sample(
       data = data,
       seed = 1992,
@@ -81,18 +83,34 @@ classify = function(
       iter_sampling = iter_sampling,
       parallel_chains = num_cores,
     )
-    
+
     attach_fit_results(x = x, fit = fit)
   }
-  
+
   lapply(samples(x), function(s){
     out = classify_sample(x = x, sample = s)
-    
+
     if(!('classification' %in% names(x))) x$classification = list()
     if(!('fit' %in% names(x$classification))) x$classification$fit = tibble(NULL)
-    
+
     x$classification$fit <<- rbind(x$classification$fit, out)
-    
+
+    if(dump){
+      x$classification$parameters = dplyr::tibble(
+        k_max,
+        purity_error,
+        stan_iter_warmup = iter_warmup,
+        stan_stan_iter_sampling = iter_sampling
+      )
+
+      x$classification$priors_m_k = priors_m_k
+      x$classification$priors_x = priors_x
+
+      if(is.null(dump_file)) dump_file = './dump.rds'
+
+      saveRDS(object = dump, file = dump_file)
+    }
+
   })
 
   x$classification$parameters = dplyr::tibble(
@@ -101,7 +119,7 @@ classify = function(
     stan_iter_warmup = iter_warmup,
     stan_stan_iter_sampling = iter_sampling
   )
-  
+
   x$classification$priors_m_k = priors_m_k
   x$classification$priors_x = priors_x
 
