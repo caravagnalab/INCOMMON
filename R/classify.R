@@ -1,14 +1,17 @@
 #' Classify mutations using a Beta-Binomial model-based test.
 #'
 #' @param x An object of class \code{'INCOMMON'} generated with function `init`.
-#' @param priors A dplyr::tibble or data frame with columns `gene`, `tumor_type`, `label` and `p` indicating tumor-specific
-#' or pan-cancer (PANCA) prior probabilities.
-#' @param entropy_cutoff Entropy cut-off for Tier-1 vs Tier-2 assignment.
-#' @param rho Over-dispersion parameter.
-#' @param karyotypes Karyotypes to be included among the possible classes.
-#' @param parallel Whether to run the classification in parallel (default: FALSE)
-#' @param num_cores The number of cores to use for parallel classification.
-#' By default, it takes 80% of the available cores.
+#' @param k_max The maximum value of total copy number to be included in the model.
+#' @param priors_m_k A dplyr::tibble or data frame with columns `gene`, `gene_role`, `tumor_type`, `ploidy`, `multiplicity`
+#' and `p` indicating tumor-specific or pan-cancer (PANCA) prior probabilities.
+#' @param priors_x A dplyr::tibble or data frame with columns `mean_x`, `sigma2x`, `alpha_x` and `beta_x`
+#' providing parameters of the Gamma prior distribution over the per copy sequencing rate.
+#' @param purity_error The expected error on the input sample purity estimate.
+#' @param num_cores The number of cores to use for parallel stan sampling.
+#' @param  iter_warmup The number of iterations of the stan warmup phase.
+#' @param iter_sampling The number of iterations of the stan sampling  phase.
+#' @param dump Whether to dump results to a file.
+#' @param dump_file The file path for dumping results.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
@@ -24,7 +27,6 @@
 #' # An S3 method can be used to report to screen what is in the object
 #' print(x)
 #' @importFrom dplyr filter mutate rename select %>%
-#' @importFrom parallel mclapply detectCores
 
 classify = function(
     x,

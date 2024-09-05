@@ -25,7 +25,7 @@ plot_class_fraction = function(x, tumor_type, gene, ...){
       scale_color_INCOMMON_class(aes = 'fill')+
       ggplot2::xlab('')+ggplot2::ylab('Fraction')+
       ggplot2::coord_flip()+
-      INCOMMON:::my_ggplot_theme(cex = .8)+
+      my_ggplot_theme(cex = .8)+
       ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON state'))+
       ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
   }
@@ -44,7 +44,7 @@ plot_class_fraction = function(x, tumor_type, gene, ...){
       scale_color_INCOMMON_high_level_class(aes = 'fill')+
       ggplot2::xlab('')+ggplot2::ylab('Fraction')+
       ggplot2::coord_flip()+
-      INCOMMON:::my_ggplot_theme(cex = .8)+
+      my_ggplot_theme(cex = .8)+
       ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'))+
       ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
 

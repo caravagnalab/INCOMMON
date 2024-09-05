@@ -20,19 +20,25 @@ classify(
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} generated with function \code{init}.}
 
-\item{num_cores}{The number of cores to use for parallel classification.
-By default, it takes 80\% of the available cores.}
+\item{k_max}{The maximum value of total copy number to be included in the model.}
 
-\item{priors}{A dplyr::tibble or data frame with columns \code{gene}, \code{tumor_type}, \code{label} and \code{p} indicating tumor-specific
-or pan-cancer (PANCA) prior probabilities.}
+\item{priors_m_k}{A dplyr::tibble or data frame with columns \code{gene}, \code{gene_role}, \code{tumor_type}, \code{ploidy}, \code{multiplicity}
+and \code{p} indicating tumor-specific or pan-cancer (PANCA) prior probabilities.}
 
-\item{entropy_cutoff}{Entropy cut-off for Tier-1 vs Tier-2 assignment.}
+\item{priors_x}{A dplyr::tibble or data frame with columns \code{mean_x}, \code{sigma2x}, \code{alpha_x} and \code{beta_x}
+providing parameters of the Gamma prior distribution over the per copy sequencing rate.}
 
-\item{rho}{Over-dispersion parameter.}
+\item{purity_error}{The expected error on the input sample purity estimate.}
 
-\item{karyotypes}{Karyotypes to be included among the possible classes.}
+\item{num_cores}{The number of cores to use for parallel stan sampling.}
 
-\item{parallel}{Whether to run the classification in parallel (default: FALSE)}
+\item{iter_warmup}{The number of iterations of the stan warmup phase.}
+
+\item{iter_sampling}{The number of iterations of the stan sampling  phase.}
+
+\item{dump}{Whether to dump results to a file.}
+
+\item{dump_file}{The file path for dumping results.}
 }
 \value{
 An object of class \code{INCOMMON} containing the original input plus

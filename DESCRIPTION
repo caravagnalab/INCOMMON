@@ -27,7 +27,6 @@ Imports:
     cmdstanr,
     crayon,
     ggplot2,
-    ggpubr,
     dplyr,
     scales,
     stats,

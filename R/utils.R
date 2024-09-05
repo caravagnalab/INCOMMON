@@ -466,7 +466,7 @@ forest_plot = function(x, baseline = FALSE){
     ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
     ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
-    INCOMMON:::my_ggplot_theme(cex = .8)+
+    my_ggplot_theme(cex = .8)+
     ggplot2::ylab('')+
     ggplot2::xlab('Hazard Ratio')+
     ggplot2::guides(fill = 'none')

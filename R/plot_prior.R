@@ -41,7 +41,7 @@ plot_prior = function(x, gene, tumor_type){
     ), stat = 'identity')+
     scale_color_INCOMMON_class()+
     ggplot2::coord_flip()+
-    INCOMMON:::my_ggplot_theme(cex = .8)+
+    my_ggplot_theme(cex = .8)+
     ggplot2::xlab('')+ggplot2::ylab('')+
     ggplot2::facet_wrap(~tumor_type~gene)+
     ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'), ncol = 2)
