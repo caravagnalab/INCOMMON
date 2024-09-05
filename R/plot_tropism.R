@@ -48,7 +48,7 @@ plot_tropism = function(x, tumor_type){
                                         color = prevalent), width = .25)+
     ggplot2::facet_wrap(~metastatic_site, scales = 'free_y')+
     scale_color_INCOMMON_high_level_class(aes = 'color')+
-    CNAqc:::my_ggplot_theme(cex = .8)+
+    INCOMMON:::my_ggplot_theme(cex = .8)+
     ggplot2::xlab('Odds Ratio (log2)')+
     ggplot2::ylab('')+
     ggplot2::guides(color = ggplot2::guide_legend(title = 'INCOMMON class'))

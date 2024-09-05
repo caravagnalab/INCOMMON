@@ -168,3 +168,84 @@ classification = function(x) {
     dplyr::select(sample, tumor_type, purity, dplyr::everything())
 
 }
+
+
+my_ggplot_theme = function(cex = 1)
+{
+  ggplot2::theme_light(base_size = 10 * cex) +
+    ggplot2::theme(
+      legend.position = "bottom",
+      legend.key.size = ggplot2::unit(0.3 * cex_opt, "cm"),
+      panel.background = ggplot2::element_rect(fill = "white")
+  )
+}
+
+get_likelihood = function(dp, nv, m, k, x, purity){
+
+  lambda = function(k, x, purity){
+    (2*(1-purity)*x+purity*k*x)
+  }
+
+  binom_prob = function(m, k, purity){
+    (m*purity)/(2*(1-purity)+k*purity)
+  }
+
+  dpois(dp, lambda(k = k, x = x, purity = purity)) * dbinom(x = nv, size = dp, prob = binom_prob(m = m, k = k, purity = purity))
+}
+
+compute_likelihood = function(dp, x, purity){
+  lapply(1:8, function(k){
+    lapply(1:k, function(m){
+      nv_x = 1:dp
+      value = get_likelihood(dp = dp, nv = nv_x, m = m, k = k, x = x, purity = purity)
+      tibble(
+        k = k,
+        m = m,
+        nv = nv_x,
+        value = value,
+        class = case_when(
+          k == 1 | m == k ~ 'm=k',
+          k > 1 & m == 1 ~ 'm=1',
+          k > 1 & m > 1 & m < k ~ '1<m<k'
+        )
+      )
+    }) %>% do.call(rbind, .)
+  }) %>% do.call(rbind, .)
+}
+
+
+plot_likelihood = function(data, id){
+  dp = classification(data) %>% dplyr::filter(id == !!id) %>% pull(DP)
+  nv = classification(data) %>% dplyr::filter(id == !!id) %>% pull(NV)
+  x = classification(data) %>% dplyr::filter(id == !!id) %>% pull(x_fit)
+  gene = classification(data) %>% dplyr::filter(id == !!id) %>% pull(gene)
+  tumor_type = classification(data) %>% dplyr::filter(id == !!id) %>% pull(tumor_type)
+  sample = classification(data) %>% dplyr::filter(id == !!id) %>% pull(sample)
+  purity = purity(x = data, sample = sample)
+  k_max = parameters(x = data) %>% pull(k_max)
+
+  likelihood = compute_likelihood(dp = dp, x = x, purity = purity)
+
+  p1 = likelihood %>%
+    ggplot2::ggplot(ggplot2::aes(x = nv, y = value, color = factor(k), group = interaction(k,m)))+
+    ggplot2::geom_line()+
+    ggplot2::geom_point(ggplot2::aes(shape = factor(m)))+
+    ggplot2::geom_vline(xintercept = nv, linetype = 'longdash')+
+    CNAqc:::my_ggplot_theme(cex = .8)+
+    guides(color = ggplot2::guide_legend(title = 'Total CN'), shape = ggplot2::guide_legend(title = 'Multiplicity'))
+
+  p2 = likelihood %>%
+    dplyr::group_by(class, nv) %>%
+    dplyr::reframe(value = sum(value)) %>%
+    dplyr::group_by(nv) %>%
+    dplyr::reframe(value = value, class) %>%
+    ggplot2::ggplot(ggplot2::aes(x = nv, y = value, color = class, group = class))+
+    ggplot2::geom_line()+
+    ggplot2::geom_vline(xintercept = nv, linetype = 'longdash')+
+    CNAqc:::my_ggplot_theme(cex = .8)+
+    ggplot2::guides(color = ggplot2::guide_legend(title = 'INCOMMON class'))
+
+  library(patchwork)
+  (p1+p2)+patchwork::plot_annotation(title = id, subtitle = paste0(gene, ' (', tumor_type, ')'))
+
+}

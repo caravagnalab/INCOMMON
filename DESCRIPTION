@@ -24,12 +24,11 @@ Suggests:
     DT
 Imports:
     cli,
+    cmdstanr,
     crayon,
     ggplot2,
     ggpubr,
-    CNAqc,
     dplyr,
-    VGAM,
     scales,
     stats,
     survival,

@@ -67,38 +67,26 @@ priors = function(x) {
   x$classification$priors
 }
 
-
-#' Getter for class \code{'INCOMMON'}.
-#' @description
-#' Get the model posterior distribution of a mutation.
-#' @param x An obj of class \code{'INCOMMON'}.
-#' @param id An identifier for the mutation as created by function `idify`.
-#' @return A table showing posterior distribution and entropy.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Get posterior distribution of a specific mutation using sample:chr:from:to:ref:alt as id
-#' posterior(MSK_classified, id = 'P-0028912-T01-IM6:chr17:7577121:7577121:G:A:133:837')
-posterior = function(x, id) {
+get_categroical_posterior = function(x, id) {
 
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
   stopifnot("parameters" %in% names(x$classification))
 
-  posterior = compute_posterior(
-    NV = NV(x, id),
-    DP = DP(x, id),
-    gene = gene(x, id),
-    priors = priors(x),
-    tumor_type = tumor_type(x, id),
-    purity = purity(x, id),
-    entropy_cutoff = parameters(x)$entropy_cutoff,
-    rho = parameters(x)$rho,
-    karyotypes = unlist(parameters(x)$karyotypes)
-  )
+  classification(x) %>%
+    dplyr::filter(id == !!id) %>%
+    dplyr::pull(probs) %>% unlist()
+}
 
-  return(posterior)
+get_map_posterior = function(x, id) {
+
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("classification" %in% names(x))
+  stopifnot("parameters" %in% names(x$classification))
+
+  classification(x) %>%
+    dplyr::filter(id == !!id) %>%
+    dplyr::pull(map_posterior)
 }
 
 idify = function(x){
@@ -355,24 +343,22 @@ reduce_classes = function(x) {
 
 # Get class distribution for an intere cohort
 
-class_frequency = function(x, tumor_type, gene, tier_1 = FALSE){
-  if('state' %in% colnames(classification(x))){
+class_frequency = function(x, tumor_type, gene, tier_1 = TRUE){
+  if('map_class' %in% colnames(classification(x))){
     frequency_table = classification(x) %>%
       dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
-
-    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(state != 'Tier-2')
 
     frequency_table = frequency_table %>%
       dplyr::group_by(state)
   }
-  if('class' %in% colnames(classification(x))){
+  if('relevant_class' %in% colnames(classification(x))){
     frequency_table = classification(x) %>%
       dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
 
-    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(!grepl('Tier-2', class))
+    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(!grepl('Tier-2', relevant_class))
 
     frequency_table = frequency_table %>%
-      dplyr::group_by(state, class)
+      dplyr::group_by(map_class, relevant_class)
   }
   frequency_table = frequency_table %>%
     dplyr::reframe(n = unique(length(sample)), gene_role) %>%
@@ -480,7 +466,7 @@ forest_plot = function(x, baseline = FALSE){
     ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
     ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
-    CNAqc:::my_ggplot_theme(cex = .8)+
+    INCOMMON:::my_ggplot_theme(cex = .8)+
     ggplot2::ylab('')+
     ggplot2::xlab('Hazard Ratio')+
     ggplot2::guides(fill = 'none')
@@ -489,12 +475,25 @@ forest_plot = function(x, baseline = FALSE){
 
 # Palettes
 
-ploidy_colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
-ploidy_colors = ploidy_colors[c("1:0","1:1","2:1","2:2")]
-names(ploidy_colors) = sapply(names(ploidy_colors), function(n){
-  strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
-})
-ploidy_colors = c(ploidy_colors, "Tier-2" = 'gray')
+ploidy_colors = c(
+  "steelblue", # Sky Blue
+  "forestgreen", # Green
+  "#F28E2B"  # Coral
+  "#D55E00", # Red
+  "navyblue", # Blue
+  "deeppink4", # Pink
+  "#52BCA3", # Mint Green
+  "#999999", # Gray
+  "#A3A500", # Olive
+  "#FF61C3", # Magenta
+  "#E58606", # Dark Orange
+  "#5D69B1", # Purple
+  "#99C945", # Lime Green
+  "#24796C", # Teal
+  "#DAA51B", # Mustard
+  "#2F8AC4", # Royal Blue
+)
+
 
 # INCOMMON state coloring
 scale_color_INCOMMON_class = function(aes = 'fill'){

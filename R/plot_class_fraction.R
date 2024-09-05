@@ -18,33 +18,33 @@ plot_class_fraction = function(x, tumor_type, gene, ...){
 
   toplot = class_frequency(x, tumor_type, gene, ...)
 
-  if('state' %in% colnames(toplot)){
+  if('map_class' %in% colnames(toplot)){
     p = toplot %>%
       ggplot2::ggplot()+
-      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = state), stat = 'identity')+
+      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = map_class), stat = 'identity')+
       scale_color_INCOMMON_class(aes = 'fill')+
       ggplot2::xlab('')+ggplot2::ylab('Fraction')+
       ggplot2::coord_flip()+
-      CNAqc:::my_ggplot_theme(cex = .8)+
+      INCOMMON:::my_ggplot_theme(cex = .8)+
       ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON state'))+
       ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
   }
 
-  if('class' %in% colnames(toplot)){
+  if('relevant_class' %in% colnames(toplot)){
     p2 = toplot %>%
-      dplyr::mutate(class = dplyr::case_when(
-        grepl('with LOH', class) ~ 'with LOH',
-        grepl('without LOH', class) ~ 'without LOH',
-        grepl('with AMP', class) ~ 'with AMP',
-        grepl('without AMP', class) ~ 'without AMP',
-        grepl('Tier-2', class) ~ 'Tier-2',
+      dplyr::mutate(relevant_class = dplyr::case_when(
+        grepl('with LOH', relevant_class) ~ 'with LOH',
+        grepl('without LOH', relevant_class) ~ 'without LOH',
+        grepl('with AMP', relevant_class) ~ 'with AMP',
+        grepl('without AMP', relevant_class) ~ 'without AMP',
+        grepl('Tier-2', relevant_class) ~ 'Tier-2',
       )) %>%
       ggplot2::ggplot()+
-      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = class), stat = 'identity')+
+      ggplot2::geom_bar(ggplot2::aes(x = '', y = frequency, fill = relevant_class), stat = 'identity')+
       scale_color_INCOMMON_high_level_class(aes = 'fill')+
       ggplot2::xlab('')+ggplot2::ylab('Fraction')+
       ggplot2::coord_flip()+
-      CNAqc:::my_ggplot_theme(cex = .8)+
+      INCOMMON:::my_ggplot_theme(cex = .8)+
       ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'))+
       ggplot2::labs(title = paste0(gene, ' (', tumor_type, ')'), subtitle = paste0('N = ', unique(toplot$N)))
 

@@ -57,7 +57,7 @@ toplot %>%
   ggplot2::xlim(-4,4)+
   scale_color_INCOMMON_high_level_class(aes = 'color')+
   scale_color_ttypes(aes = 'fill')+
-  CNAqc:::my_ggplot_theme(cex = .8)+
+  INCOMMON:::my_ggplot_theme(cex = .8)+
   ggplot2::xlab('Odds Ratio (log2)')+
   ggplot2::ylab('P-value (-log10)')+
   ggplot2::guides(fill = ggplot2::guide_legend(title = 'Tumor Type',
