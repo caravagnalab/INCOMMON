@@ -478,7 +478,7 @@ forest_plot = function(x, baseline = FALSE){
 ploidy_colors = c(
   "steelblue", # Sky Blue
   "forestgreen", # Green
-  "#F28E2B"  # Coral
+  "#F28E2B",  # Coral
   "#D55E00", # Red
   "navyblue", # Blue
   "deeppink4", # Pink
@@ -491,7 +491,7 @@ ploidy_colors = c(
   "#99C945", # Lime Green
   "#24796C", # Teal
   "#DAA51B", # Mustard
-  "#2F8AC4", # Royal Blue
+  "#2F8AC4" # Royal Blue
 )
 
 

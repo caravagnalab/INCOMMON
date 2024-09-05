@@ -17,7 +17,7 @@ Description: INCOMMON is a tool for the INference of COpy number and Mutation Mu
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown,

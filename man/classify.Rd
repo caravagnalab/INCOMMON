@@ -6,16 +6,22 @@
 \usage{
 classify(
   x,
-  priors = pcawg_priors,
-  entropy_cutoff = NULL,
-  rho = 0.01,
-  parallel = FALSE,
+  k_max = 8,
+  priors_m_k = pcawg_priors,
+  priors_x = pcawg_priors_x,
+  purity_error = 0.05,
   num_cores = NULL,
-  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+  iter_warmup = 500,
+  iter_sampling = 1000,
+  dump = FALSE,
+  dump_file = NULL
 )
 }
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} generated with function \code{init}.}
+
+\item{num_cores}{The number of cores to use for parallel classification.
+By default, it takes 80\% of the available cores.}
 
 \item{priors}{A dplyr::tibble or data frame with columns \code{gene}, \code{tumor_type}, \code{label} and \code{p} indicating tumor-specific
 or pan-cancer (PANCA) prior probabilities.}
@@ -24,12 +30,9 @@ or pan-cancer (PANCA) prior probabilities.}
 
 \item{rho}{Over-dispersion parameter.}
 
-\item{parallel}{Whether to run the classification in parallel (default: FALSE)}
-
-\item{num_cores}{The number of cores to use for parallel classification.
-By default, it takes 80\% of the available cores.}
-
 \item{karyotypes}{Karyotypes to be included among the possible classes.}
+
+\item{parallel}{Whether to run the classification in parallel (default: FALSE)}
 }
 \value{
 An object of class \code{INCOMMON} containing the original input plus
