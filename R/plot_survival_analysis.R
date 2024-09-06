@@ -69,7 +69,7 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
       risk.table = TRUE,
       risk.table.col = "strata",
       risk.table.fontsize = 3,
-      my_ggplot_theme(cex = .8),
+      ggtheme = my_ggplot_theme(cex = .8),
       tables.theme = my_ggplot_theme(cex = .8),
       risk.table.y.text = FALSE,
       palette = surv_colors(unique(km_data$gene_role), baseline)

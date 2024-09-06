@@ -281,10 +281,10 @@ genome_interpreter = function(x){
   x$classification$fit = x$classification$fit %>%
     dplyr::mutate(
       class = dplyr::case_when(
-        gene_role == "TSG" & state %in% c("LOH", "CNLOH") ~ paste0("Mutant ", gene, " with LOH"),
-        gene_role == "oncogene" & state %in% c("AM", "CNLOH") ~ paste0("Mutant ", gene, " with AMP"),
-        gene_role == "TSG" & state == "HMD" ~ paste0("Mutant ", gene, " without LOH"),
-        gene_role == "oncogene" & state == "HMD" ~ paste0("Mutant ", gene, " without AMP"),
+        gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
+        gene_role == "oncogene" & map_class == '1<m<k' ~ paste0("Mutant ", gene, " with AMP"),
+        gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
+        gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
         TRUE ~ paste0(paste0(gene, " Tier-2"))
       )
     ) %>% dplyr::group_by(sample) %>%
@@ -302,9 +302,9 @@ genome_interpreter = function(x){
     cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
                                    paste0("(",genotype_table[i,]$N, " Samples, "),
                                    paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
-                                   )
-                       )
-                     )
+    )
+    )
+    )
   }
 
   return(x)
@@ -437,7 +437,7 @@ forest_plot = function(x, baseline = FALSE){
 
 
   for(c in names(x$xlevels)[-1]){
-    levels = c(levels, grep(c, toplot$var, value = T, ignore.case = T) %>% rev())
+    levels = c(levels, grep(c, toplot$var, value = T, fixed = TRUE) %>% rev())
   }
 
   toplot = toplot %>%
@@ -497,8 +497,8 @@ ploidy_colors = c(
 
 # INCOMMON state coloring
 scale_color_INCOMMON_class = function(aes = 'fill'){
-  colors = c("steelblue", "#00468BFF" , "indianred3", "forestgreen", "gainsboro" )
-  names(colors) = c("LOH","CNLOH", "AM", "HMD", "Tier-2")
+  colors = c('forestgreen', "indianred3", "#00468BFF" , "gainsboro" )
+  names(colors) = c("m=1","1<m<k", "m=k", "Tier-2")
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = colors)
   } else {

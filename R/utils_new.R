@@ -175,7 +175,7 @@ my_ggplot_theme = function(cex = 1)
   ggplot2::theme_light(base_size = 10 * cex) +
     ggplot2::theme(
       legend.position = "bottom",
-      legend.key.size = ggplot2::unit(0.3 * cex_opt, "cm"),
+      legend.key.size = ggplot2::unit(0.3 * cex, "cm"),
       panel.background = ggplot2::element_rect(fill = "white")
   )
 }
