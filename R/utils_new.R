@@ -78,6 +78,10 @@ get_fit_posterior_per_class = function(fit){
   fit$summary(variables = 'class_probs')
 }
 
+get_fit_posterior_per_k = function(fit){
+  fit$summary(variables = 'posterior_k')
+}
+
 get_fit_purity = function(fit){
   fit$summary(variables = 'purity')
 }
@@ -90,15 +94,27 @@ get_fit_x = function(fit){
 attach_fit_results = function(x, fit){
   classes = c('m=1','m=k','1<m<k')
   class_probs = get_fit_posterior_per_class(fit)
+  k_probs = get_fit_posterior_per_k(fit)
+
   outcome = lapply(1:nrow(input(x)), function(i){
-    probs = class_probs[grepl(paste0('class_probs\\[',i,','), class_probs$variable),][,'mean']$mean
-    names(probs) = classes
-    w = probs %>% which.max()
+
+    class_probs = class_probs[grepl(paste0('class_probs\\[',i,','), class_probs$variable),][,'mean']$mean
+    names(class_probs) = classes
+    wc = class_probs %>% which.max()
+
+    k_probs = k_probs[grepl(paste0('posterior_k\\[',i,','), k_probs$variable),][,'mean']$mean
+    names(k_probs) = paste0('k=',1:k_max)
+    wk = k_probs %>% which.max()
+
     dplyr::tibble(
-      map_class = classes[w],
-      map_posterior = probs[w],
-      entropy = -sum(probs * log(probs)),
-      probs = list(probs),
+      map_class = names(wc),
+      map_class_posterior = class_probs[wc],
+      entropy = -sum(class_probs * log(class_probs)),
+      class_probs = list(class_probs),
+      map_k = names(wk),
+      map_k_posterior = k_probs[wk],
+      entropy_k = -sum(k_probs * log(k_probs)),
+      k_probs = list(k_probs),
       purity_fit = get_fit_purity(fit)[,'median']$median,
       x_fit = get_fit_x(fit)[,'median']$median
     )
