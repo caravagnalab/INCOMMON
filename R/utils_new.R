@@ -91,7 +91,7 @@ get_fit_x = function(fit){
 }
 
 
-attach_fit_results = function(x, fit){
+attach_fit_results = function(x, fit, k_max){
   classes = c('m=1','m=k','1<m<k')
   class_probs = get_fit_posterior_per_class(fit)
   k_probs = get_fit_posterior_per_k(fit)

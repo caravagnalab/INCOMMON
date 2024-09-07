@@ -86,7 +86,7 @@ classify = function(
       parallel_chains = num_cores,
     )
 
-    attach_fit_results(x = x, fit = fit)
+    attach_fit_results(x = x, fit = fit, k_max = k_max)
   }
 
   lapply(samples(x), function(s){
