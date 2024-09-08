@@ -279,10 +279,11 @@ check_input = function(x){
 genome_interpreter = function(x){
   stopifnot(inherits(x, 'INCOMMON'))
   x$classification$fit = x$classification$fit %>%
+    dplyr::mutate(map_k = as.integer(gsub('k=', '', map_k))) %>%
     dplyr::mutate(
       class = dplyr::case_when(
         gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
-        gene_role == "oncogene" & map_class == '1<m<k' ~ paste0("Mutant ", gene, " with AMP"),
+        gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
         gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
         gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
         TRUE ~ paste0(paste0(gene, " Tier-2"))
