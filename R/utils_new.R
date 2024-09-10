@@ -65,6 +65,8 @@ get_sample_priors = function(x, priors, N_mutations, k_max){
     c(x$p)
   }) %>% do.call(rbind, .)
 
+  return(out)
+
 }
 
 
@@ -150,12 +152,15 @@ subset_sample = function(x, sample_list){
     if(length(intersect(classification(x)$sample, sample_list))>0){
       cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
       pm = x$classification$parameters
-      pr = x$classification$priors
+      priors_m_k = x$classification$priors_m_k
+      priors_x = x$classification$priors_x
 
 
       out$classification$fit = cl
       out$classification$parameters = pm
-      out$classification$priors = pr
+      out$classification$priors_m_k = priors_m_k
+      out$classification$priors_x = priors_x
+
     }
   }
   return(out)
@@ -269,4 +274,61 @@ plot_likelihood = function(data, id){
 
   patchwork::wrap_plots(p1+p2)+patchwork::plot_annotation(title = id, subtitle = paste0(gene, ' (', tumor_type, ')'))
 
+}
+
+plot_poisson_model = function(x, sample, k_max){
+  x = subset_sample(x, sample_list = sample)
+  purity_fit = classification(x) %>% dplyr::pull(purity_fit) %>% unique()
+  purity = purity(x = x, sample = sample)
+  x_fit = classification(x) %>% dplyr::pull(x_fit) %>% unique()
+  ymin = 2*(1-purity_fit)*x_fit + purity_fit*x_fit
+  ymax = 2*(1-purity_fit)*x_fit + purity_fit*x_fit*k_max
+  ymin = min(ymin, min(classification(x) %>% dplyr::pull(DP) %>% min))
+  ymax = max(ymax, max(classification(x) %>% dplyr::pull(DP) %>% max))
+  classification(x) %>%
+    dplyr::mutate(k = gsub('k=', '', map_k)) %>%
+    dplyr::mutate(k = as.integer(k)) %>%
+    ggplot2::ggplot(ggplot2::aes(x = k, y = DP))+
+    ggplot2::geom_point(ggplot2::aes(size = map_k_posterior))+
+    # ggplot2::geom_point(ggplot2::aes(x = k, y = expected_dp), color = 'red')+
+    ggplot2::geom_abline(
+      data = dplyr::tibble(value = c(purity, purity_fit), x_fit = x_fit, purity = c('input', 'fit')),
+      linetype = 'longdash',
+      ggplot2::aes(
+        slope = value*x_fit,
+        intercept = 2*(1-value)*x_fit,
+        color = purity))+
+    ggrepel::geom_label_repel(ggplot2::aes(label = gene))+
+    my_ggplot_theme()+
+    ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
+    ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))
+}
+
+marginal_priors_k = function(x, sample, k_max){
+  x = subset_sample(x, sample_list = sample)
+  M = nrow(input(x))
+  priors = get_sample_priors(x = x, priors = priors_k_m(x), N_mutations = M, k_max = k_max)
+  priors_k = sapply(1:M, function(m){
+    sapply(1:k_max, function(k){
+      start = ((k-1)*k_max+1)
+      end = k_max*k
+      priors[m,][start:end] %>% sum()
+    })
+  }) %>% t() %>% as.data.frame()
+  colnames(priors_k) = 1:k_max
+  priors_k = dplyr::tibble(priors_k)
+  priors_k$gene = classification(x) %>% dplyr::pull(gene)
+  priors_k %>%
+    tidyr::pivot_longer(cols = colnames(.)[1:k_max], names_to = 'k', values_to = 'p')
+}
+
+plot_priors_k = function(x, sample, k_max){
+  priors_k = marginal_priors_k(x, sample, k_max)
+  priors_k %>%
+    dplyr::mutate(k = as.integer(k)) %>%
+    ggplot2::ggplot()+
+    ggplot2::geom_bar(ggplot2::aes(x = gene, y = p, fill = factor(k)), stat = 'identity')+
+    ggplot2::scale_fill_manual(values = ploidy_colors)+
+    ggplot2::guides(fill = ggplot2::guide_legend(title = 'k'))+
+    my_ggplot_theme()
 }
