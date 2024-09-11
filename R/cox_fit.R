@@ -52,12 +52,12 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
           data[[w]] = factor(data[[w]])
           data[[w]] = stats::relevel(data[[w]], ref = '<= 10', value = T)
         }
-        if(is.numeric(data[[w]])){
-          q =  stats::quantile(data[w], na.rm = T)['50%']
-          data[[w]] = ifelse(data[[w]] > q, paste0('>', q), paste0('<=', q))
-          data[[w]] = factor(data[[w]])
-          data[[w]] = stats::relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
-        }
+        # if(is.numeric(data[[w]])){
+        #   q =  stats::quantile(data[w], na.rm = T)['50%']
+        #   data[[w]] = ifelse(data[[w]] > q, paste0('>', q), paste0('<=', q))
+        #   data[[w]] = factor(data[[w]])
+        #   data[[w]] = stats::relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
+        # }
         formula = paste(formula, w, sep = ' + ')
       }
     }

@@ -407,6 +407,22 @@ forest_plot = function(x, baseline = FALSE){
       )
     }) %>% do.call(rbind, .)
 
+  leveled = sapply(names(x$xlevels), function(n){grep(n, what$var)}) %>% unlist()
+  not_leveled = what$var[-leveled]
+
+  reference_table = rbind(
+    reference_table,
+    lapply(not_leveled, function(n) {
+      dplyr::tibble(
+        var = n,
+        value = 1,
+        low = 1,
+        up = 1,
+        p.value = NA
+      )
+    }) %>% do.call(rbind, .)
+  )
+
   toplot = dplyr::tibble(
     var = what$var,
     value = what$`exp(coef)`,
@@ -437,9 +453,11 @@ forest_plot = function(x, baseline = FALSE){
   }
 
 
-  for(c in names(x$xlevels)[-1]){
+  for(c in c(names(x$xlevels)[-1], not_leveled)){
     levels = c(levels, grep(c, toplot$var, value = T, fixed = TRUE) %>% rev())
   }
+
+  levels = levels %>% unique()
 
   toplot = toplot %>%
     dplyr::mutate(var = factor(
@@ -450,6 +468,7 @@ forest_plot = function(x, baseline = FALSE){
 
   pp = toplot %>%
     dplyr::mutate(num_label = toplot$var %>% seq_along()) %>%
+    dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
     dplyr::mutate(stripe = (num_label%%2==0)) %>%
     ggplot2::ggplot(ggplot2::aes(y = var, x = value))+
     ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+

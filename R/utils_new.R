@@ -131,6 +131,16 @@ purity = function(x, sample){
   return(pi)
 }
 
+purity_fit = function(x, sample){
+  pi = classification(x) %>% dplyr::filter(sample == !!sample) %>% dplyr::pull(purity_fit) %>% unique()
+  return(pi)
+}
+
+x_fit = function(x, sample){
+  x = classification(x) %>% dplyr::filter(sample == !!sample) %>% dplyr::pull(x_fit) %>% unique()
+  return(x)
+}
+
 samples = function(x){
   input(x) %>% dplyr::pull(sample) %>% unique()
 }
@@ -242,14 +252,14 @@ compute_likelihood = function(dp, x, purity){
 #' @export
 #' @importFrom patchwork wrap_plots plot_annotation
 plot_likelihood = function(data, id){
-  dp = classification(data) %>% dplyr::filter(id == !!id) %>% pull(DP)
-  nv = classification(data) %>% dplyr::filter(id == !!id) %>% pull(NV)
-  x = classification(data) %>% dplyr::filter(id == !!id) %>% pull(x_fit)
-  gene = classification(data) %>% dplyr::filter(id == !!id) %>% pull(gene)
-  tumor_type = classification(data) %>% dplyr::filter(id == !!id) %>% pull(tumor_type)
-  sample = classification(data) %>% dplyr::filter(id == !!id) %>% pull(sample)
+  dp = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(DP)
+  nv = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(NV)
+  x = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(x_fit)
+  gene = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(gene)
+  tumor_type = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(tumor_type)
+  sample = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(sample)
   purity = purity(x = data, sample = sample)
-  k_max = parameters(x = data) %>% pull(k_max)
+  k_max = parameters(x = data) %>% dplyr::pull(k_max)
 
   likelihood = compute_likelihood(dp = dp, x = x, purity = purity)
 
