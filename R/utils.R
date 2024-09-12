@@ -283,7 +283,8 @@ genome_interpreter = function(x){
     dplyr::mutate(
       class = dplyr::case_when(
         gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
-        gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
+        # gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
+        gene_role == "oncogene" & (map_class == '1<m<k' | map_class == 'm=k') ~ paste0("Mutant ", gene, " with AMP"),
         gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
         gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
         TRUE ~ paste0(paste0(gene, " Tier-2"))
@@ -559,6 +560,7 @@ scale_color_ttypes = function(aes = 'fill'){
     "BLCA" = "#A22E29",
     "BRCA" = "#7D629E",
     "CHOL" = "#B96461",
+    "LUAD" = "#CF559A",
     "PAAD" = "#EAB578",
     "CRC" =  "#E4A6A7",
     "UCEC" = "#ABD5D0",

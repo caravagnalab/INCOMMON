@@ -287,6 +287,9 @@ plot_likelihood = function(data, id){
 }
 
 plot_poisson_model = function(x, sample, k_max){
+  lambda = function(k, x, purity){
+    (2*(1-purity)*x+purity*k*x)
+  }
   x = subset_sample(x, sample_list = sample)
   purity_fit = classification(x) %>% dplyr::pull(purity_fit) %>% unique()
   purity = purity(x = x, sample = sample)
@@ -311,7 +314,9 @@ plot_poisson_model = function(x, sample, k_max){
     ggrepel::geom_label_repel(ggplot2::aes(label = gene))+
     my_ggplot_theme()+
     ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
-    ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))
+    ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))+
+    ggplot2::labs(title = paste0('x = ',x_fit),
+                  subtitle = paste0('lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit)))
 }
 
 marginal_priors_k = function(x, sample, k_max){
