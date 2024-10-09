@@ -2,7 +2,7 @@
 #'
 #' @param x An object of class \code{'INCOMMON'} generated with function `init`.
 #' @param k_max The maximum value of total copy number to be included in the model.
-#' @param priors_m_k A dplyr::tibble or data frame with columns `gene`, `gene_role`, `tumor_type`, `ploidy`, `multiplicity`
+#' @param priors_k_m A dplyr::tibble or data frame with columns `gene`, `gene_role`, `tumor_type`, `ploidy`, `multiplicity`
 #' and `p` indicating tumor-specific or pan-cancer (PANCA) prior probabilities.
 #' @param priors_x A dplyr::tibble or data frame with columns `mean_x`, `sigma2x`, `alpha_x` and `beta_x`
 #' providing parameters of the Gamma prior distribution over the per copy sequencing rate.
@@ -31,7 +31,7 @@
 classify = function(
     x,
     k_max = 8,
-    priors_m_k = pcawg_priors,
+    priors_k_m = pcawg_priors,
     priors_x = pcawg_priors_x,
     purity_error = 0.05,
     num_cores = NULL,
@@ -62,7 +62,7 @@ classify = function(
     n = input(x)$NV
     purity_mean = purity(x = x, sample = sample)
 
-    priors_m_k_sample = get_sample_priors(x = x, N_mutations = M, priors = priors_m_k, k_max = k_max)
+    priors_k_m_sample = get_stan_input_priors(x = x, N_mutations = M, priors = priors_k_m, k_max = k_max)
 
     data = list(
       M = M,
@@ -73,7 +73,7 @@ classify = function(
       purity_error = purity_error,
       alpha_x = priors_x$alpha_x,
       beta_x = priors_x$beta_x,
-      k_m_prior = priors_m_k_sample
+      alpha_k_m = priors_k_m_sample
     )
 
     model = get_stan_model()
@@ -86,11 +86,31 @@ classify = function(
       parallel_chains = num_cores,
     )
 
-    attach_fit_results(x = x, fit = fit, k_max = k_max)
+    fit$summary()
   }
 
   lapply(samples(x), function(s){
     out = classify_sample(x = x, sample = s)
+    out$sample = s
+
+    # idx = 1
+    # class_table = tibble(NULL)
+    # for(k in 1:k_max){
+    #   for(m in 1:k){
+    #     class_table = class_table %>%
+    #       rbind(tibble(idx = idx, k = k,m = m))
+    #     idx = idx+1
+    #   }
+    # }
+
+    # out %>%
+    #   dplyr::rowwise() %>%
+    #   dplyr::mutate(
+    #     idx = strsplit(variable, split = ',')[[1]][2] %>%
+    #       gsub('\\]', '', .) %>% as.integer()
+    #   ) %>% full_join(class_table, by = 'idx') %>%
+    #   dplyr::select(sample, k, m, dplyr::everything())
+
 
     if(!('classification' %in% names(x))) x$classification = list()
     if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
@@ -105,7 +125,7 @@ classify = function(
         stan_stan_iter_sampling = iter_sampling
       )
 
-      x$classification$priors_m_k = priors_m_k
+      x$classification$priors_k_m = priors_k_m
       x$classification$priors_x = priors_x
 
       if(is.null(dump_file)) dump_file = './dump.rds'
@@ -122,22 +142,22 @@ classify = function(
     stan_stan_iter_sampling = iter_sampling
   )
 
-  x$classification$priors_m_k = priors_m_k
+  x$classification$priors_k_m = priors_k_m
   x$classification$priors_x = priors_x
 
-    cli::cli_alert_info('There are: ')
-    for (map_class in c('m=1', '1<m<k', 'm=k')) {
-      N  = classification(x) %>% dplyr::filter(map_class == !!map_class) %>% nrow()
-      cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', map_class, ')')))
-    }
+    # cli::cli_alert_info('There are: ')
+    # for (map_class in c('m=1', '1<m<k', 'm=k')) {
+    #   N  = classification(x) %>% dplyr::filter(map_class == !!map_class) %>% nrow()
+    #   cli::cli_bullets(c("*" = paste0("N = ", N, ' mutations (', map_class, ')')))
+    # }
 
-    mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
-    min_ent = classification(x) %>% dplyr::pull(entropy) %>% min()
-    max_ent = classification(x) %>% dplyr::pull(entropy) %>% max()
+    # mean_ent = classification(x) %>% dplyr::pull(entropy) %>% mean()
+    # min_ent = classification(x) %>% dplyr::pull(entropy) %>% min()
+    # max_ent = classification(x) %>% dplyr::pull(entropy) %>% max()
 
-    cli::cli_alert_info(
-      'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
-      )
+    # cli::cli_alert_info(
+    #   'The mean classification entropy is {.field {round(mean_ent, 2)}} (min: {.field {round(min_ent, 2)}}, max: {.field {round(max_ent, 2)}})'
+    #   )
 
   return(x)
 }

@@ -31,7 +31,45 @@ check_input = function(x){
     cli::cli_abort("Sample purity must be a non-negative number, classification aborted.")
 }
 
-get_sample_priors = function(x, priors, N_mutations, k_max){
+# get_sample_priors = function(x, priors, N_mutations, k_max){
+#   out = lapply(1:nrow(input(x)), function(i){
+#
+#     gene = input(x)[i,]$gene
+#     gene_role = input(x)[i,]$gene_role
+#     tumor_type = input(x)[i,]$tumor_type
+#
+#     what = priors %>% filter(gene == !!gene, tumor_type == !!tumor_type)
+#
+#     if(nrow(what) == 0){
+#
+#       what = priors %>% filter(gene == !!gene, tumor_type == 'PANCA')
+#
+#       if(nrow(what) == 0){
+#
+#         if(!is.na(gene_role)){
+#           what = priors %>% filter(gene == 'other genes', gene_role == !!gene_role, tumor_type == 'PANCA')
+#         } else {
+#           what = priors %>% filter(gene == 'other genes', tumor_type == 'PANCA')
+#         }
+#
+#       }
+#     }
+#
+#     what = what %>% filter(ploidy <= k_max)
+#     what$p = what$p/sum(what$p)
+#     what = what %>% dplyr::arrange(ploidy)
+#     return(what)
+#   }) %>% do.call(rbind, .)
+#
+#   out = lapply(split(out, rep(1:N_mutations, each = k_max*k_max)), function(x){
+#     c(x$p)
+#   }) %>% do.call(rbind, .)
+#
+#   return(out)
+#
+# }
+
+get_sample_priors = function(x, priors, k_max){
   out = lapply(1:nrow(input(x)), function(i){
 
     gene = input(x)[i,]$gene
@@ -47,22 +85,31 @@ get_sample_priors = function(x, priors, N_mutations, k_max){
       if(nrow(what) == 0){
 
         if(!is.na(gene_role)){
-          what = priors %>% filter(gene == 'other genes', gene_role == !!gene_role, tumor_type == 'PANCA')
+          what = priors %>% filter(gene == 'other', gene_role == !!gene_role, tumor_type == 'PANCA')
         } else {
-          what = priors %>% filter(gene == 'other genes', tumor_type == 'PANCA')
+          what = priors %>% filter(gene == 'other', tumor_type == 'PANCA') %>%
+            group_by(gene, tumor_type, k, m) %>%
+            reframe(N = sum(N), n = sum(n), id = paste(NA, tumor_type), gene_role = NA) %>%
+            unique()
         }
 
       }
     }
 
-    what = what %>% filter(ploidy <= k_max)
-    what$p = what$p/sum(what$p)
-    what = what %>% dplyr::arrange(ploidy)
+    what = what %>% filter(k <= k_max)
+    what$N = sum(what$n)
+    what$f = what$n/what$N
+    what = what %>% dplyr::arrange(k)
     return(what)
   }) %>% do.call(rbind, .)
+}
 
-  out = lapply(split(out, rep(1:N_mutations, each = k_max*k_max)), function(x){
-    c(x$p)
+get_stan_input_priors = function(x, priors, N_mutations, k_max){
+
+  out = get_sample_priors(x = x, priors = priors, k_max = k_max)
+
+  out = lapply(split(out, rep(1:N_mutations, each = k_max*(k_max+1)/2)), function(x){
+    c(x$n)
   }) %>% do.call(rbind, .)
 
   return(out)
@@ -76,32 +123,21 @@ get_stan_model = function(){
   # tmp = utils::capture.output(suppressMessages(model <- cmdstanr::cmdstan_model(model_path)))
 }
 
-get_fit_posterior_per_class = function(fit){
-  fit$summary(variables = 'class_probs')
-}
-
-get_fit_posterior_per_k = function(fit){
-  fit$summary(variables = 'posterior_k')
-}
-
-get_fit_purity = function(fit){
-  fit$summary(variables = 'purity')
-}
-
-get_fit_x = function(fit){
-  fit$summary(variables = 'x')
-}
-
-
 attach_fit_results = function(x, fit, k_max){
-  classes = c('m=1','m=k','1<m<k')
-  class_probs = get_fit_posterior_per_class(fit)
-  k_probs = get_fit_posterior_per_k(fit)
+
+  mixing_p_all = fit$summary(variables = 'psi')
 
   outcome = lapply(1:nrow(input(x)), function(i){
 
-    class_probs = class_probs[grepl(paste0('class_probs\\[',i,','), class_probs$variable),][,'mean']$mean
-    names(class_probs) = classes
+    mixing_p = mixing_p_all[grepl(paste0('psi\\[',i,','), mixing_p_all$variable),][,'mean']$mean
+
+    posterior_table = lapply(1:k_max, function(k){
+      lapply(1:k, function(m){
+        tibble(k = k,m = m)
+      }) %>% do.call(rbind, .)
+    }) %>% do.call(rbind, .)
+
+    posterior_table$psi = mixing_p
     wc = class_probs %>% which.max()
 
     k_probs = k_probs[grepl(paste0('posterior_k\\[',i,','), k_probs$variable),][,'mean']$mean
@@ -109,7 +145,7 @@ attach_fit_results = function(x, fit, k_max){
     wk = k_probs %>% which.max()
 
     dplyr::tibble(
-      map_class = names(wc),
+      map_k_m = dplyr::arrange(posterior_table, dplyr::desc(psi))[1,],
       map_class_posterior = class_probs[wc],
       entropy = -sum(class_probs * log(class_probs)),
       class_probs = list(class_probs),
@@ -159,7 +195,7 @@ subset_sample = function(x, sample_list){
              input = ip)
   class(out) = 'INCOMMON'
   if('classification' %in% names(x)) {
-    if(length(intersect(classification(x)$sample, sample_list))>0){
+    if(length(intersect(x$classification$fit$sample, sample_list))>0){
       cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
       pm = x$classification$parameters
       priors_m_k = x$classification$priors_m_k
@@ -346,4 +382,32 @@ plot_priors_k = function(x, sample, k_max){
     ggplot2::scale_fill_manual(values = ploidy_colors)+
     ggplot2::guides(fill = ggplot2::guide_legend(title = 'k'))+
     my_ggplot_theme()
+}
+
+plot_prior_k_m = function(x, priors, k_max, sample){
+  x = subset_sample(x = x, sample_list = sample)
+  what = get_sample_priors(x = x, priors = priors, k_max = k_max)
+  # what = priors_k_m %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  # title = paste0(gene, ' (', tumor_type, ')')
+  # if(nrow(what)==0) {
+  #   tumor_type = 'P'
+  #   what = priors_k_m %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  #
+  #   gene_role = cancer_gene_census %>% dplyr::filter(gene == !!gene) %>% dplyr::pull(gene_role)
+  #   what = priors_k_m %>% dplyr::filter(gene == 'other', gene_role == !!gene_role, tumor_type == !!tumor_type)
+  #   title = paste0(gene_role, ' (', tumor_type, ')')
+  # }
+  ggplot2::ggplot(what, ggplot2::aes(x = factor(k), y = factor(m), fill = round(f,2))) +
+    ggplot2::geom_tile() +
+    ggplot2::geom_text(ggplot2::aes(label = round(n,1)), color = "black") +
+    ggplot2::scale_fill_gradient(low = "gainsboro", high = "blue", limits = c(min(what$f), max(what$f))) +
+    ggplot2::labs(
+      # title = paste0(gene, ' (', tumor_type, ')'),
+      x = "Total CN (k)",
+      y = "Multiplicity (m)",
+      fill = "Prior Probability"
+    ) +
+    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))+
+    my_ggplot_theme()+
+    facet_wrap(~id)
 }
