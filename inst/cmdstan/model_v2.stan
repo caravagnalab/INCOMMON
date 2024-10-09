@@ -27,11 +27,11 @@ data {
   real<lower=0, upper=1> purity_error;
   real<lower=0> alpha_x;  // Gamma prior parameter alpha for x
   real<lower=0> beta_x;   // Gamma prior parameter beta for x
-  array[M] vector[k_max*k_max] alpha_k_m;
+  array[M] vector[k_max*(k_max+1)/2] alpha_k_m;  // Dirichlet priors for each mutation
 }
 
 parameters {
-  array[M] simplex[k_max*k_max] psi;  // Mixing proportions for each mutation
+  array[M] simplex[k_max*(k_max+1)/2] psi;  // Mixing proportions for each mutation
   real<lower=0> x;    // Per-copy count rate
   real<lower=0,upper=1> purity; // Proportion of tumour cells (purity)
 }
@@ -39,27 +39,24 @@ parameters {
 model {
   // Prior sampling
   vector[2] ab_pi = alpha_beta_pi(purity_mean, purity_error); // Compute shape parameters for purity prior
-  purity ~ beta(ab_pi[1], ab_pi[2]);  // Prior sampling of the purity 
+  purity ~ beta(ab_pi[1], ab_pi[2]);  // Prior sampling of the purity
   x ~ gamma(alpha_x, beta_x);  // Prior sampling of the per-count rate
-  
+
   for (i in 1:M) {
-    psi[i] ~ dirichlet(alpha_k_m[i]);
+    psi[i] ~ dirichlet(alpha_k_m[i]);  // Prior sampling of each mutation's mixing proportions
   }
-  
+
   // Likelihood sampling
   for (i in 1:M) {
-    vector[k_max*k_max] log_likelihood;
+    vector[k_max*(k_max+1)/2] log_likelihood;
     int idx = 1;
     for (k in 1:k_max) {
-      for (m in 1:k_max) {
-        if(m > k)
-          log_likelihood[idx] = negative_infinity();
-        else 
-          log_likelihood[idx] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity)) 
+      for (m in 1:k) {
+        log_likelihood[idx] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity))
           + poisson_lpmf(N[i] | lambda(k, x, purity));
         idx += 1;
-      } 
+      }
     }
-    target += log_sum_exp(log_likelihood + log(psi[i]));    
+    target += log_sum_exp(log_likelihood + log(psi[i]));
   }
 }

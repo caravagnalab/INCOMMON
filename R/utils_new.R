@@ -71,7 +71,7 @@ get_sample_priors = function(x, priors, N_mutations, k_max){
 
 
 get_stan_model = function(){
-  model_path = system.file("cmdstan", 'model.stan', package = "INCOMMON", mustWork = T)
+  model_path = system.file("cmdstan", 'model_v2.stan', package = "INCOMMON", mustWork = T)
   model = cmdstanr::cmdstan_model(model_path)
   # tmp = utils::capture.output(suppressMessages(model <- cmdstanr::cmdstan_model(model_path)))
 }
