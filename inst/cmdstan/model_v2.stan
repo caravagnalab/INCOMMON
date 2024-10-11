@@ -60,3 +60,46 @@ model {
     target += log_sum_exp(log_likelihood + log(psi[i]));
   }
 }
+
+generated quantities {
+  array[M] vector[k_max*(k_max+1)/2] log_lik_bin;
+  array[M] vector[k_max] log_lik_pois;
+  array[M] vector[k_max*(k_max+1)/2] z_km;
+
+  array[M] int N_rep; // Posterior predictive N samples
+  array[M] int n_rep; // Posterior predictive N samples
+  array[M] int km_idx;
+
+  for (i in 1:M) {
+
+    // Compute log-likelihoods for binomial and poisson
+    int idx = 1;
+    vector[k_max*(k_max+1)/2] log_likelihood;
+    for (k in 1:k_max) {
+      log_lik_pois[i][k] = poisson_lpmf(N[i] | lambda(k, x, purity));  // Poisson likelihood
+
+      for (m in 1:k) {
+        log_lik_bin[i][idx] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity));  // Binomial likelihood
+        log_likelihood[idx] = log_lik_bin[i][idx] + log_lik_pois[i][k];
+        idx += 1;
+      }
+    }
+
+    z_km[i] = softmax(log_likelihood + log(psi[i]));
+
+    km_idx[i] = categorical_rng(z_km[i]);
+    N_rep[i] = 0;
+    n_rep[i] = 0;
+    int jdx = 1;
+    for(k in 1:k_max){
+      for(m in 1:k){
+        if(km_idx[i] == jdx) {
+          N_rep[i] += poisson_rng(lambda(k, x, purity));
+          n_rep[i] += binomial_rng(N_rep[i], expected_vaf(m, k, purity));
+        }
+        jdx += 1;
+      }
+    }
+  }
+
+}
