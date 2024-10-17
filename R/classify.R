@@ -86,12 +86,11 @@ classify = function(
       parallel_chains = num_cores,
     )
 
-    fit$summary()
+    fit
   }
 
   lapply(samples(x), function(s){
     out = classify_sample(x = x, sample = s)
-    out$sample = s
 
     # idx = 1
     # class_table = tibble(NULL)
@@ -115,18 +114,19 @@ classify = function(
     if(!('classification' %in% names(x))) x$classification = list()
     if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
 
-    x$classification$fit <<- rbind(x$classification$fit, out)
+    x$classification$fit <<- rbind(x$classification$fit, tibble(sample = s, fit = list(fit)))
+
+    x$classification$parameters = dplyr::tibble(
+      k_max,
+      purity_error,
+      stan_iter_warmup = iter_warmup,
+      stan_stan_iter_sampling = iter_sampling
+    )
+
+    x$classification$priors_k_m = priors_k_m
+    x$classification$priors_x = priors_x
 
     if(dump){
-      x$classification$parameters = dplyr::tibble(
-        k_max,
-        purity_error,
-        stan_iter_warmup = iter_warmup,
-        stan_stan_iter_sampling = iter_sampling
-      )
-
-      x$classification$priors_k_m = priors_k_m
-      x$classification$priors_x = priors_x
 
       if(is.null(dump_file)) dump_file = './dump.rds'
 
@@ -134,16 +134,6 @@ classify = function(
     }
 
   })
-
-  x$classification$parameters = dplyr::tibble(
-    k_max,
-    purity_error,
-    stan_iter_warmup = iter_warmup,
-    stan_stan_iter_sampling = iter_sampling
-  )
-
-  x$classification$priors_k_m = priors_k_m
-  x$classification$priors_x = priors_x
 
     # cli::cli_alert_info('There are: ')
     # for (map_class in c('m=1', '1<m<k', 'm=k')) {
