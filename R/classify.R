@@ -114,7 +114,7 @@ classify = function(
     if(!('classification' %in% names(x))) x$classification = list()
     if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
 
-    x$classification$fit <<- rbind(x$classification$fit, dplyr::tibble(sample = s, fit = list(out)))
+    x$classification$fit <<- rbind(x$classification$fit, dplyr::tibble(sample = s, fit = list(fit)))
 
     x$classification$parameters <<- dplyr::tibble(
       k_max,
