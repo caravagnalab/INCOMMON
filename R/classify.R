@@ -90,7 +90,7 @@ classify = function(
   }
 
   lapply(samples(x), function(s){
-    out = classify_sample(x = x, sample = s)
+    fit = classify_sample(x = x, sample = s)
 
     # idx = 1
     # class_table = tibble(NULL)
