@@ -114,17 +114,17 @@ classify = function(
     if(!('classification' %in% names(x))) x$classification = list()
     if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
 
-    x$classification$fit <<- rbind(x$classification$fit, tibble(sample = s, fit = list(fit)))
+    x$classification$fit <<- rbind(x$classification$fit, dplyr::tibble(sample = s, fit = list(out)))
 
-    x$classification$parameters = dplyr::tibble(
+    x$classification$parameters <<- dplyr::tibble(
       k_max,
       purity_error,
       stan_iter_warmup = iter_warmup,
       stan_stan_iter_sampling = iter_sampling
     )
 
-    x$classification$priors_k_m = priors_k_m
-    x$classification$priors_x = priors_x
+    x$classification$priors_k_m <<- priors_k_m
+    x$classification$priors_x <<- priors_x
 
     if(dump){
 
