@@ -37,6 +37,7 @@ classify = function(
     num_cores = NULL,
     iter_warmup = 500,
     iter_sampling = 1000,
+    num_chains = 4,
     dump = FALSE,
     dump_file = NULL
 )
@@ -83,10 +84,45 @@ classify = function(
       seed = 1992,
       iter_warmup = iter_warmup,
       iter_sampling = iter_sampling,
+      chains = num_chains,
       parallel_chains = num_cores,
     )
 
-    fit
+    psi = fit$draws(variables = 'psi')
+    psi = array(psi, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+
+    z_km = fit$draws(variables = 'z_km')
+    z_km = array(z_km, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+
+    x_fit = fit$draws(variables = 'x')
+    x_fit = array(x_fit, dim = c(num_chains * iter_sampling, 1))
+
+    purity_fit = fit$draws(variables = 'purity')
+    purity_fit = array(purity_fit, dim = c(num_chains * iter_sampling, 1))
+
+    N_rep = fit$draws(variables = 'N_rep')
+    N_rep = array(N_rep, dim = c(num_chains * iter_sampling, M))
+
+    n_rep = fit$draws(variables = 'n_rep')
+    n_rep = array(n_rep, dim = c(num_chains * iter_sampling, M))
+
+    log_lik_bin = fit$draws(variables = 'log_lik_bin')
+    log_lik_bin = array(log_lik_bin, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+
+    log_lik_pois = fit$draws(variables = 'log_lik_pois')
+    log_lik_pois = array(log_lik_pois, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+
+    list(
+      sample = sample,
+      psi = psi,
+      z_km = z_km,
+      x_fit = x_fit,
+      purity_fit = purity_fit,
+      N_rep = N_rep,
+      n_rep = n_rep,
+      log_lik_bin = log_lik_bin,
+      log_lik_pois = log_lik_pois
+    )
   }
 
   lapply(samples(x), function(s){
@@ -112,9 +148,10 @@ classify = function(
 
 
     if(!('classification' %in% names(x))) x$classification = list()
-    if(!('fit' %in% names(x$classification))) x$classification$fit = dplyr::tibble(NULL)
+    if(!('fit' %in% names(x$classification))) x$classification$fit = list()
 
-    x$classification$fit <<- rbind(x$classification$fit, dplyr::tibble(sample = s, fit = list(fit)))
+    # x$classification$fit <<- rbind(x$classification$fit, dplyr::tibble(sample = s, fit = list(fit)))
+    x$classification$fit[[s]] <<- fit
 
     x$classification$parameters <<- dplyr::tibble(
       k_max,

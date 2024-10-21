@@ -1,70 +1,48 @@
-get_fit_sample = function(x, sample){
-  what = x$classification$fit %>% filter(sample == !!sample)
-  out = what$fit[[1]]
-  return(out)
-}
-
-sample = 'CPCT02010043T'
-
 get_z_km = function(x, sample){
-  what = get_fit_sample(x = x, sample = sample)
-  x = subset_sample(x = x, sample_list = sample)
-  z_km = what$summary(variables = 'z_km')  
-  out_table = dplyr::tibble(NULL)
-  for(i in 1:nrow(input(x))){
-    idx = 1
-    for(k in 1:k_max){
-      for(m in 1:k){
-        out_table = rbind(
-          out_table,
-          z_km %>% 
-            filter(grepl(paste0('z_km\\[',i,',',idx,'\\]'), variable)) %>% 
-            dplyr::mutate(k = k, m = m) %>% 
-            dplyr::bind_cols(
-              input(x)[i,] %>% dplyr::select(sample, chr, from, to, ref, alt))
-        )
-        idx = idx + 1
-      }
-    }
-  }
+  what = x$classification$fit[[sample]]
+  z_km = what$z_km %>% colMeans()
+  k_max = x$classification$parameters$k_max
 
-  out_table %>% 
-      dplyr::mutate(variable = 'z_km') %>% 
-      dplyr::select(sample, chr, from, to, ref, alt, variable, k, m, dplyr::everything())
+  k_m_table = expand.grid(k = 1:k_max, m = 1:k_max) %>%
+    dplyr::as_tibble() %>%
+    dplyr::filter(m <= k) %>% arrange(k, m)
+
+  z_km = lapply(1:nrow(z_km), function(i){
+    k_m_table$z_km = z_km[i,]
+    k_m_table$i = i
+    k_m_table
+  }) %>% do.call(rbind, .)
+
+ z_km
 }
 
 get_map_z_km = function(x, sample){
-  get_z_km(x = x, sample = sample) %>% 
-    dplyr::group_by(sample, chr, from, to, ref, alt) %>% 
-    dplyr::arrange(desc(mean), .by_group = TRUE) %>% 
-    dplyr::slice_head(n = 1)
+  get_z_km(x = x, sample = sample) %>%
+    dplyr::group_by(i) %>%
+    dplyr::arrange(desc(z_km), .by_group = TRUE) %>%
+    dplyr::slice_head(n = 1) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-i)
 }
 
 get_map_purity = function(x, sample){
-  what = get_fit_sample(x = x, sample = sample)
-  purity = what$summary(variables = 'purity') %>% 
-    dplyr::mutate(sample = sample)
-  return(purity)
+  x$classification$fit[[sample]]$purity_fit %>% median()
+}
+
+get_map_x = function(x, sample){
+  x$classification$fit[[sample]]$x %>% median()
 }
 
 
 classification = function(x){
   samples = input(x) %>% dplyr::pull(sample) %>% unique()
   lapply(samples, function(s){
-    get_map_z_km(x = x, sample = s) %>% 
-      dplyr::rename(z_km = mean) %>% 
-      dplyr::select(sample, chr, from, to, ref, alt, k, m, z_km) %>% 
-      dplyr::full_join(
-        input(x), 
-        by = c('sample','chr', 'from', 'to', 'ref', 'alt')
-        ) %>% 
-      dplyr::full_join(
-        get_map_purity(x, sample = s) %>% 
-          dplyr::rename(purity_fit = mean) %>% 
-          dplyr::select(sample, purity_fit)
-      )
-  }) %>% do.call(rbind, .)
+    what = get_map_z_km(x = x, sample = s)
+    # what$sample = s
+    what$purity_fit = get_map_purity(x = x, sample = s)
+    what$x_fit = get_map_x(x = x, sample = s)
+    what
+  }) %>% do.call(rbind, .) %>%
+    dplyr::bind_cols(x$input) %>%
+    dplyr::select(sample, purity, chr, from, to , ref, alt, gene, gene_role, NV, DP, VAF, k, m, z_km, purity_fit, x_fit, dplyr::everything())
 }
-
-
-classification(x) %>% View()
