@@ -195,8 +195,8 @@ subset_sample = function(x, sample_list){
              input = ip)
   class(out) = 'INCOMMON'
   if('classification' %in% names(x)) {
-    if(length(intersect(x$classification$fit$sample, sample_list))>0){
-      cl = x$classification$fit %>% dplyr::filter(sample %in% sample_list)
+    if(length(intersect(names(x$classification$fit), sample_list))>0){
+      cl = x$classification$fit[sample_list]
       pm = x$classification$parameters
       priors_m_k = x$classification$priors_m_k
       priors_x = x$classification$priors_x
@@ -211,31 +211,6 @@ subset_sample = function(x, sample_list){
   }
   return(out)
 }
-
-#' Getter for class \code{'INCOMMON'}.
-#' @description
-#' Get classification data for specific selected model.
-#' @param x An object of class \code{'INCOMMON'}.
-#' @return A table with classified data.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Get classification results
-#' classification(MSK_classified)
-#' @importFrom dplyr filter mutate rename select %>%
-classification = function(x) {
-  stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("fit" %in% names(x$classification))
-  x$classification$fit %>%
-    # dplyr::full_join(x$input %>%
-    #                    dplyr::select(sample, tumor_type, purity) %>% unique(),
-    #                  by = 'sample') %>%
-    dplyr::select(sample, tumor_type, purity, dplyr::everything())
-
-}
-
 
 my_ggplot_theme = function(cex = 1)
 {
@@ -334,11 +309,16 @@ plot_poisson_model = function(x, sample, k_max){
   ymax = 2*(1-purity_fit)*x_fit + purity_fit*x_fit*k_max
   ymin = min(ymin, min(classification(x) %>% dplyr::pull(DP) %>% min))
   ymax = max(ymax, max(classification(x) %>% dplyr::pull(DP) %>% max))
+
+  N_stats = get_N_rep_ci(x = x, sample = sample)
+
   classification(x) %>%
-    dplyr::mutate(k = gsub('k=', '', map_k)) %>%
+    dplyr::mutate(k = gsub('k=', '', k)) %>%
     dplyr::mutate(k = as.integer(k)) %>%
-    ggplot2::ggplot(ggplot2::aes(x = k, y = DP))+
-    ggplot2::geom_point(ggplot2::aes(size = map_k_posterior))+
+    ggplot2::ggplot(ggplot2::aes(x = k))+
+    ggplot2:: geom_ribbon(data = N_stats, ggplot2::aes(ymin = q5, ymax = q95), linetype=2, alpha=0.5, fill = 'steelblue')+
+    ggplot2::geom_point(ggplot2::aes(y = DP))+
+    # ggplot2::geom_point(ggplot2::aes(size = map_k_posterior))+
     # ggplot2::geom_point(ggplot2::aes(x = k, y = expected_dp), color = 'red')+
     ggplot2::geom_abline(
       data = dplyr::tibble(value = c(purity, purity_fit), x_fit = x_fit, purity = c('input', 'fit')),
@@ -347,12 +327,55 @@ plot_poisson_model = function(x, sample, k_max){
         slope = value*x_fit,
         intercept = 2*(1-value)*x_fit,
         color = purity))+
-    ggrepel::geom_label_repel(ggplot2::aes(label = gene))+
+    ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = gene))+
     my_ggplot_theme()+
-    ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
+    # ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
     ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))+
-    ggplot2::labs(title = paste0('x = ',x_fit),
-                  subtitle = paste0('lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit)))
+    ggplot2::labs(title = sample,
+                  subtitle = paste0('x = ', round(x_fit, 2), '; lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit) %>% round(2)))
+}
+
+what
+
+plot_binomial_model = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+  n_rep = get_n_rep(x = x, sample = sample)
+  k_m_rep = get_k_m_rep(x = x, sample = sample)
+  niter = x$classification$parameters$stan_stan_iter_sampling * x$classification$parameters$num_chains
+
+  i = 1
+  # what = classification(x)[i,]
+  what = lapply(1:nrow(classification(x)), function(i){
+    tibble(
+      N_rep = n_rep[,i],
+      gene = classification(x)[i,]$gene,
+      id = paste(classification(x)[i,]$gene, classification(x)[i,]$ref, classification(x)[i,]$alt, sep = ':'),
+      NV =  classification(x)[i,]$NV,
+      DP =  classification(x)[i,]$DP,
+      k = k_m_rep[((i-1)*niter+1):(i*niter),]$k,
+      m = k_m_rep[((i-1)*niter+1):(i*niter),]$m
+    )
+  }) %>% do.call(rbind, .)
+
+
+  what %>%
+    ggplot2::ggplot()+
+    ggplot2::geom_histogram(ggplot2::aes(x = N_rep, fill = interaction(k, m,sep = ':')), binwidth = 1, alpha = .7)+
+    ggplot2::geom_vline(
+      data = what %>%
+        dplyr::select(id, NV, DP) %>% unique() %>%  tidyr::pivot_longer(cols = c('NV', 'DP'), names_to = 'variable', values_to = 'value'),
+      ggplot2::aes(xintercept = value, color = variable), linetype = 'longdash')+
+    ggplot2::scale_color_manual(values = c('NV' = 'black', 'DP' = 'firebrick'))+
+    # ggplot2::scale_fill_manual()+
+    # ggplot2::geom_vline(data = classification(x)[i,], ggplot2::aes(xintercept = DP), linetype = 'longdash')+
+    my_ggplot_theme()+
+    # ggplot2::xlim(1, classification(x)[i,]$DP)+
+    ggplot2::labs(
+      y = '',
+      fill = 'k:m',
+      color = 'Reads'
+    )+
+    ggplot2::facet_wrap(~id)
 }
 
 marginal_priors_k = function(x, sample, k_max){
