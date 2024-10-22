@@ -157,7 +157,8 @@ classify = function(
       k_max,
       purity_error,
       stan_iter_warmup = iter_warmup,
-      stan_stan_iter_sampling = iter_sampling
+      stan_stan_iter_sampling = iter_sampling,
+      num_chains
     )
 
     x$classification$priors_k_m <<- priors_k_m
