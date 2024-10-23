@@ -39,7 +39,9 @@ classify = function(
     iter_sampling = 1000,
     num_chains = 4,
     dump = FALSE,
-    dump_file = NULL
+    dump_file = NULL,
+    stan_fit_dump = TRUE,
+    stan_fit_dir = './results/stan_fits'
 )
   {
 
@@ -88,41 +90,45 @@ classify = function(
       parallel_chains = num_cores,
     )
 
-    psi = fit$draws(variables = 'psi')
-    psi = array(psi, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+    if(stan_fit_dump){
 
-    z_km = fit$draws(variables = 'z_km')
-    z_km = array(z_km, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+      if (!dir.exists(stan_fit_dir)) {
+        dir.create(stan_fit_dir, recursive = TRUE)
+      }
 
-    x_fit = fit$draws(variables = 'x')
-    x_fit = array(x_fit, dim = c(num_chains * iter_sampling, 1))
+      fit$save_object(file = paste0(stan_fit_dir, '/', sample, '.rds'))
+    }
 
-    purity_fit = fit$draws(variables = 'purity')
-    purity_fit = array(purity_fit, dim = c(num_chains * iter_sampling, 1))
+    # psi = fit$draws(variables = 'psi')
+    # psi = array(psi, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+    #
 
-    N_rep = fit$draws(variables = 'N_rep')
-    N_rep = array(N_rep, dim = c(num_chains * iter_sampling, M))
+    # x_fit = fit$draws(variables = 'x')
+    # x_fit = array(x_fit, dim = c(num_chains * iter_sampling, 1))
+    #
+    # purity_fit = fit$draws(variables = 'purity')
+    # purity_fit = array(purity_fit, dim = c(num_chains * iter_sampling, 1))
 
-    n_rep = fit$draws(variables = 'n_rep')
-    n_rep = array(n_rep, dim = c(num_chains * iter_sampling, M))
+    #
+    # log_lik_bin = fit$draws(variables = 'log_lik_bin')
+    # log_lik_bin = array(log_lik_bin, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+    #
+    # log_lik_pois = fit$draws(variables = 'log_lik_pois')
+    # log_lik_pois = array(log_lik_pois, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
+    #
+    # list(
+    #   sample = sample,
+    #   psi = psi,
+    #   z_km = z_km,
+    #   x_fit = x_fit,
+    #   purity_fit = purity_fit,
+    #   N_rep = N_rep,
+    #   n_rep = n_rep,
+    #   log_lik_bin = log_lik_bin,
+    #   log_lik_pois = log_lik_pois
+    # )
 
-    log_lik_bin = fit$draws(variables = 'log_lik_bin')
-    log_lik_bin = array(log_lik_bin, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
-
-    log_lik_pois = fit$draws(variables = 'log_lik_pois')
-    log_lik_pois = array(log_lik_pois, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
-
-    list(
-      sample = sample,
-      psi = psi,
-      z_km = z_km,
-      x_fit = x_fit,
-      purity_fit = purity_fit,
-      N_rep = N_rep,
-      n_rep = n_rep,
-      log_lik_bin = log_lik_bin,
-      log_lik_pois = log_lik_pois
-    )
+    fit$summary()
   }
 
   lapply(samples(x), function(s){
@@ -157,8 +163,12 @@ classify = function(
       k_max,
       purity_error,
       stan_iter_warmup = iter_warmup,
-      stan_stan_iter_sampling = iter_sampling,
-      num_chains
+      stan_iter_sampling = iter_sampling,
+      num_chains,
+      dump,
+      dump_file,
+      stan_fit_dump,
+      stan_fit_dir
     )
 
     x$classification$priors_k_m <<- priors_k_m
