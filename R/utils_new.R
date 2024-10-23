@@ -85,11 +85,17 @@ get_sample_priors = function(x, priors, k_max){
       if(nrow(what) == 0){
 
         if(!is.na(gene_role)){
-          what = priors %>% filter(gene == 'other', gene_role == !!gene_role, tumor_type == 'PANCA')
+          what = priors %>%
+            full_join(INCOMMON::cancer_gene_census) %>%
+            filter(gene_role == !!gene_role) %>%
+            group_by(k, m) %>%
+            reframe(n = mean(n), gene = 'other', gene_role = gene_role, tumor_type = 'PANCA') %>%
+            unique() %>%
+            filter(!is.na(k))
         } else {
-          what = priors %>% filter(gene == 'other', tumor_type == 'PANCA') %>%
-            group_by(gene, tumor_type, k, m) %>%
-            reframe(N = sum(N), n = sum(n), id = paste(NA, tumor_type), gene_role = NA) %>%
+          what = priors %>%
+            group_by(k, m) %>%
+            reframe(n = mean(n), gene = 'other', gene_role = NA, tumor_type = 'PANCA') %>%
             unique()
         }
 
@@ -334,8 +340,6 @@ plot_poisson_model = function(x, sample, k_max){
     ggplot2::labs(title = sample,
                   subtitle = paste0('x = ', round(x_fit, 2), '; lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit) %>% round(2)))
 }
-
-what
 
 plot_binomial_model = function(x, sample){
   x = subset_sample(x = x, sample_list = sample)
