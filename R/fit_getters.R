@@ -17,7 +17,7 @@ get_map_z_km = function(x, sample){
 
     map_km = what %>%
       dplyr::filter(grepl(paste0('km_idx\\[',i,'\\]'), variable)) %>%
-      dplyr::pull(median)
+      dplyr::pull(median) %>% as.integer()
 
     tibble(
       sample = sample,
@@ -151,17 +151,26 @@ get_k_m_draws = function(x, sample){
 
   k_max = x$classification$parameters$k_max
 
-  z_km = get_z_km_draws(x = x, sample = sample)
+  dir = x$classification$parameters$stan_fit_dir
+  # num_chains = x$classification$parameters$num_chains
+  # iter_sampling = x$classification$parameters$stan_iter_sampling
+  M = classification(x) %>% nrow()
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  km_idx = fit$draws(variables = 'km_idx')
+  km_idx = array(km_idx, dim = c(num_chains * iter_sampling, M))
 
   k_m_table = expand.grid(k = 1:k_max, m = 1:k_max) %>%
     dplyr::as_tibble() %>%
     dplyr::filter(m <= k) %>% arrange(k, m)
 
-  km_idx = apply(z_km, c(1, 2), which.max)
+  y = lapply(1:M, function(i){
+    lapply(1:length(km_idx[,i]), function(j){
+        k_m_table[km_idx[j,i],]
+    }) %>% do.call(rbind, .)
+  }) %>% do.call(rbind, .)
 
-  dplyr::tibble(
-    k = k_m_table$k[as.vector(km_idx)],
-    m = k_m_table$m[as.vector(km_idx)]
-  )
+  y
 
 }

@@ -91,12 +91,15 @@ get_sample_priors = function(x, priors, k_max){
             group_by(k, m) %>%
             reframe(n = mean(n), gene = 'other', gene_role = gene_role, tumor_type = 'PANCA') %>%
             unique() %>%
-            filter(!is.na(k))
+            filter(!is.na(k)) %>%
+            select(-gene_role)
         } else {
           what = priors %>%
             group_by(k, m) %>%
             reframe(n = mean(n), gene = 'other', gene_role = NA, tumor_type = 'PANCA') %>%
-            unique()
+            unique() %>%
+            filter(!is.na(k)) %>%
+            select(-gene_role)
         }
 
       }
@@ -311,10 +314,10 @@ plot_poisson_model = function(x, sample, k_max){
   purity_fit = classification(x) %>% dplyr::pull(purity_fit) %>% unique()
   purity = purity(x = x, sample = sample)
   x_fit = classification(x) %>% dplyr::pull(x_fit) %>% unique()
-  ymin = 2*(1-purity_fit)*x_fit + purity_fit*x_fit
-  ymax = 2*(1-purity_fit)*x_fit + purity_fit*x_fit*k_max
-  ymin = min(ymin, min(classification(x) %>% dplyr::pull(DP) %>% min))
-  ymax = max(ymax, max(classification(x) %>% dplyr::pull(DP) %>% max))
+  # ymin = 2*(1-purity_fit)*x_fit + purity_fit*x_fit
+  # ymax = 2*(1-purity_fit)*x_fit + purity_fit*x_fit*k_max
+  # ymin = min(ymin, min(classification(x) %>% dplyr::pull(DP) %>% min))
+  # ymax = max(ymax, max(classification(x) %>% dplyr::pull(DP) %>% max))
 
   N_stats = get_N_rep_ci(x = x, sample = sample)
 
@@ -343,9 +346,9 @@ plot_poisson_model = function(x, sample, k_max){
 
 plot_binomial_model = function(x, sample){
   x = subset_sample(x = x, sample_list = sample)
-  n_rep = get_n_rep(x = x, sample = sample)
-  k_m_rep = get_k_m_rep(x = x, sample = sample)
-  niter = x$classification$parameters$stan_stan_iter_sampling * x$classification$parameters$num_chains
+  n_rep = get_n_draws(x = x, sample = sample)
+  k_m_rep = get_k_m_draws(x = x, sample = sample)
+  niter = x$classification$parameters$stan_iter_sampling * x$classification$parameters$num_chains
 
   i = 1
   # what = classification(x)[i,]
