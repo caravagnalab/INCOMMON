@@ -32,7 +32,7 @@ get_map_purity = function(x, sample){
   x = subset_sample(x = x, sample_list = sample)
   what = x$classification$fit[[sample]]
 
-  purity_fit = what %>% dplyr::filter(grepl('purity', variable)) %>% dplyr::pull(median)
+  purity_fit = what %>% dplyr::filter(grepl('purity$', variable)) %>% dplyr::pull(median)
 
   tibble(
     sample = sample,
@@ -67,6 +67,32 @@ classification = function(x){
     dplyr::select(-sample) %>%
     dplyr::bind_cols(x$input) %>%
     dplyr::select(sample, purity, chr, from, to , ref, alt, gene, gene_role, NV, DP, VAF, k, m, z_km, purity_fit, x_fit, dplyr::everything())
+}
+
+
+get_z_km = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+
+  stopifnot(x$classification$parameters$stan_fit_dump)
+
+  dir = x$classification$parameters$stan_fit_dir
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
+  k_max = x$classification$parameters$k_max
+
+  M = classification(x) %>% nrow()
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  k_m_table = expand.grid(k = 1:k_max, m = 1:k_max) %>%
+    dplyr::as_tibble() %>%
+    dplyr::filter(m <= k) %>% arrange(k, m)
+
+  z_km = fit$summary(variables = 'z_km')
+  lapply(1:M, function(i){
+    k_m_table$z_km = z_km %>% dplyr::filter(grepl(paste0('z_km\\[',i,','), variable)) %>% dplyr::pull(mean)
+    k_m_table
+  }) %>% do.call(rbind, .)
 }
 
 
@@ -133,7 +159,7 @@ get_n_draws = function(x, sample){
   fit = readRDS(paste0(dir, '/', sample, '.rds'))
 
   n_rep = fit$draws(variables = 'n_rep')
-  n_rep = array(N_rep, dim = c(num_chains * iter_sampling, M))
+  n_rep = array(n_rep, dim = c(num_chains * iter_sampling, M))
 }
 
 
@@ -152,8 +178,8 @@ get_k_m_draws = function(x, sample){
   k_max = x$classification$parameters$k_max
 
   dir = x$classification$parameters$stan_fit_dir
-  # num_chains = x$classification$parameters$num_chains
-  # iter_sampling = x$classification$parameters$stan_iter_sampling
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
   M = classification(x) %>% nrow()
 
   fit = readRDS(paste0(dir, '/', sample, '.rds'))
@@ -172,5 +198,68 @@ get_k_m_draws = function(x, sample){
   }) %>% do.call(rbind, .)
 
   y
-
 }
+
+get_x_draws = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+
+  stopifnot(x$classification$parameters$stan_fit_dump)
+
+  dir = x$classification$parameters$stan_fit_dir
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  x_rep = fit$draws(variables = 'x')
+  x_rep = array(x_rep)
+}
+
+get_x_prior_draws = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+
+  stopifnot(x$classification$parameters$stan_fit_dump)
+
+  dir = x$classification$parameters$stan_fit_dir
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  x_prior_rep = fit$draws(variables = 'x_rep')
+  x_prior_rep = array(x_prior_rep)
+  x_prior_rep
+}
+
+get_purity_draws = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+
+  stopifnot(x$classification$parameters$stan_fit_dump)
+
+  dir = x$classification$parameters$stan_fit_dir
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  purity_rep = fit$draws(variables = 'purity')
+  purity_rep = array(purity_rep)
+  purity_rep
+}
+
+get_purity_prior_draws = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+
+  stopifnot(x$classification$parameters$stan_fit_dump)
+
+  dir = x$classification$parameters$stan_fit_dir
+  num_chains = x$classification$parameters$num_chains
+  iter_sampling = x$classification$parameters$stan_iter_sampling
+
+  fit = readRDS(paste0(dir, '/', sample, '.rds'))
+
+  purity_prior_rep = fit$draws(variables = 'purity_rep')
+  purity_prior_rep = array(purity_prior_rep)
+  purity_prior_rep
+}
+

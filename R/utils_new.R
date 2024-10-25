@@ -340,8 +340,11 @@ plot_poisson_model = function(x, sample, k_max){
     my_ggplot_theme()+
     # ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
     ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))+
-    ggplot2::labs(title = sample,
-                  subtitle = paste0('x = ', round(x_fit, 2), '; lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit) %>% round(2)))
+    ggplot2::labs(
+      title = sample,
+      y = 'DP (draws)',
+      subtitle = paste0('x = ', round(x_fit, 2), '; lambda = ', lambda(k = 1, x = x_fit, purity = purity_fit) %>% round(2))
+      )
 }
 
 plot_binomial_model = function(x, sample){
@@ -351,26 +354,25 @@ plot_binomial_model = function(x, sample){
   niter = x$classification$parameters$stan_iter_sampling * x$classification$parameters$num_chains
 
   i = 1
-  # what = classification(x)[i,]
-  what = lapply(1:nrow(classification(x)), function(i){
+  what = classification(x)
+  what = lapply(1:nrow(what), function(i){
     tibble(
       N_rep = n_rep[,i],
-      gene = classification(x)[i,]$gene,
-      id = paste(classification(x)[i,]$gene, classification(x)[i,]$ref, classification(x)[i,]$alt, sep = ':'),
-      NV =  classification(x)[i,]$NV,
-      DP =  classification(x)[i,]$DP,
+      gene = what[i,]$gene,
+      id = paste(what[i,]$gene, what[i,]$ref, what[i,]$alt, sep = ':'),
+      NV =  what[i,]$NV,
+      DP =  what[i,]$DP,
       k = k_m_rep[((i-1)*niter+1):(i*niter),]$k,
       m = k_m_rep[((i-1)*niter+1):(i*niter),]$m
     )
   }) %>% do.call(rbind, .)
-
 
   what %>%
     ggplot2::ggplot()+
     ggplot2::geom_histogram(ggplot2::aes(x = N_rep, fill = interaction(k, m,sep = ':')), binwidth = 1, alpha = .7)+
     ggplot2::geom_vline(
       data = what %>%
-        dplyr::select(id, NV, DP) %>% unique() %>%  tidyr::pivot_longer(cols = c('NV', 'DP'), names_to = 'variable', values_to = 'value'),
+        dplyr::select(gene, NV, DP) %>% unique() %>%  tidyr::pivot_longer(cols = c('NV', 'DP'), names_to = 'variable', values_to = 'value'),
       ggplot2::aes(xintercept = value, color = variable), linetype = 'longdash')+
     ggplot2::scale_color_manual(values = c('NV' = 'black', 'DP' = 'firebrick'))+
     # ggplot2::scale_fill_manual()+
@@ -379,10 +381,73 @@ plot_binomial_model = function(x, sample){
     # ggplot2::xlim(1, classification(x)[i,]$DP)+
     ggplot2::labs(
       y = '',
+      x = 'NV (draws)',
       fill = 'k:m',
       color = 'Reads'
     )+
-    ggplot2::facet_wrap(~id)
+    ggplot2::facet_wrap(~gene)
+}
+
+plot_x_check = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+  x_rep = get_x_draws(x = x, sample = sample)
+  x_prior_rep = get_x_prior_draws(x = x, sample = sample)
+
+  what = rbind(
+    dplyr::tibble(
+      x = x_rep,
+      source = 'posterior'
+    ),
+    dplyr::tibble(
+      x = x_prior_rep,
+      source = 'prior'
+    )
+  )
+
+  what %>%
+    ggplot()+
+    geom_histogram(aes(x = x, fill = source), alpha = .8, binwidth = 10)+
+    geom_vline(aes(xintercept = median(x_rep)), color = 'navyblue', linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(x_prior_rep)), color = 'steelblue', linetype = 'longdash')+
+    scale_fill_manual(values = c('prior' = 'steelblue', 'posterior' = 'navyblue'))+
+    my_ggplot_theme()+
+    labs(
+      fill = '',
+      y = '',
+      x = 'Per-count rate (x)'
+    )
+}
+
+plot_purity_check = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+  purity_rep = get_purity_draws(x = x, sample = sample)
+  purity_prior_rep = get_purity_prior_draws(x = x, sample = sample)
+
+  what = rbind(
+    dplyr::tibble(
+      purity = purity_rep,
+      source = 'posterior'
+    ),
+    dplyr::tibble(
+      purity = purity_prior_rep,
+      source = 'prior'
+    )
+  )
+
+  what %>%
+    ggplot()+
+    geom_histogram(aes(x = purity, fill = source), alpha = .8, binwidth = 0.005)+
+    geom_vline(aes(xintercept = median(purity_rep)), color = 'firebrick', linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(purity_prior_rep)), color = 'darkorange', linetype = 'longdash')+
+    scale_fill_manual(values = c('prior' = 'darkorange', 'posterior' = 'firebrick'))+
+    my_ggplot_theme()+
+    labs(
+      fill = '',
+      y = '',
+      x = 'Purity'
+    )
+
+
 }
 
 marginal_priors_k = function(x, sample, k_max){

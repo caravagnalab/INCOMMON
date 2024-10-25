@@ -66,9 +66,16 @@ generated quantities {
   array[M] vector[k_max] log_lik_pois;
   array[M] vector[k_max*(k_max+1)/2] z_km;
 
+  real x_rep;    // Prior x samples
+  real purity_rep; // Prior purity samples
+
   array[M] int N_rep; // Posterior predictive N samples
-  array[M] int n_rep; // Posterior predictive N samples
+  array[M] int n_rep; // Posterior predictive n samples
   array[M] int km_idx;
+
+  vector[2] ab_pi = alpha_beta_pi(purity_mean, purity_error);
+  purity_rep = beta_rng(ab_pi[1], ab_pi[2]);
+  x_rep = gamma_rng(alpha_x, beta_x);
 
   for (i in 1:M) {
 
