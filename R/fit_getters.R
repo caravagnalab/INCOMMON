@@ -263,3 +263,41 @@ get_purity_prior_draws = function(x, sample){
   purity_prior_rep
 }
 
+
+get_class_z_km = function(x, sample){
+  what = get_z_km(x = x, sample = sample)
+
+  k_max = x$classification$parameters$k_max
+
+  n_class = k_max*(k_max+1)/2
+
+  what = split(what, gl(nrow(what) / n_class, n_class))
+
+  lapply(names(what), function(n){
+    # what[[n]] %>%
+    #   dplyr::mutate(
+    #     class = dplyr::case_when(
+    #       k == 1 & k == m ~ 'LOH',
+    #       k > 1 & k == m ~ 'CNLOH',
+    #       k > 2 & m > 1 ~ 'AMP',
+    #       k == 2 & m == 1 ~ 'HMD',
+    #       k > 2 & m == 1 ~ 'Tier-2'
+    #     )
+    #   ) %>%
+    #   dplyr::group_by(class) %>%
+    #   dplyr::reframe(z_km = sum(z_km))
+
+    what[[n]] %>%
+      dplyr::mutate(
+        class = dplyr::case_when(
+          (m / k) <= .5 ~ 'NSA',
+          (m / k) > .5 & (m / k) < .8  ~ 'AMP',
+          (m / k) >= .8 ~ 'LOH',
+        )
+      ) %>%
+      dplyr::group_by(class) %>%
+      dplyr::reframe(z_km = sum(z_km)) %>%
+      dplyr::mutate(map = .data[['z_km']] == max(.data[['z_km']], na.rm = TRUE))
+  })
+
+}

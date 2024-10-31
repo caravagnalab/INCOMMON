@@ -64,8 +64,13 @@ classify = function(
     N = input(x)$DP
     n = input(x)$NV
     purity_mean = purity(x = x, sample = sample)
+    tumor_type = input(x) %>% dplyr::pull(tumor_type) %>% unique()
 
     priors_k_m_sample = get_stan_input_priors(x = x, N_mutations = M, priors = priors_k_m, k_max = k_max)
+    priors_x_sample = priors_x %>% filter(tumor_type == !!tumor_type)
+    if(nrow(priors_x_sample)==0){
+      priors_x_sample = priors_x %>% filter(tumor_type == 'PANCA')
+    }
 
     data = list(
       M = M,
@@ -74,8 +79,8 @@ classify = function(
       k_max = k_max,
       purity_mean = purity_mean,
       purity_error = purity_error,
-      alpha_x = priors_x$alpha_x,
-      beta_x = priors_x$beta_x,
+      alpha_x = priors_x_sample$alpha_x,
+      beta_x = priors_x_sample$beta_x,
       alpha_k_m = priors_k_m_sample
     )
 

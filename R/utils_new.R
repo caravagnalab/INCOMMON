@@ -207,13 +207,13 @@ subset_sample = function(x, sample_list){
     if(length(intersect(names(x$classification$fit), sample_list))>0){
       cl = x$classification$fit[sample_list]
       pm = x$classification$parameters
-      priors_m_k = x$classification$priors_m_k
+      priors_k_m = x$classification$priors_k_m
       priors_x = x$classification$priors_x
 
 
       out$classification$fit = cl
       out$classification$parameters = pm
-      out$classification$priors_m_k = priors_m_k
+      out$classification$priors_k_m = priors_k_m
       out$classification$priors_x = priors_x
 
     }
@@ -369,15 +369,22 @@ plot_binomial_model = function(x, sample){
 
   what %>%
     ggplot2::ggplot()+
-    ggplot2::geom_histogram(ggplot2::aes(x = N_rep, fill = interaction(k, m,sep = ':')), binwidth = 1, alpha = .7)+
+    ggplot2::geom_histogram(ggplot2::aes(x = N_rep, fill = interaction(k, m,sep = ':')), binwidth = 1, alpha = .7) +
+    # ggridges::geom_density_ridges(ggplot2::aes(x = N_rep, fill = interaction(k, m,sep = ':'), y = gene))
     ggplot2::geom_vline(
       data = what %>%
         dplyr::select(gene, NV, DP) %>% unique() %>%  tidyr::pivot_longer(cols = c('NV', 'DP'), names_to = 'variable', values_to = 'value'),
-      ggplot2::aes(xintercept = value, color = variable), linetype = 'longdash')+
+      ggplot2::aes(xintercept = value, color = variable, group = gene))+
     ggplot2::scale_color_manual(values = c('NV' = 'black', 'DP' = 'firebrick'))+
     # ggplot2::scale_fill_manual()+
     # ggplot2::geom_vline(data = classification(x)[i,], ggplot2::aes(xintercept = DP), linetype = 'longdash')+
     my_ggplot_theme()+
+    theme(
+      panel.grid = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y.left = element_blank(),
+      strip.text.y.left = element_text(angle = 0)
+      )+
     # ggplot2::xlim(1, classification(x)[i,]$DP)+
     ggplot2::labs(
       y = '',
@@ -385,7 +392,8 @@ plot_binomial_model = function(x, sample){
       fill = 'k:m',
       color = 'Reads'
     )+
-    ggplot2::facet_wrap(~gene)
+    ggplot2::theme(legend.position = 'right')+
+    ggplot2::facet_wrap(~gene, ncol = 1, strip.position = 'left')
 }
 
 plot_x_check = function(x, sample){
@@ -479,30 +487,65 @@ plot_priors_k = function(x, sample, k_max){
     my_ggplot_theme()
 }
 
-plot_prior_k_m = function(x, priors, k_max, sample){
+plot_prior_k_m = function(x, sample){
   x = subset_sample(x = x, sample_list = sample)
+  priors = x$classification$priors_k_m
+  k_max = x$classification$parameters$k_max
   what = get_sample_priors(x = x, priors = priors, k_max = k_max)
-  # what = priors_k_m %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
-  # title = paste0(gene, ' (', tumor_type, ')')
-  # if(nrow(what)==0) {
-  #   tumor_type = 'P'
-  #   what = priors_k_m %>% dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
-  #
-  #   gene_role = cancer_gene_census %>% dplyr::filter(gene == !!gene) %>% dplyr::pull(gene_role)
-  #   what = priors_k_m %>% dplyr::filter(gene == 'other', gene_role == !!gene_role, tumor_type == !!tumor_type)
-  #   title = paste0(gene_role, ' (', tumor_type, ')')
-  # }
-  ggplot2::ggplot(what, ggplot2::aes(x = factor(k), y = factor(m), fill = round(f,2))) +
+
+  what %>% ggplot2::ggplot(ggplot2::aes(
+    x = factor(k),
+    y = factor(m),
+    # fill = round(f, 2)
+    fill = log10(f)
+    )) +
     ggplot2::geom_tile() +
-    ggplot2::geom_text(ggplot2::aes(label = round(n,1)), color = "black") +
-    ggplot2::scale_fill_gradient(low = "gainsboro", high = "blue", limits = c(min(what$f), max(what$f))) +
-    ggplot2::labs(
-      # title = paste0(gene, ' (', tumor_type, ')'),
+    ggplot2::geom_text(ggplot2::aes(label = round(n, 1)), color = "white") +
+    scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
+    ggh4x::facet_nested_wrap( ~ gene ~ tumor_type) +
+    my_ggplot_theme() +
+    ggplot2::labs(# title = paste0(gene, ' (', tumor_type, ')'),
+      x = "Total CN (k)", y = "Multiplicity (m)", fill = "Prior Probability (log10)") +
+    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))
+}
+
+plot_km_prior_vs_post = function(x, sample){
+  x = subset_sample(x = x, sample_list = sample)
+  priors = x$classification$priors_k_m
+  k_max = x$classification$parameters$k_max
+
+  priors = get_sample_priors(x = x, priors = priors, k_max = k_max)
+  posterior = get_z_km(x = x, sample = sample)
+
+  what = dplyr::bind_cols(
+    priors,
+    posterior %>% dplyr::select(z_km)
+    ) %>%
+    tidyr::pivot_longer(cols = c('f', 'z_km'), names_to = 'source', values_to = 'z_km') %>%
+    dplyr::mutate(source = ifelse(source == 'f', 'prior', 'posterior'))
+
+  what %>%
+    dplyr::filter(source == 'posterior') %>%
+    ggplot2::ggplot(ggplot2::aes(
+      x = factor(k),
+      y = factor(m),
+      # fill = round(f, 2)
+      fill = log10(z_km)
+    )) +
+    ggplot2::geom_tile() +
+    ggplot2::geom_label(ggplot2::aes(label = round(n, 1), color = ''), fill = 'transparent', label.size = 0, size = 3) +
+    scale_color_manual(values = c('white'))+
+    scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
+    my_ggplot_theme() +
+    ggh4x::facet_nested_wrap(~tumor_type ~gene)+
+    ggplot2::labs(# title = paste0(gene, ' (', tumor_type, ')'),
       x = "Total CN (k)",
       y = "Multiplicity (m)",
-      fill = "Prior Probability"
-    ) +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))+
-    my_ggplot_theme()+
-    facet_wrap(~id)
+      fill = "Posterior Probability (log10)",
+      color = 'Dirichlet Prior Concentration'
+      ) +
+    ggplot2::guides(
+      fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')),
+      color = ggplot2::guide_legend(override.aes = list(color = 'white', fill = 'black', size = 5, shape = 21)))
+
 }
