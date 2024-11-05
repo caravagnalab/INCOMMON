@@ -264,94 +264,43 @@ compute_likelihood = function(dp, x, purity){
   }) %>% do.call(rbind, .)
 }
 
-#' Plot model likelihood.
-#'
-#' @param data An object of class \code{'INCOMMON'}.
-#' @param id The id of a mutation iin the form sample:chr:from:to:ref:alt:NV:DP.
-#' @return A ggplot object.
-#' @export
-#' @importFrom patchwork wrap_plots plot_annotation
-plot_likelihood = function(data, id){
-  dp = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(DP)
-  nv = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(NV)
-  x = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(x_fit)
-  gene = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(gene)
-  tumor_type = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(tumor_type)
-  sample = classification(data) %>% dplyr::filter(id == !!id) %>% dplyr::pull(sample)
-  purity = purity(x = data, sample = sample)
-  k_max = parameters(x = data) %>% dplyr::pull(k_max)
-
-  likelihood = compute_likelihood(dp = dp, x = x, purity = purity)
-
-  p1 = likelihood %>%
-    ggplot2::ggplot(ggplot2::aes(x = nv, y = value, color = factor(k), group = interaction(k,m)))+
-    ggplot2::geom_line()+
-    ggplot2::geom_point(ggplot2::aes(shape = factor(m)))+
-    ggplot2::geom_vline(xintercept = nv, linetype = 'longdash')+
-    my_ggplot_theme(cex = .8)+
-    ggplot2::guides(color = ggplot2::guide_legend(title = 'Total CN'), shape = ggplot2::guide_legend(title = 'Multiplicity'))
-
-  p2 = likelihood %>%
-    dplyr::group_by(class, nv) %>%
-    dplyr::reframe(value = sum(value)) %>%
-    dplyr::group_by(nv) %>%
-    dplyr::reframe(value = value, class) %>%
-    ggplot2::ggplot(ggplot2::aes(x = nv, y = value, color = class, group = class))+
-    ggplot2::geom_line()+
-    ggplot2::geom_vline(xintercept = nv, linetype = 'longdash')+
-    my_ggplot_theme(cex = .8)+
-    ggplot2::guides(color = ggplot2::guide_legend(title = 'INCOMMON class'))
-
-  patchwork::wrap_plots(p1+p2)+patchwork::plot_annotation(title = id, subtitle = paste0(gene, ' (', tumor_type, ')'))
-
-}
-
-plot_poisson_model = function(x, sample){
+plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map){
   lambda = function(k, x, purity){
     (2*(1-purity)*x+purity*k*x)
   }
-  x = subset_sample(x, sample_list = sample)
-  k_max = parameters(x) %>% dplyr::pull(k_max)
 
-  cl = classification(x)
-  purity_fit = cl %>% dplyr::pull(purity_fit) %>% unique()
-  purity = purity(x = x, sample = sample)
-  x_fit = classification(x) %>% dplyr::pull(x_fit) %>% unique()
+  inp = input(x)
 
-  N_stats = get_N_rep_ci(x = x, sample = sample)
+  purity_input = purity(x = x, sample = sample)
 
-  cl %>%
-    dplyr::mutate(k = gsub('k=', '', k)) %>%
-    dplyr::mutate(k = as.integer(k)) %>%
+  N_stats = get_N_rep_ci(N_rep = N_rep, km_rep = km_rep)
+
+  inp %>%
+    dplyr::bind_cols(km_map %>% do.call(rbind, .)) %>%
     ggplot2::ggplot(ggplot2::aes(x = k))+
     ggplot2:: geom_ribbon(data = N_stats, ggplot2::aes(ymin = q5, ymax = q95), linetype=2, alpha=0.5, fill = 'steelblue')+
     ggplot2::geom_abline(
-      data = dplyr::tibble(value = c(purity, purity_fit), x_fit = x_fit, purity = c('input', 'fit')),
+      data = dplyr::tibble(value = c(purity_input, purity_map), x_fit = x_map, purity = c('input', 'fit')),
       linetype = 'longdash',
       ggplot2::aes(
-        slope = value*x_fit,
-        intercept = 2*(1-value)*x_fit,
+        slope = value*x_map,
+        intercept = 2*(1-value)*x_map,
         color = purity))+
     ggplot2::geom_point(ggplot2::aes(y = DP))+
-    ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = gene))+
+    ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = paste(gene, NV, sep = ':')))+
+    ggplot2::geom_text(data = dplyr::tibble(NULL),label = paste('MAP x =', round(x_map, 2)), aes(x = 2, y = N_stats[nrow(N_stats),]$q95))+
     my_ggplot_theme()+
     # ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
     ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))+
     ggplot2::labs(
       y = 'DP (draws)',
-      caption = paste0('x = ', round(x_fit, 2))
       )+
     xlim(1,8)
 }
 
-plot_binomial_model = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
-  n_rep = get_n_draws(x = x, sample = sample)
-  k_m_rep = get_k_m_draws(x = x, sample = sample)
-  niter = x$classification$parameters$stan_iter_sampling * x$classification$parameters$num_chains
+plot_binomial_model = function(x, n_rep, km_rep){
 
-  i = 1
-  what = classification(x)
+  what = input(x)
   what = lapply(1:nrow(what), function(i){
     tibble(
       N_rep = n_rep[,i],
@@ -359,8 +308,8 @@ plot_binomial_model = function(x, sample){
       id = paste(what[i,]$gene, what[i,]$NV, sep = ':'),
       NV =  what[i,]$NV,
       DP =  what[i,]$DP,
-      k = k_m_rep[((i-1)*niter+1):(i*niter),]$k,
-      m = k_m_rep[((i-1)*niter+1):(i*niter),]$m
+      k = km_rep[[i]]$k,
+      m = km_rep[[i]]$m
     )
   }) %>% do.call(rbind, .)
 
@@ -396,26 +345,38 @@ plot_binomial_model = function(x, sample){
     ggplot2::facet_wrap(~id, ncol = 1, strip.position = 'left')
 }
 
-bayesian_p_value <- function(data, prior_type = c("beta", "gamma")) {
-  prior_type <- match.arg(prior_type)
+bayesian_p_value = function(posterior_rep, prior_rep, prior_type = c("beta", "gamma")) {
+
+  what = rbind(
+    dplyr::tibble(
+      value = posterior_rep,
+      source = 'posterior'
+    ),
+    dplyr::tibble(
+      value = prior_rep,
+      source = 'prior'
+    )
+  )
+
+  prior_type = match.arg(prior_type)
 
   # Filter data for prior and posterior samples
-  prior_data <- data %>% filter(source == "prior") %>% pull(value)
+  prior_data = what %>% dplyr::filter(source == "prior") %>% dplyr::pull(value)
   prior_mean = prior_data %>% mean()
-  posterior_data <- data %>% filter(source == "posterior") %>% pull(value)
+  posterior_data = what %>% dplyr::filter(source == "posterior") %>% dplyr::pull(value)
 
   # Calculate mean of posterior
-  posterior_mean <- mean(posterior_data)
+  posterior_mean = mean(posterior_data)
 
   # Calculate the test statistic as absolute difference from prior mean
   if (prior_type == "beta") {
     # Test statistic is the absolute deviation from the prior mean for Beta
-    T_prior <- abs(prior_data - prior_mean)
-    T_posterior <- abs(posterior_data - prior_mean)
+    T_prior = abs(prior_data - prior_mean)
+    T_posterior = abs(posterior_data - prior_mean)
   } else if (prior_type == "gamma") {
     # Test statistic is the relative deviation from prior mean for Gamma
-    T_prior <- abs(prior_data - prior_mean) / prior_mean
-    T_posterior <- abs(posterior_data - prior_mean) / prior_mean
+    T_prior = abs(prior_data - prior_mean) / prior_mean
+    T_posterior = abs(posterior_data - prior_mean) / prior_mean
   }
 
   # Calculate Bayesian p-value as the proportion of times T_posterior >= T_prior
@@ -425,34 +386,29 @@ bayesian_p_value <- function(data, prior_type = c("beta", "gamma")) {
   return(p_value)
 }
 
-plot_x_check = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
-  x_rep = get_x_draws(x = x, sample = sample)
-  x_prior_rep = get_x_prior_draws(x = x, sample = sample)
+plot_x_check = function(posterior_rep, prior_rep, bayes_p){
 
   what = rbind(
     dplyr::tibble(
-      x = x_rep,
+      value = posterior_rep,
       source = 'posterior'
     ),
     dplyr::tibble(
-      x = x_prior_rep,
+      value = prior_rep,
       source = 'prior'
     )
   )
 
-  bayes_p = bayesian_p_value(data = what %>% rename(value = x), prior_type = 'gamma')
-  p_value_text = paste0('Bayesian p-value ', bayes_p %>% format.pval(digits = 2))
+  p_value_text = paste0('Bayesian p-value = ', bayes_p %>% format.pval(digits = 2))
   bayes_p_color = ifelse(bayes_p > 0.05, 'forestgreen', 'firebrick')
-  ref_pos = quantile(what$x)['50%'] %>% unname() %>% as.numeric()
-  text_pos = ifelse(ref_pos > .5, 0.0, 0.75)
+  ref_pos = quantile(what$value)['50%'] %>% unname() %>% as.numeric()
 
   p = what %>%
     ggplot()+
-    geom_histogram(aes(x = x, alpha = source), bins = 100, fill = 'steelblue')+
+    geom_histogram(aes(x = value, alpha = source), bins = 100, fill = 'steelblue')+
     scale_alpha_manual(values = c(0.8,0.5))+
-    geom_vline(aes(xintercept = median(x_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
-    geom_vline(aes(xintercept = median(x_prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(posterior_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
     scale_x_continuous(breaks = scales::pretty_breaks(n=2))+
     scale_y_continuous(breaks = scales::pretty_breaks(n=2))+
     my_ggplot_theme()+
@@ -467,7 +423,7 @@ plot_x_check = function(x, sample){
       x = 'Expected counts per allele'
     )
 
-  text_pos = ifelse(ref_pos > layer_scales(p)$x$range$range[2]/2, 0.0, quantile(what$x)[4])
+  text_pos = ifelse(ref_pos > layer_scales(p)$x$range$range[2]/2, 0.0, quantile(what$value)[4])
   p +
     geom_text(
     data = data.frame(), aes(x = text_pos, y = Inf, label = p_value_text),
@@ -477,34 +433,30 @@ plot_x_check = function(x, sample){
   )
 }
 
-plot_purity_check = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
-  purity_rep = get_purity_draws(x = x, sample = sample)
-  purity_prior_rep = get_purity_prior_draws(x = x, sample = sample)
+plot_purity_check = function(posterior_rep, prior_rep, bayes_p){
 
   what = rbind(
     dplyr::tibble(
-      purity = purity_rep,
+      purity = posterior_rep,
       source = 'posterior'
     ),
     dplyr::tibble(
-      purity = purity_prior_rep,
+      purity = prior_rep,
       source = 'prior'
     )
   )
 
-  bayes_p = bayesian_p_value(data = what %>% rename(value = purity), prior_type = 'beta')
-  p_value_text = paste0('Bayesian p-value ', bayes_p %>% format.pval(digits = 2))
+  p_value_text = paste0('Bayesian p-value = ', bayes_p %>% format.pval(digits = 2))
   bayes_p_color = ifelse(bayes_p > 0.05, 'forestgreen', 'firebrick')
   ref_pos = quantile(what$purity)['50%']
-  text_pos = ifelse(ref_pos > .5, 0.0, 0.75)
+  text_pos = ifelse(ref_pos > .5, 0.0, 0.5)
 
   what %>%
     ggplot()+
     geom_histogram(aes(x = purity, alpha = source), bins = 100, fill = 'steelblue')+
     scale_alpha_manual(values = c(0.8,0.5))+
-    geom_vline(aes(xintercept = median(purity_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
-    geom_vline(aes(xintercept = median(purity_prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(posterior_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
+    geom_vline(aes(xintercept = median(prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
     geom_text(
       data = data.frame(), aes(x = text_pos, y = Inf, label = p_value_text),
       hjust = -.1,
@@ -556,11 +508,9 @@ plot_priors_k = function(x, sample, k_max){
     my_ggplot_theme()
 }
 
-plot_prior_k_m = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
-  priors = x$classification$priors_k_m
-  k_max = x$classification$parameters$k_max
-  what = get_sample_priors(x = x, priors = priors, k_max = k_max)
+plot_prior_k_m = function(priors_k_m, x, k_max){
+
+  what = get_sample_priors(x = x, priors = priors_k_m, k_max = k_max)
 
   inp = input(x)
   what$gene = lapply(1:nrow(inp), function(i){
@@ -568,7 +518,7 @@ plot_prior_k_m = function(x, sample){
   }) %>% unlist()
 
   what %>%
-    full_join(input(x) %>% select(gene, NV)) %>%
+    full_join(inp %>% select(gene, NV)) %>%
     mutate(id = paste0(gene, ':', NV, ' (', tumor_type, ')')) %>%
     ggplot2::ggplot(ggplot2::aes(
     x = factor(k),
@@ -576,11 +526,10 @@ plot_prior_k_m = function(x, sample){
     fill = log10(f)
     )) +
     ggplot2::geom_tile() +
-    # ggplot2::geom_text(ggplot2::aes(label = round(n, 1)), color = "white") +
     scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
     ggplot2::scale_x_discrete(breaks = scales::pretty_breaks(n=3))+
     ggplot2::scale_y_discrete(breaks = scales::pretty_breaks(n=3))+
-    facet_wrap( ~ id , ncol = 1, strip.position = 'left') +
+    ggplot2::facet_wrap( ~ id , ncol = 1, strip.position = 'left') +
     my_ggplot_theme() +
     theme(
       strip.text.y.left = element_text(angle = 0, margin = margin())
@@ -590,15 +539,14 @@ plot_prior_k_m = function(x, sample){
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))
 }
 
-plot_posterior_k_m = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
+plot_posterior_k_m = function(x, M, z_km){
+  # x = subset_sample(x = x, sample_list = sample)
   inp = input(x)
   M = inp %>% nrow()
   k_max = x$classification$parameters$k_max
-  what = get_z_km(x = x, sample = sample)
 
   toplot = lapply(1:M, function(i){
-    output = what[((i-1)*36+1):(i*36),]
+    output = z_km[[i]]
     output$id = paste(inp[i,]$gene, inp[i,]$NV, sep = ":")
     output
     }) %>% do.call(rbind, .)
@@ -622,10 +570,6 @@ plot_posterior_k_m = function(x, sample){
     my_ggplot_theme() +
     theme(
       strip.text.y.left = element_text(angle = 0, margin = margin()),
-      # strip.background = element_blank(),
-      # axis.title.y = element_blank(),
-      # axis.text.y = element_blank(),
-      # axis.ticks.y.left = element_blank()
     )+
     ggplot2::labs(
       x = "Total CN (k)", y = "Multiplicity (m)", fill = "Posterior Probability (log10)") +

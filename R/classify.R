@@ -51,7 +51,7 @@ classify = function(
 
   cli::cli_alert_info("Performing classification")
 
-  classify_sample = function(x, sample){
+  classify_sample = function(x, sample, k_max){
 
     cli::cli_h1(
       "INCOMMON inference of copy number and mutation multiplicity for sample {.field {sample}}"
@@ -59,6 +59,8 @@ classify = function(
     cat("\n")
 
     x = subset_sample(x = x, sample = sample)
+
+    ## Prepare input
 
     M = input(x) %>% nrow()
     N = input(x)$DP
@@ -84,7 +86,11 @@ classify = function(
       alpha_k_m = priors_k_m_sample
     )
 
+    ## Compile stan code
+
     model = get_stan_model()
+
+    ## Fit model
 
     fit = model$sample(
       data = data,
@@ -95,6 +101,74 @@ classify = function(
       parallel_chains = num_cores,
     )
 
+    ## Draw samples from priors and posteriors
+
+    k_m_table = expand.grid(k = 1:k_max, m = 1:k_max) %>%
+      dplyr::as_tibble() %>%
+      dplyr::filter(m <= k) %>% arrange(k, m)
+
+    N_rep = fit$draws(variables = 'N_rep') %>% array(dim = c(num_chains * iter_sampling, M))
+    n_rep = fit$draws(variables = 'n_rep') %>% array(dim = c(num_chains * iter_sampling, M))
+
+    x_rep = fit$draws(variables = 'x') %>% array()
+    x_prior_rep = fit$draws(variables = 'x_rep') %>% array()
+
+    purity_rep = fit$draws(variables = 'purity') %>% array()
+    purity_prior_rep = fit$draws(variables = 'purity_rep') %>% array()
+
+    km_idx = fit$draws(variables = 'km_idx') %>% array(dim = c(num_chains * iter_sampling, M))
+    km_rep = lapply(1:M, function(i){
+      lapply(1:length(km_idx[,i]), function(j){
+        k_m_table[km_idx[j,i],]
+      }) %>% do.call(rbind, .)
+    })
+
+    z_km = fit$summary(variables = 'z_km')
+    z_km = lapply(1:M, function(i){
+      z_km %>%
+        dplyr::filter(grepl(paste0('z_km\\[',i), variable)) %>%
+        dplyr::bind_cols(k_m_table) %>%
+        dplyr::select(k, m, median) %>%
+        dplyr::rename(z_km = median)
+    })
+
+    ## MAP estimates
+
+    km_map = lapply(km_rep, function(x){
+      what = x %>% table() %>% dplyr::as_tibble() %>% dplyr::mutate(k = as.integer(k), m = as.integer(m))
+      dplyr::arrange(what, dplyr::desc(n)) %>% dplyr::slice_head(n=1) %>% dplyr::select(-n)
+    })
+
+    x_map = median(x_rep)
+    purity_map = median(purity_rep)
+
+    ## Bayesian p-value tests
+
+    bayes_p_x = bayesian_p_value(posterior_rep = x_rep, prior_rep = x_prior_rep, prior_type = 'gamma')
+    bayes_p_purity = bayesian_p_value(posterior_rep = purity_rep, prior_rep = purity_prior_rep, prior_type = 'beta')
+
+    ## Generate report
+
+    ppois = plot_poisson_model(x =  x, sample = sample, N_rep = N_rep, km_rep = km_rep, km_map = km_map, purity_map = purity_map, x_map = x_map)
+
+    px = plot_x_check(posterior_rep = x_rep, prior_rep = x_prior_rep, bayes_p = bayes_p_x)
+    ppi = plot_purity_check(posterior_rep = purity_rep, prior_rep = purity_prior_rep, bayes_p = bayes_p_purity)
+    p_x_pi = patchwork::wrap_plots(px, ppi, design = 'A\nB', guides = 'collect')&ggplot2::theme(legend.position = 'bottom')
+
+    pbin = plot_binomial_model(x = x, n_rep = n_rep, km_rep = km_rep)
+
+    pkmprior = plot_prior_k_m(priors_k_m = priors_k_m, x = x, k_max = k_max)
+    pkmpost = plot_posterior_k_m(x = x, M = , z_km = z_km)
+
+    plot_report = patchwork::wrap_plots(
+      ppois, p_x_pi, pkmprior, pkmpost, pbin,
+      design = 'AAABBB\nCCDDEE\nCCDDEE'
+      ) +
+      patchwork::plot_annotation(
+        title = paste0(sample),
+        subtitle = paste0(tumor_type, '; M = ', M, ' mutations'))
+
+
     if(stan_fit_dump){
 
       if (!dir.exists(stan_fit_dir)) {
@@ -104,40 +178,22 @@ classify = function(
       fit$save_object(file = paste0(stan_fit_dir, '/', sample, '.rds'))
     }
 
-    # psi = fit$draws(variables = 'psi')
-    # psi = array(psi, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
-    #
+    km_map %>% do.call(rbind, .) %>% dplyr::mutate
 
-    # x_fit = fit$draws(variables = 'x')
-    # x_fit = array(x_fit, dim = c(num_chains * iter_sampling, 1))
-    #
-    # purity_fit = fit$draws(variables = 'purity')
-    # purity_fit = array(purity_fit, dim = c(num_chains * iter_sampling, 1))
-
-    #
-    # log_lik_bin = fit$draws(variables = 'log_lik_bin')
-    # log_lik_bin = array(log_lik_bin, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
-    #
-    # log_lik_pois = fit$draws(variables = 'log_lik_pois')
-    # log_lik_pois = array(log_lik_pois, dim = c(num_chains * iter_sampling, M, k_max*(k_max+1)/2))
-    #
-    # list(
-    #   sample = sample,
-    #   psi = psi,
-    #   z_km = z_km,
-    #   x_fit = x_fit,
-    #   purity_fit = purity_fit,
-    #   N_rep = N_rep,
-    #   n_rep = n_rep,
-    #   log_lik_bin = log_lik_bin,
-    #   log_lik_pois = log_lik_pois
-    # )
-
-    fit$summary()
-  }
+    tibble(
+      purity_map,
+      bayes_p_purity,
+      x_map,
+      bayes_p_x,
+      z_km
+    ) %>%
+      dplyr::bind_cols(
+        km_map %>% do.call(rbind, .) %>% dplyr::rename(map_k = k, map_m = m)
+      )
+}
 
   lapply(samples(x), function(s){
-    fit = classify_sample(x = x, sample = s)
+    fit = classify_sample(x = x, sample = s, k_max = k_max)
 
     # idx = 1
     # class_table = tibble(NULL)

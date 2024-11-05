@@ -163,11 +163,10 @@ get_n_draws = function(x, sample){
 }
 
 
-get_N_rep_ci = function(x, sample) {
-  N_rep = get_N_draws(x = x, sample = sample) %>% as.vector()
+get_N_rep_ci = function(N_rep, km_rep) {
   dplyr::tibble(
-    N = N_rep,
-    k = get_k_m_draws(x = x, sample = sample)$k
+    N = N_rep %>% array(),
+    k = km_rep %>% do.call(rbind, .) %>% dplyr::pull(k)
   ) %>%
     dplyr::group_by(k) %>%
     dplyr::reframe(mean = mean(N), q5 = quantile(N, probs = .05), q95 = quantile(N, probs = .95))
