@@ -179,7 +179,7 @@ classify = function(
         dir.create(reports_dir, recursive = TRUE)
       }
 
-      ggsave(
+      ggplot2::ggsave(
         plot = plot_report,
         filename = paste0(reports_dir,'/', sample, '.pdf'),
         width = 10,

@@ -312,7 +312,7 @@ plot_binomial_model = function(x, n_rep, km_rep, post_pred_NV){
 
   what = input(x)
   what = lapply(1:nrow(what), function(i){
-    tibble(
+    dplyr::tibble(
       N_rep = n_rep[,i],
       gene = what[i,]$gene,
       id = paste(what[i,]$gene, what[i,]$NV, what[i,]$DP, sep = ':'),
@@ -353,11 +353,11 @@ plot_binomial_model = function(x, n_rep, km_rep, post_pred_NV){
       ggplot2::aes(xintercept = NV, color = test, group = id))+
     ggplot2::scale_color_manual(values = c('PASS' = 'forestgreen', 'FAIL' = 'firebrick'))+
     my_ggplot_theme()+
-    theme(
-      panel.grid = element_blank(),
-      axis.text.y = element_blank(),
-      axis.ticks.y.left = element_blank(),
-      strip.text.y.left = element_text(angle = 0)
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank(),
+      axis.text.y = ggplot2::element_blank(),
+      axis.ticks.y.left = ggplot2::element_blank(),
+      strip.text.y.left = ggplot2::element_text(angle = 0)
       )+
     ggplot2::labs(
       y = '',
@@ -483,27 +483,27 @@ plot_purity_check = function(posterior_rep, prior_rep, bayes_p){
   text_pos = ifelse(ref_pos > .5, 0.0, 0.5)
 
   what %>%
-    ggplot()+
-    geom_histogram(aes(x = purity, alpha = source), bins = 100, fill = 'steelblue')+
-    scale_alpha_manual(values = c(0.8,0.5))+
-    geom_vline(aes(xintercept = median(posterior_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
-    geom_vline(aes(xintercept = median(prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
-    geom_text(
-      data = data.frame(), aes(x = text_pos, y = Inf, label = p_value_text),
+    ggplot2::ggplot()+
+    ggplot2::geom_histogram(ggplot2::aes(x = purity, alpha = source), bins = 100, fill = 'steelblue')+
+    ggplot2::scale_alpha_manual(values = c(0.8,0.5))+
+    ggplot2::geom_vline(ggplot2::aes(xintercept = median(posterior_rep)), color = ggplot2::alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
+    ggplot2::geom_vline(ggplot2::aes(xintercept = median(prior_rep)), color = ggplot2::alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
+    ggplot2::geom_text(
+      data = data.frame(), ggplot2::aes(x = text_pos, y = Inf, label = p_value_text),
       hjust = -.1,
       vjust = 2.5,
       color = bayes_p_color, size = 3,
     ) +
-    scale_x_continuous(breaks = scales::pretty_breaks(n=2), limits = c(0,1))+
-    scale_y_continuous(breaks = scales::pretty_breaks(n=2))+
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=2), limits = c(0,1))+
+    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n=2))+
     my_ggplot_theme()+
-    theme(
-      panel.border = element_rect(
+    ggplot2::theme(
+      panel.border = ggplot2::element_rect(
         color = bayes_p_color,
         fill = NA,
         linewidth = 2)
     )+
-    labs(
+    ggplot2::labs(
       alpha = '',
       y = '',
       x = 'Sample purity'
@@ -549,25 +549,25 @@ plot_prior_k_m = function(priors_k_m, x, k_max){
   }) %>% unlist()
 
   what %>%
-    full_join(inp %>% select(gene, NV)) %>%
-    mutate(id = paste0(gene, ':', NV, ' (', tumor_type, ')')) %>%
+    dplyr::full_join(inp %>% dplyr::select(gene, NV)) %>%
+    dplyr::mutate(id = paste0(gene, ':', NV, ' (', tumor_type, ')')) %>%
     ggplot2::ggplot(ggplot2::aes(
     x = factor(k),
     y = factor(m),
     fill = log10(f)
     )) +
     ggplot2::geom_tile() +
-    scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
+    ggplot2::scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
     ggplot2::scale_x_discrete(breaks = scales::pretty_breaks(n=3))+
     ggplot2::scale_y_discrete(breaks = scales::pretty_breaks(n=3))+
     ggplot2::facet_wrap( ~ id , ncol = 1, strip.position = 'left') +
     my_ggplot_theme() +
-    theme(
-      strip.text.y.left = element_text(angle = 0, margin = margin())
+    ggplot2::theme(
+      strip.text.y.left = ggplot2::element_text(angle = 0, margin = ggplot2::margin())
     )+
     ggplot2::labs(
       x = "Total CN (k)", y = "Multiplicity (m)", fill = "Prior Probability (log10)") +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))
+    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
 }
 
 plot_posterior_k_m = function(x, M, z_km){
@@ -588,23 +588,23 @@ plot_posterior_k_m = function(x, M, z_km){
     fill = log10(z_km)
   )) +
     ggplot2::geom_tile() +
-    geom_point(
-      data = toplot %>% group_by(id) %>% arrange(desc(z_km)) %>% slice_head(n=1),
+    ggplot2::geom_point(
+      data = toplot %>% dplyr::group_by(id) %>% dplyr::arrange(dplyr::desc(z_km)) %>% dplyr::slice_head(n=1),
       fill = 'firebrick',
       shape = 21,
       stroke = 0
       )+
-    scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
+    ggplot2::scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
     ggplot2::scale_x_discrete(breaks = scales::pretty_breaks(n=3))+
     ggplot2::scale_y_discrete(breaks = scales::pretty_breaks(n=3))+
     ggh4x::facet_nested_wrap( ~ id, ncol = 1, strip.position = 'left') +
     my_ggplot_theme() +
-    theme(
-      strip.text.y.left = element_text(angle = 0, margin = margin()),
+    ggplot2::theme(
+      strip.text.y.left = ggplot2::element_text(angle = 0, margin = ggplot2::margin()),
     )+
     ggplot2::labs(
       x = "Total CN (k)", y = "Multiplicity (m)", fill = "Posterior Probability (log10)") +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')))
+    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
 }
 
 plot_km_prior_vs_post = function(x, sample){
