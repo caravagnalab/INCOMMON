@@ -108,7 +108,7 @@ classify = function(
 
     k_m_table = expand.grid(k = 1:k_max, m = 1:k_max) %>%
       dplyr::as_tibble() %>%
-      dplyr::filter(m <= k) %>% arrange(k, m)
+      dplyr::filter(m <= k) %>% dplyr::arrange(k, m)
 
     N_rep = fit$draws(variables = 'N_rep') %>% array(dim = c(num_chains * iter_sampling, M))
     n_rep = fit$draws(variables = 'n_rep') %>% array(dim = c(num_chains * iter_sampling, M))
