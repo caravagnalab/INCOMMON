@@ -276,42 +276,79 @@ check_input = function(x){
 #' # Note the outputs to screen
 #' genome_interpreter(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
-genome_interpreter = function(x){
-  stopifnot(inherits(x, 'INCOMMON'))
-  x$classification$fit = x$classification$fit %>%
-    dplyr::mutate(map_k = as.integer(gsub('k=', '', map_k))) %>%
-    dplyr::mutate(
-      class = dplyr::case_when(
-        gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
-        # gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
-        gene_role == "oncogene" & (map_class == '1<m<k' | map_class == 'm=k') ~ paste0("Mutant ", gene, " with AMP"),
-        gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
-        gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
-        TRUE ~ paste0(paste0(gene, " Tier-2"))
-      )
-    ) %>% dplyr::group_by(sample) %>%
-    dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
 
-  genotype_table = classification(x) %>%
-    dplyr::group_by(genotype) %>%
-    dplyr::reframe(N = length(unique(sample))) %>%
-    dplyr::arrange(dplyr::desc(N)) %>%
-    dplyr::mutate(frequency = N/sum(N))
-
-  cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
-  cli::cli_alert_info('The most abundant genotypes are:')
-  for(i in 1:3){
-    cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
-                                   paste0("(",genotype_table[i,]$N, " Samples, "),
-                                   paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
-    )
-    )
-    )
+# genome_interpreter = function(x){
+#   stopifnot(inherits(x, 'INCOMMON'))
+#   x$classification$fit = x$classification$fit %>%
+#     dplyr::mutate(map_k = as.integer(gsub('k=', '', map_k))) %>%
+#     dplyr::mutate(
+#       class = dplyr::case_when(
+#         gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
+#         # gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
+#         gene_role == "oncogene" & (map_class == '1<m<k' | map_class == 'm=k') ~ paste0("Mutant ", gene, " with AMP"),
+#         gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
+#         gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
+#         TRUE ~ paste0(paste0(gene, " Tier-2"))
+#       )
+#     ) %>% dplyr::group_by(sample) %>%
+#     dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
+#
+#   genotype_table = classification(x) %>%
+#     dplyr::group_by(genotype) %>%
+#     dplyr::reframe(N = length(unique(sample))) %>%
+#     dplyr::arrange(dplyr::desc(N)) %>%
+#     dplyr::mutate(frequency = N/sum(N))
+#
+#   cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
+#   cli::cli_alert_info('The most abundant genotypes are:')
+#   for(i in 1:3){
+#     cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
+#                                    paste0("(",genotype_table[i,]$N, " Samples, "),
+#                                    paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
+#     )
+#     )
+#     )
+#   }
+#
+#   return(x)
+# }
+genome_intepreter = function(x, level = 'high'){
+  if(level == 'low'){
+    classification = lapply(1:nrow(x), function(i){
+      x[i,]$z_km[[1]] %>%
+        dplyr::mutate(
+          map_class = dplyr::case_when(
+            k == 1 & k == m ~ 'LOH',
+            k > 1 & k == m ~ 'CNLOH',
+            k > 2 & m > 1 ~ 'AMP',
+            k == 2 & m == 1 ~ 'HMD',
+            k > 2 & m == 1 ~ 'Tier-2'
+          )) %>%
+        dplyr::group_by(map_class) %>%
+        dplyr::reframe(z_class = sum(z_km)) %>%
+        dplyr::arrange(dplyr::desc(z_class)) %>%
+        dplyr::slice_head(n = 1)
+    }) %>% do.call(rbind, .)
+  } else if(level == 'high'){
+    classification = lapply(1:nrow(x), function(i){
+      x[i,]$z_km[[1]] %>%
+        dplyr::mutate(
+          map_class = dplyr::case_when(
+            (m / k) <= .5 ~ 'NSA',
+            (m / k) > .5 & (m / k) < .8  ~ 'AMP',
+            (m / k) >= .8 ~ 'LOH'
+          )) %>%
+        dplyr::group_by(map_class) %>%
+        dplyr::reframe(z_class = sum(z_km)) %>%
+        dplyr::arrange(dplyr::desc(z_class)) %>%
+        dplyr::slice_head(n = 1)
+    }) %>% do.call(rbind, .)
   }
+  if('map_class' %in% colnames(x)) x = x %>% select(-c(map_class, z_class))
 
-  return(x)
+  x %>%
+    dplyr::bind_cols(classification)
 }
-
 
 reduce_classes = function(x) {
   if(!('state' %in% colnames(x))){

@@ -323,9 +323,9 @@ plot_binomial_model = function(x, n_rep, km_rep, post_pred_NV){
     )
   }) %>% do.call(rbind, .)
 
-  test = what %>%
-    dplyr::select(id, NV) %>%
-    unique()
+  test = input(x) %>%
+    dplyr::mutate(id = paste(gene, NV, DP, sep = ':')) %>%
+    dplyr::select(id, NV)
 
   test$p.value = post_pred_NV
   test = test %>% dplyr::mutate(test = ifelse(p.value > .05, 'PASS', 'FAIL'))
