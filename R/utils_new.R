@@ -264,7 +264,7 @@ compute_likelihood = function(dp, x, purity){
   }) %>% do.call(rbind, .)
 }
 
-plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map){
+plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map, post_pred_DP){
   lambda = function(k, x, purity){
     (2*(1-purity)*x+purity*k*x)
   }
@@ -275,8 +275,13 @@ plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_ma
 
   N_stats = get_N_rep_ci(N_rep = N_rep, km_rep = km_rep)
 
-  inp %>%
-    dplyr::bind_cols(km_map %>% do.call(rbind, .)) %>%
+  toplot = inp %>%
+    dplyr::bind_cols(km_map %>% do.call(rbind, .))
+
+  toplot$p.value = post_pred_DP
+  toplot = toplot %>% dplyr::mutate(test = ifelse(p.value > .05, 'PASS', 'FAIL'))
+
+  toplot %>%
     ggplot2::ggplot(ggplot2::aes(x = k))+
     ggplot2:: geom_ribbon(data = N_stats, ggplot2::aes(ymin = q5, ymax = q95), linetype=2, alpha=0.5, fill = 'steelblue')+
     ggplot2::geom_abline(
@@ -286,32 +291,44 @@ plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_ma
         slope = value*x_map,
         intercept = 2*(1-value)*x_map,
         color = purity))+
-    ggplot2::geom_point(ggplot2::aes(y = DP))+
-    ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = paste(gene, NV, sep = ':')))+
-    ggplot2::geom_text(data = dplyr::tibble(NULL),label = paste('MAP x =', round(x_map, 2)), aes(x = 2, y = N_stats[nrow(N_stats),]$q95))+
+    ggplot2::geom_point(ggplot2::aes(y = DP, fill = test), shape = 21, stroke = 0, size = 3)+
+    ggplot2::scale_fill_manual(
+      values = c('PASS' = 'forestgreen', 'FAIL' = 'firebrick'))+
+    ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = paste(gene, NV, DP, sep = ':')))+
+    ggplot2::geom_text(
+      data = dplyr::tibble(NULL), label = paste('MAP x =', round(x_map, 2)),
+      ggplot2::aes(x = 2, y = N_stats[nrow(N_stats),]$q95))+
     my_ggplot_theme()+
     # ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+
     ggplot2::guides(size = ggplot2::guide_legend(title = 'Posterior Prob'))+
     ggplot2::labs(
       y = 'DP (draws)',
+      fill = 'Posterior Predictive test'
       )+
     xlim(1,8)
 }
 
-plot_binomial_model = function(x, n_rep, km_rep){
+plot_binomial_model = function(x, n_rep, km_rep, post_pred_NV){
 
   what = input(x)
   what = lapply(1:nrow(what), function(i){
     tibble(
       N_rep = n_rep[,i],
       gene = what[i,]$gene,
-      id = paste(what[i,]$gene, what[i,]$NV, sep = ':'),
+      id = paste(what[i,]$gene, what[i,]$NV, what[i,]$DP, sep = ':'),
       NV =  what[i,]$NV,
       DP =  what[i,]$DP,
       k = km_rep[[i]]$k,
       m = km_rep[[i]]$m
     )
   }) %>% do.call(rbind, .)
+
+  test = what %>%
+    dplyr::select(id, NV) %>%
+    unique()
+
+  test$p.value = post_pred_NV
+  test = test %>% dplyr::mutate(test = ifelse(p.value > .05, 'PASS', 'FAIL'))
 
   what %>%
     ggplot2::ggplot()+
@@ -324,10 +341,17 @@ plot_binomial_model = function(x, n_rep, km_rep){
       binwidth = 1
       ) +
     ggplot2::geom_vline(
-      data = what %>%
-        dplyr::select(id, NV, DP) %>% unique() %>%  tidyr::pivot_longer(cols = c('NV', 'DP'), names_to = 'variable', values_to = 'value'),
-      ggplot2::aes(xintercept = value, color = variable, group = id))+
-    ggplot2::scale_color_manual(values = c('NV' = 'black', 'DP' = 'firebrick'))+
+      # data = what %>%
+      #   dplyr::select(id, NV, DP) %>%
+      #   unique() %>%
+      #   tidyr::pivot_longer(
+      #     cols = c('NV', 'DP'),
+      #     names_to = 'variable',
+      #     values_to = 'value'
+      #     ),
+      data = test,
+      ggplot2::aes(xintercept = NV, color = test, group = id))+
+    ggplot2::scale_color_manual(values = c('PASS' = 'forestgreen', 'FAIL' = 'firebrick'))+
     my_ggplot_theme()+
     theme(
       panel.grid = element_blank(),
@@ -339,9 +363,8 @@ plot_binomial_model = function(x, n_rep, km_rep){
       y = '',
       x = 'NV (draws)',
       fill = 'k:m',
-      color = 'Reads'
+      color = 'Posterior Predictive test'
     )+
-    # ggplot2::theme(legend.position = 'right')+
     ggplot2::facet_wrap(~id, ncol = 1, strip.position = 'left')
 }
 
@@ -384,6 +407,13 @@ bayesian_p_value = function(posterior_rep, prior_rep, prior_type = c("beta", "ga
 
   # Return results
   return(p_value)
+}
+
+posterior_predictive_p_value = function(x, posterior_rep, observed_quantity){
+  inp = input(x)
+  sapply(1:nrow(inp), function(i){
+    mean(abs(posterior_rep[,i] - mean(posterior_rep[,i])) >= abs(inp[[i,observed_quantity]] - mean(posterior_rep[,i])))
+  })
 }
 
 plot_x_check = function(posterior_rep, prior_rep, bayes_p){
