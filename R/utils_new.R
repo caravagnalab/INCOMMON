@@ -264,7 +264,7 @@ compute_likelihood = function(dp, x, purity){
   }) %>% do.call(rbind, .)
 }
 
-plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map, post_pred_DP){
+plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map, post_pred_DP, k_max){
   lambda = function(k, x, purity){
     (2*(1-purity)*x+purity*k*x)
   }
@@ -305,7 +305,7 @@ plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_ma
       y = 'DP (draws)',
       fill = 'Posterior Predictive test'
       )+
-    xlim(1,8)
+    ggplot2::xlim(1,k_max)
 }
 
 plot_binomial_model = function(x, n_rep, km_rep, post_pred_NV){
@@ -434,29 +434,30 @@ plot_x_check = function(posterior_rep, prior_rep, bayes_p){
   ref_pos = quantile(what$value)['50%'] %>% unname() %>% as.numeric()
 
   p = what %>%
-    ggplot()+
-    geom_histogram(aes(x = value, alpha = source), bins = 100, fill = 'steelblue')+
-    scale_alpha_manual(values = c(0.8,0.5))+
-    geom_vline(aes(xintercept = median(posterior_rep)), color = alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
-    geom_vline(aes(xintercept = median(prior_rep)), color = alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
-    scale_x_continuous(breaks = scales::pretty_breaks(n=2))+
-    scale_y_continuous(breaks = scales::pretty_breaks(n=2))+
+    ggplot2::ggplot()+
+    ggplot2::geom_histogram(ggplot2::aes(x = value, alpha = source), bins = 100, fill = 'steelblue')+
+    ggplot2::scale_alpha_manual(values = c(0.8,0.5))+
+    ggplot2::geom_vline(ggplot2::aes(xintercept = median(posterior_rep)), color = ggplot2::alpha('steelblue', alpha = 0.8), linetype = 'longdash')+
+    ggplot2::geom_vline(ggplot2::aes(xintercept = median(prior_rep)), color = ggplot2::alpha('steelblue', alpha = 0.5), linetype = 'longdash')+
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=2))+
+    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n=2))+
     my_ggplot_theme()+
-    theme( panel.border = element_rect(
+    ggplot2::theme(
+      panel.border = ggplot2::element_rect(
       color = bayes_p_color,
       fill = NA,
       linewidth = 2)
     )+
-    labs(
+    ggplot2::labs(
       alpha = '',
       y = '',
       x = 'Expected counts per allele'
     )
 
-  text_pos = ifelse(ref_pos > layer_scales(p)$x$range$range[2]/2, 0.0, quantile(what$value)[4])
+  text_pos = ifelse(ref_pos > ggplot2::layer_scales(p)$x$range$range[2]/2, 0.0, quantile(what$value)[4])
   p +
-    geom_text(
-    data = data.frame(), aes(x = text_pos, y = Inf, label = p_value_text),
+    ggplot2::geom_text(
+    data = data.frame(), ggplot2::aes(x = text_pos, y = Inf, label = p_value_text),
     hjust = -0.1,
     vjust = 2.5,
     color = bayes_p_color, size = 3,

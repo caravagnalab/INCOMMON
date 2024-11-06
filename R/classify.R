@@ -154,7 +154,7 @@ classify = function(
 
     ## Generate report
 
-    ppois = plot_poisson_model(x = x, sample = sample, N_rep = N_rep, km_rep = km_rep, km_map = km_map, purity_map = purity_map, x_map = x_map,  post_pred_DP = post_pred_DP)
+    ppois = plot_poisson_model(x = x, sample = sample, N_rep = N_rep, km_rep = km_rep, km_map = km_map, purity_map = purity_map, x_map = x_map,  post_pred_DP = post_pred_DP, k_max = k_max)
 
     px = plot_x_check(posterior_rep = x_rep, prior_rep = x_prior_rep, bayes_p = bayes_p_x)
     ppi = plot_purity_check(posterior_rep = purity_rep, prior_rep = purity_prior_rep, bayes_p = bayes_p_purity)
