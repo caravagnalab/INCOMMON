@@ -86,26 +86,26 @@ get_sample_priors = function(x, priors, k_max){
 
         if(!is.na(gene_role)){
           what = priors %>%
-            full_join(INCOMMON::cancer_gene_census) %>%
-            filter(gene_role == !!gene_role) %>%
-            group_by(k, m) %>%
-            reframe(n = mean(n), gene = 'other', gene_role = gene_role, tumor_type = 'PANCA') %>%
+            dplyr::full_join(INCOMMON::cancer_gene_census) %>%
+            dplyr::filter(gene_role == !!gene_role) %>%
+            dplyr::group_by(k, m) %>%
+            dplyr::reframe(n = mean(n), gene = 'other', gene_role = gene_role, tumor_type = 'PANCA') %>%
             unique() %>%
-            filter(!is.na(k)) %>%
-            select(-gene_role)
+            dplyr::filter(!is.na(k)) %>%
+            dplyr::select(-gene_role)
         } else {
           what = priors %>%
-            group_by(k, m) %>%
-            reframe(n = mean(n), gene = 'other', gene_role = NA, tumor_type = 'PANCA') %>%
+            dplyr::group_by(k, m) %>%
+            dplyr::reframe(n = mean(n), gene = 'other', gene_role = NA, tumor_type = 'PANCA') %>%
             unique() %>%
-            filter(!is.na(k)) %>%
-            select(-gene_role)
+            dplyr::filter(!is.na(k)) %>%
+            dplyr::select(-gene_role)
         }
 
       }
     }
 
-    what = what %>% filter(k <= k_max)
+    what = what %>% dplyr::filter(k <= k_max)
     what$N = sum(what$n)
     what$f = what$n/what$N
     what = what %>% dplyr::arrange(k)
