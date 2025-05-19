@@ -164,7 +164,7 @@ classify = function(
     pbin = plot_binomial_model(x = x, n_rep = n_rep, km_rep = km_rep, post_pred_NV = post_pred_NV)
 
     pkmprior = plot_prior_k_m(priors_k_m = priors_k_m, x = x, k_max = k_max)
-    pkmpost = plot_posterior_k_m(x = x, M = , z_km = z_km)
+    pkmpost = plot_posterior_k_m(x = x, M = M, z_km = z_km)
 
     plot_report = patchwork::wrap_plots(
       ppois, p_x_pi, pkmprior, pkmpost, pbin,
