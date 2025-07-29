@@ -570,11 +570,10 @@ plot_prior_k_m = function(priors_k_m, x, k_max){
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
 }
 
-plot_posterior_k_m = function(x, M, z_km){
+plot_posterior_k_m = function(x, k_max, z_km){
   # x = subset_sample(x = x, sample_list = sample)
   inp = input(x)
   M = inp %>% nrow()
-  k_max = x$classification$parameters$k_max
 
   toplot = lapply(1:M, function(i){
     output = z_km[[i]]

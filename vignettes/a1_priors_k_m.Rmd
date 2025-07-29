@@ -1,0 +1,106 @@
+---
+title: "1. Prior distribution of mutation copy number and multiplicity from PCAWG"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{1. Prior distribution of mutation copy number and multiplicity from PCAWG}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(crayon.enabled=TRUE)
+```
+
+```{r setup, message=FALSE}
+library(INCOMMON)
+library(dplyr)
+library(DT)
+```
+
+The inference of copy number and multiplicity of a mutation from read counts only
+can be much of a hard task, especially in cases where the sample purity $\pi$ or
+the sequencing depth $DP$ at the mutation site are low.
+
+For this reason, INCOMMON allows using a prior distribution to improve classifications.
+
+## 1.1 Empirical priors from PCAWG
+
+For the inference of mutation copy number and multiplicity on a specific gene and in samples of a specific tumour
+type, a Dirichlet prior distribution $p\left(k,m\right)=p_{k,m}$, where $k$ is
+the total copy number and $m$ the mutation multiplicity, can be used to obtain more confident predictions, given that  $p_{k,m}$ 
+is obtained from reliable copy number calls.
+By default, INCOMMON relies on prior probability obtained from PCAWG and HMF whole genomes. From a set of high-confidence copy number calls validated by quality control, we obtained $p_{k,m}$ for each gene as the frequency of the corresponding INCOMMON class. 
+
+```{r}
+data("priors_k_m")
+```
+
+The empirical priors from PCAWG and HMF are provided as an internal data table `priors_k_m` and
+have the following format
+
+```{r, echo = FALSE}
+datatable(priors_k_m, filter = 'top')
+```
+
+where, for each `gene` and `tumour_type`, `N` represents the total counts in the used dataset, `n` is the count for the specific combination of `k` and `m`.
+
+### 1.1.1 Tumour-specific priors
+
+If a gene was mutated in at least 5% of the samples from a tumour type, and at least in 10 samples, we built a tumour-specific prior. It is the case, for instance, of KRAS in pancreatic
+adenocarcinoma (PAAD):
+
+
+```{r, echo = FALSE}
+datatable(priors_k_m %>% filter(gene=='KRAS', tumor_type=='PAAD'))
+```
+
+### 1.1.2 Pan-cancer priors
+
+
+In cases where the requirements for a tumour-specific prior were not satisified,
+we pooled from all tumour types a pan-cancer prior. In the `priors_k_m` table,
+these priors are identified by `tumor_type` equal to 'PANCA', meaning pan-cancer.
+
+```{r, echo = FALSE}
+datatable(priors_k_m %>% filter(gene == 'KRAS', tumor_type=='PANCA'), filter = 'top')
+```
+
+## 1.2 User-defined priors
+
+The user who may want to leverage priors obtained in a different way (e.g. from
+other datasets or for a specific gene or tumour type not included in `priors_k_m`),
+can easily do that by creating a similar data table.
+
+For example:
+
+```{r}
+my_priors = expand.grid(k=1:8, m = 1:8) %>% 
+  dplyr::mutate(
+    gene = 'my_gene',
+    tumor_type = 'my_tumor_type') %>% 
+  dplyr::filter(m<=k)
+
+my_priors$n = rnorm(n = nrow(my_priors), mean = 50, sd = 10)
+my_priors$N = sum(my_priors$n)
+```
+
+The only requirement is that `n` is a positive number and `N` is the sum of the values of `n` for a gene and tumour type pair.
+
+## 1.3 Visualising priors
+
+The prior distribution used in a fit can be visualised a posteriori using the internal plotting function
+`plot_prior`. We can plot the prior distribution specific to a gene and tumour type used
+in the example classified MSK-MET data.
+
+For example:
+
+```{r}
+plot_prior(x = priors_k_m, 
+           gene = 'KRAS',
+           tumor_type = 'PAAD')
+```

@@ -13,36 +13,15 @@
 #' plot_prior(x = MSK_classified, gene = 'TP53', tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
-
-  get_ploidy <- function(label) {
-    numbers <- unlist(strsplit(label, " and "))
-    numbers <- as.numeric(numbers)
-    total <- sum(numbers, na.rm = TRUE)
-    return(total)
-  }
-
-  priors(x) %>%
-    filter(gene == !!gene,
-           tumor_type == !!tumor_type) %>%
-    dplyr::mutate(
-      state = dplyr::case_when(
-        label %in% c("2N (Mutated: 1N)") ~ "HMD",
-        label %in% c("4N (Mutated: 1N)", "3N (Mutated: 1N)") ~ "Tier-2",
-        label %in% c("1N (Mutated: 1N)") ~ "LOH",
-        label %in% c("2N (Mutated: 2N)") ~ "CNLOH",
-        label %in% c("3N (Mutated: 2N)", "4N (Mutated: 2N)") ~ "AM"
-      )
-    ) %>%
-    ggplot2::ggplot()+
-    ggplot2::geom_bar(ggplot2::aes(
-      x = '',
-      y = p,
-      fill = state
-    ), stat = 'identity')+
-    scale_color_INCOMMON_class()+
-    ggplot2::coord_flip()+
-    my_ggplot_theme(cex = .8)+
-    ggplot2::xlab('')+ggplot2::ylab('')+
-    ggplot2::facet_wrap(~tumor_type~gene)+
-    ggplot2::guides(fill = ggplot2::guide_legend(title = 'INCOMMON class'), ncol = 2)
+  toplot = x %>%
+    dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  toplot %>%
+    ggplot2::ggplot(ggplot2::aes(x = k, y = m,))+
+    ggplot2::geom_tile(ggplot2::aes(fill = log10(n)))+
+    ggplot2::scale_fill_viridis_c(option = 'turbo')+
+    ggplot2::geom_text(ggplot2::aes(label = round(n, 0)), color = 'white')+
+    ggplot2::labs(
+      title = paste0(gene, ' (', tumor_type, ')'),
+      subtitle = paste0('Total samples N = ', unique(round(toplot$N,0))))+
+    my_ggplot_theme()
 }
