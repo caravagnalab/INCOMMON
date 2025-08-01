@@ -30,30 +30,6 @@ tumor_type = function(x, id){
 
 #' Getter for class \code{'INCOMMON'}.
 #' @description
-#' Get classification data for specific selected model.
-#' @param x An object of class \code{'INCOMMON'}.
-#' @return A table with classified data.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Get classification results
-#' classification(MSK_classified)
-#' @importFrom dplyr filter mutate rename select %>%
-classification = function(x) {
-  stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("fit" %in% names(x$classification))
-  x$classification$fit %>%
-    dplyr::full_join(x$input %>%
-                       dplyr::select(sample, tumor_type, purity) %>% unique(),
-                     by = 'sample') %>%
-    dplyr::select(sample, tumor_type, purity, dplyr::everything())
-
-}
-
-#' Getter for class \code{'INCOMMON'}.
-#' @description
 #' Get model parameters of the performed classification tests.
 #' @param x An obj of class \code{'INCOMMON'}.
 #' @return A dplyr::tibble containing parameters for all the models used in the classification.
@@ -84,45 +60,33 @@ parameters = function(x) {
 #' # Get priors used in classification
 #' priors(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
-priors = function(x) {
+priors_k_m = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
-  stopifnot("priors" %in% names(x$classification))
-  x$classification$priors
+  stopifnot("priors_m_k" %in% names(x$classification))
+  x$classification$priors_m_k
 }
 
-
-#' Getter for class \code{'INCOMMON'}.
-#' @description
-#' Get the model posterior distribution of a mutation.
-#' @param x An obj of class \code{'INCOMMON'}.
-#' @param id An identifier for the mutation as created by function `idify`.
-#' @return A table showing posterior distribution and entropy.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Get posterior distribution of a specific mutation using sample:chr:from:to:ref:alt as id
-#' posterior(MSK_classified, id = 'P-0028912-T01-IM6:chr17:7577121:7577121:G:A:133:837')
-posterior = function(x, id) {
+get_categroical_posterior = function(x, id) {
 
   stopifnot(inherits(x, "INCOMMON"))
   stopifnot("classification" %in% names(x))
   stopifnot("parameters" %in% names(x$classification))
 
-  posterior = compute_posterior(
-    NV = NV(x, id),
-    DP = DP(x, id),
-    gene = gene(x, id),
-    priors = priors(x),
-    tumor_type = tumor_type(x, id),
-    purity = purity(x, id),
-    entropy_cutoff = parameters(x)$entropy_cutoff,
-    rho = parameters(x)$rho,
-    karyotypes = unlist(parameters(x)$karyotypes)
-  )
+  classification(x) %>%
+    dplyr::filter(id == !!id) %>%
+    dplyr::pull(probs) %>% unlist()
+}
 
-  return(posterior)
+get_map_posterior = function(x, id) {
+
+  stopifnot(inherits(x, "INCOMMON"))
+  stopifnot("classification" %in% names(x))
+  stopifnot("parameters" %in% names(x$classification))
+
+  classification(x) %>%
+    dplyr::filter(id == !!id) %>%
+    dplyr::pull(map_posterior)
 }
 
 idify = function(x){
@@ -257,32 +221,6 @@ wt_samples = function(x, tumor_type, gene) {
     # dplyr::left_join(cancer_gene_census, by = 'gene')
 }
 
-# Subset object by sample
-
-subset_sample = function(x, sample){
-  stopifnot(inherits(x, 'INCOMMON'))
-  samples = unique(x$input$sample)
-  stopifnot(sample %in% samples)
-  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample == !!sample)
-  ip = x$input %>% dplyr::filter(sample == !!sample)
-  out = list(genomic_data = gd,
-             clinical_data = cd,
-             input = ip)
-  class(out) = 'INCOMMON'
-  if('classification' %in% names(x)) {
-    cl = x$classification$fit %>% dplyr::filter(sample == !!sample)
-    pm = x$classification$parameters
-    pr = x$classification$priors
-
-
-    out$classification$fit = cl
-    out$classification$parameters = pm
-    out$classification$priors = pr
-  }
-  return(out)
-}
-
 # 2. CHEKS AND SANITISERS
 
 check_input = function(x){
@@ -338,40 +276,79 @@ check_input = function(x){
 #' # Note the outputs to screen
 #' genome_interpreter(MSK_classified)
 #' @importFrom dplyr filter mutate rename select %>%
-genome_interpreter = function(x){
-  stopifnot(inherits(x, 'INCOMMON'))
-  x$classification$fit = x$classification$fit %>%
-    dplyr::mutate(
-      class = dplyr::case_when(
-        gene_role == "TSG" & state %in% c("LOH", "CNLOH") ~ paste0("Mutant ", gene, " with LOH"),
-        gene_role == "oncogene" & state %in% c("AM", "CNLOH") ~ paste0("Mutant ", gene, " with AMP"),
-        gene_role == "TSG" & state == "HMD" ~ paste0("Mutant ", gene, " without LOH"),
-        gene_role == "oncogene" & state == "HMD" ~ paste0("Mutant ", gene, " without AMP"),
-        TRUE ~ paste0(paste0(gene, " Tier-2"))
-      )
-    ) %>% dplyr::group_by(sample) %>%
-    dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
 
-  genotype_table = classification(x) %>%
-    dplyr::group_by(genotype) %>%
-    dplyr::reframe(N = length(unique(sample))) %>%
-    dplyr::arrange(dplyr::desc(N)) %>%
-    dplyr::mutate(frequency = N/sum(N))
-
-  cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
-  cli::cli_alert_info('The most abundant genotypes are:')
-  for(i in 1:3){
-    cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
-                                   paste0("(",genotype_table[i,]$N, " Samples, "),
-                                   paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
-                                   )
-                       )
-                     )
+# genome_interpreter = function(x){
+#   stopifnot(inherits(x, 'INCOMMON'))
+#   x$classification$fit = x$classification$fit %>%
+#     dplyr::mutate(map_k = as.integer(gsub('k=', '', map_k))) %>%
+#     dplyr::mutate(
+#       class = dplyr::case_when(
+#         gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
+#         # gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
+#         gene_role == "oncogene" & (map_class == '1<m<k' | map_class == 'm=k') ~ paste0("Mutant ", gene, " with AMP"),
+#         gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
+#         gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
+#         TRUE ~ paste0(paste0(gene, " Tier-2"))
+#       )
+#     ) %>% dplyr::group_by(sample) %>%
+#     dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
+#
+#   genotype_table = classification(x) %>%
+#     dplyr::group_by(genotype) %>%
+#     dplyr::reframe(N = length(unique(sample))) %>%
+#     dplyr::arrange(dplyr::desc(N)) %>%
+#     dplyr::mutate(frequency = N/sum(N))
+#
+#   cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
+#   cli::cli_alert_info('The most abundant genotypes are:')
+#   for(i in 1:3){
+#     cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
+#                                    paste0("(",genotype_table[i,]$N, " Samples, "),
+#                                    paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
+#     )
+#     )
+#     )
+#   }
+#
+#   return(x)
+# }
+genome_intepreter = function(x, level = 'high'){
+  if(level == 'low'){
+    classification = lapply(1:nrow(x), function(i){
+      x[i,]$z_km[[1]] %>%
+        dplyr::mutate(
+          map_class = dplyr::case_when(
+            k == 1 & k == m ~ 'LOH',
+            k > 1 & k == m ~ 'CNLOH',
+            k > 2 & m > 1 ~ 'AMP',
+            k == 2 & m == 1 ~ 'HMD',
+            k > 2 & m == 1 ~ 'Tier-2'
+          )) %>%
+        dplyr::group_by(map_class) %>%
+        dplyr::reframe(z_class = sum(z_km)) %>%
+        dplyr::arrange(dplyr::desc(z_class)) %>%
+        dplyr::slice_head(n = 1)
+    }) %>% do.call(rbind, .)
+  } else if(level == 'high'){
+    classification = lapply(1:nrow(x), function(i){
+      x[i,]$z_km[[1]] %>%
+        dplyr::mutate(
+          map_class = dplyr::case_when(
+            (m / k) <= .5 ~ 'NSA',
+            (m / k) > .5 & (m / k) < .8  ~ 'AMP',
+            (m / k) >= .8 ~ 'LOH'
+          )) %>%
+        dplyr::group_by(map_class) %>%
+        dplyr::reframe(z_class = sum(z_km)) %>%
+        dplyr::arrange(dplyr::desc(z_class)) %>%
+        dplyr::slice_head(n = 1)
+    }) %>% do.call(rbind, .)
   }
+  if('map_class' %in% colnames(x)) x = x %>% select(-c(map_class, z_class))
 
-  return(x)
+  x %>%
+    dplyr::bind_cols(classification)
 }
-
 
 reduce_classes = function(x) {
   if(!('state' %in% colnames(x))){
@@ -405,31 +382,31 @@ reduce_classes = function(x) {
 
 # Get class distribution for an intere cohort
 
-class_frequency = function(x, tumor_type, gene, tier_1 = FALSE){
-  if('state' %in% colnames(classification(x))){
-    frequency_table = classification(x) %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+class_frequency = function(x, tumor_type = NULL, gene = NULL, sample_type = NULL){
 
-    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(state != 'Tier-2')
-
-    frequency_table = frequency_table %>%
-      dplyr::group_by(state)
+  what = x$input
+  if(!is.null(tumor_type)){
+    what = what %>% dplyr::filter(tumor_type==!!tumor_type)
   }
-  if('class' %in% colnames(classification(x))){
-    frequency_table = classification(x) %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
 
-    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(!grepl('Tier-2', class))
-
-    frequency_table = frequency_table %>%
-      dplyr::group_by(state, class)
+  if(!is.null(gene)){
+    what = what %>% dplyr::filter(gene==!!gene)
   }
-  frequency_table = frequency_table %>%
-    dplyr::reframe(n = unique(length(sample)), gene_role) %>%
-    unique() %>%
-    dplyr::mutate(N = sum(n), frequency = n/N)
-  frequency_table = cbind(dplyr::tibble(gene = gene, tumor_type = tumor_type), frequency_table)
-  return(frequency_table)
+
+  if(!is.null(sample_type)){
+    what = what %>% dplyr::filter(SAMPLE_TYPE==!!sample_type)
+  }
+
+  what %>%
+    dplyr::filter(SAMPLE_TYPE!='Unknown') %>%
+    dplyr::mutate(SAMPLE_TYPE = ifelse(grepl('Recurrence|Metastasis', SAMPLE_TYPE, ignore.case = T), 'Metastasis', 'Primary')) %>%
+    dplyr::select(sample, tumor_type, SAMPLE_TYPE, gene, gene_role, NV, DP, starts_with('purity'), eta_map, FAM, class) %>%
+    dplyr::mutate(tot = length(unique(sample))) %>%
+    dplyr::group_by(class, tumor_type, SAMPLE_TYPE) %>%
+    dplyr::reframe(n = length(unique(sample)), tot = unique(tot)) %>%
+    dplyr::group_by(tumor_type, SAMPLE_TYPE) %>%
+    dplyr::reframe(N = sum(n), dplyr::across(dplyr::everything())) %>%
+    dplyr::mutate(f = n/N)
 }
 
 
@@ -470,6 +447,22 @@ forest_plot = function(x, baseline = FALSE){
       )
     }) %>% do.call(rbind, .)
 
+  leveled = sapply(names(x$xlevels), function(n){grep(n, what$var)}) %>% unlist()
+  not_leveled = what$var[-leveled]
+
+  reference_table = rbind(
+    reference_table,
+    lapply(not_leveled, function(n) {
+      dplyr::tibble(
+        var = n,
+        value = 1,
+        low = 1,
+        up = 1,
+        p.value = NA
+      )
+    }) %>% do.call(rbind, .)
+  )
+
   toplot = dplyr::tibble(
     var = what$var,
     value = what$`exp(coef)`,
@@ -500,9 +493,11 @@ forest_plot = function(x, baseline = FALSE){
   }
 
 
-  for(c in names(x$xlevels)[-1]){
-    levels = c(levels, grep(c, toplot$var, value = T, ignore.case = T) %>% rev())
+  for(c in c(names(x$xlevels)[-1], not_leveled)){
+    levels = c(levels, grep(c, toplot$var, value = T, fixed = TRUE) %>% rev())
   }
+
+  levels = levels %>% unique()
 
   toplot = toplot %>%
     dplyr::mutate(var = factor(
@@ -513,6 +508,7 @@ forest_plot = function(x, baseline = FALSE){
 
   pp = toplot %>%
     dplyr::mutate(num_label = toplot$var %>% seq_along()) %>%
+    dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
     dplyr::mutate(stripe = (num_label%%2==0)) %>%
     ggplot2::ggplot(ggplot2::aes(y = var, x = value))+
     ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
@@ -530,7 +526,7 @@ forest_plot = function(x, baseline = FALSE){
     ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
     ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
-    CNAqc:::my_ggplot_theme(cex = .8)+
+    my_ggplot_theme(cex = .8)+
     ggplot2::ylab('')+
     ggplot2::xlab('Hazard Ratio')+
     ggplot2::guides(fill = 'none')
@@ -539,17 +535,30 @@ forest_plot = function(x, baseline = FALSE){
 
 # Palettes
 
-ploidy_colors = CNAqc:::get_karyotypes_colors(c('1:0', '1:1', '2:0', '2:1', '2:2'))
-ploidy_colors = ploidy_colors[c("1:0","1:1","2:1","2:2")]
-names(ploidy_colors) = sapply(names(ploidy_colors), function(n){
-  strsplit(n,split = ":")[[1]] %>% as.integer() %>% sum()
-})
-ploidy_colors = c(ploidy_colors, "Tier-2" = 'gray')
+ploidy_colors = c(
+  "steelblue", # Sky Blue
+  "forestgreen", # Green
+  "#F28E2B",  # Coral
+  "#D55E00", # Red
+  "navyblue", # Blue
+  "deeppink4", # Pink
+  "#52BCA3", # Mint Green
+  "#999999", # Gray
+  "#A3A500", # Olive
+  "#FF61C3", # Magenta
+  "#E58606", # Dark Orange
+  "#5D69B1", # Purple
+  "#99C945", # Lime Green
+  "#24796C", # Teal
+  "#DAA51B", # Mustard
+  "#2F8AC4" # Royal Blue
+)
+
 
 # INCOMMON state coloring
 scale_color_INCOMMON_class = function(aes = 'fill'){
-  colors = c("steelblue", "#00468BFF" , "indianred3", "forestgreen", "gainsboro" )
-  names(colors) = c("LOH","CNLOH", "AM", "HMD", "Tier-2")
+  colors = c('forestgreen', "pink2", "purple3")
+  names(colors) = c("Balanced Dosage","Low Dosage", "High Dosage")
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = colors)
   } else {
@@ -590,6 +599,7 @@ scale_color_ttypes = function(aes = 'fill'){
     "BLCA" = "#A22E29",
     "BRCA" = "#7D629E",
     "CHOL" = "#B96461",
+    "LUAD" = "#CF559A",
     "PAAD" = "#EAB578",
     "CRC" =  "#E4A6A7",
     "UCEC" = "#ABD5D0",

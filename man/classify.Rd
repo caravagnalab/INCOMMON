@@ -6,30 +6,39 @@
 \usage{
 classify(
   x,
-  priors = pcawg_priors,
-  entropy_cutoff = NULL,
-  rho = 0.01,
-  parallel = FALSE,
+  k_max = 8,
+  priors_m_k = pcawg_priors,
+  priors_x = pcawg_priors_x,
+  purity_error = 0.05,
   num_cores = NULL,
-  karyotypes = c("1:0", "1:1", "2:0", "2:1", "2:2")
+  iter_warmup = 500,
+  iter_sampling = 1000,
+  dump = FALSE,
+  dump_file = NULL
 )
 }
 \arguments{
 \item{x}{An object of class \code{'INCOMMON'} generated with function \code{init}.}
 
-\item{priors}{A dplyr::tibble or data frame with columns \code{gene}, \code{tumor_type}, \code{label} and \code{p} indicating tumor-specific
-or pan-cancer (PANCA) prior probabilities.}
+\item{k_max}{The maximum value of total copy number to be included in the model.}
 
-\item{entropy_cutoff}{Entropy cut-off for Tier-1 vs Tier-2 assignment.}
+\item{priors_m_k}{A dplyr::tibble or data frame with columns \code{gene}, \code{gene_role}, \code{tumor_type}, \code{ploidy}, \code{multiplicity}
+and \code{p} indicating tumor-specific or pan-cancer (PANCA) prior probabilities.}
 
-\item{rho}{Over-dispersion parameter.}
+\item{priors_x}{A dplyr::tibble or data frame with columns \code{mean_x}, \code{sigma2x}, \code{alpha_x} and \code{beta_x}
+providing parameters of the Gamma prior distribution over the per copy sequencing rate.}
 
-\item{parallel}{Whether to run the classification in parallel (default: FALSE)}
+\item{purity_error}{The expected error on the input sample purity estimate.}
 
-\item{num_cores}{The number of cores to use for parallel classification.
-By default, it takes 80\% of the available cores.}
+\item{num_cores}{The number of cores to use for parallel stan sampling.}
 
-\item{karyotypes}{Karyotypes to be included among the possible classes.}
+\item{iter_warmup}{The number of iterations of the stan warmup phase.}
+
+\item{iter_sampling}{The number of iterations of the stan sampling  phase.}
+
+\item{dump}{Whether to dump results to a file.}
+
+\item{dump_file}{The file path for dumping results.}
 }
 \value{
 An object of class \code{INCOMMON} containing the original input plus

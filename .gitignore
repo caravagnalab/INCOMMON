@@ -1,3 +1,4 @@
+dump.rds
 inst/doc
 docs
 .Rproj.user
@@ -5,3 +6,5 @@ docs
 logo.ai
 /doc/
 /Meta/
+inst/cmdstan/*
+!inst/cmdstan/*.stan

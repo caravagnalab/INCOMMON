@@ -45,19 +45,19 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
 
     # Add covariates to regression formula
     for(c in covariates) {
-      what = grep(c, colnames(data), ignore.case = T, value = TRUE)
+      what = grep(c, colnames(data), fixed = T, value = TRUE)
       for(w in what) {
         if(grepl('tmb', w, ignore.case = T) & tmb_method != 'median'){
           data[[w]] = ifelse(data[[w]] > 10, '> 10', '<= 10')
           data[[w]] = factor(data[[w]])
           data[[w]] = stats::relevel(data[[w]], ref = '<= 10', value = T)
         }
-        if(is.numeric(data[[w]])){
-          q =  stats::quantile(data[w], na.rm = T)['50%']
-          data[[w]] = ifelse(data[[w]] > q, paste0('>', round(q, 0)), paste0('<=', round(q, 0)))
-          data[[w]] = factor(data[[w]])
-          data[[w]] = stats::relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
-        }
+        # if(is.numeric(data[[w]])){
+        #   q =  stats::quantile(data[w], na.rm = T)['50%']
+        #   data[[w]] = ifelse(data[[w]] > q, paste0('>', q), paste0('<=', q))
+        #   data[[w]] = factor(data[[w]])
+        #   data[[w]] = stats::relevel(data[[w]], ref = grep('<=', unique(data[[w]]), value = T))
+        # }
         formula = paste(formula, w, sep = ' + ')
       }
     }

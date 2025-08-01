@@ -21,102 +21,56 @@ library(INCOMMON)
 library(dplyr)
 ```
 
-Downstream of classification, INCOMMON can interpret the mutant genome in terms of
-heterozygous mutant diploid (HMD) genes, completely inactivated tumor suppressor genes (TSG), completely activated oncogenes and Tier-2 mutations (uncertain/hard to interpret mutations). 
+Downstream of copy number and multiplicity inference, INCOMMON can interpret the mutant genome in terms of the mutant dosage of tumour suppressor genes (TSGs) and oncogenes. 
 
-Full inactivation of tumor suppressor genes (TSG) is detected as
-mutations with loss of the wild-type (WT) allele, either through pure loss of heterozygosity (LOH) or with copy-neutral LOH (CNLOH). Full activation of oncogenes is identified as 
-mutations with amplification of the mutant allele. In addition to amplifications in trisomy 
-and tetrasomy (AM), CNLOH events are interpreted for oncogenes as amplifications in disomy,
-since the mutant allele is found in double copy.
+Full inactivation of TSG is detected as mutations high mutant dosage, resulting from pure loss of heterozygosity (LOH) or copy-neutral LOH (CNLOH). Full activation of oncogenes is also identified as 
+mutations with high mutant dosgae, resulting from copy gains of the mutant allele. 
 
-## 3.1 Genome interpretation of 1880 prostate adenocarcinoma samples
+## 3.1 Genome interpretation of 1779 pancreatic adenocarcinoma samples
 
 ### 3.1.1 INCOMMON classification
 
-First, we classify samples of prostate adenocarcinoma (PRAD). As a first step, we select samples of this type from the MSK-MetTropsim dataset:
+We have used INCOMMON to make the inference on all prostate cancer (PRAD) samples from the MSK-MET cohort. The results are sored in `MSK_PRAD_output`. The package provides these example data 
+```{r}
+data("MSK_PAAD_output")
+print(MSK_PAAD_output$input)
+print(MSK_PAAD_output$parameters)
+```
+
+We have made the inference on 7839 mutations across 1779 samples, with `k_max=8`, `purity_error=0.05`, running `num_chains=4` MC sampling chains on `num_cores=4` CPU cores, using `iter_warmup=1000` warmup iterations and `iter_sampling=2000` sampling iterations.
+
+### 3.1.2 Gene mutant dosage
+
+For each gene mutation, the mutant dosage can be computed. INCOMMON exploits the full posterior distribution $p(k,m\;|\;X, \Theta)$ of `k` and `m` values to compute the mean Fraction of Alleles with the Mutation (FAM) as $\mathbb{E}(\text{FAM})=\sum\limits_{k=1}^{k_{max}}\sum\limits_{m=1}^kp(k,m\;|\;X, \Theta)\frac{m}{k}$. This can be done through the function `compute_expectations`. Samples can be then classified with respect to a mutant gene as "Low Dosage", "Balanced Dosage" or "High Dosage", using gene-role specific thresholds. By default, INCOMMON uses thresholds optimised for survival analysis, in function `mutant_dosage_classification`:
 
 ```{r}
-data(MSK_genomic_data)
-data(MSK_clinical_data)
-data(cancer_gene_census)
-
-x = init(
-  genomic_data = MSK_genomic_data,
-  clinical_data = MSK_clinical_data %>% filter(tumor_type == 'PRAD'),
-  gene_roles = cancer_gene_census
-)
-
-print(x)
+MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
 ```
 
-We can classify 7194 mutations across 1880 samples. The quality of these data is quite good, with average purity 0.41 and average sequencing depth 613.
-
-```{r, message=FALSE}
-x = classify(
-  x = x,
-  priors = INCOMMON::pcawg_priors,
-  entropy_cutoff = NULL,
-  rho = 0.01
-  # parallel = TRUE, # uncomment these to run in parallel
-  # num_cores = 8
-)
-```
+The `FAM` column is now added to the object. We can take a look at the inferred FAM for KRAS mutations using the function `show_FAM`:
 
 ```{r}
-print(x)
+show_FAM(MSK_PAAD_output, gene = 'KRAS') %>% dplyr::arrange(dplyr::desc(purity))
 ```
 
-There are 3571 heterozygous diploid mutations (HMD), 387 mutations with loss of 
-heterozygosity (LOH), 1346 mutations with copy-neutral LOH (CNLOH), 696 mutations
-with amplification. In addition, 1194 mutations were classified as Tier-2, either 
-because of entropy being larger than the cutoff or because of a low number of mutant
-alleles relative to the WT.
+For example, for the first mutation, given an estimated purity $\pi=87\%$ and total sequencing depth $\text{DP}=505$, we would expect $0.87*505=\simeq440$ reads from tumour cells. The FAM corresponds to the fraction of tumour reads that carry the variant ($\text{NV}=268$), which is approximately $60\%$. For an oncogene, such a value of FAMcorresponds to the "Balanced Dosage" class.
 
-### 3.1.2 Genome Interpreter
-
-The function `genome_interpreter` adds two variables to the `classification` object:
-the `class`, indicating for each mutant gene whether it is with LOH or amplification,
-depending on the gene role. In addition, each sample is annotated with a `genotype` 
-that summarises all the interpreted mutation found in the sample.
-
-```{r}
-x = genome_interpreter(x = x)
-```
-
-Across the PRAD samples that we classified, there are 1525 different genotypes, the
-most abundant ones being full inactivation of TP53 ('Mutant TP53 with LOH'), partial 
-inactivation of TP53 ('Mutant TP53 without LOH') and mutations of the TSG SPOP without LOH. 
-Notice that these alterations can be found in other genotypes, combined with mutations in other genes.
-
-### 3.1.3 Visulasing the distribution of INCOMMON classes
+### 3.1.3 Visulasing the distribution of mutant dosage classes
 
 We can visualise the distribution of INCOMMON classes for a specific gene and tumour
 type using the function `plot_class_fraction`.
 
-Here, we have classified prostate adenocarcinoma samples, so we set the `tumor_type` to PRAD and we can look at the distribution of INCOMMON states and interpreted classes for different genes.
-
-For instance, TP53 that characterizes the most abundant genotypes:  
+For instance, we can take a look at the distribution for KRAS mutations:  
 
 ```{r}
-plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'TP53')
+plot_class_fraction(x = MSK_PAAD_output, gene = 'KRAS')
 ```
 
-There is high incidence (61%) of mutations with LOH in 609 mutant TP53 samples, the majority of which (51%) being copy-neutral (CNLOH). TP53 mutations without LOH represent 34% of the total, with a small fraction (9.8%) being Tier-2 mutations.
+Across 1563 KRAS mutant samples, the majority have a balanced dosage, but interestingly, KRAS mutant dosage tends to increase in metastases.
 
-We can also look at SPOP:
+We can also look at TP53:
 
 ```{r}
-plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'SPOP')
+plot_class_fraction(x = MSK_PAAD_output, gene = 'TP53')
 ```
-Across 285 samples, the majority (57%) of SPOP mutations are without LOH, whereas a smaller fraction (20%) is combined with LOH, with 17% being CNLOH. The fraction of Tier-2 mutations (21%) for this gene is much higher than TP53.
-
-For oncogenes, in addition to mutations with amplification in trisomy/tetrasomy (AM), mutations with CNLOH are interpreted as amplifications in disomy, since the mutant allele is present in double copy.
-
-Let's take a look at KRAS:
-
-```{r}
-plot_class_fraction(x = x, tumor_type = 'PRAD', gene = 'KRAS')
-```
-
-The majority of mutations with amplifications (26% across 19 samples) consist of double mutant alleles in a trisomy or tetrasomy context (21%) plus a 5% of cases with disomy. A significant fraction (21%) of mutations are Tier-2, whereas 53% of mutations are in a heterozygous diploid context.
+Primary PAAD tumours with TP53 mutations have a majority of low dosage configurations, but the dosage strongly increase in metastases in favour of balanced and high dosage configurations.
