@@ -646,3 +646,65 @@ plot_km_prior_vs_post = function(x, sample){
       color = ggplot2::guide_legend(override.aes = list(color = 'white', fill = 'black', size = 5, shape = 21)))
 
 }
+
+
+compute_expectations = function(x){
+
+  x$input = x$input %>%
+    dplyr::mutate(id = paste(sample, chr, from, to, ref, alt, gene, NV, DP, sep = ':'))
+
+  dt = data.table::as.data.table(x$input)
+
+  dt = tidyr::unnest(dt %>% select(id, z_km), cols = z_km)
+
+  dt = dt %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(
+      FAM = sum((m / k) * z_km),
+      exp_m = sum(m * z_km),
+      exp_k = sum(k * z_km)
+  )
+
+  x$input  = dplyr::full_join(x$input %>% dplyr::select(-z_km), dt)
+
+  return(x)
+
+}
+
+mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66){
+  x = compute_expectations(x)
+  x$input = x$input %>%
+    dplyr::mutate(class = dplyr::case_when(
+      gene_role == 'TSG' & FAM <= TSG_low ~ 'Low Dosage',
+      gene_role == 'oncogene' & FAM <= ONC_low ~ 'Low Dosage',
+
+      gene_role == 'TSG' & FAM > TSG_low & FAM < TSG_high ~ 'Balanced Dosage',
+      gene_role == 'oncogene' & FAM > ONC_low & FAM < ONC_high ~ 'Balanced Dosage',
+
+      gene_role == 'TSG' & FAM >= TSG_high ~ 'High Dosage',
+      gene_role == 'oncogene' & FAM >= ONC_high ~ 'High Dosage'
+    ))
+
+  return(x)
+}
+
+posterior_k_m = function(x, id){
+  x = idify(x)
+  x$input %>%
+    dplyr::filter(id == !!id) %>%
+    tidyr::unnest(z_km) %>%
+    dplyr::select(id, sample, gene, NV, DP, dplyr::starts_with('purity'), eta_map, m, k, z_km)
+}
+
+show_FAM = function(x, tumor_type = NULL, gene = NULL){
+  what = x$input
+  if(!is.null(tumor_type)){
+    what = what %>% dplyr::filter(tumor_type==!!tumor_type)
+  }
+
+  if(!is.null(gene)){
+    what = what %>% dplyr::filter(gene==!!gene)
+  }
+  what %>%
+    dplyr::select(sample, gene, gene_role, NV, DP, starts_with('purity'), eta_map, FAM, class)
+}

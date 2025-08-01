@@ -382,29 +382,31 @@ reduce_classes = function(x) {
 
 # Get class distribution for an intere cohort
 
-class_frequency = function(x, tumor_type, gene, tier_1 = TRUE){
-  if('map_class' %in% colnames(classification(x))){
-    frequency_table = classification(x) %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+class_frequency = function(x, tumor_type = NULL, gene = NULL, sample_type = NULL){
 
-    frequency_table = frequency_table %>%
-      dplyr::group_by(state)
+  what = x$input
+  if(!is.null(tumor_type)){
+    what = what %>% dplyr::filter(tumor_type==!!tumor_type)
   }
-  if('relevant_class' %in% colnames(classification(x))){
-    frequency_table = classification(x) %>%
-      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
 
-    if(tier_1) frequency_table = frequency_table %>% dplyr::filter(!grepl('Tier-2', relevant_class))
-
-    frequency_table = frequency_table %>%
-      dplyr::group_by(map_class, relevant_class)
+  if(!is.null(gene)){
+    what = what %>% dplyr::filter(gene==!!gene)
   }
-  frequency_table = frequency_table %>%
-    dplyr::reframe(n = unique(length(sample)), gene_role) %>%
-    unique() %>%
-    dplyr::mutate(N = sum(n), frequency = n/N)
-  frequency_table = cbind(dplyr::tibble(gene = gene, tumor_type = tumor_type), frequency_table)
-  return(frequency_table)
+
+  if(!is.null(sample_type)){
+    what = what %>% dplyr::filter(SAMPLE_TYPE==!!sample_type)
+  }
+
+  what %>%
+    dplyr::filter(SAMPLE_TYPE!='Unknown') %>%
+    dplyr::mutate(SAMPLE_TYPE = ifelse(grepl('Recurrence|Metastasis', SAMPLE_TYPE, ignore.case = T), 'Metastasis', 'Primary')) %>%
+    dplyr::select(sample, tumor_type, SAMPLE_TYPE, gene, gene_role, NV, DP, starts_with('purity'), eta_map, FAM, class) %>%
+    dplyr::mutate(tot = length(unique(sample))) %>%
+    dplyr::group_by(class, tumor_type, SAMPLE_TYPE) %>%
+    dplyr::reframe(n = length(unique(sample)), tot = unique(tot)) %>%
+    dplyr::group_by(tumor_type, SAMPLE_TYPE) %>%
+    dplyr::reframe(N = sum(n), dplyr::across(dplyr::everything())) %>%
+    dplyr::mutate(f = n/N)
 }
 
 
@@ -555,8 +557,8 @@ ploidy_colors = c(
 
 # INCOMMON state coloring
 scale_color_INCOMMON_class = function(aes = 'fill'){
-  colors = c('forestgreen', "indianred3", "#00468BFF" , "gainsboro" )
-  names(colors) = c("m=1","1<m<k", "m=k", "Tier-2")
+  colors = c('forestgreen', "pink2", "purple3")
+  names(colors) = c("Balanced Dosage","Low Dosage", "High Dosage")
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = colors)
   } else {
