@@ -14,11 +14,11 @@ classify(
   iter_warmup = 500,
   iter_sampling = 1000,
   num_chains = 4,
-  results_dir = "./results/INCOMMON_fits",
-  generate_report_plot = TRUE,
-  reports_dir = "./figures/reports",
-  stan_fit_dump = TRUE,
-  stan_fit_dir = "./results/stan_fits"
+  results_dir = "~/INCONNON_inference/results",
+  generate_report_plot = F,
+  reports_dir = "~/INCONNON_inference/reports",
+  stan_fit_dump = F,
+  stan_fit_dir = "~/INCONNON_inference/fits"
 )
 }
 \arguments{
