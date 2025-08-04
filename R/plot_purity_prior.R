@@ -1,3 +1,4 @@
+#' Visualise the prior distribution on sample purity
 #' @param x An object of class INCOMMON.
 #' @param purity_error The variance of the Beta prior distribution on purity.
 #' @param sample An identifier of the tumour sample.
