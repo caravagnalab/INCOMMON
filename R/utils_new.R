@@ -641,7 +641,7 @@ compute_expectations = function(x){
 #' # First load example classified data
 #' data(MSK_PAAD_output)
 #' mutant_dosage_classification(MSK_PAAD_output, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66)
-#' @importFrom dplyr case_when mutate %>%
+#' @importFrom dplyr case_when mutate group_by reframe across everything %>%
 mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66){
   x = compute_expectations(x)
   x$input = x$input %>%
