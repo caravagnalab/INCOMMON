@@ -21,7 +21,7 @@
 kaplan_meier_fit = function(x, tumor_type, gene, survival_time, survival_status) {
 
   stopifnot(inherits(x, 'INCOMMON'))
-  if(!("genotype" %in% (classification(x) %>% names()))) x = genome_interpreter(x)
+  if(!("genotype" %in% (input(x) %>% names()))) x = mutant_dosage_classification(x)
 
   data = prepare_km_fit_input(x, tumor_type, gene)
 
@@ -29,23 +29,27 @@ kaplan_meier_fit = function(x, tumor_type, gene, survival_time, survival_status)
     if(baseline){
       data = data %>%
         dplyr::mutate(group = dplyr::case_when(
-          grepl('WT', class) ~ class,
-          TRUE ~ strsplit(class, split = ' with')[[1]][1]
-        ))
+          grepl('WT', class) ~ "WT",
+          TRUE ~ "Mutant")
+        )
 
       data = data %>%
         dplyr::mutate(group = factor(group,
                                      levels = c(
-                                       grep('WT', unique(data$group), value = T),
-                                       grep('Mutant', unique(data$group), value = T)
+                                       "WT",
+                                       "Mutant"
                                      )))
     } else{
       data = data %>%
-        dplyr::mutate(group = factor(class,
+        dplyr::mutate(group = dplyr::case_when(
+          grepl('WT', class) ~ "WT",
+          TRUE ~ class)) %>%
+        dplyr::mutate(group = factor(group,
                                      levels = c(
-                                       grep('WT', unique(data$class), value = T),
-                                       grep('Mutant', unique(data$class), value = T) %>% grep('without', ., value = T),
-                                       grep('Mutant', unique(data$class), value = T) %>% grep('without', ., invert = T, value = T)
+                                       "WT",
+                                       "Low Dosage",
+                                       "Balanced Dosage",
+                                       "High Dosage"
                                      )))
     }
 
