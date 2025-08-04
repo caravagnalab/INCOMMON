@@ -629,6 +629,19 @@ compute_expectations = function(x){
 
 }
 
+#' Visualise the posterior distribution on (k,m) configurations.
+#' @param x An object of class INCOMMON.
+#' @param TSG_low The lower cutoff for mutant dosage classification of tumour suppressor genes.
+#' @param TSG_high The upper cutoff for mutant dosage classification of tumour suppressor genes.
+#' @param ONC_low The lower cutoff for mutant dosage classification for oncogenes.
+#' @param ONC_high The upper cutoff for mutant dosage classification for oncogenes.
+#' @return An object of class INCOMMON with new columns reporting mean FAM and class assignment.
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' mutant_dosage_classification(MSK_PAAD_output, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66)
+#' @importFrom dplyr case_when mutate %>%
 mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66){
   x = compute_expectations(x)
   x$input = x$input %>%
@@ -654,6 +667,17 @@ posterior_k_m = function(x, id){
     dplyr::select(id, sample, gene, NV, DP, dplyr::starts_with('purity'), eta_map, m, k, z_km)
 }
 
+#' Get frction of alleles with the mutation (FAM) values for a gene and cancer type.
+#' @param x An object of class INCOMMON.
+#' @param tumour_type The tumour type identifier.
+#' @param gene The gene name..
+#' @return A table with the estimated FAM values
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' show_FAM(MSK_PAAD_output, tumor_type = 'BRCA', gene = 'TP53')
+#' @importFrom dplyr filter select %>%
 show_FAM = function(x, tumor_type = NULL, gene = NULL){
   what = x$input
   if(!is.null(tumor_type)){

@@ -1,8 +1,8 @@
 ---
-title: "3. Genome Interpreter"
+title: "3. Gene mutant dosage"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Genome Interpreter}
+  %\VignetteIndexEntry{3. Gene mutant dosage}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,6 +19,7 @@ options(crayon.enabled=TRUE)
 ```{r setup}
 library(INCOMMON)
 library(dplyr)
+library(cli)
 ```
 
 Downstream of copy number and multiplicity inference, INCOMMON can interpret the mutant genome in terms of the mutant dosage of tumour suppressor genes (TSGs) and oncogenes. 
