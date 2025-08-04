@@ -17,7 +17,7 @@ Get model parameters of the performed classification tests.
 }
 \examples{
 # First load example classified data
-data(MSK_classified)
+data(MSK_PAAD_output)
 # Get classification parameters
-parameters(MSK_classified)
+parameters(MSK_PAAD_output)
 }

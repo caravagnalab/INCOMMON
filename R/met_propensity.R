@@ -8,9 +8,9 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Estimate the metastatic propensity associated with mutant TP53 with vs without CNA in BRCA.
-#' MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = 'TP53')
+#' MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'BRCA', gene = 'TP53')
 #' @importFrom dplyr filter mutate rename select %>% as_tibble
 #' @importFrom survival Surv survfit
 #' @importFrom stats glm binomial confint

@@ -11,9 +11,9 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Perform survival analysis based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
-#' MSK_classified = kaplan_meier_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
+#' MSK_PAAD_output = kaplan_meier_fit(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit
 #' @importFrom stats as.formula

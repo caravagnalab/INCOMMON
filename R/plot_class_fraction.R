@@ -9,9 +9,9 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Plot class fraction for a specific gene and tumour type
-#' plot_class_fraction(x = MSK_classified, tumor_type = 'LUAD', gene = 'KRAS')
+#' plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'LUAD', gene = 'KRAS')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom patchwork wrap_plots
 plot_class_fraction = function(x, tumor_type = NULL, gene = NULL, ...){

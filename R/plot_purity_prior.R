@@ -5,29 +5,29 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Plot classification results for a specific sample
-#' plot_prior(x = MSK_classified, purity_error = 0.05)
-#' @importFrom dplyr filter mutate rename select %>%
+#' plot_purity_prior(x = MSK_PAAD_output, sample = "P-0000142-T01-IM3", purity_error = 0.05)
+#' @importFrom dplyr filter mutate rename select %>% tibble
 #' @importFrom stats rgamma
 plot_purity_prior = function(x, sample, purity_error = 0.05){
-  
+
   purity_mean = purity(x = x, sample = sample)
   alpha_pi = purity_mean * ((purity_mean * (1 - purity_mean) / purity_error) - 1)
   beta_pi = (1 - purity_mean) * (purity_mean * (1 - purity_mean) / purity_error)
-  
+
   data = tibble(x = stats::rgamma(n = 100000, shape = alpha_pi, rate = beta_pi))
-  
+
   toplot = dplyr::tibble(
     x = seq(0, 1, length.out = 1000),
     density = stats::dbeta(
-      seq(0, 1, length.out = 1000), 
-      shape1 = alpha_pi, 
+      seq(0, 1, length.out = 1000),
+      shape1 = alpha_pi,
       shape2 = beta_pi)
   )
-  
+
   # Plot using ggplot2
-  toplot %>% 
+  toplot %>%
     ggplot2::ggplot(ggplot2::aes(x = x, y = density)) +
     ggplot2::geom_line(color = 'steelblue', size = 1.2) +
     ggplot2::geom_vline(xintercept = purity_mean, linetype = 'longdash')+
@@ -38,5 +38,5 @@ plot_purity_prior = function(x, sample, purity_error = 0.05){
       y = "Density"
     )+
     my_ggplot_theme()
-  
+
 }

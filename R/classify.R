@@ -23,7 +23,7 @@
 #' sample = 'P-0002081'
 #' x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 #' # Run INCOMMON classification
-#' x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
+#' x = classify(x = x, priors = priors_k_m, entropy_cutoff = NULL, rho = 0.01)
 #' # An S3 method can be used to report to screen what is in the object
 #' print(x)
 #' @importFrom dplyr filter mutate rename select everything %>%

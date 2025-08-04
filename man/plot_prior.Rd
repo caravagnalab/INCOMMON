@@ -8,7 +8,7 @@ plot_prior(x, gene, tumor_type)
 }
 \arguments{
 \item{x}{A prior distribution in the format required for \code{INCOMMON},
-such as \code{INCOMMON::pcawg_priors}.}
+such as \code{INCOMMON::priors_k_m}.}
 
 \item{gene}{Gene for gene-specific prior.}
 
@@ -22,7 +22,7 @@ Visualize prior distribution for a gene (tumor-specific or pancancer).
 }
 \examples{
 # First load example classified data
-data(MSK_classified)
+data(MSK_PAAD_output)
 # Plot classification results for a specific sample
-plot_prior(x = MSK_classified, gene = 'TP53', tumor_type = 'PAAD')
+plot_prior(x = MSK_PAAD_output, gene = 'TP53', tumor_type = 'PAAD')
 }

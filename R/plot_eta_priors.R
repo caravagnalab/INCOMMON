@@ -1,15 +1,14 @@
+#' Visualise the prior distribution over the rate of reads per chromosome copy.
+#'
 #' @param priors_eta An object of class INCOMMON.
 #' @export
 #' @examples
-#' # First load example classified data
-#' data(MSK_classified)
+#' # Load the default prior on eta, estimated from the MKS-MET data.
+#' data(priors_eta)
 #' # Plot classification results for a specific sample
-#' plot_prior(x = MSK_classified, purity_error = 0.05)
+#' plot_eta_prior(priors_eta = priors_eta)
 #' @importFrom dplyr filter mutate group_by reframe select %>%
 #' @importFrom stats var
-#'
-#'
-#'
 plot_eta_prior = function(priors_eta){
   toplot = lapply(1:nrow(priors_eta), function(i){
     tibble(

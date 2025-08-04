@@ -8,11 +8,11 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Estimate the metastatic propensity associated with mutant TP53, PIK3CA and CDH1 with vs without CNA in BRCA.
-#' for(g in c('TP53', 'PIK3CA', 'CDH1')){MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = g)}
+#' for(g in c('TP53', 'PIK3CA', 'CDH1')){MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'BRCA', gene = g)}
 #' # Plot results in a volcano plot
-#' plot_met_volcano(x = MSK_classified, tumor_type = 'BRCA')
+#' plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'BRCA')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom ggrepel geom_label_repel
 

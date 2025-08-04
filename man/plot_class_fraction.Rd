@@ -4,7 +4,7 @@
 \alias{plot_class_fraction}
 \title{Visualize frequency distribution of INCOMMON classes.}
 \usage{
-plot_class_fraction(x, tumor_type, gene, ...)
+plot_class_fraction(x, tumor_type = NULL, gene = NULL, ...)
 }
 \arguments{
 \item{x}{A list of objects of class \code{'INCOMMON'} containing the classification results, as
@@ -24,7 +24,7 @@ Visualize frequency distribution of INCOMMON classes.
 }
 \examples{
 # First load example classified data
-data(MSK_classified)
+data(MSK_PAAD_output)
 # Plot class fraction for a specific gene and tumour type
-plot_class_fraction(x = MSK_classified, tumor_type = 'LUAD', gene = 'KRAS')
+plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'LUAD', gene = 'KRAS')
 }

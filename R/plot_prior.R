@@ -1,16 +1,16 @@
 #' Visualize prior distribution for a gene (tumor-specific or pancancer).
 #'
 #' @param x A prior distribution in the format required for \code{INCOMMON},
-#' such as \code{INCOMMON::pcawg_priors}.
+#' such as \code{INCOMMON::priors_k_m}.
 #' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
 #' @param gene Gene for gene-specific prior.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Plot classification results for a specific sample
-#' plot_prior(x = MSK_classified, gene = 'TP53', tumor_type = 'PAAD')
+#' plot_prior(x = MSK_PAAD_output, gene = 'TP53', tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
   toplot = x %>%

@@ -31,7 +31,7 @@
 #' Priors from PCAWG
 #' @docType data
 #'
-#' @usage data(pcawg_priors)
+#' @usage data(priors_k_m)
 #'
 #' @description Prior distribution of copy number and mutation multiplicity from PCAWG.
 #'
@@ -44,9 +44,9 @@
 #' }
 #' @source Validated copy number calls from PCAWG: https://doi.org/10.5281/zenodo.6410935
 #' @examples
-#' data(pcawg_priors)
-#' pcawg_priors
-"pcawg_priors"
+#' data(priors_k_m)
+#' priors_k_m
+"priors_k_m"
 
 #' Gene roles from COSMIC Cancer Gene Census
 #' @docType data
@@ -73,12 +73,12 @@
 #'
 #' @description This is an INCOMMON object resulting from the classification of all the example data.
 #'
-#' @usage data(MSK_classified)
+#' @usage data(MSK_PAAD_output)
 #'
 #' @format An INCOMMON object with genomics, clinical data and classification results.
 #'
 #' @source "msk_classified_with_priors.rds" at Zenodo https://zenodo.org/records/10927218
 #' @examples
-#' data(MSK_classified)
-#' MSK_classified
-"MSK_classified"
+#' data(MSK_PAAD_output)
+#' MSK_PAAD_output
+"MSK_PAAD_output"

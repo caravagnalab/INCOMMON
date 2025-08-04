@@ -10,12 +10,12 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Perform survival analysis based on the classification of KRAS mutant samples of pancreatic adenocarcinoma
-#' MSK_classified = kaplan_meier_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
+#' MSK_PAAD_output = kaplan_meier_fit(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS')
 #' # Perform Cox regression
-#' MSK_classified = cox_fit(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS', covariates = c('age', 'sex', 'tmb'), tmb_method = ">10")
-#' plot_survival_analysis(x = MSK_classified, tumor_type = 'PAAD', gene = 'KRAS')
+#' MSK_PAAD_output = cox_fit(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS', survival_time = 'OS_MONTHS', survival_status = 'OS_STATUS', covariates = c('age', 'sex', 'tmb'), tmb_method = ">10")
+#' plot_survival_analysis(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS')
 #' @importFrom dplyr filter mutate rename select %>% full_join
 #' @importFrom survminer ggsurvplot
 #' @importFrom patchwork wrap_plots plot_layout

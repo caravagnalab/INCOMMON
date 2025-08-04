@@ -1,11 +1,13 @@
+#' Evaluate a prior distribution over the rate of reads per chromosom copy from the data.
+#'
 #' @param x An object of class INCOMMON.
 #' @param priors_k_m Pre-computed priors for gene muation total copy number and multipliity.
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
-#' # Plot classification results for a specific sample
-#' plot_prior(x = MSK_classified, purity_error = 0.05)
+#' data(MSK_PAAD_output)
+#' data(priors_k_m)
+#' compute_eta_prior(x = MSK_PAAD_output, priors_k_m = priors_k_m)
 #' @importFrom dplyr filter mutate group_by reframe select %>%
 #' @importFrom stats var
 #'

@@ -7,14 +7,18 @@
 classify(
   x,
   k_max = 8,
-  priors_m_k = pcawg_priors,
-  priors_x = pcawg_priors_x,
+  priors_k_m = priors_k_m,
+  priors_eta = priors_eta,
   purity_error = 0.05,
   num_cores = NULL,
   iter_warmup = 500,
   iter_sampling = 1000,
-  dump = FALSE,
-  dump_file = NULL
+  num_chains = 4,
+  results_dir = "./results/INCOMMON_fits",
+  generate_report_plot = TRUE,
+  reports_dir = "./figures/reports",
+  stan_fit_dump = TRUE,
+  stan_fit_dir = "./results/stan_fits"
 )
 }
 \arguments{
@@ -22,10 +26,10 @@ classify(
 
 \item{k_max}{The maximum value of total copy number to be included in the model.}
 
-\item{priors_m_k}{A dplyr::tibble or data frame with columns \code{gene}, \code{gene_role}, \code{tumor_type}, \code{ploidy}, \code{multiplicity}
+\item{priors_k_m}{A dplyr::tibble or data frame with columns \code{gene}, \code{gene_role}, \code{tumor_type}, \code{ploidy}, \code{multiplicity}
 and \code{p} indicating tumor-specific or pan-cancer (PANCA) prior probabilities.}
 
-\item{priors_x}{A dplyr::tibble or data frame with columns \code{mean_x}, \code{sigma2x}, \code{alpha_x} and \code{beta_x}
+\item{priors_eta}{A dplyr::tibble or data frame with columns \code{mean_eta}, \code{var_eta}, \code{alpha_eta} and \code{beta_eta}
 providing parameters of the Gamma prior distribution over the per copy sequencing rate.}
 
 \item{purity_error}{The expected error on the input sample purity estimate.}
@@ -55,7 +59,7 @@ data(MSK_clinical_data)
 sample = 'P-0002081'
 x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 # Run INCOMMON classification
-x = classify(x = x, priors = pcawg_priors, entropy_cutoff = NULL, rho = 0.01)
+x = classify(x = x, priors = priors_k_m, entropy_cutoff = NULL, rho = 0.01)
 # An S3 method can be used to report to screen what is in the object
 print(x)
 }
