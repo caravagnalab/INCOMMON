@@ -656,6 +656,11 @@ mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_lo
       gene_role == 'oncogene' & FAM >= ONC_high ~ 'High Dosage'
     ))
 
+  x$input = x$input %>%
+    mutate(tmp = paste0(gene, ' with ', class)) %>%
+    dplyr::group_by(sample) %>%
+    dplyr::reframe(genotype = paste(tmp, collapse = ', '), dplyr::across(dplyr::everything()))
+
   return(x)
 }
 

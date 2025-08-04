@@ -208,7 +208,7 @@ mutant_samples = function(x, tumor_type, gene) {
 
 wt_samples = function(x, tumor_type, gene) {
   stopifnot(inherits(x, 'INCOMMON'))
-  classification(x) %>%
+  input(x) %>%
     dplyr::filter(tumor_type == !!tumor_type) %>%
     dplyr::filter(!grepl(!!gene, genotype)) %>%
     dplyr::group_by(sample) %>%
