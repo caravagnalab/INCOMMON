@@ -104,3 +104,5 @@ plot_prior(x = priors_k_m,
            gene = 'KRAS',
            tumor_type = 'PAAD')
 ```
+
+This example shows that, from the analysis of PCAWG and HMF datasets, KRAS mutations in pancreatic adenocarcinoma (PAAD) are most frequently found with $(k=2,m=1)$ configurations ($N=689$ samples), i.e. in heterozygous diploid configurations. A relatively high frequency is also found for configurations with gain of the mutant copy: $(k=2,m=2)$ (CNLOH, $N=81$ samples), $(k=3,m=2)$ (mutant gain in trisomy, $N=106$ samples) and $(k=3,m=2)$ (mutant gain in tetrasomy, $N=116$ samples).

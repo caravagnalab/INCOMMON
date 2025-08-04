@@ -191,35 +191,29 @@ samples = function(x){
 }
 
 # Subset object by sample
-
+#' Subset an INCOMMON object by sample ID.
+#'
+#' @param x An object of class \code{'INCOMMON'} generated with function `init`.
+#' @param sample_list a list of identifiers for the samples to be subsetted
+#' @return An object of class `INCOMMON` containing a subset of the original input.
+#' @export
+#' @examples
+#' # First load example data
+#' data(MSK_PAAD_output)
+#' subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142-T01-IM3"))
+#' print(x)
+#' @importFrom dplyr filter mutate rename select everything %>%
 subset_sample = function(x, sample_list){
   stopifnot(inherits(x, 'INCOMMON'))
   samples = unique(x$input$sample)
-  stopifnot(length(intersect(samples(x), sample_list))>0)
-  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
-  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
-  ip = x$input %>% dplyr::filter(sample %in% sample_list)
-  out = list(genomic_data = gd,
-             clinical_data = cd,
-             input = ip)
-  class(out) = 'INCOMMON'
-  if('classification' %in% names(x)) {
-    if(length(intersect(names(x$classification$fit), sample_list))>0){
-      cl = x$classification$fit[sample_list]
-      pm = x$classification$parameters
-      priors_k_m = x$classification$priors_k_m
-      priors_x = x$classification$priors_x
+  stopifnot(length(dplyr::intersect(samples(x), sample_list))>0)
+  # gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  # cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  x$input = x$input %>% dplyr::filter(sample %in% sample_list)
 
-
-      out$classification$fit = cl
-      out$classification$parameters = pm
-      out$classification$priors_k_m = priors_k_m
-      out$classification$priors_x = priors_x
-
-    }
+  return(x)
   }
-  return(out)
-}
+
 
 my_ggplot_theme = function(cex = 1)
 {
