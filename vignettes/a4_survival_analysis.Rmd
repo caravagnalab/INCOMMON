@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(INCOMMON)
 library(dplyr)
+library(cli)
 ```
 
 In this vignette we carry out survival analysis based on INCOMMON classification of samples of pancreatic adenocarcinoma (PAAD) patients from the MSK-MetTropsim cohort.
@@ -27,75 +28,34 @@ In order to stratify patients based on the INCOMMON interpreted genomes, we firs
 
 ### 4.1.1 Input intialisation
 
-First we prepare the input using function `init`:
+First we read the example classified data:
 
 ```{r}
-data(MSK_genomic_data)
-data(MSK_clinical_data)
-data(cancer_gene_census)
-
-x = init(
-  genomic_data = MSK_genomic_data,
-  clinical_data = MSK_clinical_data %>% filter(tumor_type == 'PAAD'),
-  gene_roles = cancer_gene_census
-)
-
-print(x)
+data("MSK_PAAD_output")
+print(MSK_PAAD_output)
 ```
-There are 6779 mutations with average sequencing depth 623 
-across 1740 samples with average purity 0.26.
-
-### 4.1.2 Classification
-
-We then classify the mutations using PCAWG priors and the default entropy cutoff and
-overdispersion parameter:
-
-```{r, message=FALSE}
-x = classify(
-  x = x,
-  priors = INCOMMON::pcawg_priors,
-  entropy_cutoff = 0.2,
-  rho = 0.01
-  # parallel = TRUE, # uncomment these to run in parallel
-  # num_cores = 8
-)
-```
-
-```{r}
-print(x)
-```
-
-There are 2611 heterozygous diploid mutations (HMD), 558 mutations with loss of 
-heterozygosity (LOH), 1988 mutations with copy-neutral LOH (CNLOH), 283 mutations
-with amplification. In addition, 1339 mutations were classified as Tier-2, either 
-because of entropy being larger than cutoff or because of a low number of mutant
-alleles relative to the wild-type.
 
 ## 4.2 Survival analysis of Mutant KRAS patients
 
-In order to obtain a grouping of patients based on the mutational status of KRAS, we need first to annotate the genotype of each sample and interpret mutant KRAS genomes.
+In order to obtain a grouping of patients based on the mutant dosage of KRAS, we need first to annotate the FAM and mutant dosage class of each sample and interpret mutant KRAS genomes.
 
-### 4.2.1 Genome Interpretation
+### 4.2.1 Mutand Dosage Classification
 
-We use the function `genome_interpreter` to add INCOMMON classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2) `class` and annotate each sample with a `genotype` summarising all the interpreted mutations found in the sample.
-
-```{r}
-x = genome_interpreter(x = x)
-```
-
-Across the PAAD samples that we classified, there are 1288 different genotypes, the
-most abundant ones being different combinations of TP53 with/without LOH and KRAS 
-mutations with/without amplifications.
-
-We investigate the impact on survival of the Mutant KRAS with/without amplification genomes with respect to KRAS WT patients.
-
-We first look at the distribution of INCOMMON copy number states across PAAD samples for KRAS, using function `plot_class_fraction`:
+We use the function `mutant_dosage_classification` to add INCOMMON classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2) `class` and annotate each sample with a `genotype` summarising all the interpreted mutations found in the sample.
 
 ```{r}
-plot_class_fraction(x = x, tumor_type = 'PAAD', gene = 'KRAS')
+MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
 ```
 
-Across 1644 samples, a large fraction of KRAS mutations (35%) is associated with amplification of the mutant allele, always through CNLOH (amplification in diploid state). A slightly higher number (38%) of mutant KRAS samples is without amplification, whereas 26% of the samples has a Tier-2 KRAS mutation.
+We investigate the impact on survival of the Mutant KRAS dosage with respect to KRAS WT patients.
+
+We first look at the distribution of mutant dosage across PAAD samples for KRAS, using function `plot_class_fraction`:
+
+```{r, out.width="120%", fig.height=2, dpi=300}
+plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS')
+```
+
+Across 1563 samples, a relatively large fraction of KRAS mutations (21%) is associated with high dosage in primary pancreatic tumours, and the fraction increases to 24% in metastases.
 
 ### 4.2.2 Kaplan-Meier survival esitmates
 

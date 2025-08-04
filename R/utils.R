@@ -192,7 +192,7 @@ get_prior = function(x, gene, tumor_type, silent = FALSE){
 
 mutant_samples = function(x, tumor_type, gene) {
   stopifnot(inherits(x, 'INCOMMON'))
-  classification(x) %>%
+  input(x) %>%
     dplyr::filter(tumor_type == !!tumor_type,
                   gene == !!gene) %>%
     dplyr::group_by(sample) %>%

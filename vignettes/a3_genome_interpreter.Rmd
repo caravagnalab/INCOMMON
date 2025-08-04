@@ -12,8 +12,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-options(crayon.enabled=TRUE)
 ```
 
 ```{r setup}
@@ -63,7 +61,7 @@ type using the function `plot_class_fraction`.
 
 For instance, we can take a look at the distribution for KRAS mutations:  
 
-```{r}
+```{r, out.width="120%", fig.height=2, dpi=300}
 plot_class_fraction(x = MSK_PAAD_output, gene = 'KRAS')
 ```
 
@@ -71,7 +69,7 @@ Across 1563 KRAS mutant samples, the majority have a balanced dosage, but intere
 
 We can also look at TP53:
 
-```{r}
+```{r, out.width="120%", fig.height=2, dpi=300}
 plot_class_fraction(x = MSK_PAAD_output, gene = 'TP53')
 ```
-Primary PAAD tumours with TP53 mutations have a majority of low dosage configurations, but the dosage strongly increase in metastases in favour of balanced and high dosage configurations.
+Primary PAAD tumours with TP53 mutations have a majority of low dosage configurations, but the dosage strongly increases in metastases in favour of balanced and high dosage configurations.
