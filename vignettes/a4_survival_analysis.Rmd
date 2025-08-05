@@ -96,7 +96,7 @@ This analysis confirms the gradient of worsening survival outcome of patients wi
 Kaplan-Meier estimation and multivariate Cox regression can be visualized straightforwardly
 using the `plot_survival_analysis` function:
 
-```{r, fig.width=6,fig.height=8}
+```{r, fig.width=5,fig.height=4.5, dpi=200, fig.align='left'}
 plot_survival_analysis(x = MSK_PAAD_output,
                        tumor_type = 'PAAD',
                        gene = 'KRAS')

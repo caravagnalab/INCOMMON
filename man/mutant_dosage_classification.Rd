@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_new.R
 \name{mutant_dosage_classification}
 \alias{mutant_dosage_classification}
-\title{Visualise the posterior distribution on (k,m) configurations.}
+\title{Group patients by gene mutant mutant dosage using gene-role specific thresholds.}
 \usage{
 mutant_dosage_classification(
   x,
@@ -27,7 +27,7 @@ mutant_dosage_classification(
 An object of class INCOMMON with new columns reporting mean FAM and class assignment.
 }
 \description{
-Visualise the posterior distribution on (k,m) configurations.
+Group patients by gene mutant mutant dosage using gene-role specific thresholds.
 }
 \examples{
 # First load example classified data
