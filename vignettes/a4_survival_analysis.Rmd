@@ -65,7 +65,7 @@ Notice that we must choose the variables from `clinical_data` to be used as surv
 time and survival status ('OS_MONTHS' and 'OS_STATUS' in this case).
 
 ```{r}
-x = kaplan_meier_fit(
+MSK_PAAD_output = kaplan_meier_fit(
   x = MSK_PAAD_output, 
   tumor_type = 'PAAD', 
   gene = 'KRAS', 
@@ -73,31 +73,23 @@ x = kaplan_meier_fit(
   survival_status = 'OS_STATUS')
 ```
 
-The median overall survival time decreases from 21.5 months for the KRAS WT group to 18.2 months for Mutant KRAS without amplification and further to 11.7 months for Mutant KRAS with amplification patients.
+The median overall survival time decreases proportionally to the mutant KRAS dosage: from 38.3 months for the WT group to 17.4 months for low mutant dosage, 14.6 months for the balanced mutant dosage, down to 10.7 months for the high mutant dosage.
 
 ### 4.2.3 Hazard Ratio estimates with Cox regression
 
-In order to estimate the hazard ratio associated with these groups, we fit the same survival data, this time using a multivariate Cox proportional hazards regression model. Here, we include the age of patients at death, sex and tumor mutational burden (TMB) as model covariates. For TMB, best 
-practices require using a value of 10 per megabase to discriminate patients with high burden from
-those with low. We can decide which strategy to use by tuning argument `tmb_method`. The default
-value is "median", which uses the median over all samples asthreshold. Here, we set it to ">10" to
-stick to the mentioned best practices.
+In order to estimate the hazard ratio associated with these groups, we fit the same survival data, this time using a multivariate Cox proportional hazards regression model. Here, we overcome the confounding effect of global mutational and copy-number burden by including the tumour mutational burden and the fraction of genome altered (FGA) provided within the clinical data, plus other standard covariates such as age of patients at sequencing, sex and sample type (primary vs metastasis). For TMB, best practices require using a value of 10 per megabase to discriminate patients with high burden from those with low. We can decide which strategy to use by tuning argument `tmb_method`. The default value is "median", which uses the median over all samples asthreshold. Here, we set it to ">10" to stick to the mentioned best practices.
 
 ```{r}
-x = cox_fit(x = x,
+MSK_PAAD_output = cox_fit(x = MSK_PAAD_output,
         tumor_type = 'PAAD',
         gene = 'KRAS',
         survival_time = 'OS_MONTHS',
         survival_status = 'OS_STATUS',
-        covariates = c('age', 'sex', 'tmb'),
+        covariates = c('AGE_AT_SEQUENCING', 'SEX', 'TMB', 'FGA','SAMPLE_TYPE'),
         tmb_method = ">10")
 ```
 
-This analysis reveals that, whereas KRAS mutation alone (without amplification) is not
-enough, the presence of amplification significantly increases the hazard ratio (HR = 1.41, p-value = 0.012)
-with respect to the WT group. Moreover, tumor mutational burden (TMB_NONSYNONYMOUS)
-also gives a significant albeit weak contribution, as patients with more than 4 non-synonymous mutations
-(median TMB_NONSYNONYMOUS) emerge as being more at risk (HR = 1.16, p-value = 0.038).
+This analysis confirms the gradient of worsening survival outcome of patients with increasing mutant dosage of KRAS. The evaluated hazard ratios increase from 2.04 for Low Dosage, to 2.29 for Balanced Dosage, up to 3.20 for High Dosage. The pairwise analysis reveals that the outcome difference between High and Balanced dosage is significant (P-value $P=9.93\times10^{-5}$), confirming the effectiveness of mutant dosage as an outcome predictive factor for overall survival.
 
 ### 4.2.4 Visualising survival analysis
 
@@ -105,7 +97,7 @@ Kaplan-Meier estimation and multivariate Cox regression can be visualized straig
 using the `plot_survival_analysis` function:
 
 ```{r, fig.width=6,fig.height=8}
-plot_survival_analysis(x = x,
+plot_survival_analysis(x = MSK_PAAD_output,
                        tumor_type = 'PAAD',
                        gene = 'KRAS')
 ```

@@ -629,7 +629,7 @@ compute_expectations = function(x){
 
 }
 
-#' Visualise the posterior distribution on (k,m) configurations.
+#' Group patients by gene mutant mutant dosage using gene-role specific thresholds.
 #' @param x An object of class INCOMMON.
 #' @param TSG_low The lower cutoff for mutant dosage classification of tumour suppressor genes.
 #' @param TSG_high The upper cutoff for mutant dosage classification of tumour suppressor genes.

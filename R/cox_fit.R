@@ -24,7 +24,7 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
                    covariates = c('age', 'sex', 'tmb'),
                    tmb_method = 'median'){
 
-  if(!("genotype" %in% (classification(x) %>% names()))) x = genome_interpreter(x)
+  if(!("genotype" %in% (input(x) %>% names()))) x = mutant_dosage_classification(x)
 
   data = prepare_km_fit_input(x, tumor_type, gene)
 
@@ -33,8 +33,14 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
       # Baseline fit
       data = data %>%
         dplyr::mutate(class = dplyr::case_when(
-          grepl('WT', class) ~ class,
-          TRUE ~ strsplit(class, split = ' with')[[1]][1]
+          grepl('WT', class) ~ 'WT',
+          TRUE ~ 'Mutant'
+        ))
+    } else {
+      data = data %>%
+        dplyr::mutate(class = dplyr::case_when(
+          grepl('WT', class) ~ 'WT',
+          TRUE ~ class
         ))
     }
     data = data %>% dplyr::mutate(group = factor(class))
@@ -68,7 +74,19 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
         as.data.frame()
     )
 
-    return(fit)
+    adj_cox_fit = fit
+    adj_cox_fit$coefficients[is.na(adj_cox_fit$coefficients)] = 0
+
+    pw_test_formula = case_when(
+      baseline == TRUE ~ "groupMutant = 0",
+      baseline == FALSE ~ c("`groupHigh Dosage` - `groupBalanced Dosage` = 0", "`groupLow Dosage` - `groupBalanced Dosage` = 0"),
+    )
+
+    pw_test = summary(multcomp::glht(adj_cox_fit, linfct = c(pw_test_formula)))
+
+    ph_test = tryCatch(survival::cox.zph(adj_cox_fit), error = function(e) {return(tibble(NULL))})
+
+    return(dplyr::tibble(cox_fit = list(adj_cox_fit), pw_test = list(pw_test), ph_test = list(ph_test), formula))
   }
 
   baseline_fit = fit(data = data, baseline = TRUE)
@@ -81,7 +99,10 @@ cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
   x$survival[[tumor_type]][[gene]]$`cox_regression`$baseline = baseline_fit
   x$survival[[tumor_type]][[gene]]$`cox_regression`$incommon = incommon_fit
 
-  print(incommon_fit)
+  print("Cox fit with INCOMMON groups:")
+  print(incommon_fit$cox_fit[[1]])
+  print("Pairwise tests:")
+  print(incommon_fit$pw_test[[1]])
 
   return(x)
 }

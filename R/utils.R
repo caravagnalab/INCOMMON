@@ -332,10 +332,12 @@ prepare_km_fit_input = function(x, tumor_type, gene){
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
 
-forest_plot = function(x, baseline = FALSE){
+forest_plot = plot_forest = function(fit, gene, tumor_type, baseline){
 
-  if(is.null(x)) return(NULL)
-  s = summary(x)
+  fit$cox_fit[[1]]$call$formula = fit$formula
+
+  cox_fit = fit$cox_fit[[1]]
+  s = summary(cox_fit)
 
   x_limits = c(s$conf.int[,'lower .95'] %>% min(),
                s$conf.int[,'upper .95'] %>% max())
@@ -345,9 +347,9 @@ forest_plot = function(x, baseline = FALSE){
   what$p.value = s$coefficients[,ncol(s$coefficients)]
 
   reference_table =
-    lapply(names(x$xlevels), function(n) {
+    lapply(names(cox_fit$xlevels), function(n) {
       dplyr::tibble(
-        var = paste0(n, x$xlevels[n][[1]][1]),
+        var = paste0(n, cox_fit$xlevels[n][[1]][1]),
         value = 1,
         low = 1,
         up = 1,
@@ -355,21 +357,21 @@ forest_plot = function(x, baseline = FALSE){
       )
     }) %>% do.call(rbind, .)
 
-  leveled = sapply(names(x$xlevels), function(n){grep(n, what$var)}) %>% unlist()
+  leveled = sapply(names(cox_fit$xlevels), function(n){grep(n, what$var)}) %>% unlist() %>% unique()
   not_leveled = what$var[-leveled]
-
-  reference_table = rbind(
-    reference_table,
-    lapply(not_leveled, function(n) {
-      dplyr::tibble(
-        var = n,
-        value = 1,
-        low = 1,
-        up = 1,
-        p.value = NA
-      )
-    }) %>% do.call(rbind, .)
-  )
+  #
+  # reference_table = rbind(
+  #   reference_table,
+  #   lapply(not_leveled, function(n) {
+  #     dplyr::tibble(
+  #       var = n,
+  #       value = 1,
+  #       low = 1,
+  #       up = 1,
+  #       p.value = NA
+  #     )
+  #   }) %>% do.call(rbind, .)
+  # )
 
   toplot = dplyr::tibble(
     var = what$var,
@@ -383,44 +385,77 @@ forest_plot = function(x, baseline = FALSE){
   toplot = toplot %>%
     dplyr::mutate(var = dplyr::case_when(
       grepl('group', var) ~ gsub('group', '', var),
-      grepl('Sex', var, ignore.case = T) ~ gsub('Sex', 'Sex: ', var, ignore.case = T),
+      grepl('sex', var, ignore.case = T) ~ gsub('sex', 'sex: ', var, ignore.case = T),
+      grepl('AGE_AT_SEQUENCING', var, ignore.case = T) ~ gsub('AGE_AT_SEQUENCING', 'Age', var, ignore.case = T),
+      grepl('TMB_NONSYNONYMOUS', var, ignore.case = T) ~ gsub('TMB_NONSYNONYMOUS', 'TMB', var, ignore.case = T),
+      grepl('SAMPLE_TYPE', var, ignore.case = T) ~ gsub('SAMPLE_TYPE', 'Type: ', var, ignore.case = T),
+      grepl('^subtype', var, ignore.case = F) ~ gsub('subtype', 'Subtype: ', var, ignore.case = F),
+      grepl('patient', var, ignore.case = F) ~ gsub('patient', 'Patient: ', var, ignore.case = F),
       TRUE ~ var
     ))
 
-  if(baseline){
-    levels = c(
-      grep('WT', unique(x$xlevels$group), value = T),
-      grep('Mutant', unique(x$xlevels$group), value = T)
-    )
-  } else {
-    levels = c(
-      grep('WT', unique(x$xlevels$group), value = T),
-      grep('without', unique(x$xlevels$group), value = T),
-      grep('with ', unique(x$xlevels$group), value = T)
-    )
+  what = what %>%
+    dplyr::mutate(var = dplyr::case_when(
+      grepl('group', var) ~ gsub('group', '', var),
+      grepl('sex', var, ignore.case = T) ~ gsub('sex', 'sex: ', var, ignore.case = T),
+      grepl('AGE_AT_SEQUENCING', var, ignore.case = T) ~ gsub('AGE_AT_SEQUENCING', 'Age', var, ignore.case = T),
+      grepl('TMB_NONSYNONYMOUS', var, ignore.case = T) ~ gsub('TMB_NONSYNONYMOUS', 'TMB', var, ignore.case = T),
+      grepl('SAMPLE_TYPE', var, ignore.case = T) ~ gsub('SAMPLE_TYPE', 'Type: ', var, ignore.case = T),
+      grepl('^subtype', var, ignore.case = F) ~ gsub('subtype', 'Subtype: ', var, ignore.case = F),
+      grepl('patient', var, ignore.case = F) ~ gsub('patient', 'Patient: ', var, ignore.case = F),
+      TRUE ~ var
+    ))
+
+  levels = c(
+    grep('WT', unique(cox_fit$xlevels$group), value = T),
+    grep('Mutant', unique(cox_fit$xlevels$group), value = T),
+    grep('Low Dosage', unique(cox_fit$xlevels$group), value = T),
+    grep('Balanced Dosage', unique(cox_fit$xlevels$group), value = T),
+    grep('High Dosage', unique(cox_fit$xlevels$group), value = T)
+    # grep('LOH', unique(fit$xlevels$group), value = T),
+    # grep('HMD', unique(fit$xlevels$group), value = T)
+  )
+
+  # levels = c(levels, setdiff(toplot$var, levels) %>% sort())
+
+  if(any(grepl('sex', what$var))){
+    levels = c(levels, 'sex: Female', 'sex: Male')
   }
 
-
-  for(c in c(names(x$xlevels)[-1], not_leveled)){
-    levels = c(levels, grep(c, toplot$var, value = T, fixed = TRUE) %>% rev())
+  if(any(grepl('TMB', what$var))){
+    levels = c(levels, "TMB<= 10", "TMB> 10")
   }
+
+  if(any(grepl('Type', what$var))){
+    levels = c(levels, "Type: Primary", "Type: Metastasis")
+  }
+
+  levels = c(levels, setdiff(toplot$var, levels))
 
   levels = levels %>% unique()
 
   toplot = toplot %>%
     dplyr::mutate(var = factor(
       var,
-      levels = levels))
+      levels = levels)) %>%
+    mutate(p.value = ifelse(is.na(p.value), 1, p.value))
 
   toplot$var = factor(toplot$var, levels = levels(toplot$var) %>% rev())
 
   pp = toplot %>%
     dplyr::mutate(num_label = toplot$var %>% seq_along()) %>%
-    dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
+    # dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
+    # dplyr::mutate(num_label = ifelse((var %in% not_leveled) & value == 1, NA, num_label)) %>%
     dplyr::mutate(stripe = (num_label%%2==0)) %>%
+    dplyr::mutate(id = case_when(
+      value == 1 & low == 1 & up  == 1 ~ 'Reference',
+      p.value <= .05 ~ 'Significant',
+      TRUE ~ 'n.s.'
+    )) %>%
+    mutate(id = factor(id, levels = c('Reference', 'n.s.', 'Significant'))) %>%
     ggplot2::ggplot(ggplot2::aes(y = var, x = value))+
-    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
-    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
+    # ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
+    # ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
     ggplot2::geom_rect(ggplot2::aes(
       ymax = num_label + .5,
       ymin = num_label - .5,
@@ -430,15 +465,18 @@ forest_plot = function(x, baseline = FALSE){
     ), alpha = .4)+
     ggplot2::geom_vline(xintercept = 1, linetype = 'longdash', alpha = .5)+
     ggplot2::scale_fill_manual(values = c('gainsboro', 'white'))+
-    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
-    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
-    ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
+    ggplot2::geom_point(ggplot2::aes(color = id))+
+    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = id, width = .3))+
+    ggplot2::scale_color_manual(values = c('Significant' = 'indianred3', 'n.s.'='black', 'Reference' = 'darkgrey'))+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
     my_ggplot_theme(cex = .8)+
     ggplot2::ylab('')+
     ggplot2::xlab('Hazard Ratio')+
-    ggplot2::guides(fill = 'none')
+    ggplot2::guides(fill = 'none')+
+    ggplot2::xlim(0, max(toplot$up))+
+    ggplot2::labs(color = '')
   pp
+
 }
 
 # Palettes
@@ -476,14 +514,11 @@ scale_color_INCOMMON_class = function(aes = 'fill'){
 
 # INCOMMON survival groups
 
-surv_colors = function(gene_role, baseline = FALSE) {
+surv_colors = function(baseline = FALSE) {
 
   if(baseline)
   {out = c('gainsboro', 'steelblue')} else {
-    if(gene_role == 'TSG')
-      out = c('gainsboro', 'forestgreen','goldenrod1')
-    else
-      out = c('gainsboro', 'forestgreen','purple3')
+      out = c('gainsboro', 'pink2', 'forestgreen','purple3')
   }
   return(out)
 }

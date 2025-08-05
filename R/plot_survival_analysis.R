@@ -38,8 +38,8 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
     if(baseline){
       data = data %>%
         dplyr::mutate(group = dplyr::case_when(
-          grepl('WT', class) ~ class,
-          TRUE ~ strsplit(class, split = ' with')[[1]][1]
+          grepl('WT', class) ~ 'WT',
+          TRUE ~ "Mutant"
         ))
 
       data = data %>%
@@ -49,12 +49,20 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
                                        grep('Mutant', unique(data$group), value = T)
                                      )))
     } else {
+
+      data = data %>%
+        dplyr::mutate(group = dplyr::case_when(
+          grepl('WT', class) ~ 'WT',
+          TRUE ~ class
+        ))
+
       data = data %>%
         dplyr::mutate(group = factor(class,
                                      levels = c(
-                                       grep('WT', unique(data$class), value = T),
-                                       grep('Mutant', unique(data$class), value = T) %>% grep('without', ., value = T),
-                                       grep('Mutant', unique(data$class), value = T) %>% grep('without', ., invert = T, value = T)
+                                       "WT",
+                                       "Low Dosage",
+                                       "Balanced Dosage",
+                                       "High Dosage"
                                      )))
     }
 
@@ -71,12 +79,12 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
       risk.table.fontsize = 3,
       ggtheme = my_ggplot_theme(cex = .8),
       tables.theme = my_ggplot_theme(cex = .8),
-      risk.table.y.text = FALSE,
-      palette = surv_colors(unique(km_data$gene_role), baseline)
+      risk.table.y.text = TRUE,
+      palette = surv_colors(baseline)
     )
 
-    plot$plot$data$id = paste0(unique(km_data$gene), " (",unique(km_data$tumor_type),")")
-    plot$data.survplot$id = paste0(unique(km_data$gene), " (",unique(km_data$tumor_type),")")
+    plot$plot$data$id = paste0(gene, " (",tumor_type,")")
+    plot$data.survplot$id = paste0(gene, " (",tumor_type,")")
 
     plot$plot = plot$plot +
       ggplot2::xlab('') +
@@ -103,8 +111,8 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
   baseline_cox_fit = x$survival[[tumor_type]][[gene]]$`cox_regression`$baseline
   incommon_cox_fit = x$survival[[tumor_type]][[gene]]$`cox_regression`$incommon
 
-  baseline_forest_plot = forest_plot(baseline_cox_fit, baseline = TRUE)
-  incommon_forest_plot = forest_plot(incommon_cox_fit, baseline = FALSE)
+  baseline_forest_plot = forest_plot(fit = baseline_cox_fit, baseline = TRUE)
+  incommon_forest_plot = forest_plot(fit = incommon_cox_fit, baseline = FALSE)
 
   baseline_forest_plot$data = baseline_forest_plot$data %>%
     full_join(incommon_forest_plot$data %>%
@@ -121,8 +129,14 @@ plot_survival_analysis = function(x, tumor_type, gene, cox_covariates = c('age',
   levels = baseline_forest_plot$data$var %>% levels()
 
 
-  levels[(length(levels)-2):length(levels)] =
-    incommon_levels[(length(incommon_levels)-2):length(incommon_levels)]
+  wt_pos = grep('WT', levels)
+  mut_pos = grep('Mutant', levels)
+
+  levels[wt_pos] = 'Mutant'
+  levels[mut_pos] = 'WT'
+
+  levels[grep("WT|Mutant|High Dosage|Balanced Dosage|Low Dosage", levels)] =
+    levels[grep("WT|Mutant|High Dosage|Balanced Dosage|Low Dosage", levels)] %>% rev()
 
   baseline_forest_plot$data$var = factor(baseline_forest_plot$data$var, levels = levels)
   incommon_forest_plot$data$var = factor(incommon_forest_plot$data$var, levels = levels)
