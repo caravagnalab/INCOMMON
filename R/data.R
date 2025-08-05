@@ -50,6 +50,30 @@
 #' priors_pcawg_hmf
 "priors_pcawg_hmf"
 
+#' Priors over the rate of reads per chromosome copy from MSK-MET
+#' @docType data
+#'
+#' @usage data(priors_eta)
+#'
+#' @description Prior distribution of copy number and mutation multiplicity from PCAWG.
+#'
+#' @format A data frame with 12 rows and 6 columns:
+#' \describe{
+#'   \item{gene}{Name of the gene (Hugo Symbol).}
+#'   \item{tumor_type}{Tumor type.}
+#'   \item{mean_eta}{Mean of the distribution}
+#'   \item{var_eta}{Variance of the distribution}
+#'   \item{N}{Total number of samples}
+#'   \item{alpha_eta}{Shape parameter alpha of the distribution}
+#'   \item{beta_eta}{Shape parameter beta of the distribution}
+#' }
+#' @source Validated copy number calls from PCAWG: https://doi.org/10.5281/zenodo.6410935
+#' @examples
+#' data(priors_eta)
+#' priors_eta
+"priors_eta"
+
+
 #' Gene roles from COSMIC Cancer Gene Census
 #' @docType data
 #'
