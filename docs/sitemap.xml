@@ -1,147 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/404.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/Classify_Mutations.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/INCOMMON.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a1_classify_mutations.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a1_pcawg_priors.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a2_classify_mutations.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a2_survival_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a3_genome_interpreter.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a3_metastasis_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/classify-and-plot.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/metastasis_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/articles/survival_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/authors.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/index.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/MSK_clinical_data.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/MSK_genomic_data.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/cancer_gene_census.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/classification.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/classify.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/compute_likelihood.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/compute_posterior.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/cox_fit.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/data_MSK.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/estimate_purity.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/example_data.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/genome_interpreter.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/init.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/met_propensity.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/met_tropism.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/parameters.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/pcawg_priors.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_class_fraction.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_met_volcano.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_prior.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_survival_analysis.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_tapacloth.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/plot_tropism.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/posterior.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/print.INCOMMON.html</loc>
-  </url>
-  <url>
-    <loc>caravagnalab.github.io/INCOMMON/reference/priors.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>caravagnalab.github.io/INCOMMON/404.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/LICENSE-text.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/LICENSE.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/Classify_Mutations.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/INCOMMON.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a1_classify_mutations.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a1_pcawg_priors.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a1_priors_k_m.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a2_classify_mutations.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a2_survival_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a3_genome_interpreter.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a3_metastasis_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a3_mutant_dosage.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/classify-and-plot.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/index.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/metastasis_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/articles/survival_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/authors.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/index.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/MSK_PAAD_output.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/MSK_clinical_data.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/MSK_genomic_data.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/cancer_gene_census.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/classification.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/classify.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/compute_eta_prior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/compute_likelihood.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/compute_posterior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/cox_fit.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/data_MSK.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/estimate_purity.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/example_data.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/genome_interpreter.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/index.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/init.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/met_propensity.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/met_tropism.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/mutant_dosage_classification.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/parameters.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/pcawg_priors.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_class_fraction.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_classification.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_eta_prior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_met_volcano.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_posterior_k_m.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_prior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_purity_prior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_survival_analysis.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_tapacloth.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/plot_tropism.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/posterior.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/print.INCOMMON.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/priors.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/priors_eta.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/priors_k_m.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/priors_pcawg_hmf.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/show_FAM.html</loc></url>
+<url><loc>caravagnalab.github.io/INCOMMON/reference/subset_sample.html</loc></url>
 </urlset>
+

@@ -8,41 +8,45 @@ reference:
   contents:
   - MSK_genomic_data
   - MSK_clinical_data
-  - pcawg_priors
+  - priors_pcawg_hmf
+  - priors_eta
   - cancer_gene_census
-  - MSK_classified
+  - MSK_PAAD_output
 
 - title: INCOMMON classification
   desc:  Main functions to classify mutations
   contents:
+  - compute_eta_prior
+  - priors_k_m
+  - subset_sample
   - init
   - classify
 
 - title: Visualisation
   desc: Functions to plot INCOMMON classification results
   contents:
-  - plot_classification
   - print.INCOMMON
-  - plot_class_fraction
   - plot_prior
+  - plot_eta_prior
+  - plot_purity_prior
+  - plot_posterior_k_m
+  - plot_class_fraction
+  - plot_posterior_k_m
+  - plot_survival_analysis
   - plot_met_volcano
   - plot_tropism
 
 - title: Getter Functions
   desc:  Functions to extract model information
   contents:
-  - classification
   - parameters
-  - priors
-  - posterior
+  - show_FAM
 
 
 - title: INCOMMON Model
   desc: Functions to compute model likelihood and posterior distributions
   contents:
-  - compute_likelihood
-  - compute_posterior
-  - genome_interpreter
+  - mutant_dosage_classification
 
 - title: Survival analysis with INCOMMON classes
   desc: Functions to perform survival analysis with patient stratificaiton based on INCOMMON classes
