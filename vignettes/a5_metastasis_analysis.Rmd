@@ -17,63 +17,12 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(dplyr)
 library(INCOMMON)
+library(cli)
 ```
 
-In this vignette we carry out survival analysis based on INCOMMON classification of samples of breast cancer (BRCA) patients of the MSK-MetTropsim cohort.
+In this vignette we carry out survival analysis based on INCOMMON classification of samples of pancreatic cancer (PAAD) patients of the MSK-MetTropsim cohort.
 
-## 5.1 Classification of 2462 breast cancer samples
-
-In order to study patterns of metastatisation (propensity and organotropism) related to the INCOMMON interpreted genomes, we first need to classify all the mutations in these samples.
-
-### 5.1.1 Input intialisation
-
-First we prepare the input using function `init`:
-
-```{r}
-data(MSK_genomic_data)
-data(MSK_clinical_data)
-data(cancer_gene_census)
-
-x = init(
-  genomic_data = MSK_genomic_data,
-  clinical_data = MSK_clinical_data %>% filter(tumor_type == 'BRCA'),
-  gene_roles = cancer_gene_census
-)
-
-print(x)
-```
-
-There are 9916 mutations with average sequencing depth 681 
-across 2462 samples with average purity 0.42.
-
-### 5.1.2 Classification
-
-We then classify the mutations using PCAWG priors and the default entropy cutoff and
-overdispersion parameter:
-
-
-```{r, message=FALSE}
-x = classify(
-  x = x,
-  priors = INCOMMON::pcawg_priors,
-  entropy_cutoff = 0.2,
-  rho = 0.01
-  # parallel = TRUE, # uncomment these to run in parallel
-  # num_cores = 8
-)
-```
-
-```{r}
-print(x)
-```
-
-There are 4147 heterozygous diploid mutations (HMD), 578 mutations with loss of 
-heterozygosity (LOH), 2018 mutations with copy-neutral LOH (CNLOH), 663 mutations
-with amplification. In addition, 2510 mutations were classified as Tier-2, either 
-because of entropy being larger than cutoff or because of a low number of mutant
-alleles relative to the wild-type.
-
-## 5.2 Metastatic propensity of BRCA samples
+## 5.2 Metastatic propensity of PAAD samples
 
 ### 5.2.1 Metastatic propensity of fully incactivated TP53
 
@@ -84,7 +33,8 @@ metastasis based on the interpreted mutant genome, with the mutant gene without
 CNA (here, Mutant TP53 without LOH) as reference.
 
 ```{r}
-x = met_propensity(x, tumor_type = 'BRCA', gene = 'TP53')
+data("MSK_PAAD_output")
+MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
 ```
 
 From this analysis it emerges that Mutant TP53 with LOH patients have more than 150% increased risk to metastatise
