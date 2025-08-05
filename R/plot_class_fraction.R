@@ -9,10 +9,11 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Plot class fraction for a specific gene and tumour type
-#' plot_class_fraction(x = MSK_classified, tumor_type = 'LUAD', gene = 'KRAS')
-#' @importFrom dplyr filter mutate rename select %>%
+#' MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
+#' plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS')
+#' @importFrom dplyr filter mutate rename select group_by reframe ungroup arrange desc %>%
 #' @importFrom patchwork wrap_plots
 plot_class_fraction = function(x, tumor_type = NULL, gene = NULL, ...){
 
@@ -26,7 +27,7 @@ plot_class_fraction = function(x, tumor_type = NULL, gene = NULL, ...){
         class = factor(class, levels = c('Low Dosage', 'Balanced Dosage', 'High Dosage') %>% rev()),
         SAMPLE_TYPE = factor(SAMPLE_TYPE, levels = c('Primary', 'Metastasis'))) %>%
       dplyr::group_by(SAMPLE_TYPE) %>%
-      arrange(desc(class), .by_group = T) %>%
+      dplyr::arrange(dplyr::desc(class), .by_group = T) %>%
       dplyr::mutate(z = cumsum(n)-.5*n) %>%
       dplyr::ungroup() %>%
       ggplot2::ggplot()+

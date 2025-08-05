@@ -36,15 +36,14 @@ tumor_type = function(x, id){
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Get classification parameters
-#' parameters(MSK_classified)
+#' parameters(MSK_PAAD_output)
 #' @importFrom dplyr filter mutate rename select %>%
 parameters = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("parameters" %in% names(x$classification))
-  x$classification$parameters
+  stopifnot("parameters" %in% names(x))
+  x$parameters
 }
 
 
@@ -56,15 +55,14 @@ parameters = function(x) {
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Get priors used in classification
-#' priors(MSK_classified)
+#' priors_k_m(MSK_PAAD_output)
 #' @importFrom dplyr filter mutate rename select %>%
 priors_k_m = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("priors_m_k" %in% names(x$classification))
-  x$classification$priors_m_k
+  stopifnot("priors_k_m" %in% names(x))
+  x$priors_k_m
 }
 
 get_categroical_posterior = function(x, id) {
@@ -192,7 +190,7 @@ get_prior = function(x, gene, tumor_type, silent = FALSE){
 
 mutant_samples = function(x, tumor_type, gene) {
   stopifnot(inherits(x, 'INCOMMON'))
-  classification(x) %>%
+  input(x) %>%
     dplyr::filter(tumor_type == !!tumor_type,
                   gene == !!gene) %>%
     dplyr::group_by(sample) %>%
@@ -208,7 +206,7 @@ mutant_samples = function(x, tumor_type, gene) {
 
 wt_samples = function(x, tumor_type, gene) {
   stopifnot(inherits(x, 'INCOMMON'))
-  classification(x) %>%
+  input(x) %>%
     dplyr::filter(tumor_type == !!tumor_type) %>%
     dplyr::filter(!grepl(!!gene, genotype)) %>%
     dplyr::group_by(sample) %>%
@@ -257,98 +255,6 @@ check_input = function(x){
 }
 
 # 3. FORMAT EDITING
-
-# Genome interpreter
-#' This function returns, for each mutation, an interpreted state
-#' depending on the mutant gene role and its copy-number and multiplicity, among
-#' Mutant TSG with or without LOH, and Mutant oncogene with or without amplification.
-#' In addition, it assigns an interpreted genome to each sample
-#' by integrating the interpreted state of each mutant gene in the sample.
-#'
-#' @param x An object of class \code{'INCOMMON'} containing the classification results, as
-#' produced by  function `classify`.
-#' @return An object or a list of class \code{INCOMMON} with additional columns
-#' in `classification`.
-#' @export
-#' @examples
-#' # First load example classified data
-#' data(MSK_classified)
-#' # Note the outputs to screen
-#' genome_interpreter(MSK_classified)
-#' @importFrom dplyr filter mutate rename select %>%
-
-# genome_interpreter = function(x){
-#   stopifnot(inherits(x, 'INCOMMON'))
-#   x$classification$fit = x$classification$fit %>%
-#     dplyr::mutate(map_k = as.integer(gsub('k=', '', map_k))) %>%
-#     dplyr::mutate(
-#       class = dplyr::case_when(
-#         gene_role == "TSG" & map_class == 'm=k' ~ paste0("Mutant ", gene, " with LOH"),
-#         # gene_role == "oncogene" & (map_class == '1<m<k' | (map_class == 'm=k' & map_k > 1)) ~ paste0("Mutant ", gene, " with AMP"),
-#         gene_role == "oncogene" & (map_class == '1<m<k' | map_class == 'm=k') ~ paste0("Mutant ", gene, " with AMP"),
-#         gene_role == "TSG" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without LOH"),
-#         gene_role == "oncogene" &  map_class == "m=1" ~ paste0("Mutant ", gene, " without AMP"),
-#         TRUE ~ paste0(paste0(gene, " Tier-2"))
-#       )
-#     ) %>% dplyr::group_by(sample) %>%
-#     dplyr::reframe(genotype = paste(class, collapse = ','), dplyr::across(dplyr::everything()))
-#
-#   genotype_table = classification(x) %>%
-#     dplyr::group_by(genotype) %>%
-#     dplyr::reframe(N = length(unique(sample))) %>%
-#     dplyr::arrange(dplyr::desc(N)) %>%
-#     dplyr::mutate(frequency = N/sum(N))
-#
-#   cli::cli_alert_info('There are {.field {nrow(genotype_table)}} different genotypes')
-#   cli::cli_alert_info('The most abundant genotypes are:')
-#   for(i in 1:3){
-#     cli::cli_bullets(c('*' = paste(genotype_table[i,]$genotype,
-#                                    paste0("(",genotype_table[i,]$N, " Samples, "),
-#                                    paste0("Frequency ",round(genotype_table[i,]$frequency, 2), ")")
-#     )
-#     )
-#     )
-#   }
-#
-#   return(x)
-# }
-genome_intepreter = function(x, level = 'high'){
-  if(level == 'low'){
-    classification = lapply(1:nrow(x), function(i){
-      x[i,]$z_km[[1]] %>%
-        dplyr::mutate(
-          map_class = dplyr::case_when(
-            k == 1 & k == m ~ 'LOH',
-            k > 1 & k == m ~ 'CNLOH',
-            k > 2 & m > 1 ~ 'AMP',
-            k == 2 & m == 1 ~ 'HMD',
-            k > 2 & m == 1 ~ 'Tier-2'
-          )) %>%
-        dplyr::group_by(map_class) %>%
-        dplyr::reframe(z_class = sum(z_km)) %>%
-        dplyr::arrange(dplyr::desc(z_class)) %>%
-        dplyr::slice_head(n = 1)
-    }) %>% do.call(rbind, .)
-  } else if(level == 'high'){
-    classification = lapply(1:nrow(x), function(i){
-      x[i,]$z_km[[1]] %>%
-        dplyr::mutate(
-          map_class = dplyr::case_when(
-            (m / k) <= .5 ~ 'NSA',
-            (m / k) > .5 & (m / k) < .8  ~ 'AMP',
-            (m / k) >= .8 ~ 'LOH'
-          )) %>%
-        dplyr::group_by(map_class) %>%
-        dplyr::reframe(z_class = sum(z_km)) %>%
-        dplyr::arrange(dplyr::desc(z_class)) %>%
-        dplyr::slice_head(n = 1)
-    }) %>% do.call(rbind, .)
-  }
-  if('map_class' %in% colnames(x)) x = x %>% select(-c(map_class, z_class))
-
-  x %>%
-    dplyr::bind_cols(classification)
-}
 
 reduce_classes = function(x) {
   if(!('state' %in% colnames(x))){
@@ -424,10 +330,12 @@ prepare_km_fit_input = function(x, tumor_type, gene){
     dplyr::select('sample', 'tumor_type', 'gene', 'gene_role', dplyr::everything())
 }
 
-forest_plot = function(x, baseline = FALSE){
+forest_plot = plot_forest = function(fit, gene, tumor_type, baseline){
 
-  if(is.null(x)) return(NULL)
-  s = summary(x)
+  fit$cox_fit[[1]]$call$formula = fit$formula
+
+  cox_fit = fit$cox_fit[[1]]
+  s = summary(cox_fit)
 
   x_limits = c(s$conf.int[,'lower .95'] %>% min(),
                s$conf.int[,'upper .95'] %>% max())
@@ -437,9 +345,9 @@ forest_plot = function(x, baseline = FALSE){
   what$p.value = s$coefficients[,ncol(s$coefficients)]
 
   reference_table =
-    lapply(names(x$xlevels), function(n) {
+    lapply(names(cox_fit$xlevels), function(n) {
       dplyr::tibble(
-        var = paste0(n, x$xlevels[n][[1]][1]),
+        var = paste0(n, cox_fit$xlevels[n][[1]][1]),
         value = 1,
         low = 1,
         up = 1,
@@ -447,21 +355,21 @@ forest_plot = function(x, baseline = FALSE){
       )
     }) %>% do.call(rbind, .)
 
-  leveled = sapply(names(x$xlevels), function(n){grep(n, what$var)}) %>% unlist()
+  leveled = sapply(names(cox_fit$xlevels), function(n){grep(n, what$var)}) %>% unlist() %>% unique()
   not_leveled = what$var[-leveled]
-
-  reference_table = rbind(
-    reference_table,
-    lapply(not_leveled, function(n) {
-      dplyr::tibble(
-        var = n,
-        value = 1,
-        low = 1,
-        up = 1,
-        p.value = NA
-      )
-    }) %>% do.call(rbind, .)
-  )
+  #
+  # reference_table = rbind(
+  #   reference_table,
+  #   lapply(not_leveled, function(n) {
+  #     dplyr::tibble(
+  #       var = n,
+  #       value = 1,
+  #       low = 1,
+  #       up = 1,
+  #       p.value = NA
+  #     )
+  #   }) %>% do.call(rbind, .)
+  # )
 
   toplot = dplyr::tibble(
     var = what$var,
@@ -475,44 +383,77 @@ forest_plot = function(x, baseline = FALSE){
   toplot = toplot %>%
     dplyr::mutate(var = dplyr::case_when(
       grepl('group', var) ~ gsub('group', '', var),
-      grepl('Sex', var, ignore.case = T) ~ gsub('Sex', 'Sex: ', var, ignore.case = T),
+      grepl('sex', var, ignore.case = T) ~ gsub('sex', 'sex: ', var, ignore.case = T),
+      grepl('AGE_AT_SEQUENCING', var, ignore.case = T) ~ gsub('AGE_AT_SEQUENCING', 'Age', var, ignore.case = T),
+      grepl('TMB_NONSYNONYMOUS', var, ignore.case = T) ~ gsub('TMB_NONSYNONYMOUS', 'TMB', var, ignore.case = T),
+      grepl('SAMPLE_TYPE', var, ignore.case = T) ~ gsub('SAMPLE_TYPE', 'Type: ', var, ignore.case = T),
+      grepl('^subtype', var, ignore.case = F) ~ gsub('subtype', 'Subtype: ', var, ignore.case = F),
+      grepl('patient', var, ignore.case = F) ~ gsub('patient', 'Patient: ', var, ignore.case = F),
       TRUE ~ var
     ))
 
-  if(baseline){
-    levels = c(
-      grep('WT', unique(x$xlevels$group), value = T),
-      grep('Mutant', unique(x$xlevels$group), value = T)
-    )
-  } else {
-    levels = c(
-      grep('WT', unique(x$xlevels$group), value = T),
-      grep('without', unique(x$xlevels$group), value = T),
-      grep('with ', unique(x$xlevels$group), value = T)
-    )
+  what = what %>%
+    dplyr::mutate(var = dplyr::case_when(
+      grepl('group', var) ~ gsub('group', '', var),
+      grepl('sex', var, ignore.case = T) ~ gsub('sex', 'sex: ', var, ignore.case = T),
+      grepl('AGE_AT_SEQUENCING', var, ignore.case = T) ~ gsub('AGE_AT_SEQUENCING', 'Age', var, ignore.case = T),
+      grepl('TMB_NONSYNONYMOUS', var, ignore.case = T) ~ gsub('TMB_NONSYNONYMOUS', 'TMB', var, ignore.case = T),
+      grepl('SAMPLE_TYPE', var, ignore.case = T) ~ gsub('SAMPLE_TYPE', 'Type: ', var, ignore.case = T),
+      grepl('^subtype', var, ignore.case = F) ~ gsub('subtype', 'Subtype: ', var, ignore.case = F),
+      grepl('patient', var, ignore.case = F) ~ gsub('patient', 'Patient: ', var, ignore.case = F),
+      TRUE ~ var
+    ))
+
+  levels = c(
+    grep('WT', unique(cox_fit$xlevels$group), value = T),
+    grep('Mutant', unique(cox_fit$xlevels$group), value = T),
+    grep('Low Dosage', unique(cox_fit$xlevels$group), value = T),
+    grep('Balanced Dosage', unique(cox_fit$xlevels$group), value = T),
+    grep('High Dosage', unique(cox_fit$xlevels$group), value = T)
+    # grep('LOH', unique(fit$xlevels$group), value = T),
+    # grep('HMD', unique(fit$xlevels$group), value = T)
+  )
+
+  # levels = c(levels, setdiff(toplot$var, levels) %>% sort())
+
+  if(any(grepl('sex', what$var))){
+    levels = c(levels, 'sex: Female', 'sex: Male')
   }
 
-
-  for(c in c(names(x$xlevels)[-1], not_leveled)){
-    levels = c(levels, grep(c, toplot$var, value = T, fixed = TRUE) %>% rev())
+  if(any(grepl('TMB', what$var))){
+    levels = c(levels, "TMB<= 10", "TMB> 10")
   }
+
+  if(any(grepl('Type', what$var))){
+    levels = c(levels, "Type: Primary", "Type: Metastasis")
+  }
+
+  levels = c(levels, setdiff(toplot$var, levels))
 
   levels = levels %>% unique()
 
   toplot = toplot %>%
     dplyr::mutate(var = factor(
       var,
-      levels = levels))
+      levels = levels)) %>%
+    mutate(p.value = ifelse(is.na(p.value), 1, p.value))
 
   toplot$var = factor(toplot$var, levels = levels(toplot$var) %>% rev())
 
   pp = toplot %>%
     dplyr::mutate(num_label = toplot$var %>% seq_along()) %>%
-    dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
+    # dplyr::mutate(num_label = ifelse(var %in% not_leveled & is.na(p.value), NA, num_label)) %>%
+    # dplyr::mutate(num_label = ifelse((var %in% not_leveled) & value == 1, NA, num_label)) %>%
     dplyr::mutate(stripe = (num_label%%2==0)) %>%
+    dplyr::mutate(id = case_when(
+      value == 1 & low == 1 & up  == 1 ~ 'Reference',
+      p.value <= .05 ~ 'Significant',
+      TRUE ~ 'n.s.'
+    )) %>%
+    mutate(id = factor(id, levels = c('Reference', 'n.s.', 'Significant'))) %>%
     ggplot2::ggplot(ggplot2::aes(y = var, x = value))+
-    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
-    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
+    # ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
+    # ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .5)+
     ggplot2::geom_rect(ggplot2::aes(
       ymax = num_label + .5,
       ymin = num_label - .5,
@@ -522,15 +463,18 @@ forest_plot = function(x, baseline = FALSE){
     ), alpha = .4)+
     ggplot2::geom_vline(xintercept = 1, linetype = 'longdash', alpha = .5)+
     ggplot2::scale_fill_manual(values = c('gainsboro', 'white'))+
-    ggplot2::geom_point(ggplot2::aes(color = p.value <= .05))+
-    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = p.value <= .05), width = .1)+
-    ggplot2::scale_color_manual(values = c('indianred3','black') %>% rev())+
+    ggplot2::geom_point(ggplot2::aes(color = id))+
+    ggplot2::geom_errorbar(ggplot2::aes(xmin = low, xmax = up, color = id, width = .3))+
+    ggplot2::scale_color_manual(values = c('Significant' = 'indianred3', 'n.s.'='black', 'Reference' = 'darkgrey'))+
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n=3), limits = x_limits)+
     my_ggplot_theme(cex = .8)+
     ggplot2::ylab('')+
     ggplot2::xlab('Hazard Ratio')+
-    ggplot2::guides(fill = 'none')
+    ggplot2::guides(fill = 'none')+
+    ggplot2::xlim(0, max(toplot$up))+
+    ggplot2::labs(color = '')
   pp
+
 }
 
 # Palettes
@@ -568,14 +512,11 @@ scale_color_INCOMMON_class = function(aes = 'fill'){
 
 # INCOMMON survival groups
 
-surv_colors = function(gene_role, baseline = FALSE) {
+surv_colors = function(baseline = FALSE) {
 
   if(baseline)
   {out = c('gainsboro', 'steelblue')} else {
-    if(gene_role == 'TSG')
-      out = c('gainsboro', 'forestgreen','goldenrod1')
-    else
-      out = c('gainsboro', 'forestgreen','purple3')
+      out = c('gainsboro', 'pink2', 'forestgreen','purple3')
   }
   return(out)
 }
@@ -584,8 +525,7 @@ surv_colors = function(gene_role, baseline = FALSE) {
 
 # INCOMMON state coloring
 scale_color_INCOMMON_high_level_class = function(aes = 'fill'){
-  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1',
-                   'with AMP' = 'purple3', 'Tier-2' = 'gainsboro', 'ns' = 'gainsboro')
+  class_colors = c('Low Dosage' = 'pink2','Balanced Dosage' = 'forestgreen', 'High Dosage' = 'purple3', 'WT' = 'gainsboro', 'ns' = 'gainsboro')
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = class_colors)
   } else {

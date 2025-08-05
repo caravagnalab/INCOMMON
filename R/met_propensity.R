@@ -8,9 +8,9 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
+#' data(MSK_PAAD_output)
 #' # Estimate the metastatic propensity associated with mutant TP53 with vs without CNA in BRCA.
-#' MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = 'TP53')
+#' MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'BRCA', gene = 'TP53')
 #' @importFrom dplyr filter mutate rename select %>% as_tibble
 #' @importFrom survival Surv survfit
 #' @importFrom stats glm binomial confint
@@ -18,12 +18,11 @@
 
 met_propensity = function(x, gene, tumor_type){
   stopifnot(inherits(x, 'INCOMMON'))
-  if(!("genotype" %in% (classification(x) %>% names()))) x = genome_interpreter(x)
+  if(!("genotype" %in% (input(x) %>% names()))) x = mutant_dosage_classification(x)
 
-  data = classification(x) %>%
+  data = input(x) %>%
     dplyr::filter(tumor_type == !!tumor_type,
                   gene == !!gene) %>%
-    dplyr::filter(!grepl('Tier-2', class)) %>%
     dplyr::group_by(sample) %>%
     dplyr::slice_head(n = 1) %>%
     dplyr::reframe(class = unique(class)) %>%
@@ -41,7 +40,7 @@ met_propensity = function(x, gene, tumor_type){
 
   data = data %>%
     dplyr::mutate(class = factor(class)) %>%
-    dplyr::mutate(class = stats::relevel(class, ref = grep('without', unique(data$class), value = T)))
+    dplyr::mutate(class = stats::relevel(class, ref = grep('Balanced', unique(data$class), value = T)))
 
 
   model = stats::glm(data = data, metastatic ~ class, family = stats::binomial(link = 'logit'))

@@ -8,11 +8,11 @@
 #' @export
 #' @examples
 #' # First load example classified data
-#' data(MSK_classified)
-#' # Estimate the metastatic propensity associated with mutant TP53, PIK3CA and CDH1 with vs without CNA in BRCA.
-#' for(g in c('TP53', 'PIK3CA', 'CDH1')){MSK_classified = met_propensity(x = MSK_classified, tumor_type = 'BRCA', gene = g)}
+#' data(MSK_PAAD_output)
+#' # Estimate the metastatic propensity associated with mutant KRAS and CDKN2A high vs balanced dosage.
+#' for(g in c('KRAS', 'CDKN2A')){MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = g)}
 #' # Plot results in a volcano plot
-#' plot_met_volcano(x = MSK_classified, tumor_type = 'BRCA')
+#' plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom ggrepel geom_label_repel
 
@@ -35,10 +35,7 @@ plot_met_volcano = function(x, tumor_type){
 toplot = toplot %>%
   dplyr::mutate(
     prevalent = dplyr::case_when(
-      OR >= 1 & p.value <= .05 & grepl('LOH', class) ~ 'with LOH',
-      OR >= 1 & p.value <= .05 & grepl('AMP', class) ~ 'with AMP',
-      OR < 1 & p.value <= .05 & grepl('LOH', class) ~ 'without LOH',
-      OR < 1 & p.value <= .05 & grepl('AMP', class) ~ 'without LOH',
+      p.value <= .05 ~ class,
       TRUE ~ 'ns'
     )
   )
@@ -60,8 +57,9 @@ toplot %>%
   my_ggplot_theme(cex = .8)+
   ggplot2::xlab('Odds Ratio (log2)')+
   ggplot2::ylab('P-value (-log10)')+
-  ggplot2::guides(fill = ggplot2::guide_legend(title = 'Tumor Type',
-                                               override.aes = list(color=NA)
-                                               ),
-                  color = ggplot2::guide_legend(title = 'INCOMMON class'))
+  ggplot2::guides(
+    fill = ggplot2::guide_legend(title = 'Tumor Type',
+                                 override.aes = list(color=NA)),
+    color = ggplot2::guide_legend(title = 'INCOMMON class')
+    )
 }

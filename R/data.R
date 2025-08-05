@@ -28,25 +28,27 @@
 #' MSK_clinical_data
 "MSK_clinical_data"
 
-#' Priors from PCAWG
+#' Priors over (k,m) configurations from PCAWG and HMF
 #' @docType data
 #'
-#' @usage data(pcawg_priors)
+#' @usage data(priors_pcawg_hmf)
 #'
 #' @description Prior distribution of copy number and mutation multiplicity from PCAWG.
 #'
-#' @format A data frame with 4466 rows and 4 columns:
+#' @format A data frame with 26,280 rows and 6 columns:
 #' \describe{
 #'   \item{gene}{Name of the gene (Hugo Symbol).}
 #'   \item{tumor_type}{Tumor type.}
-#'   \item{label}{INCOMMON class (<total number of copies>N (Mutated: <mutation multiplicity>N)).}
-#'   \item{p}{Gene and tumor type specific prior probability.}
+#'   \item{k}{Total copy number}
+#'   \item{m}{Mutation multiplicity}
+#'   \item{N}{Total number of samples}
+#'   \item{n}{Number of samples per (k,m) configuration}
 #' }
 #' @source Validated copy number calls from PCAWG: https://doi.org/10.5281/zenodo.6410935
 #' @examples
-#' data(pcawg_priors)
-#' pcawg_priors
-"pcawg_priors"
+#' data(priors_pcawg_hmf)
+#' priors_pcawg_hmf
+"priors_pcawg_hmf"
 
 #' Gene roles from COSMIC Cancer Gene Census
 #' @docType data
@@ -73,12 +75,12 @@
 #'
 #' @description This is an INCOMMON object resulting from the classification of all the example data.
 #'
-#' @usage data(MSK_classified)
+#' @usage data(MSK_PAAD_output)
 #'
 #' @format An INCOMMON object with genomics, clinical data and classification results.
 #'
 #' @source "msk_classified_with_priors.rds" at Zenodo https://zenodo.org/records/10927218
 #' @examples
-#' data(MSK_classified)
-#' MSK_classified
-"MSK_classified"
+#' data(MSK_PAAD_output)
+#' MSK_PAAD_output
+"MSK_PAAD_output"

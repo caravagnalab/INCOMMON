@@ -17,7 +17,7 @@ Get model priors used for classification.
 }
 \examples{
 # First load example classified data
-data(MSK_classified)
+data(MSK_PAAD_output)
 # Get priors used in classification
-priors(MSK_classified)
+priors_k_m(MSK_PAAD_output)
 }

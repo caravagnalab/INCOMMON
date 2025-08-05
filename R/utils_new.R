@@ -191,35 +191,29 @@ samples = function(x){
 }
 
 # Subset object by sample
-
+#' Subset an INCOMMON object by sample ID.
+#'
+#' @param x An object of class \code{'INCOMMON'} generated with function `init`.
+#' @param sample_list a list of identifiers for the samples to be subsetted
+#' @return An object of class `INCOMMON` containing a subset of the original input.
+#' @export
+#' @examples
+#' # First load example data
+#' data(MSK_PAAD_output)
+#' x = subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142"))
+#' print(x)
+#' @importFrom dplyr filter mutate rename select everything %>%
 subset_sample = function(x, sample_list){
   stopifnot(inherits(x, 'INCOMMON'))
   samples = unique(x$input$sample)
-  stopifnot(length(intersect(samples(x), sample_list))>0)
-  gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
-  cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
-  ip = x$input %>% dplyr::filter(sample %in% sample_list)
-  out = list(genomic_data = gd,
-             clinical_data = cd,
-             input = ip)
-  class(out) = 'INCOMMON'
-  if('classification' %in% names(x)) {
-    if(length(intersect(names(x$classification$fit), sample_list))>0){
-      cl = x$classification$fit[sample_list]
-      pm = x$classification$parameters
-      priors_k_m = x$classification$priors_k_m
-      priors_x = x$classification$priors_x
+  stopifnot(length(dplyr::intersect(samples(x), sample_list))>0)
+  # gd = genomic_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  # cd = clinical_data(x, PASS = FALSE) %>% dplyr::filter(sample %in% sample_list)
+  x$input = x$input %>% dplyr::filter(sample %in% sample_list)
 
-
-      out$classification$fit = cl
-      out$classification$parameters = pm
-      out$classification$priors_k_m = priors_k_m
-      out$classification$priors_x = priors_x
-
-    }
+  return(x)
   }
-  return(out)
-}
+
 
 my_ggplot_theme = function(cex = 1)
 {
@@ -539,9 +533,9 @@ plot_priors_k = function(x, sample, k_max){
     my_ggplot_theme()
 }
 
-plot_prior_k_m = function(priors_k_m, x, k_max){
+plot_prior_k_m = function(priors_pcawg_hmf, x, k_max){
 
-  what = get_sample_priors(x = x, priors = priors_k_m, k_max = k_max)
+  what = get_sample_priors(x = x, priors = priors_pcawg_hmf, k_max = k_max)
 
   inp = input(x)
   what$gene = lapply(1:nrow(inp), function(i){
@@ -567,42 +561,6 @@ plot_prior_k_m = function(priors_k_m, x, k_max){
     )+
     ggplot2::labs(
       x = "Total CN (k)", y = "Multiplicity (m)", fill = "Prior Probability (log10)") +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
-}
-
-plot_posterior_k_m = function(x, k_max, z_km){
-  # x = subset_sample(x = x, sample_list = sample)
-  inp = input(x)
-  M = inp %>% nrow()
-
-  toplot = lapply(1:M, function(i){
-    output = z_km[[i]]
-    output$id = paste(inp[i,]$gene, inp[i,]$NV, sep = ":")
-    output
-    }) %>% do.call(rbind, .)
-
-  toplot %>% ggplot2::ggplot(ggplot2::aes(
-    x = factor(k),
-    y = factor(m),
-    fill = log10(z_km)
-  )) +
-    ggplot2::geom_tile() +
-    ggplot2::geom_point(
-      data = toplot %>% dplyr::group_by(id) %>% dplyr::arrange(dplyr::desc(z_km)) %>% dplyr::slice_head(n=1),
-      fill = 'firebrick',
-      shape = 21,
-      stroke = 0
-      )+
-    ggplot2::scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
-    ggplot2::scale_x_discrete(breaks = scales::pretty_breaks(n=3))+
-    ggplot2::scale_y_discrete(breaks = scales::pretty_breaks(n=3))+
-    ggh4x::facet_nested_wrap( ~ id, ncol = 1, strip.position = 'left') +
-    my_ggplot_theme() +
-    ggplot2::theme(
-      strip.text.y.left = ggplot2::element_text(angle = 0, margin = ggplot2::margin()),
-    )+
-    ggplot2::labs(
-      x = "Total CN (k)", y = "Multiplicity (m)", fill = "Posterior Probability (log10)") +
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
 }
 
@@ -671,6 +629,19 @@ compute_expectations = function(x){
 
 }
 
+#' Group patients by gene mutant mutant dosage using gene-role specific thresholds.
+#' @param x An object of class INCOMMON.
+#' @param TSG_low The lower cutoff for mutant dosage classification of tumour suppressor genes.
+#' @param TSG_high The upper cutoff for mutant dosage classification of tumour suppressor genes.
+#' @param ONC_low The lower cutoff for mutant dosage classification for oncogenes.
+#' @param ONC_high The upper cutoff for mutant dosage classification for oncogenes.
+#' @return An object of class INCOMMON with new columns reporting mean FAM and class assignment.
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' mutant_dosage_classification(MSK_PAAD_output, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66)
+#' @importFrom dplyr case_when mutate group_by reframe across everything %>%
 mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66){
   x = compute_expectations(x)
   x$input = x$input %>%
@@ -685,6 +656,11 @@ mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_lo
       gene_role == 'oncogene' & FAM >= ONC_high ~ 'High Dosage'
     ))
 
+  x$input = x$input %>%
+    mutate(tmp = paste0(gene, ' with ', class)) %>%
+    dplyr::group_by(sample) %>%
+    dplyr::reframe(genotype = paste(tmp, collapse = ', '), dplyr::across(dplyr::everything()))
+
   return(x)
 }
 
@@ -696,7 +672,19 @@ posterior_k_m = function(x, id){
     dplyr::select(id, sample, gene, NV, DP, dplyr::starts_with('purity'), eta_map, m, k, z_km)
 }
 
+#' Get frction of alleles with the mutation (FAM) values for a gene and cancer type.
+#' @param x An object of class INCOMMON.
+#' @param tumour_type The tumour type identifier.
+#' @param gene The gene name..
+#' @return A table with the estimated FAM values
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' show_FAM(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
+#' @importFrom dplyr filter select %>%
 show_FAM = function(x, tumor_type = NULL, gene = NULL){
+  if(!("FAM" %in% colnames(x$input))) x = mutant_dosage_classification(x)
   what = x$input
   if(!is.null(tumor_type)){
     what = what %>% dplyr::filter(tumor_type==!!tumor_type)

@@ -12,14 +12,14 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-
-options(crayon.enabled=TRUE)
 ```
 
 ```{r setup}
 library(INCOMMON)
 library(dplyr)
 library(DT)
+library(cli)
+library(crayon)
 ```
 
 In this vignette, we use INCOMMON to infer the copy number and multiplicity of mutations from a single sample of the MSK-MetTropsim dataset provided within the package.
@@ -106,17 +106,18 @@ In principle, INCOMMON can infer any configuration of total copy number `k` and 
 INCOMMON is a Bayesian model that infers mutation copy number and multiplicity from read counts. An essential parameter of the model is the rate of read counts per chromosome copy $\eta$. To guide the inference of this parameter, we use a Gamma prior distribution. The only a priori information that we have access to is on the $(k,m)$ configurations of mutant genes. We use this to compute a prior distribution over $\eta$ from the dataset itself, using the function`compute_eta_prior`
 
 ```{r}
-data('priors_k_m')
+data('priors_pcawg_hmf')
 
-priors_eta = compute_eta_prior(x = x, priors_k_m = priors_k_m)
+priors_eta = compute_eta_prior(x = x, priors_pcawg_hmf = priors_pcawg_hmf)
 print(priors_eta)
 ```
+
 For each tumour type in the dataset, we estimated the empirical mean and variance of $\eta$, which can be straightforwardly transformed into the shape parameters $\alpha_\eta$ and $\beta_eta$ of a Gamma distribution. 
 
 We can visualise the prior distribution for each tumour type using the function `plot_eta_prior`:
 
-```{r}
-plot_eta_prior(priors_eta = priors_eta)
+```{r, out.width="80%", fig.height=4, dpi=300, message=FALSE, warning=FALSE}
+plot_eta_prior(x = x, priors_eta = priors_eta)
 ```
 The plot shows, for each tumour type and at the pan-cancer level (PANCA), the distribution of total read counts, potentially confused by diverse copy-number configurations and sample purities, and the underlying prior distribution of the rate of read counts per chromosome copy.
 
@@ -139,20 +140,21 @@ INCOMMON models the sample purity probabilistically, centering a Beta prior arou
 
 The prior purity distribution for a sample can be visualised using the function `plot_purity_prior`.
 
-```{r}
+```{r,  out.width="80%", fig.height=2, dpi=300,}
 plot_purity_prior(x = x, sample = sample, purity_error = 0.05)
 ```
+
 The shape parameters of the Beta distribution ensure that the mean and the variance correspond to the values we provided. The dashed line indicate the input purity estimate, used as the mean of the distribution.
 
 
 We are now ready to run the classification step through function `classify`, using the priors we obtained for $(k,m)$ configurations, read count rate per chromosome copy $\eta$ and sample purity $\pi$. We must provide the number of CPU cores `num_cores` we want to use for the parallel MCMC sampling chains, as well as the number of iterations for the warm-up (`iter_warmup`) and the proper sampling (`iter_sampling`) steps. We also must specify paths for the directories where we want to store the results (`results_dir`), the `stan` fit objects (`stan_fit_dir`) in case we want to store them (`stan_fit_dump = TRUE`) and, in case we want to generate a reporting summary plot (`generate_report_plot = TRUE`), the directory where to store the images (`reports_dir`).
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE, results = 'hide'}
 out = classify(
   x = x,
   k_max = 8,
-  priors_k_m = priors_k_m,
+  priors_pcawg_hmf = priors_pcawg_hmf,
   priors_eta = priors_eta,
   purity_error = 0.05,
   num_cores = 4,
@@ -166,8 +168,12 @@ out = classify(
   stan_fit_dir = '~/INCOMMON_results/stan_fits/'
 )
 
+```
+
+```{r, cli.unicode = FALSE, crayon.enabled = FALSE, pillar.bold = FALSE, pillar.subtle = FALSE}
 print(out)
 ```
+
 
 The output contains the maximum-a-posteriori (MAP) values of sample purity (`purity_map`), which is close to the input value (0.578 vs 0.6), read count rate per chromosome copy (`eta_map`) around 163, total copy number (`map_k`) and multiplicity (`map_m`). 
 
@@ -181,7 +187,7 @@ Since INCOMMON is a Bayesian method, it provides more than point estimates for t
 
 For example, here we visualise the posterior distribution of copy number and multiplicity for the 4 mutant genes found in the analysed sample, using the function `plot_posterior_k_m`.
 
-```{r}
+```{r, out.width="80%", fig.height=4, dpi=300, message=FALSE, warning=FALSE, results = 'hide'}
 plot_posterior_k_m(x = out, k_max = out$parameters$k_max, z_km = out$input$z_km)
 ```
 
