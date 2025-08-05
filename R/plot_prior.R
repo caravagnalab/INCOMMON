@@ -1,7 +1,7 @@
 #' Visualize prior distribution for a gene (tumor-specific or pancancer).
 #'
 #' @param x A prior distribution in the format required for \code{INCOMMON},
-#' such as \code{INCOMMON::priors_k_m}.
+#' such as \code{INCOMMON::priors_pcawg_hmf}.
 #' @param tumor_type Tumor type for tumor-specific prior ('PANCA' for pan-cancer).
 #' @param gene Gene for gene-specific prior.
 #' @return An object or a list of objects of class \code{'ggplot2'}.
@@ -13,8 +13,15 @@
 #' plot_prior(x = MSK_PAAD_output, gene = 'TP53', tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
-  toplot = x$priors_k_m %>%
-    dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+
+  if(inherits(x, 'INCOMMON')){
+    toplot = x$priors_k_m %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  } else {
+    toplot = x %>%
+      dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
+  }
+
   toplot %>%
     ggplot2::ggplot(ggplot2::aes(x = k, y = m,))+
     ggplot2::geom_tile(ggplot2::aes(fill = log10(n)))+

@@ -8,7 +8,7 @@ plot_prior(x, gene, tumor_type)
 }
 \arguments{
 \item{x}{A prior distribution in the format required for \code{INCOMMON},
-such as \code{INCOMMON::priors_k_m}.}
+such as \code{INCOMMON::priors_pcawg_hmf}.}
 
 \item{gene}{Gene for gene-specific prior.}
 

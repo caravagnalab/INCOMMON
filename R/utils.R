@@ -57,13 +57,12 @@ parameters = function(x) {
 #' # First load example classified data
 #' data(MSK_PAAD_output)
 #' # Get priors used in classification
-#' priors(MSK_PAAD_output)
+#' priors_k_m(MSK_PAAD_output)
 #' @importFrom dplyr filter mutate rename select %>%
 priors_k_m = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("priors_m_k" %in% names(x$classification))
-  x$classification$priors_m_k
+  stopifnot("priors_k_m" %in% names(x))
+  x$priors_k_m
 }
 
 get_categroical_posterior = function(x, id) {

@@ -20,6 +20,6 @@ Subset an INCOMMON object by sample ID.
 \examples{
 # First load example data
 data(MSK_PAAD_output)
-subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142-T01-IM3"))
+x = subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142"))
 print(x)
 }

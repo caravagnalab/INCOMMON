@@ -22,5 +22,5 @@ Get frction of alleles with the mutation (FAM) values for a gene and cancer type
 \examples{
 # First load example classified data
 data(MSK_PAAD_output)
-show_FAM(MSK_PAAD_output, tumor_type = 'BRCA', gene = 'TP53')
+show_FAM(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
 }

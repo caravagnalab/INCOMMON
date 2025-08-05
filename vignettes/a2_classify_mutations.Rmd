@@ -106,9 +106,9 @@ In principle, INCOMMON can infer any configuration of total copy number `k` and 
 INCOMMON is a Bayesian model that infers mutation copy number and multiplicity from read counts. An essential parameter of the model is the rate of read counts per chromosome copy $\eta$. To guide the inference of this parameter, we use a Gamma prior distribution. The only a priori information that we have access to is on the $(k,m)$ configurations of mutant genes. We use this to compute a prior distribution over $\eta$ from the dataset itself, using the function`compute_eta_prior`
 
 ```{r}
-data('priors_k_m')
+data('priors_pcawg_hmf')
 
-priors_eta = compute_eta_prior(x = x, priors_k_m = priors_k_m)
+priors_eta = compute_eta_prior(x = x, priors_pcawg_hmf = priors_pcawg_hmf)
 print(priors_eta)
 ```
 
@@ -154,7 +154,7 @@ We are now ready to run the classification step through function `classify`, usi
 out = classify(
   x = x,
   k_max = 8,
-  priors_k_m = priors_k_m,
+  priors_pcawg_hmf = priors_pcawg_hmf,
   priors_eta = priors_eta,
   purity_error = 0.05,
   num_cores = 4,

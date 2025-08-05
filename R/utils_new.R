@@ -200,7 +200,7 @@ samples = function(x){
 #' @examples
 #' # First load example data
 #' data(MSK_PAAD_output)
-#' subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142-T01-IM3"))
+#' x = subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142"))
 #' print(x)
 #' @importFrom dplyr filter mutate rename select everything %>%
 subset_sample = function(x, sample_list){
@@ -533,9 +533,9 @@ plot_priors_k = function(x, sample, k_max){
     my_ggplot_theme()
 }
 
-plot_prior_k_m = function(priors_k_m, x, k_max){
+plot_prior_k_m = function(priors_pcawg_hmf, x, k_max){
 
-  what = get_sample_priors(x = x, priors = priors_k_m, k_max = k_max)
+  what = get_sample_priors(x = x, priors = priors_pcawg_hmf, k_max = k_max)
 
   inp = input(x)
   what$gene = lapply(1:nrow(inp), function(i){
@@ -681,9 +681,10 @@ posterior_k_m = function(x, id){
 #' @examples
 #' # First load example classified data
 #' data(MSK_PAAD_output)
-#' show_FAM(MSK_PAAD_output, tumor_type = 'BRCA', gene = 'TP53')
+#' show_FAM(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
 #' @importFrom dplyr filter select %>%
 show_FAM = function(x, tumor_type = NULL, gene = NULL){
+  if(!("FAM" %in% colnames(x$input))) x = mutant_dosage_classification(x)
   what = x$input
   if(!is.null(tumor_type)){
     what = what %>% dplyr::filter(tumor_type==!!tumor_type)

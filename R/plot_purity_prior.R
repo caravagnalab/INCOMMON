@@ -8,11 +8,12 @@
 #' # First load example classified data
 #' data(MSK_PAAD_output)
 #' # Plot classification results for a specific sample
-#' plot_purity_prior(x = MSK_PAAD_output, sample = "P-0000142-T01-IM3", purity_error = 0.05)
-#' @importFrom dplyr filter mutate rename select %>% tibble
+#' plot_purity_prior(x = MSK_PAAD_output, sample = "P-0000142", purity_error = 0.05)
+#' @importFrom dplyr filter mutate rename select %>% tibble intersect
 #' @importFrom stats rgamma
 plot_purity_prior = function(x, sample, purity_error = 0.05){
 
+  stopifnot(length(dplyr::intersect(samples(x), sample))>0)
   purity_mean = purity(x = x, sample = sample)
   alpha_pi = purity_mean * ((purity_mean * (1 - purity_mean) / purity_error) - 1)
   beta_pi = (1 - purity_mean) * (purity_mean * (1 - purity_mean) / purity_error)

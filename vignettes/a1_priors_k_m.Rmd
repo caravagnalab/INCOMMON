@@ -37,14 +37,14 @@ is obtained from reliable copy number calls.
 By default, INCOMMON relies on prior probability obtained from PCAWG and HMF whole genomes. From a set of high-confidence copy number calls validated by quality control, we obtained $p_{k,m}$ for each gene as the frequency of the corresponding INCOMMON class. 
 
 ```{r}
-data("priors_k_m")
+data("priors_pcawg_hmf")
 ```
 
-The empirical priors from PCAWG and HMF are provided as an internal data table `priors_k_m` and
+The empirical priors from PCAWG and HMF are provided as an internal data table `priors_pcawg_hmf` and
 have the following format
 
 ```{r, echo = FALSE}
-datatable(priors_k_m, filter = 'top')
+datatable(priors_pcawg_hmf, filter = 'top')
 ```
 
 where, for each `gene` and `tumour_type`, `N` represents the total counts in the used dataset, `n` is the count for the specific combination of `k` and `m`.
@@ -56,24 +56,24 @@ adenocarcinoma (PAAD):
 
 
 ```{r, echo = FALSE}
-datatable(priors_k_m %>% filter(gene=='KRAS', tumor_type=='PAAD'))
+datatable(priors_pcawg_hmf %>% filter(gene=='KRAS', tumor_type=='PAAD'))
 ```
 
 ### 1.1.2 Pan-cancer priors
 
 
 In cases where the requirements for a tumour-specific prior were not satisified,
-we pooled from all tumour types a pan-cancer prior. In the `priors_k_m` table,
+we pooled from all tumour types a pan-cancer prior. In the `priors_pcawg_hmf` table,
 these priors are identified by `tumor_type` equal to 'PANCA', meaning pan-cancer.
 
 ```{r, echo = FALSE}
-datatable(priors_k_m %>% filter(gene == 'KRAS', tumor_type=='PANCA'), filter = 'top')
+datatable(priors_pcawg_hmf %>% filter(gene == 'KRAS', tumor_type=='PANCA'), filter = 'top')
 ```
 
 ## 1.2 User-defined priors
 
 The user who may want to leverage priors obtained in a different way (e.g. from
-other datasets or for a specific gene or tumour type not included in `priors_k_m`),
+other datasets or for a specific gene or tumour type not included in `priors_pcawg_hmf`),
 can easily do that by creating a similar data table.
 
 For example:
@@ -100,7 +100,7 @@ in the example classified MSK-MET data.
 For example:
 
 ```{r}
-plot_prior(x = priors_k_m, 
+plot_prior(x = priors_pcawg_hmf, 
            gene = 'KRAS',
            tumor_type = 'PAAD')
 ```

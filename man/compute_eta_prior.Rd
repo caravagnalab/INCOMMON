@@ -4,12 +4,12 @@
 \alias{compute_eta_prior}
 \title{Evaluate a prior distribution over the rate of reads per chromosom copy from the data.}
 \usage{
-compute_eta_prior(x, priors_k_m)
+compute_eta_prior(x, priors_pcawg_hmf)
 }
 \arguments{
 \item{x}{An object of class INCOMMON.}
 
-\item{priors_k_m}{Pre-computed priors for gene muation total copy number and multipliity.}
+\item{priors_pcawg_hmf}{Pre-computed priors for gene muation total copy number and multipliity.}
 }
 \description{
 Evaluate a prior distribution over the rate of reads per chromosom copy from the data.
@@ -17,6 +17,6 @@ Evaluate a prior distribution over the rate of reads per chromosom copy from the
 \examples{
 # First load example classified data
 data(MSK_PAAD_output)
-data(priors_k_m)
-compute_eta_prior(x = MSK_PAAD_output, priors_k_m = priors_k_m)
+data(priors_pcawg_hmf)
+compute_eta_prior(x = MSK_PAAD_output, priors_pcawg_hmf = priors_pcawg_hmf)
 }

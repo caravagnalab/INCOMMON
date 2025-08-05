@@ -23,5 +23,5 @@ Visualise the prior distribution on sample purity
 # First load example classified data
 data(MSK_PAAD_output)
 # Plot classification results for a specific sample
-plot_purity_prior(x = MSK_PAAD_output, sample = "P-0000142-T01-IM3", purity_error = 0.05)
+plot_purity_prior(x = MSK_PAAD_output, sample = "P-0000142", purity_error = 0.05)
 }
