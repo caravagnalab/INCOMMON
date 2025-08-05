@@ -35,10 +35,7 @@ plot_met_volcano = function(x, tumor_type){
 toplot = toplot %>%
   dplyr::mutate(
     prevalent = dplyr::case_when(
-      OR >= 1 & p.value <= .05 & grepl('LOH', class) ~ 'with LOH',
-      OR >= 1 & p.value <= .05 & grepl('AMP', class) ~ 'with AMP',
-      OR < 1 & p.value <= .05 & grepl('LOH', class) ~ 'without LOH',
-      OR < 1 & p.value <= .05 & grepl('AMP', class) ~ 'without LOH',
+      p.value <= .05 ~ class,
       TRUE ~ 'ns'
     )
   )
@@ -60,8 +57,9 @@ toplot %>%
   my_ggplot_theme(cex = .8)+
   ggplot2::xlab('Odds Ratio (log2)')+
   ggplot2::ylab('P-value (-log10)')+
-  ggplot2::guides(fill = ggplot2::guide_legend(title = 'Tumor Type',
-                                               override.aes = list(color=NA)
-                                               ),
-                  color = ggplot2::guide_legend(title = 'INCOMMON class'))
+  ggplot2::guides(
+    fill = ggplot2::guide_legend(title = 'Tumor Type',
+                                 override.aes = list(color=NA)),
+    color = ggplot2::guide_legend(title = 'INCOMMON class')
+    )
 }

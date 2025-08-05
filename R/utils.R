@@ -527,8 +527,7 @@ surv_colors = function(baseline = FALSE) {
 
 # INCOMMON state coloring
 scale_color_INCOMMON_high_level_class = function(aes = 'fill'){
-  class_colors = c('without LOH' = 'forestgreen', 'without AMP' = 'forestgreen', 'with LOH' = 'goldenrod1',
-                   'with AMP' = 'purple3', 'Tier-2' = 'gainsboro', 'ns' = 'gainsboro')
+  class_colors = c('Low Dosage' = 'pink2','Balanced Dosage' = 'forestgreen', 'High Dosage' = 'purple3', 'WT' = 'gainsboro', 'ns' = 'gainsboro')
   if(aes == 'fill') {
     ggplot2::scale_fill_manual(values = class_colors)
   } else {

@@ -28,10 +28,7 @@ plot_tropism = function(x, tumor_type){
   toplot = toplot %>%
     dplyr::mutate(
       prevalent = dplyr::case_when(
-        OR >= 1 & p.value <= .05 & grepl('LOH', class) ~ 'with LOH',
-        OR >= 1 & p.value <= .05 & grepl('AMP', class) ~ 'with AMP',
-        OR < 1 & p.value <= .05 & grepl('LOH', class) ~ 'without LOH',
-        OR < 1 & p.value <= .05 & grepl('AMP', class) ~ 'without LOH',
+        p.value <= .05 ~ class,
         TRUE ~ 'ns'
       )
     )

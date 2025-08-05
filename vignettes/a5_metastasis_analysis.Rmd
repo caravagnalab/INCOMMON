@@ -34,29 +34,27 @@ CNA (here, Mutant TP53 without LOH) as reference.
 
 ```{r}
 data("MSK_PAAD_output")
-MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
+MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'CDKN2A')
 ```
 
-From this analysis it emerges that Mutant TP53 with LOH patients have more than 150% increased risk to metastatise
-(OR = 1.64, p.value = 0.01) with respect to mutant samples without LOH.
+From this analysis it emerges that high dosage CDKN2A have more than a three-fold increase in risk to metastatise (OR = 3.46, p.value = 0.015) with respect to mutant samples a balanced mutant dosage.
 
 ### 5.2.2 Metastatic propensity for the top mutant genes in BRCA
 
-We extend this analysis to multiple genes, focusing on the 50 most frequently mutated ones.
+We extend this analysis to multiple genes, focusing on the 10 most frequently mutated ones.
 
 ```{r, message=FALSE, results='hide', error=FALSE, warning=FALSE}
-top_genes = classification(x) %>% 
-  dplyr::filter(state != 'Tier-2') %>% 
+top_genes = input(MSK_PAAD_output) %>% 
   dplyr::group_by(gene) %>% 
   dplyr::reframe(N = length(unique(sample))) %>% 
   dplyr::arrange(dplyr::desc(N)) %>% 
-  dplyr::slice_head(n = 50) %>% 
+  dplyr::slice_head(n = 10) %>% 
   pull(gene)
 
 print(top_genes)
 
 for(g in top_genes){
-  x = met_propensity(x, tumor_type = 'BRCA', gene = g)
+  MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = g)
 }
 
 ```
@@ -66,34 +64,34 @@ for(g in top_genes){
 INCOMMON provides the function `plot_met_volcano` to visualise metastatic propensity odds ratios in a volcano plot.
 
 ```{r}
-plot_met_volcano(x = x, tumor_type = 'BRCA')
+plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 
-In addition to TP53, among the 50 most frequently mutant genes in BRCA the complete inactivation (Mutation with LOH) of ARID1A significantly increases the risk of metastasis (OR = 9.33, p.value = 0.04), whereas among the oncogenes, only for PIK3CA the full activation (Mutation with AMP) leads to higher risks of metastases (OR = 2.00, p.value = 0.0007).
+In addition to CDKN2A, among the 10 most frequently mutant genes in PAAD, a high dosage of KRAS seems to reduce the risk of metastatisation (OR = 0.59, p.value = 0.04). Given the strong worsening of survival outcomes related to high KRAS dosage in PAAD, this effect may be explained by the fact that the death rate in this configuration is high enough not to allow the annotation of metastases in the patients' electronic health records. 
 
 ## 5.3 Metastatic tropism of BRCA samples
 
-### 5.3.1 Tropism of fully inactivated TP53 BRCA samples to the Liver
+### 5.3.1 Tropism to liver metastases of KRAS pancreatic cancer with high dosage
 
-We can analyse the metastatic organotropism of metastatic breast tumor genomes 
-containing TP53 mutations by using function `met_tropsim`. Similarly to the
+We can analyse the organotropism of metastatic pancreatic tumor genomes 
+containing KRAS mutations by using function `met_tropsim`. Similarly to the
 metastatic propensity analysis, this function implements a logistic regression to 
 fit the Binomial probability of developing metastasis towards a specific metastatic
-site (here the Liver, as example), based on the interpreted mutant genome, with the mutant gene without 
-CNA (here, Mutant TP53 without LOH) as reference.
+site (here the Liver, as example), based on the mutant gene dosage, with the balanced dosage as reference.
 
 ```{r}
-x = met_tropism(x, tumor_type = 'BRCA', gene = 'TP53', metastatic_site = 'Liver')
+MSK_PAAD_output = met_tropism(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS', metastatic_site = 'Liver')
 ```
 
-There is odds ratio (OR) of metastatising to the Liver for Mutant TP53 with LOH breast cancer is almost two-fold (OR = 1.9, p.value = 0.03) with respect to mutant samples without LOH.
+There is odds ratio (OR) of metastatising to the Liver for high dosage KRAS mutant pancreatic cancer is almost two-fold (OR = 1.71, p.value = 0.023) with respect to mutant samples with balanced dosage.
 
-### 5.3.2 Tropism of top mutant genes in BRCA to the Liver
+### 5.3.2 Tropism of top mutant genes in PAAD to the Liver
 
 We extend this analysis to multiple genes, focusing on the 10 most frequently mutated ones and the top 10 most frequent metastatic sites.
 
 ```{r, message=FALSE, results='hide', warning=FALSE}
-top_sites = x$clinical_data %>% 
+top_sites = MSK_PAAD_output$clinical_data %>% 
+  dplyr::filter(METASTATIC_SITE != 'Unspecified') %>% 
   dplyr::group_by(METASTATIC_SITE) %>% 
   dplyr::reframe(N = length(unique(sample))) %>% 
   dplyr::arrange(dplyr::desc(N)) %>% 
@@ -102,7 +100,7 @@ top_sites = x$clinical_data %>%
 
 for(g in top_genes[1:10]){
   for(m in top_sites){
-   x = met_tropism(x, gene = g, tumor_type = 'BRCA', metastatic_site = m) 
+   MSK_PAAD_output = met_tropism(MSK_PAAD_output, gene = g, tumor_type = 'PAAD', metastatic_site = m) 
   }
 }
 
@@ -113,7 +111,7 @@ for(g in top_genes[1:10]){
 INCOMMON provides the function `plot_tropism` to visualise metastatic tropism odds ratios by metastatic site.
 
 ```{r, fig.height=10, fig.width=8}
-plot_tropism(x = x, tumor_type = 'BRCA')
+plot_tropism(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 
-Interestingly, the complete inactivation of TP53 seems to be related with tropism from primary breast tumours to the Liver and CNS/Brain. Mutations of CDH1 seem to be more frequently without LOH in association with metastasis to the lymphatic system.
+Interestingly, a high dosage of KRAS only increases the odds of metastatisation to the liver, among the first 10 most frequent metastatisation sites, highlighting a very specific organotropic pattern for this mutant dosage configuration.
