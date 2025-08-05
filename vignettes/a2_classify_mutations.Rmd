@@ -117,7 +117,7 @@ For each tumour type in the dataset, we estimated the empirical mean and varianc
 We can visualise the prior distribution for each tumour type using the function `plot_eta_prior`:
 
 ```{r, out.width="80%", fig.height=4, dpi=300, message=FALSE, warning=FALSE}
-plot_eta_prior(priors_eta = priors_eta)
+plot_eta_prior(x = x, priors_eta = priors_eta)
 ```
 The plot shows, for each tumour type and at the pan-cancer level (PANCA), the distribution of total read counts, potentially confused by diverse copy-number configurations and sample purities, and the underlying prior distribution of the rate of read counts per chromosome copy.
 

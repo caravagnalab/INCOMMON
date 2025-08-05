@@ -22,8 +22,8 @@ Visualize metastatic propnesity odds ratio in a volcano plot fashion.
 \examples{
 # First load example classified data
 data(MSK_PAAD_output)
-# Estimate the metastatic propensity associated with mutant TP53, PIK3CA and CDH1 with vs without CNA in BRCA.
-for(g in c('TP53', 'PIK3CA', 'CDH1')){MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'BRCA', gene = g)}
+# Estimate the metastatic propensity associated with mutant KRAS and CDKN2A high vs balanced dosage.
+for(g in c('KRAS', 'CDKN2A')){MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = g)}
 # Plot results in a volcano plot
-plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'BRCA')
+plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'PAAD')
 }

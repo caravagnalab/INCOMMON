@@ -13,7 +13,7 @@
 #' plot_prior(x = MSK_PAAD_output, gene = 'TP53', tumor_type = 'PAAD')
 #' @importFrom dplyr filter mutate rename select %>%
 plot_prior = function(x, gene, tumor_type){
-  toplot = x %>%
+  toplot = x$priors_k_m %>%
     dplyr::filter(gene == !!gene, tumor_type == !!tumor_type)
   toplot %>%
     ggplot2::ggplot(ggplot2::aes(x = k, y = m,))+

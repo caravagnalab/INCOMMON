@@ -42,9 +42,8 @@ tumor_type = function(x, id){
 #' @importFrom dplyr filter mutate rename select %>%
 parameters = function(x) {
   stopifnot(inherits(x, "INCOMMON"))
-  stopifnot("classification" %in% names(x))
-  stopifnot("parameters" %in% names(x$classification))
-  x$classification$parameters
+  stopifnot("parameters" %in% names(x))
+  x$parameters
 }
 
 

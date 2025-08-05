@@ -26,5 +26,6 @@ Visualize frequency distribution of INCOMMON classes.
 # First load example classified data
 data(MSK_PAAD_output)
 # Plot class fraction for a specific gene and tumour type
-plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'LUAD', gene = 'KRAS')
+MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
+plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS')
 }

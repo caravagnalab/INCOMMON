@@ -3,13 +3,16 @@
 #' @param priors_eta An object of class INCOMMON.
 #' @export
 #' @examples
-#' # Load the default prior on eta, estimated from the MKS-MET data.
+#' # Load the default prior on eta, estimated from the MKS-MET data and the data.
+#' data(MSK_genomic_data)
+#' data(MSK_clinical_data)
 #' data(priors_eta)
+#' x = init(genomic_data = MSK_genomic_data, clinical_data =MSK_clinical_data)
 #' # Plot classification results for a specific sample
-#' plot_eta_prior(priors_eta = priors_eta)
+#' plot_eta_prior(x = x, priors_eta = priors_eta)
 #' @importFrom dplyr filter mutate group_by reframe select %>%
 #' @importFrom stats var
-plot_eta_prior = function(priors_eta){
+plot_eta_prior = function(x, priors_eta){
   toplot = lapply(1:nrow(priors_eta), function(i){
     tibble(
       tumor_type = priors_eta[i,]$tumor_type,

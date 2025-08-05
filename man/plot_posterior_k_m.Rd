@@ -21,14 +21,8 @@ Visualise the posterior distribution on (k,m) configurations.
 }
 \examples{
 # First load example classified data
-data(MSK_genomic_data)
-data(MSK_clinical_data)
-data(cancer_gene_census)
-data(priors_eta)
-data(priors_k_m)
-x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data,  gene_roles = cancer_gene_census)
-x = subset_sample(x, "P-0028912")
-x = classify(x = x, num_cores = 1, iter_warmup = 10, iter_sampling = 20, num_chains = 1)
+data(MSK_PAAD_output)
 # Plot classification results for a specific sample
-plot_posterior_k_m(x = x, sample = "P-0028912", purity_error = 0.05)
+x = subset_sample(x = MSK_PAAD_output, sample_list = "P-0000142")
+plot_posterior_k_m(x = x)
 }

@@ -44,7 +44,7 @@ From this analysis it emerges that high dosage CDKN2A have more than a three-fol
 We extend this analysis to multiple genes, focusing on the 10 most frequently mutated ones.
 
 ```{r, message=FALSE, results='hide', error=FALSE, warning=FALSE}
-top_genes = input(MSK_PAAD_output) %>% 
+top_genes = MSK_PAAD_output$input %>% 
   dplyr::group_by(gene) %>% 
   dplyr::reframe(N = length(unique(sample))) %>% 
   dplyr::arrange(dplyr::desc(N)) %>% 
@@ -63,7 +63,7 @@ for(g in top_genes){
 
 INCOMMON provides the function `plot_met_volcano` to visualise metastatic propensity odds ratios in a volcano plot.
 
-```{r}
+```{r, fig.height=4, fig.width=3, dpi = 100}
 plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 
@@ -110,7 +110,7 @@ for(g in top_genes[1:10]){
 
 INCOMMON provides the function `plot_tropism` to visualise metastatic tropism odds ratios by metastatic site.
 
-```{r, fig.height=10, fig.width=8}
+```{r, fig.height=6, fig.width=4, dpi = 120}
 plot_tropism(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 

@@ -55,11 +55,13 @@ Classify mutations using a Beta-Binomial model-based test.
 # First load example data
 data(MSK_genomic_data)
 data(MSK_clinical_data)
+data(priors_k_m)
+data(priors_eta)
 # Initialize the INCOMMON object for a single sample (note the outputs to screen)
 sample = 'P-0002081'
 x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 # Run INCOMMON classification
-x = classify(x = x, priors = priors_k_m, entropy_cutoff = NULL, rho = 0.01)
+x = classify(x = x, priors_k_m = priors_k_m, priors_eta = priors_eta, num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1)
 # An S3 method can be used to report to screen what is in the object
 print(x)
 }
