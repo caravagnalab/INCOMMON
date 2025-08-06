@@ -19,6 +19,7 @@
 #' @importFrom dplyr filter mutate rename select %>%
 #' @importFrom survival Surv survfit
 #' @importFrom stats relevel quantile as.formula
+#' @importFrom multcomp glht
 
 cox_fit = function(x, gene, tumor_type, survival_time, survival_status,
                    covariates = c('age', 'sex', 'tmb'),

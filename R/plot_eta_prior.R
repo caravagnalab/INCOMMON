@@ -1,6 +1,7 @@
 #' Visualise the prior distribution over the rate of reads per chromosome copy.
-#'
-#' @param priors_eta An object of class INCOMMON.
+#
+#' @param x An object of class INCOMMON.'
+#' @param priors_eta A table with the prior distribution on the rate of reads per chromosome copy as obtained with function `compute_eta_prior`.
 #' @export
 #' @examples
 #' # Load the default prior on eta, estimated from the MKS-MET data and the data.
@@ -12,6 +13,7 @@
 #' plot_eta_prior(x = x, priors_eta = priors_eta)
 #' @importFrom dplyr filter mutate group_by reframe select %>%
 #' @importFrom stats var
+#' @importFrom ggridges geom_density_ridges
 plot_eta_prior = function(x, priors_eta){
   toplot = lapply(1:nrow(priors_eta), function(i){
     tibble(

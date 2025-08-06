@@ -2,16 +2,20 @@
 #'
 #' @param x An object of class \code{'INCOMMON'} generated with function `init`.
 #' @param k_max The maximum value of total copy number to be included in the model.
-#' @param priors_pcawg_hmf A dplyr::tibble or data frame with columns `gene`, `gene_role`, `tumor_type`, `ploidy`, `multiplicity`
+#' @param priors_k_m A dplyr::tibble or data frame with columns `gene`, `tumor_type`, `k`, `m`, `N` and `n`
 #' and `p` indicating tumor-specific or pan-cancer (PANCA) prior probabilities.
-#' @param priors_eta A dplyr::tibble or data frame with columns `mean_eta`, `var_eta`, `alpha_eta` and `beta_eta`
+#' @param priors_eta A dplyr::tibble or data frame with columns `tumor_type`,`mean_eta`, `var_eta`, `N`,`alpha_eta` and `beta_eta`
 #' providing parameters of the Gamma prior distribution over the per copy sequencing rate.
 #' @param purity_error The expected error on the input sample purity estimate.
 #' @param num_cores The number of cores to use for parallel stan sampling.
-#' @param  iter_warmup The number of iterations of the stan warmup phase.
+#' @param iter_warmup The number of iterations of the stan warmup phase.
 #' @param iter_sampling The number of iterations of the stan sampling  phase.
-#' @param dump Whether to dump results to a file.
-#' @param dump_file The file path for dumping results.
+#' @param num_chains The number of MCMC chains to be run in parallel.
+#' @param results_dir The directory path where to store the fit in rds format for each analysed sample.
+#' @param generate_report_plot Whether to generate png files with the full fit report.
+#' @param reports_dir If `generate_report_plot = TRUE`, the directory path where to store the reports.
+#' @param stan_fit_dump Whether to store stan fit objects.
+#' @param stan_fit_dir If `stan_fit_dump = TRUE`, the directory path where to store the stan fit objects.
 #' @return An object of class `INCOMMON` containing the original input plus
 #' the classification data and parameters.
 #' @export
@@ -25,7 +29,7 @@
 #' sample = 'P-0002081'
 #' x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 #' # Run INCOMMON classification
-#' x = classify(x = x, priors_pcawg_hmf = priors_pcawg_hmf, priors_eta = priors_eta, num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1)
+#' x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1)
 #' # An S3 method can be used to report to screen what is in the object
 #' print(x)
 #' @importFrom dplyr filter mutate rename select everything %>%
@@ -33,7 +37,7 @@
 classify = function(
     x,
     k_max = 8,
-    priors_pcawg_hmf = priors_pcawg_hmf,
+    priors_k_m = priors_pcawg_hmf,
     priors_eta = priors_eta,
     purity_error = 0.05,
     num_cores = NULL,
@@ -61,7 +65,7 @@ classify = function(
     )
     cat("\n")
 
-    x = subset_sample(x = x, sample = sample)
+    x = subset_sample(x = x, sample_list = sample)
 
     ## Prepare input
 
@@ -71,7 +75,7 @@ classify = function(
     purity_mean = purity(x = x, sample = sample)
     tumor_type = input(x) %>% dplyr::pull(tumor_type) %>% unique()
 
-    priors_pcawg_hmf_sample = get_stan_input_priors(x = x, N_mutations = M, priors = priors_pcawg_hmf, k_max = k_max)
+    priors_k_m_sample = get_stan_input_priors(x = x, N_mutations = M, priors = priors_k_m, k_max = k_max)
     priors_eta_sample = priors_eta %>% filter(tumor_type == !!tumor_type)
     if(nrow(priors_eta_sample)==0){
       priors_eta_sample = priors_x %>% filter(tumor_type == 'PANCA')
@@ -86,7 +90,7 @@ classify = function(
       purity_error = purity_error,
       alpha_x = priors_eta_sample$alpha_eta,
       beta_x = priors_eta_sample$beta_eta,
-      alpha_k_m = priors_pcawg_hmf_sample
+      alpha_k_m = priors_k_m_sample
     )
 
     ## Compile stan code
@@ -173,7 +177,7 @@ classify = function(
 
       pbin = plot_binomial_model(x = x, n_rep = n_rep, km_rep = km_rep, post_pred_NV = post_pred_NV)
 
-      pkmprior = plot_prior_k_m(priors_pcawg_hmf = priors_pcawg_hmf, x = x, k_max = k_max)
+      pkmprior = plot_prior_k_m(priors_k_m = priors_k_m, x = x, k_max = k_max)
       pkmpost = plot_posterior_k_m(x = x, k_max = k_max, z_km = z_km)
 
       plot_report = patchwork::wrap_plots(
@@ -265,7 +269,7 @@ classify = function(
     stan_fit_dir
   )
 
-  output$priors_k_m = priors_pcawg_hmf
+  output$priors_k_m = priors_k_m
   output$priors_eta = priors_eta
 
   output

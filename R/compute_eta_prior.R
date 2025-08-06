@@ -1,26 +1,26 @@
 #' Evaluate a prior distribution over the rate of reads per chromosom copy from the data.
 #'
 #' @param x An object of class INCOMMON.
-#' @param priors_pcawg_hmf Pre-computed priors for gene muation total copy number and multipliity.
+#' @param priors_k_m Pre-computed priors for gene muation total copy number and multiplicity.
 #' @export
 #' @examples
 #' # First load example classified data
 #' data(MSK_PAAD_output)
 #' data(priors_pcawg_hmf)
-#' compute_eta_prior(x = MSK_PAAD_output, priors_pcawg_hmf = priors_pcawg_hmf)
+#' compute_eta_prior(x = MSK_PAAD_output, priors_k_m = priors_pcawg_hmf)
 #' @importFrom dplyr filter mutate group_by reframe select %>%
 #' @importFrom stats var
 #'
-compute_eta_prior = function(x, priors_pcawg_hmf){
+compute_eta_prior = function(x, priors_k_m = priors_k_m){
 
-  priors_pcawg_hmf = priors_pcawg_hmf %>%
+  priors_k_m = priors_k_m %>%
     dplyr::group_by(gene, tumor_type) %>%
     dplyr::mutate(p = n / sum(n))
 
   x_data = x$input %>%
     dplyr::select(sample, tumor_type, gene, purity, DP) %>%
     unique() %>%
-    dplyr::left_join(priors_pcawg_hmf, by = c('gene', 'tumor_type')) %>%
+    dplyr::left_join(priors_k_m, by = c('gene', 'tumor_type')) %>%
     dplyr::mutate(x = DP*p/(2*(1-purity)+k*purity)) %>%
     dplyr::group_by(tumor_type, gene, sample) %>%
     dplyr::reframe(x = sum(x, na.rm = T)) %>%

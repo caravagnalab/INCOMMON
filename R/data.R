@@ -59,7 +59,6 @@
 #'
 #' @format A data frame with 12 rows and 6 columns:
 #' \describe{
-#'   \item{gene}{Name of the gene (Hugo Symbol).}
 #'   \item{tumor_type}{Tumor type.}
 #'   \item{mean_eta}{Mean of the distribution}
 #'   \item{var_eta}{Variance of the distribution}
