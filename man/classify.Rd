@@ -7,7 +7,7 @@
 classify(
   x,
   k_max = 8,
-  priors_pcawg_hmf = priors_pcawg_hmf,
+  priors_k_m = priors_pcawg_hmf,
   priors_eta = priors_eta,
   purity_error = 0.05,
   num_cores = NULL,
@@ -26,10 +26,10 @@ classify(
 
 \item{k_max}{The maximum value of total copy number to be included in the model.}
 
-\item{priors_pcawg_hmf}{A dplyr::tibble or data frame with columns \code{gene}, \code{gene_role}, \code{tumor_type}, \code{ploidy}, \code{multiplicity}
+\item{priors_k_m}{A dplyr::tibble or data frame with columns \code{gene}, \code{tumor_type}, \code{k}, \code{m}, \code{N} and \code{n}
 and \code{p} indicating tumor-specific or pan-cancer (PANCA) prior probabilities.}
 
-\item{priors_eta}{A dplyr::tibble or data frame with columns \code{mean_eta}, \code{var_eta}, \code{alpha_eta} and \code{beta_eta}
+\item{priors_eta}{A dplyr::tibble or data frame with columns \code{tumor_type},\code{mean_eta}, \code{var_eta}, \code{N},\code{alpha_eta} and \code{beta_eta}
 providing parameters of the Gamma prior distribution over the per copy sequencing rate.}
 
 \item{purity_error}{The expected error on the input sample purity estimate.}
@@ -40,9 +40,17 @@ providing parameters of the Gamma prior distribution over the per copy sequencin
 
 \item{iter_sampling}{The number of iterations of the stan sampling  phase.}
 
-\item{dump}{Whether to dump results to a file.}
+\item{num_chains}{The number of MCMC chains to be run in parallel.}
 
-\item{dump_file}{The file path for dumping results.}
+\item{results_dir}{The directory path where to store the fit in rds format for each analysed sample.}
+
+\item{generate_report_plot}{Whether to generate png files with the full fit report.}
+
+\item{reports_dir}{If \code{generate_report_plot = TRUE}, the directory path where to store the reports.}
+
+\item{stan_fit_dump}{Whether to store stan fit objects.}
+
+\item{stan_fit_dir}{If \code{stan_fit_dump = TRUE}, the directory path where to store the stan fit objects.}
 }
 \value{
 An object of class \code{INCOMMON} containing the original input plus
@@ -61,7 +69,7 @@ data(priors_eta)
 sample = 'P-0002081'
 x = init(genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,], clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,])
 # Run INCOMMON classification
-x = classify(x = x, priors_pcawg_hmf = priors_pcawg_hmf, priors_eta = priors_eta, num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1)
+x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1)
 # An S3 method can be used to report to screen what is in the object
 print(x)
 }

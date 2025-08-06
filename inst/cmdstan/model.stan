@@ -27,103 +27,86 @@ data {
   real<lower=0, upper=1> purity_error;
   real<lower=0> alpha_x;  // Gamma prior parameter alpha for x
   real<lower=0> beta_x;   // Gamma prior parameter beta for x
-  array[M] simplex[k_max*k_max] k_m_prior;
+  array[M] vector[k_max*(k_max+1)/2] alpha_k_m;  // Dirichlet priors for each mutation
 }
 
 parameters {
-  real<lower=0> x;    // rate for Poisson distribution (x)
+  array[M] simplex[k_max*(k_max+1)/2] psi;  // Mixing proportions for each mutation
+  real<lower=0> x;    // Per-copy count rate
   real<lower=0,upper=1> purity; // Proportion of tumour cells (purity)
-  array[M] simplex[3] class_probs;  // Mixing proportions for each mutation
 }
 
 model {
-  vector[2] ab_pi = alpha_beta_pi(purity_mean, purity_error);
-  purity ~ beta(ab_pi[1], ab_pi[2]);  // Beta prior for purity
-  x ~ gamma(alpha_x, beta_x);  // Gamma prior for x
+  // Prior sampling
+  vector[2] ab_pi = alpha_beta_pi(purity_mean, purity_error); // Compute shape parameters for purity prior
+  purity ~ beta(ab_pi[1], ab_pi[2]);  // Prior sampling of the purity
+  x ~ gamma(alpha_x, beta_x);  // Prior sampling of the per-count rate
 
   for (i in 1:M) {
-    array[k_max, 3] real log_lik;
+    psi[i] ~ dirichlet(alpha_k_m[i]);  // Prior sampling of each mutation's mixing proportions
+  }
 
-    // Class m = 1 (k > 1)
-    log_lik[1, 1] = negative_infinity();
-    for (k in 2:k_max) {
-      log_lik[k, 1] = binomial_lpmf(n[i] | N[i], expected_vaf(1, k, purity))
-                      + poisson_lpmf(N[i] | lambda(k, x, purity))
-                      + log(k_m_prior[i, (k - 1) * k_max + 1]);
-    }
-
-    // Class m = k
+  // Likelihood sampling
+  for (i in 1:M) {
+    vector[k_max*(k_max+1)/2] log_likelihood;
+    int idx = 1;
     for (k in 1:k_max) {
-      log_lik[k, 2] = binomial_lpmf(n[i] | N[i], expected_vaf(k, k, purity))
-                      + poisson_lpmf(N[i] | lambda(k, x, purity))
-                      + log(k_m_prior[i, (k - 1) * k_max + k]);
-    }
-
-    // Class 1 < m < k (k > 2)
-    log_lik[1, 3] = negative_infinity();
-    log_lik[2, 3] = negative_infinity();
-    for (k in 3:k_max) {
-      array[k - 2] real lps;
-      for (m in 2:(k - 1)) {
-        lps[m - 1] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity))
-                     + poisson_lpmf(N[i] | lambda(k, x, purity))
-                     + log(k_m_prior[i, (k - 1) * k_max + m]);
+      for (m in 1:k) {
+        log_likelihood[idx] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity))
+          + poisson_lpmf(N[i] | lambda(k, x, purity));
+        idx += 1;
       }
-      log_lik[k, 3] = log_sum_exp(lps);
     }
-
-    // Compute joint log likelihood of classes (m, k)
-    array[3] real log_posterior_class;
-    log_posterior_class[1] = log_sum_exp(log_lik[, 1]) + log(class_probs[i, 1]);
-    log_posterior_class[2] = log_sum_exp(log_lik[, 2]) + log(class_probs[i, 2]);
-    log_posterior_class[3] = log_sum_exp(log_lik[, 3]) + log(class_probs[i, 3]);
-
-    target += log_sum_exp(log_posterior_class);
+    target += log_sum_exp(log_likelihood + log(psi[i]));
   }
 }
 
 generated quantities {
-  array[M] vector[k_max] loglik_k;
-  array[M] simplex[k_max] posterior_k;
+  array[M] vector[k_max*(k_max+1)/2] log_lik_bin;
+  array[M] vector[k_max] log_lik_pois;
+  array[M] vector[k_max*(k_max+1)/2] z_km;
+
+  real x_rep;    // Prior x samples
+  real purity_rep; // Prior purity samples
+
+  array[M] int N_rep; // Posterior predictive N samples
+  array[M] int n_rep; // Posterior predictive n samples
+  array[M] int km_idx;
+
+  vector[2] ab_pi = alpha_beta_pi(purity_mean, purity_error);
+  purity_rep = beta_rng(ab_pi[1], ab_pi[2]);
+  x_rep = gamma_rng(alpha_x, beta_x);
 
   for (i in 1:M) {
-    array[k_max, 3] real log_lik;
 
-    // Recalculate log_lik for each mutation i
-    log_lik[1, 1] = negative_infinity();
-    for (k in 2:k_max) {
-      log_lik[k, 1] = binomial_lpmf(n[i] | N[i], expected_vaf(1, k, purity))
-                      + poisson_lpmf(N[i] | lambda(k, x, purity))
-                      + log(k_m_prior[i, (k - 1) * k_max + 1]);
-    }
-
+    // Compute log-likelihoods for binomial and poisson
+    int idx = 1;
+    vector[k_max*(k_max+1)/2] log_likelihood;
     for (k in 1:k_max) {
-      log_lik[k, 2] = binomial_lpmf(n[i] | N[i], expected_vaf(k, k, purity))
-                      + poisson_lpmf(N[i] | lambda(k, x, purity))
-                      + log(k_m_prior[i, (k - 1) * k_max + k]);
-    }
+      log_lik_pois[i][k] = poisson_lpmf(N[i] | lambda(k, x, purity));  // Poisson likelihood
 
-    log_lik[1, 3] = negative_infinity();
-    log_lik[2, 3] = negative_infinity();
-    for (k in 3:k_max) {
-      array[k - 2] real lps;
-      for (m in 2:(k - 1)) {
-        lps[m - 1] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity))
-                     + poisson_lpmf(N[i] | lambda(k, x, purity))
-                     + log(k_m_prior[i, (k - 1) * k_max + m]);
+      for (m in 1:k) {
+        log_lik_bin[i][idx] = binomial_lpmf(n[i] | N[i], expected_vaf(m, k, purity));  // Binomial likelihood
+        log_likelihood[idx] = log_lik_bin[i][idx] + log_lik_pois[i][k];
+        idx += 1;
       }
-      log_lik[k, 3] = log_sum_exp(lps);
     }
 
-    for (k in 1:k_max) {
-      array[3] real logpost_k_tmp;
-      logpost_k_tmp[1] = log_lik[k, 1] + log(class_probs[i, 1]);
-      logpost_k_tmp[2] = log_lik[k, 2] + log(class_probs[i, 2]);
-      logpost_k_tmp[3] = log_lik[k, 3] + log(class_probs[i, 3]);
-      loglik_k[i, k] = log_sum_exp(logpost_k_tmp);
-    }
+    z_km[i] = softmax(log_likelihood + log(psi[i]));
 
-    vector[k_max] posterior_k_unnormalized = exp(loglik_k[i, ]);
-    posterior_k[i, ] = posterior_k_unnormalized / sum(posterior_k_unnormalized);  // Normalize to get the posterior
+    km_idx[i] = categorical_rng(z_km[i]);
+    N_rep[i] = 0;
+    n_rep[i] = 0;
+    int jdx = 1;
+    for(k in 1:k_max){
+      for(m in 1:k){
+        if(km_idx[i] == jdx) {
+          N_rep[i] += poisson_rng(lambda(k, x, purity));
+          n_rep[i] += binomial_rng(N_rep[i], expected_vaf(m, k, purity));
+        }
+        jdx += 1;
+      }
+    }
   }
+
 }

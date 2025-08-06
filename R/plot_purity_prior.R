@@ -35,7 +35,7 @@ plot_purity_prior = function(x, sample, purity_error = 0.05){
     ggplot2::geom_vline(xintercept = purity_mean, linetype = 'longdash')+
     ggplot2::labs(
       title = paste0("Prior Purity Distribution"),
-      subtitle = paste0("Beta Distribution (α = ", alpha_pi, ", β = ", beta_pi, "); Mean = ", purity_mean),
+      subtitle = paste0("Beta Distribution (\u03b1 = ", alpha_pi, ", \u03b2 = ", beta_pi, "); Mean = ", purity_mean),
       x = bquote(pi),
       y = "Density"
     )+

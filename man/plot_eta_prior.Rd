@@ -7,7 +7,9 @@
 plot_eta_prior(x, priors_eta)
 }
 \arguments{
-\item{priors_eta}{An object of class INCOMMON.}
+\item{x}{An object of class INCOMMON.'}
+
+\item{priors_eta}{A table with the prior distribution on the rate of reads per chromosome copy as obtained with function \code{compute_eta_prior}.}
 }
 \description{
 Visualise the prior distribution over the rate of reads per chromosome copy.

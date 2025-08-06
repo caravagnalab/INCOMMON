@@ -10,7 +10,8 @@
 #' # Plot classification results for a specific sample
 #' x = subset_sample(x = MSK_PAAD_output, sample_list = "P-0000142")
 #' plot_posterior_k_m(x = x)
-#' @importFrom dplyr filter mutate rename select %>% tibble
+#' @importFrom dplyr group_by arrange desc slice_head
+#' @importFrom ggh4x facet_nested_wrap
 plot_posterior_k_m = function(x, k_max = NULL, z_km = NULL){
   # x = subset_sample(x = x, sample_list = sample)
   inp = input(x)

@@ -127,7 +127,7 @@ get_stan_input_priors = function(x, priors, N_mutations, k_max){
 
 
 get_stan_model = function(){
-  model_path = system.file("cmdstan", 'model_v2.stan', package = "INCOMMON", mustWork = T)
+  model_path = system.file("cmdstan", 'model.stan', package = "INCOMMON", mustWork = T)
   model = cmdstanr::cmdstan_model(model_path)
   # tmp = utils::capture.output(suppressMessages(model <- cmdstanr::cmdstan_model(model_path)))
 }
@@ -507,7 +507,7 @@ plot_purity_check = function(posterior_rep, prior_rep, bayes_p){
 marginal_priors_k = function(x, sample, k_max){
   x = subset_sample(x, sample_list = sample)
   M = nrow(input(x))
-  priors = get_sample_priors(x = x, priors = priors_k_m(x), N_mutations = M, k_max = k_max)
+  priors = get_sample_priors(x = x, priors = priors_k_m(x), k_max = k_max)
   priors_k = sapply(1:M, function(m){
     sapply(1:k_max, function(k){
       start = ((k-1)*k_max+1)
@@ -533,9 +533,9 @@ plot_priors_k = function(x, sample, k_max){
     my_ggplot_theme()
 }
 
-plot_prior_k_m = function(priors_pcawg_hmf, x, k_max){
+plot_prior_k_m = function(priors_k_m, x, k_max){
 
-  what = get_sample_priors(x = x, priors = priors_pcawg_hmf, k_max = k_max)
+  what = get_sample_priors(x = x, priors = priors_k_m, k_max = k_max)
 
   inp = input(x)
   what$gene = lapply(1:nrow(inp), function(i){
@@ -564,48 +564,17 @@ plot_prior_k_m = function(priors_pcawg_hmf, x, k_max){
     ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
 }
 
-plot_km_prior_vs_post = function(x, sample){
-  x = subset_sample(x = x, sample_list = sample)
-  priors = x$classification$priors_k_m
-  k_max = x$classification$parameters$k_max
-
-  priors = get_sample_priors(x = x, priors = priors, k_max = k_max)
-  posterior = get_z_km(x = x, sample = sample)
-
-  what = dplyr::bind_cols(
-    priors,
-    posterior %>% dplyr::select(z_km)
-    ) %>%
-    tidyr::pivot_longer(cols = c('f', 'z_km'), names_to = 'source', values_to = 'z_km') %>%
-    dplyr::mutate(source = ifelse(source == 'f', 'prior', 'posterior'))
-
-  what %>%
-    dplyr::filter(source == 'posterior') %>%
-    ggplot2::ggplot(ggplot2::aes(
-      x = factor(k),
-      y = factor(m),
-      # fill = round(f, 2)
-      fill = log10(z_km)
-    )) +
-    ggplot2::geom_tile() +
-    ggplot2::geom_label(ggplot2::aes(label = round(n, 1), color = ''), fill = 'transparent', label.size = 0, size = 3) +
-    scale_color_manual(values = c('white'))+
-    scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
-    my_ggplot_theme() +
-    ggh4x::facet_nested_wrap(~tumor_type ~gene)+
-    ggplot2::labs(# title = paste0(gene, ' (', tumor_type, ')'),
-      x = "Total CN (k)",
-      y = "Multiplicity (m)",
-      fill = "Posterior Probability (log10)",
-      color = 'Dirichlet Prior Concentration'
-      ) +
-    ggplot2::guides(
-      fill = ggplot2::guide_colorbar(barwidth = unit(2.5, 'cm')),
-      color = ggplot2::guide_legend(override.aes = list(color = 'white', fill = 'black', size = 5, shape = 21)))
-
-}
-
-
+#' Compute the expectation value of k, m and FAM from the model full posterior distribution.
+#' @param x An object of class INCOMMON.
+#' @return The same INCOMMON object with annotated expectation values.
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' compute_expectations(x = MSK_PAAD_output)
+#' @importFrom dplyr mutate group_by summarise full_join select  %>%
+#' @importFrom data.table as.data.table
+#' @importFrom tidyr unnest
 compute_expectations = function(x){
 
   x$input = x$input %>%
@@ -664,6 +633,17 @@ mutant_dosage_classification = function(x, TSG_low = .25, TSG_high = .75, ONC_lo
   return(x)
 }
 
+#' Get the posterior distribution over (k,m) configurations for a specific mutation
+#' @param x An object of class INCOMMON.
+#' @param id The id of the mutation (sample:chr:from:to:ref:alt:NV:DP)
+#' @return A table with the estimated posterior distribution.
+#' @export
+#' @examples
+#' # First load example classified data
+#' data(MSK_PAAD_output)
+#' show_FAM(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'TP53')
+#' @importFrom dplyr filter select starts_with %>%
+#' @importFrom tidyr unnest
 posterior_k_m = function(x, id){
   x = idify(x)
   x$input %>%
@@ -672,9 +652,9 @@ posterior_k_m = function(x, id){
     dplyr::select(id, sample, gene, NV, DP, dplyr::starts_with('purity'), eta_map, m, k, z_km)
 }
 
-#' Get frction of alleles with the mutation (FAM) values for a gene and cancer type.
+#' Get the fraction of alleles with the mutation (FAM) values for a gene and cancer type.
 #' @param x An object of class INCOMMON.
-#' @param tumour_type The tumour type identifier.
+#' @param tumor_type The tumour type identifier.
 #' @param gene The gene name..
 #' @return A table with the estimated FAM values
 #' @export

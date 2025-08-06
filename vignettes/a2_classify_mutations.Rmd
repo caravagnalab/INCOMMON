@@ -108,7 +108,7 @@ INCOMMON is a Bayesian model that infers mutation copy number and multiplicity f
 ```{r}
 data('priors_pcawg_hmf')
 
-priors_eta = compute_eta_prior(x = x, priors_pcawg_hmf = priors_pcawg_hmf)
+priors_eta = compute_eta_prior(x = x, priors_k_m = priors_pcawg_hmf)
 print(priors_eta)
 ```
 
@@ -116,7 +116,7 @@ For each tumour type in the dataset, we estimated the empirical mean and varianc
 
 We can visualise the prior distribution for each tumour type using the function `plot_eta_prior`:
 
-```{r, out.width="80%", fig.height=4, dpi=300, message=FALSE, warning=FALSE}
+```{r, out.width="80%", fig.height=6, dpi=300, message=FALSE, warning=FALSE}
 plot_eta_prior(x = x, priors_eta = priors_eta)
 ```
 The plot shows, for each tumour type and at the pan-cancer level (PANCA), the distribution of total read counts, potentially confused by diverse copy-number configurations and sample purities, and the underlying prior distribution of the rate of read counts per chromosome copy.
@@ -140,7 +140,7 @@ INCOMMON models the sample purity probabilistically, centering a Beta prior arou
 
 The prior purity distribution for a sample can be visualised using the function `plot_purity_prior`.
 
-```{r,  out.width="80%", fig.height=2, dpi=300,}
+```{r,  out.width="100%", fig.height=4, dpi=300,}
 plot_purity_prior(x = x, sample = sample, purity_error = 0.05)
 ```
 
@@ -154,7 +154,7 @@ We are now ready to run the classification step through function `classify`, usi
 out = classify(
   x = x,
   k_max = 8,
-  priors_pcawg_hmf = priors_pcawg_hmf,
+  priors_k_m = priors_pcawg_hmf,
   priors_eta = priors_eta,
   purity_error = 0.05,
   num_cores = 4,

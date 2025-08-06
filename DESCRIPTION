@@ -26,16 +26,20 @@ Imports:
     cli,
     cmdstanr,
     crayon,
+    data.table,
+    ggh4x,
     ggplot2,
+    ggridges,
     dplyr,
+    multcomp,
     scales,
     stats,
     survival,
     survminer,
     patchwork,
     ggrepel,
-    parallel,
-    purrr
+    purrr,
+    tidyr
 Remotes:
     caravagnalab/BMix,
     caravagnalab/CNAqc
@@ -45,3 +49,4 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 3.5)
 LazyData: true
+LazyDataCompression: xz

@@ -2,22 +2,22 @@
 % Please edit documentation in R/utils_new.R
 \name{show_FAM}
 \alias{show_FAM}
-\title{Get frction of alleles with the mutation (FAM) values for a gene and cancer type.}
+\title{Get the fraction of alleles with the mutation (FAM) values for a gene and cancer type.}
 \usage{
 show_FAM(x, tumor_type = NULL, gene = NULL)
 }
 \arguments{
 \item{x}{An object of class INCOMMON.}
 
-\item{gene}{The gene name..}
+\item{tumor_type}{The tumour type identifier.}
 
-\item{tumour_type}{The tumour type identifier.}
+\item{gene}{The gene name..}
 }
 \value{
 A table with the estimated FAM values
 }
 \description{
-Get frction of alleles with the mutation (FAM) values for a gene and cancer type.
+Get the fraction of alleles with the mutation (FAM) values for a gene and cancer type.
 }
 \examples{
 # First load example classified data
