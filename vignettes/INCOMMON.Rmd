@@ -22,17 +22,15 @@ library(INCOMMON)
 
 INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology.
 INCOMMON infers the copy number and multiplicity of somatic mutations from tumor-only read count data, 
-and can be applied to classify mutations from large-size datasets in an efficient and fast way. 
-Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations 
-(heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH),
-amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity). 
+and can be applied to tumour-only samples in an efficient and fast way. 
+For each mutation in a sample, INCOMMON computes a probability distribution over all
+the possible combinations of total copy number and multiplicity, and choses the one
+with maximum probability.
 
-In addition, INCOMMON offers 
-a genome interpretation framework, in which the full
-inactivation of tumor suppressor genes (TSG) through mutations
-with LOH, and the enhanced activation of oncogenes through
-mutations with amplification can be detected. These events
-can then be used to perform augmented analysis of survival and metastatic patterns.
+In addition, INCOMMON offers a genome interpretation framework, in which the tumour
+genome is classified based on the mutant dosage of oncogenes and tumour suppressor
+genes. Clinical outcome analysis (e.g. survival analysis and organotropism) based 
+on such complex genotypes can be performed with functions integrated in the package.
 
 > The INCOMMON model is designed to work with high coverage sequencing data such as 
 targeted panels but, in principle, it can be used with any sequencing assay. INCOMMON
@@ -40,47 +38,56 @@ is helpful also to analyse sequencing data from tumor-only assays, in paricular 
 files (fastq, sam/bam, etc.) are not availble.
 However, if one can access  higher-resolution whole-exome or whole-genome assays, specific [deconvolution methodologies should be used](https://caravagnalab.github.io/mobster, https://github.com/caravagnalab/CNAqc). 
 
-## Mutation copy number and multiplicity inference
+## The INCOMMON mutation copy-number caller
 
-INCOMMON assesses, for every mutation, copy number configurations identified by triples $(n_A,n_B,m)$ where
-$n_A$ is the major allele copy number, $n_B$ is the minor and
-the mutation is present in $m$ copies. The supported configurations are:
+INCOMMON is a Bayesian model that can infer, for a tumour mutation, $(i)$ the total 
+copy number at the mutant locus, and $(ii)$ the mutation multiplicity 
+(i.e., the number of DNA copies that harbour the mutation). This information provides
+the allele-specific configuration of the mutant locus. 
 
-  - Loss of heterozygosity in monosomy LOH: $(n_A=1,n_B=0, m=1)$
-  - Copy-neutral loss of heterozygosity CNLOH: $(n_A=2,  n_B=0 , m=2)$
-  - Amplification AM: $(n_A=3,  n_B=2 , m=2)$ or $(n_A=4,  n_B=2 , m=2)$
-  - Heterozygous mutant diploid HMD: $(n_A=2,  n_B=1 , m=1)$ 
+INCOMMON  takes input read counts data for $n$ mutations $X=\{x_1, \ldots, x_n\}$ to develop the joint likelihood}
+\begin{equation}
+{p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
+=
+\prod_{x_i\in X} p(d_i \mid \Theta)\, p(r_i \mid d_i, \Theta)
+\,.}
+\end{equation}
 
-INCOMMON implements [a classifier based on maximum a posteriori estimation](Classify_Mutations.html) to infer the copy number and multiplicity
-of mutations from read-count data.
+For every mutation $x_i=\langle r_i, d_i\rangle$, INCOMMON uses the number of reads 
+$r_i$  with the alternative allele and the total reads  $d_i$ (depth of sequencing). 
+The model infers two sample-specific parameters,  ($i$) the  sample purity ($0 < \pi \leq 1$),  and ($ii$) the rate of reads per chromosome copy ($\eta \in \mathbb{R}^+$), and two mutation-specific parameters, ($iii$) the  tumour  total copy number at the locus ($k_i\in \mathbb{Z}^+$) and ($iv$) the mutation multiplicty  ($m_i\in \mathbb{Z}^+$, $m_i\leq k_i$). 
 
-The classifier is based on a Beta-Binomial mixture model, in which the number of reads with a variant ($n$) is the number of events
-and the sequencing depth $N$ is the total number of trials.
 
-A mutation on a genomic site of ploidy $p = n_A+n_B$, with multiplicity $m\leq \max(n_A,n_B)$, in a sample of purity $\pi$
-has an expected VAF of
-\[
-\theta_{m,p}\left(\pi\right) = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
-\] 
+The model adopted by INCOMMON relates copy number to coverage linearly, so the 
+expected number of reads for $k$ chromosome copies is $k\eta$. 
 
-> Tumour sample purity $\pi$ can be estimated by copy number assessment, pathology assessment, or  in general any other bioinformatics approach outside INCOMMON. INCOMMON assumes that the input purity is correct.
 
-In the read counting process this represents the event probability. Therefore, the likelihood of observing:
+INCOMMON links the number of reads to the multiplicity and total copy number
+considering tumour/ normal admixing 
+\begin{align}
+p(d_i\mid \pi, \eta, k_i) &
+= \text{Poisson}(d_i \mid \lambda)
+&& 
+\lambda  = (1-\pi)2\eta + \pi \eta k_i  \label{eq:likelihood_pois}\\
+p(r_i\mid  \pi, k_i, m_i) &
+= \text{Binomial}(r_i \mid d_i, \varphi)
+&&
+\varphi = \frac{m_i\pi}{2\left(1-\pi\right)+k_i\pi}\label{eq:likelihood_binom}
+\end{align}
 
-- $n$ reads with the variant at the locus
-- $N$ coverage at the locus
-- sample purity $\pi$
 
-given ploidy $p$ and multiplicity $m$ is
 
-\[
-P(n | N, \theta_{m,p}\left(\pi\right),\rho) = \text{Beta-Binonmial}\left(n \;\large\mid\;\normalsize N,\theta_{m,p}\left(\pi\right), \rho\right)
-\] 
+The sequencing depth follows a Poisson distribution with an expected number of reads 
+$\lambda$ defined by combining tumour and normal readouts. Given the depth, 
+the number of mutant reads follows a Binomial distribution with success probability 
+$\varphi$ determined by the mixing of tumour and normal success rates.
 
-where $\rho$ models the overdispersion of the sequencer.
+INCOMMON uses Markov Chain Monte Carlo (implemented in `stan`) sampling to estimate a posterior distribution over  $m$, $k$, $\eta$ and $\pi$. To leverage the massive amount of public WGS data of human tumours and gain precision with targeted assays, by default INCOMMON uses  [a biologically informed prior distribution for copy number and multiplicity configurations from the PCAWG and HMF cohorts](a1_priors_k_m.html).
 
-> Setting $\rho = 0$ corresponds to using a pure Binomial model with no model of the sequencer overdispersion. 
-
+To support orthogonal estimation of tumour purity (e.g. from histopathological evaluation) 
+but resist potential error in the input estimate, INCOMMON centres a prior around the 
+purity measurements provided with each sample. After posterior inference, INCOMMON uses 
+posterior predictive checks to monitor the discrepancy between observed values and inferred posterior distributions on $k$, $m$, $\eta$ and $\pi$. 
 
 ##  Input format
 
@@ -113,43 +120,35 @@ x = init(
 
 print(x)
 ```
-## Genome interprter
+## Gene mutant dosage
 
-Downstream of INCOMMON classification, the mutant genome can be
-interpreted in terms of full inactivation of tumor suppressor genes (TSG) through mutations with LOH, and enhanced activation of oncogenes through
-mutations with amplification. 
+Downstream of INCOMMON classification, the tumour genome can be
+interpreted in terms of the [gene mutant dosage](a3_mutant_dosage.html) of tumor 
+suppressor genes (typically through mutations with LOH) and enhanced activation
+of oncogenes (typically through mutations with mutant copy gain). 
 
-For TSGs, full inactivation states include all the copy number configurations
-with loss of the wild-type (WT) allele (multiplicity equal to ploidy
-$m=p$):
+Mutant dosage classes (low, balanced and high) are derived from the fraction of 
+alleles carrying the mutation (FAM)
 
-- Mutations with LOH
-- Mutations with CNLOH
+\begin{equation}\label{e:expected_fma}
+    \text{FAM}_{g,t}=\sum\limits_{k=1}^{k_{max}}\sum_{m=1}^k\frac{m}{k}p(m,k\:|\: X_{g,t})\, ,
+\end{equation}
 
-For oncogenes, enhanced activation states include all the copy number configurations with amplification of the mutant allele (multiplicity
-$m = 2$):
-
-- Mutations with AM (trisomy or tetrasomy)
-- Mutations with CNLOH
-
-Even if the intepretation of CNLOH as an oncogene activating event might sound
-unusual, it is based on the intuition that, for an oncogene, the presence
-of multiple mutant copies is relevant, whereas the absence of the WT is not.
+which is derived from the full posterior distribution of $p(m,k\:|\: X_{g,t})$, 
+computed by INCOMMON.
 
 ## Survival analysis
 
 If patients' survival status and time are provided as features in the clinical 
-data table `clinical_table`, survival analysis can be performed. Downstream of
-classification, INCOMMON can stratify patients based on the mutational and 
-copy number state of a TSG or an oncogene of interest. 
+data table `clinical_table`, [survival analysis](a4_survival_analysis.html) can be performed. Downstream of
+classification, INCOMMON can stratify patients based on the mutant dosage of 
+a TSG or an oncogene of interest. 
 
 INCOMMON provides the following functions, dedicated to fitting survival data:
 
 - `kaplan_meier_fit` uses the Kaplan-Meier estimator to fit survival data from
   patients stratified with respect to the status of a specific `tumor_type` and
-  `gene` (Mutant TSG with/without LOH for suppressors, 
-  Mutant oncogene with/without amplification for oncogenes, with the WT group as
-  reference)
+  `gene` (low, balanced or high mutant dosage)
 - `cox_fit` uses a Cox proportional hazard ratio model to fit survival data. 
   In addition to arguments `tumor_type` and `gene`, it accepts other `covariates`,
   given they are provided in the `clinical_table`.
@@ -159,14 +158,13 @@ INCOMMON provides the following functions, dedicated to fitting survival data:
 If information about metastatisation is provided, such as type of the sample
 (primary tumor or metastasis), whether patients are metastatic or not, and sites
 of metastatisation for primary tumors, in the clinical 
-data table `clinical_table`, analysis of metastatic propensity and tropism based
-on INCOMMON classification and genome interpretation can be performed.
+data table `clinical_table`, [analysis of metastatic propensity and tropism](a5_metastasis_analysis.html) based on INCOMMON classification and genome interpretation can be performed.
 
 INCOMMON provides the following functions for analysis of metastases:
 
 - `met_propensity`: uses a logistic regression test to compute the odds ratio
-  (OR) of metastatisation between patients identified by the two mutational statuses
-  of a `gene`  (Mutant TSG with versus without LOH and Mutant oncogene with versus without         amplification) for specific types of primary tumors `tumor_type`.
+  (OR) of metastatisation between patients identified by the mutant dosage
+  of a `gene`  (low, balanced or high) for specific types of primary tumors `tumor_type`.
 
 - `met_tropism`: uses a logistic regression test to compute the odds ratio
   (OR) to metastatise to a specific site `METASTATIC_SITE` between patients identified by the two mutational statuses of a `gene`  (Mutant TSG with versus without LOH and Mutant oncogene with versus without amplification) for specific types of primary tumors `tumor_type`.
