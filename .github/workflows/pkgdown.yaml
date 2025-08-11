@@ -37,6 +37,8 @@ jobs:
         with:
           extra-packages: any::pkgdown, local::.
           needs: website
+          repos: https://mc-stan.org/r-packages/,https://cloud.r-project.org
+
 
       - name: Build Cmdstan
         run: |
