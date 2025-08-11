@@ -24,7 +24,6 @@ Suggests:
     DT
 Imports:
     cli,
-    cmdstanr,
     crayon,
     data.table,
     ggh4x,
@@ -40,9 +39,11 @@ Imports:
     ggrepel,
     purrr,
     tidyr
+Suggests: 
+    cmdstanr
 Additional_repositories:
     https://mc-stan.org/r-packages/
-URL: https://github.com/caravagnalab/INCOMMON
+URL: caravagnalab.github.io/INCOMMON
 BugReports: https://github.com/caravagnalab/INCOMMON/issues
 VignetteBuilder: knitr
 Depends: 

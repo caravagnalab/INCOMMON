@@ -41,11 +41,13 @@ reference:
   contents:
   - parameters
   - show_FAM
+  - posterior_k_m
 
 - title: INCOMMON Model
   desc: Functions to compute model likelihood and posterior distributions
   contents:
   - mutant_dosage_classification
+  - compute_expectations
 
 - title: Survival analysis with INCOMMON classes
   desc: Functions to perform survival analysis with patient stratificaiton based on INCOMMON classes
