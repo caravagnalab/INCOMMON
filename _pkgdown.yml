@@ -42,7 +42,6 @@ reference:
   - parameters
   - show_FAM
 
-
 - title: INCOMMON Model
   desc: Functions to compute model likelihood and posterior distributions
   contents:

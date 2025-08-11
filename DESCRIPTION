@@ -40,9 +40,8 @@ Imports:
     ggrepel,
     purrr,
     tidyr
-Remotes:
-    caravagnalab/BMix,
-    caravagnalab/CNAqc
+Additional_repositories:
+    https://mc-stan.org/r-packages/
 URL: https://github.com/caravagnalab/INCOMMON
 BugReports: https://github.com/caravagnalab/INCOMMON/issues
 VignetteBuilder: knitr
