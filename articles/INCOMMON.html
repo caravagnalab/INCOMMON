@@ -80,18 +80,15 @@
 <p>INCOMMON is a tool for the INference of COpy number and Mutation
 Multiplicity in ONcology. INCOMMON infers the copy number and
 multiplicity of somatic mutations from tumor-only read count data, and
-can be applied to classify mutations from large-size datasets in an
-efficient and fast way. Mutations are classified as either Tier-1
-(present in 100% cells) without copy-number alterations (heterozygous
-mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH
-(CNLOH), amplification (AM), or Tier-2 (subclonal or with high ploidy
-and low multiplicity).</p>
+can be applied to tumour-only samples in an efficient and fast way. For
+each mutation in a sample, INCOMMON computes a probability distribution
+over all the possible combinations of total copy number and
+multiplicity, and choses the one with maximum probability.</p>
 <p>In addition, INCOMMON offers a genome interpretation framework, in
-which the full inactivation of tumor suppressor genes (TSG) through
-mutations with LOH, and the enhanced activation of oncogenes through
-mutations with amplification can be detected. These events can then be
-used to perform augmented analysis of survival and metastatic
-patterns.</p>
+which the tumour genome is classified based on the mutant dosage of
+oncogenes and tumour suppressor genes. Clinical outcome analysis
+(e.g. survival analysis and organotropism) based on such complex
+genotypes can be performed with functions integrated in the package.</p>
 <blockquote>
 <p>The INCOMMON model is designed to work with high coverage sequencing
 data such as targeted panels but, in principle, it can be used with any
@@ -102,92 +99,96 @@ higher-resolution whole-exome or whole-genome assays, specific <a href="https://
 methodologies should be used</a>.</p>
 </blockquote>
 <div class="section level2">
-<h2 id="mutation-copy-number-and-multiplicity-inference">Mutation copy number and multiplicity inference<a class="anchor" aria-label="anchor" href="#mutation-copy-number-and-multiplicity-inference"></a>
+<h2 id="the-incommon-mutation-copy-number-caller">The INCOMMON mutation copy-number caller<a class="anchor" aria-label="anchor" href="#the-incommon-mutation-copy-number-caller"></a>
 </h2>
-<p>INCOMMON assesses, for every mutation, copy number configurations
-identified by triples
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>,</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A,n_B,m)</annotation></semantics></math>
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>A</mi></msub><annotation encoding="application/x-tex">n_A</annotation></semantics></math>
-is the major allele copy number,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>B</mi></msub><annotation encoding="application/x-tex">n_B</annotation></semantics></math>
-is the minor and the mutation is present in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
-copies. The supported configurations are:</p>
-<ul>
-<li>Loss of heterozygosity in monosomy LOH:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>=</mo><mn>1</mn><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mi>m</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A=1,n_B=0, m=1)</annotation></semantics></math>
-</li>
-<li>Copy-neutral loss of heterozygosity CNLOH:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>=</mo><mn>2</mn><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>=</mo><mn>0</mn><mo>,</mo><mi>m</mi><mo>=</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A=2,  n_B=0 , m=2)</annotation></semantics></math>
-</li>
-<li>Amplification AM:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>=</mo><mn>3</mn><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>=</mo><mn>2</mn><mo>,</mo><mi>m</mi><mo>=</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A=3,  n_B=2 , m=2)</annotation></semantics></math>
-or
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>=</mo><mn>4</mn><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>=</mo><mn>2</mn><mo>,</mo><mi>m</mi><mo>=</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A=4,  n_B=2 , m=2)</annotation></semantics></math>
-</li>
-<li>Heterozygous mutant diploid HMD:
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>=</mo><mn>2</mn><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo>=</mo><mn>1</mn><mo>,</mo><mi>m</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(n_A=2,  n_B=1 , m=1)</annotation></semantics></math>
-</li>
-</ul>
-<p>INCOMMON implements <a href="Classify_Mutations.html">a classifier
-based on maximum a posteriori estimation</a> to infer the copy number
-and multiplicity of mutations from read-count data.</p>
-<p>The classifier is based on a Beta-Binomial mixture model, in which
-the number of reads with a variant
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>)
-is the number of events and the sequencing depth
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-is the total number of trials.</p>
-<p>A mutation on a genomic site of ploidy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>=</mo><msub><mi>n</mi><mi>A</mi></msub><mo>+</mo><msub><mi>n</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">p = n_A+n_B</annotation></semantics></math>,
-with multiplicity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>≤</mo><mo>max</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mi>A</mi></msub><mo>,</mo><msub><mi>n</mi><mi>B</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">m\leq \max(n_A,n_B)</annotation></semantics></math>,
-in a sample of purity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
-has an expected VAF of
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mrow><mi>m</mi><mo>,</mo><mi>p</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>m</mi><mi>π</mi></mrow><mrow><mi>p</mi><mi>π</mi><mo>+</mo><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
-\theta_{m,p}\left(\pi\right) = \frac{m\pi}{p\pi + 2\left(1-\pi\right)}
-</annotation></semantics></math></p>
-<blockquote>
-<p>Tumour sample purity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
-can be estimated by copy number assessment, pathology assessment, or in
-general any other bioinformatics approach outside INCOMMON. INCOMMON
-assumes that the input purity is correct.</p>
-</blockquote>
-<p>In the read counting process this represents the event probability.
-Therefore, the likelihood of observing:</p>
-<ul>
-<li>
+<p>INCOMMON is a Bayesian model that can infer, for a tumour mutation,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i)</annotation></semantics></math>
+the total copy number at the mutant locus, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>i</mi><mi>i</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(ii)</annotation></semantics></math>
+the mutation multiplicity (i.e., the number of DNA copies that harbour
+the mutation). This information provides the allele-specific
+configuration of the mutant locus.</p>
+<p>INCOMMON takes input read counts data for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-reads with the variant at the locus</li>
-<li>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
-coverage at the locus</li>
-<li>sample purity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>
-</li>
-</ul>
-<p>given ploidy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-and multiplicity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
-is</p>
-<p><span class="math display">$$
-P(n | N, \theta_{m,p}\left(\pi\right),\rho) =
-\text{Beta-Binonmial}\left(n \;\large\mid\;\normalsize
-N,\theta_{m,p}\left(\pi\right), \rho\right)
-$$</span></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
-models the overdispersion of the sequencer.</p>
-<blockquote>
-<p>Setting
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\rho = 0</annotation></semantics></math>
-corresponds to using a pure Binomial model with no model of the
-sequencer overdispersion.</p>
-</blockquote>
+mutations
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">X=\{x_1, \ldots, x_n\}</annotation></semantics></math>
+to develop the joint likelihood}
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>∣</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∏</mo><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∈</mo><mi>X</mi></mrow></munder><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∏</mo><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∈</mo><mi>X</mi></mrow></munder><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mi>i</mi></msub><mo>∣</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>r</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>d</mi><mi>i</mi></msub><mo>,</mo><mi>Θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
+{p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
+=
+\prod_{x_i\in X} p(d_i \mid \Theta)\, p(r_i \mid d_i, \Theta)
+\,.}
+\end{equation}</annotation></semantics></math></p>
+<p>For every mutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msub><mi>r</mi><mi>i</mi></msub><mo>,</mo><msub><mi>d</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">x_i=\langle r_i, d_i\rangle</annotation></semantics></math>,
+INCOMMON uses the number of reads
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>r</mi><mi>i</mi></msub><annotation encoding="application/x-tex">r_i</annotation></semantics></math>
+with the alternative allele and the total reads
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mi>i</mi></msub><annotation encoding="application/x-tex">d_i</annotation></semantics></math>
+(depth of sequencing). The model infers two sample-specific parameters,
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>)
+the sample purity
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>&lt;</mo><mi>π</mi><mo>≤</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0 &lt; \pi \leq 1</annotation></semantics></math>),
+and
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">ii</annotation></semantics></math>)
+the rate of reads per chromosome copy
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>∈</mo><msup><mi>ℝ</mi><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">\eta \in \mathbb{R}^+</annotation></semantics></math>),
+and two mutation-specific parameters,
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>i</mi><mi>i</mi></mrow><annotation encoding="application/x-tex">iii</annotation></semantics></math>)
+the tumour total copy number at the locus
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>i</mi></msub><mo>∈</mo><msup><mi>ℤ</mi><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">k_i\in \mathbb{Z}^+</annotation></semantics></math>)
+and
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mi>v</mi></mrow><annotation encoding="application/x-tex">iv</annotation></semantics></math>)
+the mutation multiplicty
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mi>i</mi></msub><mo>∈</mo><msup><mi>ℤ</mi><mo>+</mo></msup></mrow><annotation encoding="application/x-tex">m_i\in \mathbb{Z}^+</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mi>i</mi></msub><mo>≤</mo><msub><mi>k</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">m_i\leq k_i</annotation></semantics></math>).</p>
+<p>The model adopted by INCOMMON relates copy number to coverage
+linearly, so the expected number of reads for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+chromosome copies is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>η</mi></mrow><annotation encoding="application/x-tex">k\eta</annotation></semantics></math>.</p>
+<p>INCOMMON links the number of reads to the multiplicity and total copy
+number considering tumour/ normal admixing
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mi>i</mi></msub><mo>∣</mo><mi>π</mi><mo>,</mo><mi>η</mi><mo>,</mo><msub><mi>k</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mtext mathvariant="normal">Poisson</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mi>i</mi></msub><mo>∣</mo><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>λ</mi><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn><mi>η</mi><mo>+</mo><mi>π</mi><mi>η</mi><msub><mi>k</mi><mi>i</mi></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>r</mi><mi>i</mi></msub><mo>∣</mo><mi>π</mi><mo>,</mo><msub><mi>k</mi><mi>i</mi></msub><mo>,</mo><msub><mi>m</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mtext mathvariant="normal">Binomial</mtext><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>r</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>d</mi><mi>i</mi></msub><mo>,</mo><mi>φ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mi>φ</mi><mo>=</mo><mfrac><mrow><msub><mi>m</mi><mi>i</mi></msub><mi>π</mi></mrow><mrow><mn>2</mn><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>k</mi><mi>i</mi></msub><mi>π</mi></mrow></mfrac></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align}
+p(d_i\mid \pi, \eta, k_i) &amp;
+= \text{Poisson}(d_i \mid \lambda)
+&amp;&amp; 
+\lambda  = (1-\pi)2\eta + \pi \eta k_i  \label{eq:likelihood_pois}\\
+p(r_i\mid  \pi, k_i, m_i) &amp;
+= \text{Binomial}(r_i \mid d_i, \varphi)
+&amp;&amp;
+\varphi = \frac{m_i\pi}{2\left(1-\pi\right)+k_i\pi}\label{eq:likelihood_binom}
+\end{align}</annotation></semantics></math></p>
+<p>The sequencing depth follows a Poisson distribution with an expected
+number of reads
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+defined by combining tumour and normal readouts. Given the depth, the
+number of mutant reads follows a Binomial distribution with success
+probability
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>φ</mi><annotation encoding="application/x-tex">\varphi</annotation></semantics></math>
+determined by the mixing of tumour and normal success rates.</p>
+<p>INCOMMON uses Markov Chain Monte Carlo (implemented in
+<code>stan</code>) sampling to estimate a posterior distribution over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>.
+To leverage the massive amount of public WGS data of human tumours and
+gain precision with targeted assays, by default INCOMMON uses <a href="a1_priors_k_m.html">a biologically informed prior distribution for
+copy number and multiplicity configurations from the PCAWG and HMF
+cohorts</a>.</p>
+<p>To support orthogonal estimation of tumour purity (e.g. from
+histopathological evaluation) but resist potential error in the input
+estimate, INCOMMON centres a prior around the purity measurements
+provided with each sample. After posterior inference, INCOMMON uses
+posterior predictive checks to monitor the discrepancy between observed
+values and inferred posterior distributions on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>π</mi><annotation encoding="application/x-tex">\pi</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="input-format">Input format<a class="anchor" aria-label="anchor" href="#input-format"></a>
@@ -292,49 +293,37 @@ is pre-processed by INCOMMON:</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   AGE_AT_SEQUENCING &lt;dbl&gt;, RACE &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="genome-interprter">Genome interprter<a class="anchor" aria-label="anchor" href="#genome-interprter"></a>
+<h2 id="gene-mutant-dosage">Gene mutant dosage<a class="anchor" aria-label="anchor" href="#gene-mutant-dosage"></a>
 </h2>
-<p>Downstream of INCOMMON classification, the mutant genome can be
-interpreted in terms of full inactivation of tumor suppressor genes
-(TSG) through mutations with LOH, and enhanced activation of oncogenes
-through mutations with amplification.</p>
-<p>For TSGs, full inactivation states include all the copy number
-configurations with loss of the wild-type (WT) allele (multiplicity
-equal to ploidy
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mi>p</mi></mrow><annotation encoding="application/x-tex">m=p</annotation></semantics></math>):</p>
-<ul>
-<li>Mutations with LOH</li>
-<li>Mutations with CNLOH</li>
-</ul>
-<p>For oncogenes, enhanced activation states include all the copy number
-configurations with amplification of the mutant allele (multiplicity
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">m = 2</annotation></semantics></math>):</p>
-<ul>
-<li>Mutations with AM (trisomy or tetrasomy)</li>
-<li>Mutations with CNLOH</li>
-</ul>
-<p>Even if the intepretation of CNLOH as an oncogene activating event
-might sound unusual, it is based on the intuition that, for an oncogene,
-the presence of multiple mutant copies is relevant, whereas the absence
-of the WT is not.</p>
+<p>Downstream of INCOMMON classification, the tumour genome can be
+interpreted in terms of the <a href="a3_mutant_dosage.html">gene mutant
+dosage</a> of tumor suppressor genes (typically through mutations with
+LOH) and enhanced activation of oncogenes (typically through mutations
+with mutant copy gain).</p>
+<p>Mutant dosage classes (low, balanced and high) are derived from the
+fraction of alleles carrying the mutation (FAM)</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext mathvariant="normal">FAM</mtext><mrow><mi>g</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>k</mi><mrow><mi>m</mi><mi>a</mi><mi>x</mi></mrow></msub></munderover><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>k</mi></munderover><mfrac><mi>m</mi><mi>k</mi></mfrac><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>k</mi><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.222em"></mspace><msub><mi>X</mi><mrow><mi>g</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="0.167em"></mspace><mo>,</mo></mrow><annotation encoding="application/x-tex">\begin{equation}\label{e:expected_fma}
+    \text{FAM}_{g,t}=\sum\limits_{k=1}^{k_{max}}\sum_{m=1}^k\frac{m}{k}p(m,k\:|\: X_{g,t})\, ,
+\end{equation}</annotation></semantics></math></p>
+<p>which is derived from the full posterior distribution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mo>,</mo><mi>k</mi><mspace width="0.222em"></mspace><mo stretchy="false" form="prefix">|</mo><mspace width="0.222em"></mspace><msub><mi>X</mi><mrow><mi>g</mi><mo>,</mo><mi>t</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">p(m,k\:|\: X_{g,t})</annotation></semantics></math>,
+computed by INCOMMON.</p>
 </div>
 <div class="section level2">
 <h2 id="survival-analysis">Survival analysis<a class="anchor" aria-label="anchor" href="#survival-analysis"></a>
 </h2>
 <p>If patients’ survival status and time are provided as features in the
-clinical data table <code>clinical_table</code>, survival analysis can
-be performed. Downstream of classification, INCOMMON can stratify
-patients based on the mutational and copy number state of a TSG or an
-oncogene of interest.</p>
+clinical data table <code>clinical_table</code>, <a href="a4_survival_analysis.html">survival analysis</a> can be performed.
+Downstream of classification, INCOMMON can stratify patients based on
+the mutant dosage of a TSG or an oncogene of interest.</p>
 <p>INCOMMON provides the following functions, dedicated to fitting
 survival data:</p>
 <ul>
 <li>
 <code>kaplan_meier_fit</code> uses the Kaplan-Meier estimator to fit
 survival data from patients stratified with respect to the status of a
-specific <code>tumor_type</code> and <code>gene</code> (Mutant TSG
-with/without LOH for suppressors, Mutant oncogene with/without
-amplification for oncogenes, with the WT group as reference)</li>
+specific <code>tumor_type</code> and <code>gene</code> (low, balanced or
+high mutant dosage)</li>
 <li>
 <code>cox_fit</code> uses a Cox proportional hazard ratio model to
 fit survival data. In addition to arguments <code>tumor_type</code> and
@@ -348,17 +337,16 @@ are provided in the <code>clinical_table</code>.</li>
 <p>If information about metastatisation is provided, such as type of the
 sample (primary tumor or metastasis), whether patients are metastatic or
 not, and sites of metastatisation for primary tumors, in the clinical
-data table <code>clinical_table</code>, analysis of metastatic
-propensity and tropism based on INCOMMON classification and genome
-interpretation can be performed.</p>
+data table <code>clinical_table</code>, <a href="a5_metastasis_analysis.html">analysis of metastatic propensity and
+tropism</a> based on INCOMMON classification and genome interpretation
+can be performed.</p>
 <p>INCOMMON provides the following functions for analysis of
 metastases:</p>
 <ul>
 <li><p><code>met_propensity</code>: uses a logistic regression test to
 compute the odds ratio (OR) of metastatisation between patients
-identified by the two mutational statuses of a <code>gene</code> (Mutant
-TSG with versus without LOH and Mutant oncogene with versus without
-amplification) for specific types of primary tumors
+identified by the mutant dosage of a <code>gene</code> (low, balanced or
+high) for specific types of primary tumors
 <code>tumor_type</code>.</p></li>
 <li><p><code>met_tropism</code>: uses a logistic regression test to
 compute the odds ratio (OR) to metastatise to a specific site
