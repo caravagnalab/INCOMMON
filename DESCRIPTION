@@ -18,10 +18,6 @@ License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Suggests: 
-    knitr,
-    rmarkdown,
-    DT
 Imports:
     cli,
     crayon,
@@ -40,6 +36,9 @@ Imports:
     purrr,
     tidyr
 Suggests: 
+    knitr,
+    rmarkdown,
+    DT,
     cmdstanr
 Additional_repositories:
     https://mc-stan.org/r-packages/
