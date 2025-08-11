@@ -1,14 +1,14 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  a1_pcawg_priors: a1_pcawg_priors.html
+  a1_priors_k_m: a1_priors_k_m.html
   a2_classify_mutations: a2_classify_mutations.html
-  a3_genome_interpreter: a3_genome_interpreter.html
+  a3_mutant_dosage: a3_mutant_dosage.html
   a4_survival_analysis: a4_survival_analysis.html
   a5_metastasis_analysis: a5_metastasis_analysis.html
   INCOMMON: INCOMMON.html
-last_built: 2024-11-22T13:55Z
+last_built: 2025-08-11T16:08Z
 urls:
   reference: caravagnalab.github.io/INCOMMON/reference
   article: caravagnalab.github.io/INCOMMON/articles

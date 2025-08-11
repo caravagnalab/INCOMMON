@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>INCOMMON • INCOMMON</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -40,9 +39,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/a1_pcawg_priors.html">1. Prior distribution of INCOMMON classes from PCAWG</a></li>
-    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of copy number and mutation multiplicity</a></li>
-    <li><a class="dropdown-item" href="../articles/a3_genome_interpreter.html">3. Genome Interpreter</a></li>
+<li><a class="dropdown-item" href="../articles/a1_priors_k_m.html">1. Prior distribution of mutation copy number and multiplicity from PCAWG</a></li>
+    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of mutation copy number and multiplicity</a></li>
+    <li><a class="dropdown-item" href="../articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
   </ul>
@@ -68,14 +67,14 @@
       <img src="../logo.png" class="logo" alt=""><h1>INCOMMON</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/1.0/vignettes/INCOMMON.Rmd" class="external-link"><code>vignettes/INCOMMON.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/vignettes/INCOMMON.Rmd" class="external-link"><code>vignettes/INCOMMON.Rmd</code></a></small>
       <div class="d-none name"><code>INCOMMON.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/INCOMMON" class="external-link">INCOMMON</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">INCOMMON</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span></code></pre></div>
 <p>INCOMMON is a tool for the INference of COpy number and Mutation
@@ -380,7 +379,7 @@ specific types of primary tumors <code>tumor_type</code>.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

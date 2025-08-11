@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>4. Survival analysis of MSK-MetTropism • INCOMMON</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -40,9 +39,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/a1_pcawg_priors.html">1. Prior distribution of INCOMMON classes from PCAWG</a></li>
-    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of copy number and mutation multiplicity</a></li>
-    <li><a class="dropdown-item" href="../articles/a3_genome_interpreter.html">3. Genome Interpreter</a></li>
+<li><a class="dropdown-item" href="../articles/a1_priors_k_m.html">1. Prior distribution of mutation copy number and multiplicity from PCAWG</a></li>
+    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of mutation copy number and multiplicity</a></li>
+    <li><a class="dropdown-item" href="../articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
   </ul>
@@ -68,14 +67,14 @@
       <img src="../logo.png" class="logo" alt=""><h1>4. Survival analysis of MSK-MetTropism</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/1.0/vignettes/a4_survival_analysis.Rmd" class="external-link"><code>vignettes/a4_survival_analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/vignettes/a4_survival_analysis.Rmd" class="external-link"><code>vignettes/a4_survival_analysis.Rmd</code></a></small>
       <div class="d-none name"><code>a4_survival_analysis.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/INCOMMON" class="external-link">INCOMMON</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">INCOMMON</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -86,7 +85,8 @@
 <span><span class="co">#&gt;     filter, lag</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cli.r-lib.org" class="external-link">cli</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this vignette we carry out survival analysis based on INCOMMON
 classification of samples of pancreatic adenocarcinoma (PAAD) patients
 from the MSK-MetTropsim cohort.</p>
@@ -99,162 +99,62 @@ samples.</p>
 <div class="section level3">
 <h3 id="input-intialisation">4.1.1 Input intialisation<a class="anchor" aria-label="anchor" href="#input-intialisation"></a>
 </h3>
-<p>First we prepare the input using function <code>init</code>:</p>
+<p>First we read the example classified data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_genomic_data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_clinical_data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cancer_gene_census</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
-<span>  genomic_data <span class="op">=</span> <span class="va">MSK_genomic_data</span>,</span>
-<span>  clinical_data <span class="op">=</span> <span class="va">MSK_clinical_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">'PAAD'</span><span class="op">)</span>,</span>
-<span>  gene_roles <span class="op">=</span> <span class="va">cancer_gene_census</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── INCOMMON - Inference of copy number and mutation multiplicity in oncology ───</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Genomic data</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">25659</span> samples, with <span style="color: #00BB00;">224939</span> mutations in <span style="color: #00BB00;">491</span> genes</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No read counts found for <span style="color: #00BB00;">1393</span> mutations in <span style="color: #00BB00;">1393</span> samples</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Gene name not provided for <span style="color: #00BB00;">1393</span> mutations</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #00BB00;">201</span> genes could not be assigned a role (TSG or oncogene)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Clinical data</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Provided clinical features:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sample (required for classification)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> purity (required for classification)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> tumor_type</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_MONTHS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_STATUS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SAMPLE_TYPE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_COUNT</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> METASTATIC_SITE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_SITE_COUNT</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PRIMARY_SITE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SUBTYPE_ABBREVIATION</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GENE_PANEL</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SEX</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> TMB_NONSYNONYMOUS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FGA</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> AGE_AT_SEQUENCING</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> RACE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">1760</span> matching samples</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Found <span style="color: #00BB00;">23905</span> unmatched samples</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">6779</span> PASS mutations across <span style="color: #00BB00;">1740</span> samples, with <span style="color: #00BB00;">276</span> mutant genes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.26</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">623</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6,779 × 27</span></span></span>
-<span><span class="co">#&gt;    sample   tumor_type purity chr     from     to ref   alt      DP    NV    VAF</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-00094… PAAD          0.1 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T       847    82 0.096<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-00094… PAAD          0.1 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 C     T       709    91 0.128 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-00215… PAAD          0.4 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T      <span style="text-decoration: underline;">1</span>048   322 0.307 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-00215… PAAD          0.4 chr17 7.57<span style="color: #949494;">e</span>6 7.57<span style="color: #949494;">e</span>6 G     A       942   384 0.408 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-00215… PAAD          0.4 chr1  2.71<span style="color: #949494;">e</span>7 2.71<span style="color: #949494;">e</span>7 -     G       833   289 0.347 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-00215… PAAD          0.4 chr1  1.13<span style="color: #949494;">e</span>7 1.13<span style="color: #949494;">e</span>7 T     C      <span style="text-decoration: underline;">1</span>115   300 0.269 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-00215… PAAD          0.4 chr3  1.87<span style="color: #949494;">e</span>8 1.87<span style="color: #949494;">e</span>8 G     A      <span style="text-decoration: underline;">1</span>362   847 0.622 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-00034… PAAD          0.2 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T       533    56 0.105 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-00034… PAAD          0.2 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 C     A       351    56 0.160 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-00245… PAAD          0.2 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     G       938   155 0.165 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6,769 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, OS_MONTHS &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   OS_STATUS &lt;dbl&gt;, SAMPLE_TYPE &lt;chr&gt;, MET_COUNT &lt;dbl&gt;, METASTATIC_SITE &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   MET_SITE_COUNT &lt;dbl&gt;, PRIMARY_SITE &lt;chr&gt;, SUBTYPE_ABBREVIATION &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   GENE_PANEL &lt;chr&gt;, SEX &lt;chr&gt;, TMB_NONSYNONYMOUS &lt;dbl&gt;, FGA &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AGE_AT_SEQUENCING &lt;dbl&gt;, RACE &lt;chr&gt;</span></span></span></code></pre></div>
-<p>There are 6779 mutations with average sequencing depth 623 across
-1740 samples with average purity 0.26.</p>
-</div>
-<div class="section level3">
-<h3 id="classification">4.1.2 Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
-</h3>
-<p>We then classify the mutations using PCAWG priors and the default
-entropy cutoff and overdispersion parameter:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="va">x</span>,</span>
-<span>  priors <span class="op">=</span> <span class="fu">INCOMMON</span><span class="fu">::</span><span class="va"><a href="../reference/pcawg_priors.html">pcawg_priors</a></span>,</span>
-<span>  entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
-<span>  rho <span class="op">=</span> <span class="fl">0.01</span></span>
-<span>  <span class="co"># parallel = TRUE, # uncomment these to run in parallel</span></span>
-<span>  <span class="co"># num_cores = 8</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">6779</span> PASS mutations across <span style="color: #00BB00;">1740</span> samples, with <span style="color: #00BB00;">276</span> mutant genes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.26</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">623</span></span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations with overdispersion parameter <span style="color: #00BB00;">0.01</span> and ent</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2759 mutations (HMD)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 564 mutations (LOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1990 mutations (CNLOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 284 mutations (AM)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 1182 mutations (Tier-2)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6,779 × 18</span></span></span>
-<span><span class="co">#&gt;    sample   tumor_type purity chr     from     to ref   alt      DP    NV    VAF</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-00094… PAAD          0.1 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T       847    82 0.096<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-00094… PAAD          0.1 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 C     T       709    91 0.128 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-00215… PAAD          0.4 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T      <span style="text-decoration: underline;">1</span>048   322 0.307 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-00215… PAAD          0.4 chr17 7.57<span style="color: #949494;">e</span>6 7.57<span style="color: #949494;">e</span>6 G     A       942   384 0.408 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-00215… PAAD          0.4 chr1  2.71<span style="color: #949494;">e</span>7 2.71<span style="color: #949494;">e</span>7 -     G       833   289 0.347 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-00215… PAAD          0.4 chr1  1.13<span style="color: #949494;">e</span>7 1.13<span style="color: #949494;">e</span>7 T     C      <span style="text-decoration: underline;">1</span>115   300 0.269 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-00215… PAAD          0.4 chr3  1.87<span style="color: #949494;">e</span>8 1.87<span style="color: #949494;">e</span>8 G     A      <span style="text-decoration: underline;">1</span>362   847 0.622 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-00034… PAAD          0.2 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     T       533    56 0.105 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-00034… PAAD          0.2 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 C     A       351    56 0.160 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-00245… PAAD          0.2 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     G       938   155 0.165 </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 6,769 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, id &lt;chr&gt;, label &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   state &lt;chr&gt;, posterior &lt;dbl&gt;, entropy &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>There are 2611 heterozygous diploid mutations (HMD), 558 mutations
-with loss of heterozygosity (LOH), 1988 mutations with copy-neutral LOH
-(CNLOH), 283 mutations with amplification. In addition, 1339 mutations
-were classified as Tier-2, either because of entropy being larger than
-cutoff or because of a low number of mutant alleles relative to the
-wild-type.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MSK_PAAD_output"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">MSK_PAAD_output</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">175054</span> PASS mutations across <span style="color: #00BB00;">24018</span> samples, with <span style="color: #00BB00;">290</span> mutant gen</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">649</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 7,839 × 186</span></span></span>
+<span><span class="co">#&gt;    sample    tumor_type purity chr     from     to ref   alt      NV    DP gene </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-0000142 PAAD          0.4 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     C       273  <span style="text-decoration: underline;">1</span>404 KRAS </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-0000142 PAAD          0.4 chr17 7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     G        53   671 TP53 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-0000142 PAAD          0.4 chr2  4.77<span style="color: #949494;">e</span>7 4.77<span style="color: #949494;">e</span>7 T     T        31   481 MSH2 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-0000142 PAAD          0.4 chr5  1.28<span style="color: #949494;">e</span>6 1.28<span style="color: #949494;">e</span>6 G     G        34   227 TERT </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-0000783 PAAD          0.8 chr12 2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     C       474   941 KRAS </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-0000783 PAAD          0.8 chr5  1.12<span style="color: #949494;">e</span>8 1.12<span style="color: #949494;">e</span>8 G     G       164   424 APC  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-0000783 PAAD          0.8 chr11 8.60<span style="color: #949494;">e</span>7 8.60<span style="color: #949494;">e</span>7 T     T       210   601 EED  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-0000783 PAAD          0.8 chr13 3.29<span style="color: #949494;">e</span>7 3.29<span style="color: #949494;">e</span>7 TC    TC      160   493 BRCA2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-0000879 PAAD          0.6 chr7  1.40<span style="color: #949494;">e</span>8 1.40<span style="color: #949494;">e</span>8 A     A       308   736 BRAF </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-0000879 PAAD          0.6 chr1  1.15<span style="color: #949494;">e</span>8 1.15<span style="color: #949494;">e</span>8 T     T       188   506 NRAS </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7,829 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 175 more variables: HGVSp_Short &lt;chr&gt;, Entrez_Gene_Id &lt;dbl&gt;, Center &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   NCBI_Build &lt;chr&gt;, Chromosome &lt;chr&gt;, Strand &lt;chr&gt;, Consequence &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Variant_Classification &lt;chr&gt;, Variant_Type &lt;chr&gt;, Tumor_Seq_Allele2 &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   dbSNP_RS &lt;chr&gt;, dbSNP_Val_Status &lt;lgl&gt;, Matched_Norm_Sample_Barcode &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Match_Norm_Seq_Allele1 &lt;lgl&gt;, Match_Norm_Seq_Allele2 &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   Tumor_Validation_Allele1 &lt;lgl&gt;, Tumor_Validation_Allele2 &lt;lgl&gt;, …</span></span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="survival-analysis-of-mutant-kras-patients">4.2 Survival analysis of Mutant KRAS patients<a class="anchor" aria-label="anchor" href="#survival-analysis-of-mutant-kras-patients"></a>
 </h2>
-<p>In order to obtain a grouping of patients based on the mutational
-status of KRAS, we need first to annotate the genotype of each sample
-and interpret mutant KRAS genomes.</p>
+<p>In order to obtain a grouping of patients based on the mutant dosage
+of KRAS, we need first to annotate the FAM and mutant dosage class of
+each sample and interpret mutant KRAS genomes.</p>
 <div class="section level3">
-<h3 id="genome-interpretation">4.2.1 Genome Interpretation<a class="anchor" aria-label="anchor" href="#genome-interpretation"></a>
+<h3 id="mutand-dosage-classification">4.2.1 Mutand Dosage Classification<a class="anchor" aria-label="anchor" href="#mutand-dosage-classification"></a>
 </h3>
-<p>We use the function <code>genome_interpreter</code> to add INCOMMON
-classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2)
-<code>class</code> and annotate each sample with a <code>genotype</code>
-summarising all the interpreted mutations found in the sample.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/genome_interpreter.html">genome_interpreter</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">1286</span> different genotypes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP,Mutant TP53 without LOH (68 Samples, Frequency 0.04)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS with AMP,Mutant TP53 with LOH (53 Samples, Frequency 0.03)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant KRAS without AMP (52 Samples, Frequency 0.03)</span></span></code></pre></div>
-<p>Across the PAAD samples that we classified, there are 1288 different
-genotypes, the most abundant ones being different combinations of TP53
-with/without LOH and KRAS mutations with/without amplifications.</p>
-<p>We investigate the impact on survival of the Mutant KRAS with/without
-amplification genomes with respect to KRAS WT patients.</p>
-<p>We first look at the distribution of INCOMMON copy number states
-across PAAD samples for KRAS, using function
-<code>plot_class_fraction</code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_class_fraction.html">plot_class_fraction</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'KRAS'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The frequency of states <span style="color: #00BB00;">CNLOH</span>, <span style="color: #00BB00;">HMD</span>, <span style="color: #00BB00;">LOH</span>, and <span style="color: #00BB00;">Tier-2</span> are <span style="color: #00BB00;">0.35</span>, <span style="color: #00BB00;">0.41</span>, <span style="color: #00BB00;">0.1</span>, and <span style="color: #00BB00;">0.14</span></span></span></code></pre></div>
-<p><img src="a4_survival_analysis_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<p>Across 1644 samples, a large fraction of KRAS mutations (35%) is
-associated with amplification of the mutant allele, always through CNLOH
-(amplification in diploid state). A slightly higher number (38%) of
-mutant KRAS samples is without amplification, whereas 26% of the samples
-has a Tier-2 KRAS mutation.</p>
+<p>We use the function <code>mutant_dosage_classification</code> to add
+INCOMMON classes (Mutant with/without LOH, Mutant with/without AMP,
+Tier-2) <code>class</code> and annotate each sample with a
+<code>genotype</code> summarising all the interpreted mutations found in
+the sample.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/mutant_dosage_classification.html">mutant_dosage_classification</a></span><span class="op">(</span><span class="va">MSK_PAAD_output</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(id)`</span></span></code></pre></div>
+<p>We investigate the impact on survival of the Mutant KRAS dosage with
+respect to KRAS WT patients.</p>
+<p>We first look at the distribution of mutant dosage across PAAD
+samples for KRAS, using function <code>plot_class_fraction</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_class_fraction.html">plot_class_fraction</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'KRAS'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a4_survival_analysis_files/figure-html/unnamed-chunk-4-1.png" width="120%"></p>
+<p>Across 1563 samples, a relatively large fraction of KRAS mutations
+(21%) is associated with high dosage in primary pancreatic tumours, and
+the fraction increases to 24% in metastases.</p>
 </div>
 <div class="section level3">
 <h3 id="kaplan-meier-survival-esitmates">4.2.2 Kaplan-Meier survival esitmates<a class="anchor" aria-label="anchor" href="#kaplan-meier-survival-esitmates"></a>
@@ -264,9 +164,9 @@ data (overall survival status versus overall survival months in this
 case) using the Kaplan-Meier estimator. Notice that we must choose the
 variables from <code>clinical_data</code> to be used as survival time
 and survival status (‘OS_MONTHS’ and ‘OS_STATUS’ in this case).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/kaplan_meier_fit.html">kaplan_meier_fit</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="va">x</span>, </span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/kaplan_meier_fit.html">kaplan_meier_fit</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, </span>
 <span>  tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, </span>
 <span>  gene <span class="op">=</span> <span class="st">'KRAS'</span>, </span>
 <span>  survival_time <span class="op">=</span> <span class="st">'OS_MONTHS'</span>, </span>
@@ -274,57 +174,85 @@ and survival status (‘OS_MONTHS’ and ‘OS_STATUS’ in this case).</p>
 <span><span class="co">#&gt; Call: survfit(formula = "survival::Surv(OS_MONTHS, OS_STATUS) ~ group", </span></span>
 <span><span class="co">#&gt;     data = data)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                           n events median 0.95LCL 0.95UCL</span></span>
-<span><span class="co">#&gt; KRAS WT                 109     63   21.5   18.86    30.8</span></span>
-<span><span class="co">#&gt; Mutant KRAS without AMP 673    418   18.6   16.23    21.0</span></span>
-<span><span class="co">#&gt; Mutant KRAS with AMP    573    394   11.7    9.69    13.2</span></span></code></pre></div>
-<p>The median overall survival time decreases from 21.5 months for the
-KRAS WT group to 18.2 months for Mutant KRAS without amplification and
-further to 11.7 months for Mutant KRAS with amplification patients.</p>
+<span><span class="co">#&gt;    7 observations deleted due to missingness </span></span>
+<span><span class="co">#&gt;                   n events median 0.95LCL 0.95UCL</span></span>
+<span><span class="co">#&gt; WT              214     92   38.3   28.98    51.1</span></span>
+<span><span class="co">#&gt; Low Dosage      541    344   17.4   15.34    19.8</span></span>
+<span><span class="co">#&gt; Balanced Dosage 670    417   14.6   13.34    15.8</span></span>
+<span><span class="co">#&gt; High Dosage     347    237   10.7    9.36    12.5</span></span></code></pre></div>
+<p>The median overall survival time decreases proportionally to the
+mutant KRAS dosage: from 38.3 months for the WT group to 17.4 months for
+low mutant dosage, 14.6 months for the balanced mutant dosage, down to
+10.7 months for the high mutant dosage.</p>
 </div>
 <div class="section level3">
 <h3 id="hazard-ratio-estimates-with-cox-regression">4.2.3 Hazard Ratio estimates with Cox regression<a class="anchor" aria-label="anchor" href="#hazard-ratio-estimates-with-cox-regression"></a>
 </h3>
 <p>In order to estimate the hazard ratio associated with these groups,
 we fit the same survival data, this time using a multivariate Cox
-proportional hazards regression model. Here, we include the age of
-patients at death, sex and tumor mutational burden (TMB) as model
-covariates. For TMB, best practices require using a value of 10 per
+proportional hazards regression model. Here, we overcome the confounding
+effect of global mutational and copy-number burden by including the
+tumour mutational burden and the fraction of genome altered (FGA)
+provided within the clinical data, plus other standard covariates such
+as age of patients at sequencing, sex and sample type (primary vs
+metastasis). For TMB, best practices require using a value of 10 per
 megabase to discriminate patients with high burden from those with low.
 We can decide which strategy to use by tuning argument
 <code>tmb_method</code>. The default value is “median”, which uses the
 median over all samples asthreshold. Here, we set it to “&gt;10” to
 stick to the mentioned best practices.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/cox_fit.html">cox_fit</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/cox_fit.html">cox_fit</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>,</span>
 <span>        tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>,</span>
 <span>        gene <span class="op">=</span> <span class="st">'KRAS'</span>,</span>
 <span>        survival_time <span class="op">=</span> <span class="st">'OS_MONTHS'</span>,</span>
 <span>        survival_status <span class="op">=</span> <span class="st">'OS_STATUS'</span>,</span>
-<span>        covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'age'</span>, <span class="st">'sex'</span>, <span class="st">'tmb'</span><span class="op">)</span>,</span>
+<span>        covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'AGE_AT_SEQUENCING'</span>, <span class="st">'SEX'</span>, <span class="st">'TMB'</span>, <span class="st">'FGA'</span>,<span class="st">'SAMPLE_TYPE'</span><span class="op">)</span>,</span>
 <span>        tmb_method <span class="op">=</span> <span class="st">"&gt;10"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Cox fit with INCOMMON groups:"</span></span>
 <span><span class="co">#&gt; Call:</span></span>
 <span><span class="co">#&gt; survival::coxph(formula = formula %&gt;% stats::as.formula(), data = data %&gt;% </span></span>
 <span><span class="co">#&gt;     as.data.frame())</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                                  coef exp(coef) se(coef)      z        p</span></span>
-<span><span class="co">#&gt; groupMutant KRAS with AMP     0.64182   1.89993  0.13697  4.686 2.79e-06</span></span>
-<span><span class="co">#&gt; groupMutant KRAS without AMP  0.12834   1.13693  0.13628  0.942  0.34634</span></span>
-<span><span class="co">#&gt; AGE_AT_SEQUENCING&gt;67          0.01184   1.01192  0.06852  0.173  0.86275</span></span>
-<span><span class="co">#&gt; SEXMale                       0.18967   1.20885  0.06826  2.779  0.00546</span></span>
-<span><span class="co">#&gt; TMB_NONSYNONYMOUS&gt; 10        -0.11698   0.88960  0.29297 -0.399  0.68968</span></span>
+<span><span class="co">#&gt;                            coef exp(coef)  se(coef)       z        p</span></span>
+<span><span class="co">#&gt; groupBalanced Dosage   0.828020  2.288783  0.132845   6.233 4.58e-10</span></span>
+<span><span class="co">#&gt; groupHigh Dosage       1.161802  3.195687  0.136122   8.535  &lt; 2e-16</span></span>
+<span><span class="co">#&gt; groupLow Dosage        0.717250  2.048791  0.136201   5.266 1.39e-07</span></span>
+<span><span class="co">#&gt; AGE_AT_SEQUENCING      0.005402  1.005417  0.002965   1.822  0.06845</span></span>
+<span><span class="co">#&gt; SEXMale                0.179991  1.197207  0.061022   2.950  0.00318</span></span>
+<span><span class="co">#&gt; TMB_NONSYNONYMOUS&gt; 10  0.049379  1.050619  0.219603   0.225  0.82209</span></span>
+<span><span class="co">#&gt; FGA                   -0.098933  0.905803  0.180039  -0.550  0.58266</span></span>
+<span><span class="co">#&gt; SAMPLE_TYPEPrimary    -0.677310  0.507982  0.064381 -10.520  &lt; 2e-16</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Likelihood ratio test=66.73  on 5 df, p=4.896e-13</span></span>
-<span><span class="co">#&gt; n= 1351, number of events= 873 </span></span>
-<span><span class="co">#&gt;    (4 observations deleted due to missingness)</span></span></code></pre></div>
-<p>This analysis reveals that, whereas KRAS mutation alone (without
-amplification) is not enough, the presence of amplification
-significantly increases the hazard ratio (HR = 1.41, p-value = 0.012)
-with respect to the WT group. Moreover, tumor mutational burden
-(TMB_NONSYNONYMOUS) also gives a significant albeit weak contribution,
-as patients with more than 4 non-synonymous mutations (median
-TMB_NONSYNONYMOUS) emerge as being more at risk (HR = 1.16, p-value =
-0.038).</p>
+<span><span class="co">#&gt; Likelihood ratio test=226.3  on 8 df, p=&lt; 2.2e-16</span></span>
+<span><span class="co">#&gt; n= 1768, number of events= 1088 </span></span>
+<span><span class="co">#&gt;    (11 observations deleted due to missingness)</span></span>
+<span><span class="co">#&gt; [1] "Pairwise tests:"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Fit: survival::coxph(formula = formula %&gt;% stats::as.formula(), data = data %&gt;% </span></span>
+<span><span class="co">#&gt;     as.data.frame())</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Linear Hypotheses:</span></span>
+<span><span class="co">#&gt;                                                  Estimate Std. Error z value</span></span>
+<span><span class="co">#&gt; `groupHigh Dosage` - `groupBalanced Dosage` == 0  0.33378    0.08228   4.057</span></span>
+<span><span class="co">#&gt; `groupLow Dosage` - `groupBalanced Dosage` == 0  -0.11077    0.07341  -1.509</span></span>
+<span><span class="co">#&gt;                                                  Pr(&gt;|z|)    </span></span>
+<span><span class="co">#&gt; `groupHigh Dosage` - `groupBalanced Dosage` == 0 9.93e-05 ***</span></span>
+<span><span class="co">#&gt; `groupLow Dosage` - `groupBalanced Dosage` == 0     0.234    </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; (Adjusted p values reported -- single-step method)</span></span></code></pre></div>
+<p>This analysis confirms the gradient of worsening survival outcome of
+patients with increasing mutant dosage of KRAS. The evaluated hazard
+ratios increase from 2.04 for Low Dosage, to 2.29 for Balanced Dosage,
+up to 3.20 for High Dosage. The pairwise analysis reveals that the
+outcome difference between High and Balanced dosage is significant
+(P-value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mn>9.93</mn><mo>×</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">P=9.93\times10^{-5}</annotation></semantics></math>),
+confirming the effectiveness of mutant dosage as an outcome predictive
+factor for overall survival.</p>
 </div>
 <div class="section level3">
 <h3 id="visualising-survival-analysis">4.2.4 Visualising survival analysis<a class="anchor" aria-label="anchor" href="#visualising-survival-analysis"></a>
@@ -332,25 +260,25 @@ TMB_NONSYNONYMOUS) emerge as being more at risk (HR = 1.16, p-value =
 <p>Kaplan-Meier estimation and multivariate Cox regression can be
 visualized straightforwardly using the
 <code>plot_survival_analysis</code> function:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_survival_analysis.html">plot_survival_analysis</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>,</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_survival_analysis.html">plot_survival_analysis</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>,</span>
 <span>                       tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>,</span>
 <span>                       gene <span class="op">=</span> <span class="st">'KRAS'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">x</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">x</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(var)`</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(var)`</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_rect()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 2 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 3 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_rect()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="a4_survival_analysis_files/figure-html/unnamed-chunk-9-1.png" width="576"></p>
+<p><img src="a4_survival_analysis_files/figure-html/unnamed-chunk-7-1.png" width="1000" style="display: block; margin: auto auto auto 0;"></p>
 <p>The plot displays Kaplan-Meier survival curves and risk table, and a
 forest plot for Cox multivariate regression coefficients, highlighting
 in red the covariates that have a statistically significant contribution
@@ -368,7 +296,7 @@ to differences in hazard risks.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

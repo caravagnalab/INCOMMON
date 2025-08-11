@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>5. Analysis of metastatic patterns of MSK-MetTropism • INCOMMON</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -40,9 +39,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/a1_pcawg_priors.html">1. Prior distribution of INCOMMON classes from PCAWG</a></li>
-    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of copy number and mutation multiplicity</a></li>
-    <li><a class="dropdown-item" href="../articles/a3_genome_interpreter.html">3. Genome Interpreter</a></li>
+<li><a class="dropdown-item" href="../articles/a1_priors_k_m.html">1. Prior distribution of mutation copy number and multiplicity from PCAWG</a></li>
+    <li><a class="dropdown-item" href="../articles/a2_classify_mutations.html">2. Inference of mutation copy number and multiplicity</a></li>
+    <li><a class="dropdown-item" href="../articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
   </ul>
@@ -68,7 +67,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>5. Analysis of metastatic patterns of MSK-MetTropism</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/1.0/vignettes/a5_metastasis_analysis.Rmd" class="external-link"><code>vignettes/a5_metastasis_analysis.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/vignettes/a5_metastasis_analysis.Rmd" class="external-link"><code>vignettes/a5_metastasis_analysis.Rmd</code></a></small>
       <div class="d-none name"><code>a5_metastasis_analysis.Rmd</code></div>
     </div>
 
@@ -84,142 +83,15 @@
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/caravagnalab/INCOMMON" class="external-link">INCOMMON</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">INCOMMON</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
-<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span></code></pre></div>
+<span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cli.r-lib.org" class="external-link">cli</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this vignette we carry out survival analysis based on INCOMMON
-classification of samples of breast cancer (BRCA) patients of the
+classification of samples of pancreatic cancer (PAAD) patients of the
 MSK-MetTropsim cohort.</p>
 <div class="section level2">
-<h2 id="classification-of-2462-breast-cancer-samples">5.1 Classification of 2462 breast cancer samples<a class="anchor" aria-label="anchor" href="#classification-of-2462-breast-cancer-samples"></a>
-</h2>
-<p>In order to study patterns of metastatisation (propensity and
-organotropism) related to the INCOMMON interpreted genomes, we first
-need to classify all the mutations in these samples.</p>
-<div class="section level3">
-<h3 id="input-intialisation">5.1.1 Input intialisation<a class="anchor" aria-label="anchor" href="#input-intialisation"></a>
-</h3>
-<p>First we prepare the input using function <code>init</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_genomic_data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_clinical_data</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">cancer_gene_census</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/init.html">init</a></span><span class="op">(</span></span>
-<span>  genomic_data <span class="op">=</span> <span class="va">MSK_genomic_data</span>,</span>
-<span>  clinical_data <span class="op">=</span> <span class="va">MSK_clinical_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">tumor_type</span> <span class="op">==</span> <span class="st">'BRCA'</span><span class="op">)</span>,</span>
-<span>  gene_roles <span class="op">=</span> <span class="va">cancer_gene_census</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── INCOMMON - Inference of copy number and mutation multiplicity in oncology ───</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Genomic data</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">25659</span> samples, with <span style="color: #00BB00;">224939</span> mutations in <span style="color: #00BB00;">491</span> genes</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No read counts found for <span style="color: #00BB00;">1393</span> mutations in <span style="color: #00BB00;">1393</span> samples</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Gene name not provided for <span style="color: #00BB00;">1393</span> mutations</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #00BB00;">201</span> genes could not be assigned a role (TSG or oncogene)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Clinical data</span> ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Provided clinical features:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> sample (required for classification)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> purity (required for classification)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> tumor_type</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_MONTHS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> OS_STATUS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SAMPLE_TYPE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_COUNT</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> METASTATIC_SITE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> MET_SITE_COUNT</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> PRIMARY_SITE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SUBTYPE_ABBREVIATION</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> GENE_PANEL</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> SEX</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> TMB_NONSYNONYMOUS</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> FGA</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> AGE_AT_SEQUENCING</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> RACE</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">2562</span> matching samples</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Found <span style="color: #00BB00;">23104</span> unmatched samples</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">9916</span> PASS mutations across <span style="color: #00BB00;">2462</span> samples, with <span style="color: #00BB00;">286</span> mutant genes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">681</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9,916 × 27</span></span></span>
-<span><span class="co">#&gt;    sample    tumor_type purity chr     from     to ref   alt      DP    NV   VAF</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-0015535 BRCA          0.3 chr3  1.79<span style="color: #949494;">e</span>8 1.79<span style="color: #949494;">e</span>8 G     A       868   167 0.192</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-0015535 BRCA          0.3 chr17 3.79<span style="color: #949494;">e</span>7 3.79<span style="color: #949494;">e</span>7 T     C      <span style="text-decoration: underline;">1</span>172   205 0.175</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-0015535 BRCA          0.3 chr7  1.41<span style="color: #949494;">e</span>8 1.41<span style="color: #949494;">e</span>8 G     A       765   120 0.157</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-0015535 BRCA          0.3 chr21 3.62<span style="color: #949494;">e</span>7 3.62<span style="color: #949494;">e</span>7 G     A      <span style="text-decoration: underline;">1</span>006   162 0.161</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-0015535 BRCA          0.3 chr16 6.88<span style="color: #949494;">e</span>7 6.88<span style="color: #949494;">e</span>7 C     -       774   210 0.271</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-0015535 BRCA          0.3 chr17 1.60<span style="color: #949494;">e</span>7 1.60<span style="color: #949494;">e</span>7 C     T       764   155 0.203</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-0015535 BRCA          0.3 chr19 1.46<span style="color: #949494;">e</span>7 1.46<span style="color: #949494;">e</span>7 G     C       544    70 0.129</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-0007009 BRCA          0.5 chr19 4.28<span style="color: #949494;">e</span>7 4.28<span style="color: #949494;">e</span>7 G     A       852   648 0.761</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-0007009 BRCA          0.5 chr14 1.05<span style="color: #949494;">e</span>8 1.05<span style="color: #949494;">e</span>8 -     GGCA…  <span style="text-decoration: underline;">1</span>530   453 0.296</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-0013299 BRCA          0.4 chr19 4.59<span style="color: #949494;">e</span>7 4.59<span style="color: #949494;">e</span>7 C     T      <span style="text-decoration: underline;">1</span>542   180 0.117</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9,906 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, OS_MONTHS &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   OS_STATUS &lt;dbl&gt;, SAMPLE_TYPE &lt;chr&gt;, MET_COUNT &lt;dbl&gt;, METASTATIC_SITE &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   MET_SITE_COUNT &lt;dbl&gt;, PRIMARY_SITE &lt;chr&gt;, SUBTYPE_ABBREVIATION &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   GENE_PANEL &lt;chr&gt;, SEX &lt;chr&gt;, TMB_NONSYNONYMOUS &lt;dbl&gt;, FGA &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   AGE_AT_SEQUENCING &lt;dbl&gt;, RACE &lt;chr&gt;</span></span></span></code></pre></div>
-<p>There are 9916 mutations with average sequencing depth 681 across
-2462 samples with average purity 0.42.</p>
-</div>
-<div class="section level3">
-<h3 id="classification">5.1.2 Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
-</h3>
-<p>We then classify the mutations using PCAWG priors and the default
-entropy cutoff and overdispersion parameter:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="va">x</span>,</span>
-<span>  priors <span class="op">=</span> <span class="fu">INCOMMON</span><span class="fu">::</span><span class="va"><a href="../reference/pcawg_priors.html">pcawg_priors</a></span>,</span>
-<span>  entropy_cutoff <span class="op">=</span> <span class="fl">0.2</span>,</span>
-<span>  rho <span class="op">=</span> <span class="fl">0.01</span></span>
-<span>  <span class="co"># parallel = TRUE, # uncomment these to run in parallel</span></span>
-<span>  <span class="co"># num_cores = 8</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">9916</span> PASS mutations across <span style="color: #00BB00;">2462</span> samples, with <span style="color: #00BB00;">286</span> mutant genes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.42</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">681</span></span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> Classified mutations with overdispersion parameter <span style="color: #00BB00;">0.01</span> and ent</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 4238 mutations (HMD)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 581 mutations (LOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2019 mutations (CNLOH)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 666 mutations (AM)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> N = 2412 mutations (Tier-2)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9,916 × 18</span></span></span>
-<span><span class="co">#&gt;    sample    tumor_type purity chr     from     to ref   alt      DP    NV   VAF</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> P-0015535 BRCA          0.3 chr3  1.79<span style="color: #949494;">e</span>8 1.79<span style="color: #949494;">e</span>8 G     A       868   167 0.192</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> P-0015535 BRCA          0.3 chr17 3.79<span style="color: #949494;">e</span>7 3.79<span style="color: #949494;">e</span>7 T     C      <span style="text-decoration: underline;">1</span>172   205 0.175</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> P-0015535 BRCA          0.3 chr7  1.41<span style="color: #949494;">e</span>8 1.41<span style="color: #949494;">e</span>8 G     A       765   120 0.157</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> P-0015535 BRCA          0.3 chr21 3.62<span style="color: #949494;">e</span>7 3.62<span style="color: #949494;">e</span>7 G     A      <span style="text-decoration: underline;">1</span>006   162 0.161</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> P-0015535 BRCA          0.3 chr16 6.88<span style="color: #949494;">e</span>7 6.88<span style="color: #949494;">e</span>7 C     -       774   210 0.271</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> P-0015535 BRCA          0.3 chr17 1.60<span style="color: #949494;">e</span>7 1.60<span style="color: #949494;">e</span>7 C     T       764   155 0.203</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> P-0015535 BRCA          0.3 chr19 1.46<span style="color: #949494;">e</span>7 1.46<span style="color: #949494;">e</span>7 G     C       544    70 0.129</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> P-0007009 BRCA          0.5 chr19 4.28<span style="color: #949494;">e</span>7 4.28<span style="color: #949494;">e</span>7 G     A       852   648 0.761</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> P-0007009 BRCA          0.5 chr14 1.05<span style="color: #949494;">e</span>8 1.05<span style="color: #949494;">e</span>8 -     GGCA…  <span style="text-decoration: underline;">1</span>530   453 0.296</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> P-0013299 BRCA          0.4 chr19 4.59<span style="color: #949494;">e</span>7 4.59<span style="color: #949494;">e</span>7 C     T      <span style="text-decoration: underline;">1</span>542   180 0.117</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 9,906 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 7 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, id &lt;chr&gt;, label &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   state &lt;chr&gt;, posterior &lt;dbl&gt;, entropy &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>There are 4147 heterozygous diploid mutations (HMD), 578 mutations
-with loss of heterozygosity (LOH), 2018 mutations with copy-neutral LOH
-(CNLOH), 663 mutations with amplification. In addition, 2510 mutations
-were classified as Tier-2, either because of entropy being larger than
-cutoff or because of a low number of mutant alleles relative to the
-wild-type.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="metastatic-propensity-of-brca-samples">5.2 Metastatic propensity of BRCA samples<a class="anchor" aria-label="anchor" href="#metastatic-propensity-of-brca-samples"></a>
+<h2 id="metastatic-propensity-of-paad-samples">5.2 Metastatic propensity of PAAD samples<a class="anchor" aria-label="anchor" href="#metastatic-propensity-of-paad-samples"></a>
 </h2>
 <div class="section level3">
 <h3 id="metastatic-propensity-of-fully-incactivated-tp53">5.2.1 Metastatic propensity of fully incactivated TP53<a class="anchor" aria-label="anchor" href="#metastatic-propensity-of-fully-incactivated-tp53"></a>
@@ -230,41 +102,37 @@ genomes containing TP53 mutations by using function
 regression to fit the Binomial probability of developing metastasis
 based on the interpreted mutant genome, with the mutant gene without CNA
 (here, Mutant TP53 without LOH) as reference.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_propensity.html">met_propensity</a></span><span class="op">(</span><span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>, gene <span class="op">=</span> <span class="st">'TP53'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> There are <span style="color: #00BB00;">2115</span> different genotypes</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The most abundant genotypes are:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 with LOH (54 Samples, Frequency 0.02)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant TP53 without LOH (36 Samples, Frequency 0.01)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Mutant PIK3CA without AMP (33 Samples, Frequency 0.01)</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MSK_PAAD_output"</span><span class="op">)</span></span>
+<span><span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_propensity.html">met_propensity</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'CDKN2A'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(id)`</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
-<span><span class="co">#&gt;   gene  class                   OR   low    up p.value</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Mutant TP53 with LOH  1.63  1.11  2.38  0.011<span style="text-decoration: underline;">8</span></span></span></code></pre></div>
-<p>From this analysis it emerges that Mutant TP53 with LOH patients have
-more than 150% increased risk to metastatise (OR = 1.64, p.value = 0.01)
-with respect to mutant samples without LOH.</p>
+<span><span class="co">#&gt;   gene   class          OR   low    up p.value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> CDKN2A High Dosage  3.46  1.21  9.24  0.015<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
+<p>From this analysis it emerges that high dosage CDKN2A have more than
+a three-fold increase in risk to metastatise (OR = 3.46, p.value =
+0.015) with respect to mutant samples a balanced mutant dosage.</p>
 </div>
 <div class="section level3">
 <h3 id="metastatic-propensity-for-the-top-mutant-genes-in-brca">5.2.2 Metastatic propensity for the top mutant genes in BRCA<a class="anchor" aria-label="anchor" href="#metastatic-propensity-for-the-top-mutant-genes-in-brca"></a>
 </h3>
-<p>We extend this analysis to multiple genes, focusing on the 50 most
+<p>We extend this analysis to multiple genes, focusing on the 10 most
 frequently mutated ones.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">top_genes</span> <span class="op">=</span> <span class="fu"><a href="../reference/classification.html">classification</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">state</span> <span class="op">!=</span> <span class="st">'Tier-2'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_genes</span> <span class="op">=</span> <span class="va">MSK_PAAD_output</span><span class="op">$</span><span class="va">input</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">sample</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_genes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">g</span> <span class="kw">in</span> <span class="va">top_genes</span><span class="op">)</span><span class="op">{</span></span>
-<span>  <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_propensity.html">met_propensity</a></span><span class="op">(</span><span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>, gene <span class="op">=</span> <span class="va">g</span><span class="op">)</span></span>
+<span>  <span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_propensity.html">met_propensity</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="va">g</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -272,54 +140,54 @@ frequently mutated ones.</p>
 </h3>
 <p>INCOMMON provides the function <code>plot_met_volcano</code> to
 visualise metastatic propensity odds ratios in a volcano plot.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_met_volcano.html">plot_met_volcano</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 14 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
-<p><img src="a5_metastasis_analysis_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<p>In addition to TP53, among the 50 most frequently mutant genes in
-BRCA the complete inactivation (Mutation with LOH) of ARID1A
-significantly increases the risk of metastasis (OR = 9.33, p.value =
-0.04), whereas among the oncogenes, only for PIK3CA the full activation
-(Mutation with AMP) leads to higher risks of metastases (OR = 2.00,
-p.value = 0.0007).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_met_volcano.html">plot_met_volcano</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a5_metastasis_analysis_files/figure-html/unnamed-chunk-4-1.png" width="300"></p>
+<p>In addition to CDKN2A, among the 10 most frequently mutant genes in
+PAAD, a high dosage of KRAS seems to reduce the risk of metastatisation
+(OR = 0.59, p.value = 0.04). Given the strong worsening of survival
+outcomes related to high KRAS dosage in PAAD, this effect may be
+explained by the fact that the death rate in this configuration is high
+enough not to allow the annotation of metastases in the patients’
+electronic health records.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="metastatic-tropism-of-brca-samples">5.3 Metastatic tropism of BRCA samples<a class="anchor" aria-label="anchor" href="#metastatic-tropism-of-brca-samples"></a>
 </h2>
 <div class="section level3">
-<h3 id="tropism-of-fully-inactivated-tp53-brca-samples-to-the-liver">5.3.1 Tropism of fully inactivated TP53 BRCA samples to the
-Liver<a class="anchor" aria-label="anchor" href="#tropism-of-fully-inactivated-tp53-brca-samples-to-the-liver"></a>
+<h3 id="tropism-to-liver-metastases-of-kras-pancreatic-cancer-with-high-dosage">5.3.1 Tropism to liver metastases of KRAS pancreatic cancer with
+high dosage<a class="anchor" aria-label="anchor" href="#tropism-to-liver-metastases-of-kras-pancreatic-cancer-with-high-dosage"></a>
 </h3>
-<p>We can analyse the metastatic organotropism of metastatic breast
-tumor genomes containing TP53 mutations by using function
+<p>We can analyse the organotropism of metastatic pancreatic tumor
+genomes containing KRAS mutations by using function
 <code>met_tropsim</code>. Similarly to the metastatic propensity
 analysis, this function implements a logistic regression to fit the
 Binomial probability of developing metastasis towards a specific
-metastatic site (here the Liver, as example), based on the interpreted
-mutant genome, with the mutant gene without CNA (here, Mutant TP53
-without LOH) as reference.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_tropism.html">met_tropism</a></span><span class="op">(</span><span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>, gene <span class="op">=</span> <span class="st">'TP53'</span>, metastatic_site <span class="op">=</span> <span class="st">'Liver'</span><span class="op">)</span></span>
+metastatic site (here the Liver, as example), based on the mutant gene
+dosage, with the balanced dosage as reference.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_tropism.html">met_tropism</a></span><span class="op">(</span><span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, gene <span class="op">=</span> <span class="st">'KRAS'</span>, metastatic_site <span class="op">=</span> <span class="st">'Liver'</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; Waiting for profiling to be done...</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
-<span><span class="co">#&gt;   gene  metastatic_site class                   OR   low    up p.value</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> TP53  Liver           Mutant TP53 with LOH  1.95  1.10  3.63  0.027<span style="text-decoration: underline;">3</span></span></span></code></pre></div>
-<p>There is odds ratio (OR) of metastatising to the Liver for Mutant
-TP53 with LOH breast cancer is almost two-fold (OR = 1.9, p.value =
-0.03) with respect to mutant samples without LOH.</p>
+<span><span class="co">#&gt;   gene  metastatic_site class          OR   low    up p.value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> KRAS  Liver           High Dosage  1.72  1.09  2.77  0.023<span style="text-decoration: underline;">2</span></span></span></code></pre></div>
+<p>There is odds ratio (OR) of metastatising to the Liver for high
+dosage KRAS mutant pancreatic cancer is almost two-fold (OR = 1.71,
+p.value = 0.023) with respect to mutant samples with balanced
+dosage.</p>
 </div>
 <div class="section level3">
-<h3 id="tropism-of-top-mutant-genes-in-brca-to-the-liver">5.3.2 Tropism of top mutant genes in BRCA to the Liver<a class="anchor" aria-label="anchor" href="#tropism-of-top-mutant-genes-in-brca-to-the-liver"></a>
+<h3 id="tropism-of-top-mutant-genes-in-paad-to-the-liver">5.3.2 Tropism of top mutant genes in PAAD to the Liver<a class="anchor" aria-label="anchor" href="#tropism-of-top-mutant-genes-in-paad-to-the-liver"></a>
 </h3>
 <p>We extend this analysis to multiple genes, focusing on the 10 most
 frequently mutated ones and the top 10 most frequent metastatic
 sites.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">top_sites</span> <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">clinical_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">top_sites</span> <span class="op">=</span> <span class="va">MSK_PAAD_output</span><span class="op">$</span><span class="va">clinical_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">METASTATIC_SITE</span> <span class="op">!=</span> <span class="st">'Unspecified'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">METASTATIC_SITE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">sample</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -328,7 +196,7 @@ sites.</p>
 <span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">g</span> <span class="kw">in</span> <span class="va">top_genes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="kw">for</span><span class="op">(</span><span class="va">m</span> <span class="kw">in</span> <span class="va">top_sites</span><span class="op">)</span><span class="op">{</span></span>
-<span>   <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_tropism.html">met_tropism</a></span><span class="op">(</span><span class="va">x</span>, gene <span class="op">=</span> <span class="va">g</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span>, metastatic_site <span class="op">=</span> <span class="va">m</span><span class="op">)</span> </span>
+<span>   <span class="va">MSK_PAAD_output</span> <span class="op">=</span> <span class="fu"><a href="../reference/met_tropism.html">met_tropism</a></span><span class="op">(</span><span class="va">MSK_PAAD_output</span>, gene <span class="op">=</span> <span class="va">g</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span>, metastatic_site <span class="op">=</span> <span class="va">m</span><span class="op">)</span> </span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
@@ -337,13 +205,13 @@ sites.</p>
 </h3>
 <p>INCOMMON provides the function <code>plot_tropism</code> to visualise
 metastatic tropism odds ratios by metastatic site.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tropism.html">plot_tropism</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, tumor_type <span class="op">=</span> <span class="st">'BRCA'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a5_metastasis_analysis_files/figure-html/unnamed-chunk-10-1.png" width="768"></p>
-<p>Interestingly, the complete inactivation of TP53 seems to be related
-with tropism from primary breast tumours to the Liver and CNS/Brain.
-Mutations of CDH1 seem to be more frequently without LOH in association
-with metastasis to the lymphatic system.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tropism.html">plot_tropism</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">MSK_PAAD_output</span>, tumor_type <span class="op">=</span> <span class="st">'PAAD'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a5_metastasis_analysis_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
+<p>Interestingly, a high dosage of KRAS only increases the odds of
+metastatisation to the liver, among the first 10 most frequent
+metastatisation sites, highlighting a very specific organotropic pattern
+for this mutant dosage configuration.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -357,7 +225,7 @@ with metastasis to the lymphatic system.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
