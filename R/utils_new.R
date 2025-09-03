@@ -258,7 +258,7 @@ compute_likelihood = function(dp, x, purity){
   }) %>% do.call(rbind, .)
 }
 
-plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_map, post_pred_DP, k_max){
+plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, eta_map, post_pred_DP, k_max){
   lambda = function(k, x, purity){
     (2*(1-purity)*x+purity*k*x)
   }
@@ -279,18 +279,18 @@ plot_poisson_model = function(x, sample, N_rep, km_rep, km_map, purity_map, x_ma
     ggplot2::ggplot(ggplot2::aes(x = k))+
     ggplot2:: geom_ribbon(data = N_stats, ggplot2::aes(ymin = q5, ymax = q95), linetype=2, alpha=0.5, fill = 'steelblue')+
     ggplot2::geom_abline(
-      data = dplyr::tibble(value = c(purity_input, purity_map), x_fit = x_map, purity = c('input', 'fit')),
+      data = dplyr::tibble(value = c(purity_input, purity_map), x_fit = eta_map, purity = c('input', 'fit')),
       linetype = 'longdash',
       ggplot2::aes(
-        slope = value*x_map,
-        intercept = 2*(1-value)*x_map,
+        slope = value*eta_map,
+        intercept = 2*(1-value)*eta_map,
         color = purity))+
     ggplot2::geom_point(ggplot2::aes(y = DP, fill = test), shape = 21, stroke = 0, size = 3)+
     ggplot2::scale_fill_manual(
       values = c('PASS' = 'forestgreen', 'FAIL' = 'firebrick'))+
     ggrepel::geom_label_repel(ggplot2::aes(x = k, y = DP, label = paste(gene, NV, DP, sep = ':')))+
     ggplot2::geom_text(
-      data = dplyr::tibble(NULL), label = paste('MAP x =', round(x_map, 2)),
+      data = dplyr::tibble(NULL), label = paste('MAP x =', round(eta_map, 2)),
       ggplot2::aes(x = 2, y = N_stats[nrow(N_stats),]$q95))+
     my_ggplot_theme()+
     # ggplot2::ylim(ymin, ymax)+ggplot2::xlim(1, k_max)+

@@ -169,7 +169,7 @@ classify = function(
         dir.create(reports_dir, recursive = TRUE)
       }
 
-      ppois = plot_poisson_model(x = x, sample = sample, N_rep = N_rep, km_rep = km_rep, km_map = km_map, purity_map = purity_map, x_map = x_map,  post_pred_DP = post_pred_DP, k_max = k_max)
+      ppois = plot_poisson_model(x = x, sample = sample, N_rep = N_rep, km_rep = km_rep, km_map = km_map, purity_map = purity_map, eta_map = eta_map,  post_pred_DP = post_pred_DP, k_max = k_max)
       px = plot_x_check(posterior_rep = eta_rep, prior_rep = eta_prior_rep, bayes_p = bayes_p_x)
       ppi = plot_purity_check(posterior_rep = purity_rep, prior_rep = purity_prior_rep, bayes_p = bayes_p_purity)
       p_x_pi = patchwork::wrap_plots(px, ppi, design = 'A\nB', guides = 'collect')&
