@@ -78,7 +78,7 @@ classify = function(
     priors_k_m_sample = get_stan_input_priors(x = x, N_mutations = M, priors = priors_k_m, k_max = k_max)
     priors_eta_sample = priors_eta %>% filter(tumor_type == !!tumor_type)
     if(nrow(priors_eta_sample)==0){
-      priors_eta_sample = priors_x %>% filter(tumor_type == 'PANCA')
+      priors_eta_sample = priors_eta %>% filter(tumor_type == 'PANCA')
     }
 
     data = list(
