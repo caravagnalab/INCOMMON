@@ -107,7 +107,7 @@ init = function(genomic_data,
   # Flag unusable mutations
 
   out$genomic_data = out$genomic_data %>%
-    dplyr::mutate(PASS = !(is.na(gene) | is.na(gene_role) | is.na(NV) | is.na(DP) | !(sample %in% matching_samples)))
+    dplyr::mutate(PASS = !(is.na(gene) | is.na(NV) | is.na(DP) | !(sample %in% matching_samples)))
 
   # Flag unusable samples
 

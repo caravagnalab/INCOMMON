@@ -182,7 +182,7 @@ classify = function(
 
       plot_report = patchwork::wrap_plots(
         ppois, p_x_pi, pkmprior, pkmpost, pbin,
-        design = paste0('AAABBB',paste0(rep('\nCCDDEE', 2*(M/8)), collapse = ''))
+        design = paste0('AAABBB',paste0(rep('\nCCDDEE', max(1,2*(M/8))), collapse = ''))
       ) +
         patchwork::plot_annotation(
           title = paste0(sample),
