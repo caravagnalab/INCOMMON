@@ -61,7 +61,7 @@
 
 
 
-<link href="a2_classify_mutations_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<link href="a2_classify_mutations_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
 <script src="a2_classify_mutations_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="a2_classify_mutations_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
 <script src="a2_classify_mutations_files/datatables-binding-0.34.0/datatables.js"></script><link href="a2_classify_mutations_files/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="a2_classify_mutations_files/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
@@ -273,7 +273,7 @@ of a Gamma distribution.</p>
 the function <code>plot_eta_prior</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_eta_prior.html">plot_eta_prior</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, priors_eta <span class="op">=</span> <span class="va">priors_eta</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-7-1.png" width="80%">
+<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="80%">
 The plot shows, for each tumour type and at the pan-cancer level
 (PANCA), the distribution of total read counts, potentially confused by
 diverse copy-number configurations and sample purities, and the
@@ -329,10 +329,10 @@ the function <code>plot_purity_prior</code>.</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">INCOMMON</span> package.</span></span>
 <span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/caravagnalab/INCOMMON/issues&gt;</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
-<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-9-1.png" width="100%"></p>
+<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="100%"></p>
 <p>The shape parameters of the Beta distribution ensure that the mean
 and the variance correspond to the values we provided. The dashed line
 indicate the input purity estimate, used as the mean of the
@@ -414,7 +414,7 @@ number and multiplicity for the 4 mutant genes found in the analysed
 sample, using the function <code>plot_posterior_k_m</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_posterior_k_m.html">plot_posterior_k_m</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">out</span>, k_max <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">k_max</span>, z_km <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">input</span><span class="op">$</span><span class="va">z_km</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-12-1.png" width="80%"></p>
+<p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="80%"></p>
 <p>For KRAS, most of the probability mass is located at configurations
 of high total copy number with gain of the mutant allele. Conversely for
 the TSGs SMARCA4, STK11 and TP53, the posterior probability tends to
@@ -433,7 +433,7 @@ section.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
