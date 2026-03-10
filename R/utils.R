@@ -13,10 +13,6 @@ input = function(x){
   return(x$input)
 }
 
-samples = function(x){
-  return(x$sample)
-}
-
 purity = function(x, id){
   pi = info(x, id = id) %>% dplyr::pull(purity)
   return(pi)
