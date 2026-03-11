@@ -35,6 +35,10 @@ reference:
   - plot_survival_analysis
   - plot_met_volcano
   - plot_tropism
+  - plot_eta_check
+  - plot_prior_k_m
+  - plot_purity_check
+  - plot_report
 
 - title: Getter Functions
   desc:  Functions to extract model information
