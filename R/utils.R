@@ -1,22 +1,32 @@
 # 1. GETTERS
 genomic_data = function(x, PASS = TRUE){
-  if(PASS) {out = x$genomic_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$genomic_data}
-  return(out)
+  if("genomic_data" %in% names(x)){
+    if(PASS) {out = x$genomic_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$genomic_data}
+  } else if("output" %in% names(x)){
+    out = x$output
+  }
 }
 
 clinical_data = function(x, PASS = TRUE){
-  if(PASS) {out = x$clinical_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$clinical_data}
+  if("clinical_data" %in% names(x)){
+    if(PASS) {out = x$clinical_data %>% dplyr::filter(PASS) %>% dplyr::select(-PASS)} else {out = x$clinical_data}
+  } else if("output" %in% names(x)){
+    out = x$output
+  }
+
   return(out)
 }
 
 input = function(x){
-  return(x$input)
+  stopifnot(inherits(x, "INCOMMON"))
+  if("input" %in% names(x)){
+    return(x$input)
+  } else {
+    return(x$output)
+  }
+
 }
 
-purity = function(x, id){
-  pi = info(x, id = id) %>% dplyr::pull(purity)
-  return(pi)
-}
 
 tumor_type = function(x, id){
   ttype = info(x, id = id) %>% dplyr::pull(tumor_type)
@@ -98,14 +108,6 @@ unidify = function(x){
 ids = function(x){
   if(!("id" %in% colnames(x$input))) x = idify(x)
   x$input %>% dplyr::pull(id)
-}
-
-info = function(x, id){
-  if(!("id" %in% colnames(x$input))) x = idify(x)
-  out = x$input %>% dplyr::filter(id == !!id)
-  if("classification" %in% names(x) & length(x$classification) > 0)
-    out = classification(x) %>% dplyr::filter(id == !!id)
-  out
 }
 
 
@@ -548,6 +550,3 @@ scale_color_ttypes = function(aes = 'fill'){
     ggplot2::scale_color_manual(values = tumor_colors)
   }
 }
-
-
-

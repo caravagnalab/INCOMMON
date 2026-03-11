@@ -12,6 +12,7 @@
 #' plot_posterior_k_m(x = x)
 #' @importFrom dplyr group_by arrange desc slice_head
 #' @importFrom ggh4x facet_nested_wrap
+#' @importFrom ggpubr get_legend as_ggplot
 plot_posterior_k_m = function(x, k_max = NULL, z_km = NULL){
   # x = subset_sample(x = x, sample_list = sample)
   inp = input(x)
@@ -22,7 +23,7 @@ plot_posterior_k_m = function(x, k_max = NULL, z_km = NULL){
   }
 
   if(is.null(z_km)){
-    z_km = x$input$z_km
+    z_km = inp$z_km
   }
 
   toplot = lapply(1:M, function(i){
@@ -31,27 +32,47 @@ plot_posterior_k_m = function(x, k_max = NULL, z_km = NULL){
     output
   }) %>% do.call(rbind, .)
 
-  toplot %>% ggplot2::ggplot(ggplot2::aes(
-    x = factor(k),
-    y = factor(m),
-    fill = log10(z_km)
-  )) +
-    ggplot2::geom_tile() +
+  toplot = toplot %>%
+    tidyr::complete(
+      k = 1:8,
+      m = 1:8,
+      id,
+      fill = list(z_km = min(toplot$z_km))  # Or use a small dummy like 1e-40 if log-scaling
+    )
+
+  pg = toplot %>%
+    ggplot2::ggplot(ggplot2::aes(x=k,y=m))+
+    ggplot2::geom_tile(ggplot2::aes(fill = log10(z_km)))+
+    ggplot2::scale_fill_viridis_c()+
+    ggplot2::guides(fill = ggplot2::guide_colorbar(title = 'Posterior Probability (log10)', position = 'bottom'))+
+    my_ggplot_theme()
+
+  leg = ggpubr::get_legend(pg)
+  leg = ggpubr::as_ggplot(leg)
+
+  p = toplot %>%
+    ggplot2::ggplot(ggplot2::aes(x=k,y=m))+
+    ggplot2::geom_contour_filled(ggplot2::aes(z = log10(z_km)), bins = 50, alpha = 0.85)+
+    ggplot2::guides(fill = 'none')+
+    ggplot2::coord_cartesian(expand = FALSE, clip = 'off')+
     ggplot2::geom_point(
-      data = toplot %>% dplyr::group_by(id) %>% dplyr::arrange(dplyr::desc(z_km)) %>% dplyr::slice_head(n=1),
-      fill = 'firebrick',
-      shape = 21,
-      stroke = 0
-    )+
-    ggplot2::scale_fill_viridis_c(labels = scales::math_format(10 ^ .x)) +
-    ggplot2::scale_x_discrete(breaks = scales::pretty_breaks(n=3))+
-    ggplot2::scale_y_discrete(breaks = scales::pretty_breaks(n=3))+
-    ggh4x::facet_nested_wrap( ~ id, ncol = 1, strip.position = 'left') +
-    my_ggplot_theme() +
+      data = toplot %>%
+        dplyr::group_by(id) %>% arrange(desc(z_km), .by_group = T) %>% slice_head(n=1),
+      color = 'firebrick',
+      shape = 8)+
+    ggplot2::scale_y_continuous(position = 'right') +
+    ggplot2::facet_wrap(~id, ncol = 1, strip.position = 'left')+
+    my_ggplot_theme()+
     ggplot2::theme(
-      strip.text.y.left = ggplot2::element_text(angle = 0, margin = ggplot2::margin()),
+      strip.text.y.left = ggplot2::element_text(angle = 0),
+      strip.background = ggplot2::element_blank(),panel.grid = ggplot2::element_line(colour = 'black'),
+      legend.position = 'bottom',
+      axis.text = ggplot2::element_text(),
+      axis.title = ggplot2::element_text()
     )+
-    ggplot2::labs(
-      x = "Total CN (k)", y = "Multiplicity (m)", fill = "Posterior Probability (log10)") +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(barwidth = ggplot2::unit(2.5, 'cm')))
+    ggplot2::labs(x = 'Total CN (k)', y = 'Multiplicity (m)')
+
+  p = p/leg+plot_layout(heights = c(10,1))
+
+  p
 }

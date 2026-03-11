@@ -160,12 +160,7 @@ out = classify(
   num_cores = 4,
   iter_warmup = 1000,
   iter_sampling = 2000,
-  num_chains = 4,
-  results_dir = '~/INCOMMON_inference/results',
-  generate_report_plot = FALSE,
-  reports_dir = '~/INCOMMON_inference/reports',
-  stan_fit_dump = FALSE,
-  stan_fit_dir = '~/INCOMMON_results/stan_fits/'
+  num_chains = 4
 )
 
 ```
@@ -188,7 +183,7 @@ Since INCOMMON is a Bayesian method, it provides more than point estimates for t
 For example, here we visualise the posterior distribution of copy number and multiplicity for the 4 mutant genes found in the analysed sample, using the function `plot_posterior_k_m`.
 
 ```{r, out.width="80%", fig.height=4, dpi=300, message=FALSE, warning=FALSE, results = 'hide'}
-plot_posterior_k_m(x = out, k_max = out$parameters$k_max, z_km = out$input$z_km)
+plot_posterior_k_m(x = out, k_max = out$parameters$k_max)
 ```
 
 For KRAS, most of the probability mass is located at configurations of high total copy number with gain of the mutant allele. Conversely for the TSGs SMARCA4, STK11 and TP53, the posterior probability tends to accumulate on configurations of low total copy number with loss of the WT allele. The red markers indicate the MAP values reported in the above section.

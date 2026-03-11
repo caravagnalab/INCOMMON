@@ -11,18 +11,18 @@ print.INCOMMON = function(x, ...) {
 
   stopifnot(inherits(x, "INCOMMON"))
 
-  n_pass_mutations = genomic_data(x, PASS = TRUE) %>% nrow()
-  n_samples = genomic_data(x, PASS = TRUE) %>% dplyr::pull(sample) %>% unique() %>% length()
-  n_genes = genomic_data(x, PASS = TRUE) %>% dplyr::pull(gene) %>% unique() %>% length()
+  n_pass_mutations = input(x) %>% nrow()
+  n_genes = input(x) %>% dplyr::pull(gene) %>% unique() %>% length()
+  n_samples = input(x) %>% dplyr::pull(sample) %>% unique() %>% length()
   n_ttypes = clinical_data(x, PASS = TRUE) %>% dplyr::pull(tumor_type) %>% unique() %>% length()
 
   cli::cli_rule(
     paste(
       crayon::bgMagenta(crayon::black("[ INCOMMON ] ")),
-      '{.field {n_pass_mutations}} PASS mutations across {.field {n_samples}} samples, with {.field {n_genes}} mutant genes across {.field {n_ttypes}} tumor types'
+      '{.field {n_pass_mutations}} PASS mutations across {.field {n_samples}} samples,
+      with {.field {n_genes}} mutant genes across {.field {n_ttypes}} tumor types'
     )
   )
-
 
   mean_purity = clinical_data(x, PASS = TRUE) %>% dplyr::pull(purity) %>% mean(na.rm = T) %>% round(2)
 
@@ -55,6 +55,6 @@ print.INCOMMON = function(x, ...) {
     print(classification(x))
   } else{
 
-    print(x$input)
+    print(input(x))
   }
 }

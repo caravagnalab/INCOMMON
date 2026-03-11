@@ -54,8 +54,6 @@ get_map_count_rate = function(x, sample){
 
 
 classification = function(x){
-  samples = names(x$classification$fit)
-  x = subset_sample(x = x, sample_list = samples)
 
   lapply(samples, function(s){
     list(

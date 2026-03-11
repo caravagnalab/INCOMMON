@@ -13,12 +13,7 @@ classify(
   num_cores = NULL,
   iter_warmup = 500,
   iter_sampling = 1000,
-  num_chains = 4,
-  results_dir = "~/INCONNON_inference/results",
-  generate_report_plot = F,
-  reports_dir = "~/INCONNON_inference/reports",
-  stan_fit_dump = F,
-  stan_fit_dir = "~/INCONNON_inference/fits"
+  num_chains = 4
 )
 }
 \arguments{
@@ -41,16 +36,6 @@ providing parameters of the Gamma prior distribution over the per copy sequencin
 \item{iter_sampling}{The number of iterations of the stan sampling  phase.}
 
 \item{num_chains}{The number of MCMC chains to be run in parallel.}
-
-\item{results_dir}{The directory path where to store the fit in rds format for each analysed sample.}
-
-\item{generate_report_plot}{Whether to generate png files with the full fit report.}
-
-\item{reports_dir}{If \code{generate_report_plot = TRUE}, the directory path where to store the reports.}
-
-\item{stan_fit_dump}{Whether to store stan fit objects.}
-
-\item{stan_fit_dir}{If \code{stan_fit_dump = TRUE}, the directory path where to store the stan fit objects.}
 }
 \value{
 An object of class \code{INCOMMON} containing the original input plus
