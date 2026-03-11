@@ -29,7 +29,8 @@ An object of class `INCOMMON` containing a subset of the original input.
 data(MSK_PAAD_output)
 x = subset_sample(x = MSK_PAAD_output, sample_list = c("P-0000142"))
 print(x)
-#> ── [ INCOMMON ]  175054 PASS mutations across 24018 samples, with 290 mutant gen
+#> ── [ INCOMMON ]  4 PASS mutations across 1 samples,
+#> with 4 mutant genes across 7
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 649
 #> # A tibble: 4 × 186

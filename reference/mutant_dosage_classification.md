@@ -51,7 +51,8 @@ class assignment.
 data(MSK_PAAD_output)
 mutant_dosage_classification(MSK_PAAD_output, TSG_low = .25, TSG_high = .75, ONC_low = .33, ONC_high = .66)
 #> Joining with `by = join_by(id)`
-#> ── [ INCOMMON ]  175054 PASS mutations across 24018 samples, with 290 mutant gen
+#> ── [ INCOMMON ]  7839 PASS mutations across 1779 samples,
+#> with 280 mutant genes 
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 649
 #> # A tibble: 7,839 × 192

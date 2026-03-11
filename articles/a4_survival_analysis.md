@@ -32,7 +32,8 @@ First we read the example classified data:
 ``` r
 data("MSK_PAAD_output")
 print(MSK_PAAD_output)
-#> ── [ INCOMMON ]  175054 PASS mutations across 24018 samples, with 290 mutant gen
+#> ── [ INCOMMON ]  7839 PASS mutations across 1779 samples,
+#> with 280 mutant genes
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 649
 #> # A tibble: 7,839 × 186

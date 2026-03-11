@@ -161,7 +161,8 @@ x = init(
 #> ✖ Found 513 unmatched samples
 
 print(x)
-#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples, with 490 mutant gen
+#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples,
+#> with 490 mutant gen
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 660
 #> # A tibble: 223,546 × 27

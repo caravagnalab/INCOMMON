@@ -14,12 +14,7 @@ classify(
   num_cores = NULL,
   iter_warmup = 500,
   iter_sampling = 1000,
-  num_chains = 4,
-  results_dir = "~/INCONNON_inference/results",
-  generate_report_plot = F,
-  reports_dir = "~/INCONNON_inference/reports",
-  stan_fit_dump = F,
-  stan_fit_dir = "~/INCONNON_inference/fits"
+  num_chains = 4
 )
 ```
 
@@ -64,29 +59,6 @@ classify(
 - num_chains:
 
   The number of MCMC chains to be run in parallel.
-
-- results_dir:
-
-  The directory path where to store the fit in rds format for each
-  analysed sample.
-
-- generate_report_plot:
-
-  Whether to generate png files with the full fit report.
-
-- reports_dir:
-
-  If `generate_report_plot = TRUE`, the directory path where to store
-  the reports.
-
-- stan_fit_dump:
-
-  Whether to store stan fit objects.
-
-- stan_fit_dir:
-
-  If `stan_fit_dump = TRUE`, the directory path where to store the stan
-  fit objects.
 
 ## Value
 
@@ -140,42 +112,42 @@ x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_
 #> 
 #> ── INCOMMON inference of copy number and mutation multiplicity for sample P-0002
 #> 
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 30, column 18 to column 33:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 30, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 34, column 19 to column 34:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 34, column 19 to column 34:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 51, column 11 to column 26:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 51, column 11 to column 26:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 65, column 18 to column 33:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 65, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 67, column 18 to column 33:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 67, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 84, column 11 to column 26:
+#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 84, column 11 to column 26:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
@@ -191,14 +163,15 @@ x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_
 #> Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) 
 #> Chain 1 Iteration: 20 / 20 [100%]  (Sampling) 
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpD7KxIz/model-1e0519b68345.stan', line 43, column 2 to column 29)
+#> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 43, column 2 to column 29)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1 
 #> Chain 1 finished in 0.1 seconds.
 # An S3 method can be used to report to screen what is in the object
 print(x)
-#> ── [ INCOMMON ]  4 PASS mutations across 1 samples, with 4 mutant genes across 1
+#> ── [ INCOMMON ]  4 PASS mutations across 1 samples,
+#> with 4 mutant genes across 1
 #> ℹ Average sample purity: 0.6
 #> ℹ Average sequencing depth: 380
 #> # A tibble: 4 × 36

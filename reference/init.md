@@ -121,7 +121,8 @@ x = init(genomic_data = MSK_genomic_data, clinical_data = MSK_clinical_data)
 #> ✖ Found 513 unmatched samples
 # An S3 method can be used to report to screen what is in the object
 print(x)
-#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples, with 490 mutant gen
+#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples,
+#> with 490 mutant gen
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 660
 #> # A tibble: 223,546 × 27

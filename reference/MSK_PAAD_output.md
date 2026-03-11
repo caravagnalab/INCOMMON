@@ -24,7 +24,8 @@ https://zenodo.org/records/10927218
 ``` r
 data(MSK_PAAD_output)
 MSK_PAAD_output
-#> ── [ INCOMMON ]  175054 PASS mutations across 24018 samples, with 290 mutant gen
+#> ── [ INCOMMON ]  7839 PASS mutations across 1779 samples,
+#> with 280 mutant genes 
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 649
 #> # A tibble: 7,839 × 186

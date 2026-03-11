@@ -98,7 +98,8 @@ x = init(genomic_data = MSK_genomic_data,
 #> ✖ Found 513 unmatched samples
 
 print(x)
-#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples, with 490 mutant gen
+#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples,
+#> with 490 mutant gen
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 660
 #> # A tibble: 223,546 × 27
@@ -199,7 +200,8 @@ sample = 'P-0002081'
 x = subset_sample(x = x, sample_list = c(sample))
 
 print(x)
-#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples, with 490 mutant gen
+#> ── [ INCOMMON ]  4 PASS mutations across 1 samples,
+#> with 4 mutant genes across 7
 #> ℹ Average sample purity: 0.4
 #> ℹ Average sequencing depth: 660
 #> # A tibble: 4 × 27
@@ -274,20 +276,16 @@ out = classify(
   num_cores = 4,
   iter_warmup = 1000,
   iter_sampling = 2000,
-  num_chains = 4,
-  results_dir = '~/INCOMMON_inference/results',
-  generate_report_plot = FALSE,
-  reports_dir = '~/INCOMMON_inference/reports',
-  stan_fit_dump = FALSE,
-  stan_fit_dir = '~/INCOMMON_results/stan_fits/'
+  num_chains = 4
 )
 ```
 
 ``` r
 print(out)
-#> ── [ INCOMMON ]  223546 PASS mutations across 24266 samples, with 490 mutant gen
-#> ℹ Average sample purity: 0.4
-#> ℹ Average sequencing depth: 660
+#> ── [ INCOMMON ]  4 PASS mutations across 1 samples,
+#> with 4 mutant genes across 1
+#> ℹ Average sample purity: 0.6
+#> ℹ Average sequencing depth: 380
 #> # A tibble: 4 × 36
 #>   sample    tumor_type purity purity_map eta_map chr     from     to gene  ref  
 #>   <chr>     <chr>       <dbl>      <dbl>   <dbl> <chr>  <dbl>  <dbl> <chr> <chr>
@@ -327,7 +325,7 @@ and multiplicity for the 4 mutant genes found in the analysed sample,
 using the function `plot_posterior_k_m`.
 
 ``` r
-plot_posterior_k_m(x = out, k_max = out$parameters$k_max, z_km = out$input$z_km)
+plot_posterior_k_m(x = out, k_max = out$parameters$k_max)
 ```
 
 ![](a2_classify_mutations_files/figure-html/unnamed-chunk-12-1.png)

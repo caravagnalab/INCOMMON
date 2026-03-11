@@ -77,6 +77,18 @@ Functions to plot INCOMMON classification results
   : Visualize metastatic propnesity odds ratio in a volcano plot
   fashion.
 
+- [`plot_eta_check()`](caravagnalab.github.io/INCOMMON/reference/plot_eta_check.md)
+  : Plot posterior predictive check for eta
+
+- [`plot_prior_k_m()`](caravagnalab.github.io/INCOMMON/reference/plot_prior_k_m.md)
+  : Plot joint prior distribution of total copy number and multiplicity
+
+- [`plot_purity_check()`](caravagnalab.github.io/INCOMMON/reference/plot_purity_check.md)
+  : Plot posterior predictive check for tumour purity
+
+- [`plot_report()`](caravagnalab.github.io/INCOMMON/reference/plot_report.md)
+  : Generate report of the fit
+
 ## Getter Functions
 
 Functions to extract model information

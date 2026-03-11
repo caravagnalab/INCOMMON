@@ -183,7 +183,8 @@ as following:</p>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> Found <span style="color: #00BB00;">513</span> unmatched samples</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">223546</span> PASS mutations across <span style="color: #00BB00;">24266</span> samples, with <span style="color: #00BB00;">490</span> mutant gen</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">223546</span> PASS mutations across <span style="color: #00BB00;">24266</span> samples,</span></span>
+<span><span class="co">#&gt; with <span style="color: #00BB00;">490</span> mutant gen</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">660</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 223,546 × 27</span></span></span>
@@ -290,7 +291,8 @@ copy.</p>
 <span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/subset_sample.html">subset_sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, sample_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">sample</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">223546</span> PASS mutations across <span style="color: #00BB00;">24266</span> samples, with <span style="color: #00BB00;">490</span> mutant gen</span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">4</span> PASS mutations across <span style="color: #00BB00;">1</span> samples,</span></span>
+<span><span class="co">#&gt; with <span style="color: #00BB00;">4</span> mutant genes across <span style="color: #00BB00;">7</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">660</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 27</span></span></span>
@@ -364,18 +366,14 @@ directory where to store the images (<code>reports_dir</code>).</p>
 <span>  num_cores <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  iter_warmup <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  iter_sampling <span class="op">=</span> <span class="fl">2000</span>,</span>
-<span>  num_chains <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  results_dir <span class="op">=</span> <span class="st">'~/INCOMMON_inference/results'</span>,</span>
-<span>  generate_report_plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  reports_dir <span class="op">=</span> <span class="st">'~/INCOMMON_inference/reports'</span>,</span>
-<span>  stan_fit_dump <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  stan_fit_dir <span class="op">=</span> <span class="st">'~/INCOMMON_results/stan_fits/'</span></span>
+<span>  num_chains <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">223546</span> PASS mutations across <span style="color: #00BB00;">24266</span> samples, with <span style="color: #00BB00;">490</span> mutant gen</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">660</span></span></span>
+<span><span class="co">#&gt; ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">4</span> PASS mutations across <span style="color: #00BB00;">1</span> samples,</span></span>
+<span><span class="co">#&gt; with <span style="color: #00BB00;">4</span> mutant genes across <span style="color: #00BB00;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">380</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 36</span></span></span>
 <span><span class="co">#&gt;   sample    tumor_type purity purity_map eta_map chr     from     to gene  ref  </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
@@ -413,7 +411,7 @@ distribution is evaluated.</p>
 number and multiplicity for the 4 mutant genes found in the analysed
 sample, using the function <code>plot_posterior_k_m</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_posterior_k_m.html">plot_posterior_k_m</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">out</span>, k_max <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">k_max</span>, z_km <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">input</span><span class="op">$</span><span class="va">z_km</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_posterior_k_m.html">plot_posterior_k_m</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">out</span>, k_max <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">parameters</span><span class="op">$</span><span class="va">k_max</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a2_classify_mutations_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="80%"></p>
 <p>For KRAS, most of the probability mass is located at configurations
 of high total copy number with gain of the mutant allele. Conversely for
