@@ -112,42 +112,42 @@ x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_
 #> 
 #> ── INCOMMON inference of copy number and mutation multiplicity for sample P-0002
 #> 
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 30, column 18 to column 33:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 30, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 34, column 19 to column 34:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 34, column 19 to column 34:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 51, column 11 to column 26:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 51, column 11 to column 26:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 65, column 18 to column 33:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 65, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 67, column 18 to column 33:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 67, column 18 to column 33:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
 #>     write the division as
 #>         k_max * (k_max + 1) / 2.0
 #>     If rounding is intended please use the integer division operator %/%.
-#> Warning in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 84, column 11 to column 26:
+#> Warning in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 84, column 11 to column 26:
 #>     Found int division:
 #>         k_max * (k_max + 1) / 2
 #>     Values will be rounded towards zero. If rounding is not desired you can
@@ -163,7 +163,7 @@ x = classify(x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta, num_
 #> Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) 
 #> Chain 1 Iteration: 20 / 20 [100%]  (Sampling) 
 #> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
-#> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpNE1Ytf/model-1d3b33db041b.stan', line 43, column 2 to column 29)
+#> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpydPdYn/model-1dfe61fe7d51.stan', line 43, column 2 to column 29)
 #> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
 #> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.
 #> Chain 1 
