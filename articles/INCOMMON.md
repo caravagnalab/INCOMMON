@@ -1,6 +1,7 @@
 # INCOMMON
 
 ``` r
+
 library(INCOMMON)
 #> Warning: replacing previous import 'cli::num_ansi_colors' by
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
@@ -32,46 +33,62 @@ performed with functions integrated in the package.
 ## The INCOMMON mutation copy-number caller
 
 INCOMMON is a Bayesian model that can infer, for a tumour mutation,
-$(i)$ the total copy number at the mutant locus, and $(ii)$ the mutation
-multiplicity (i.e., the number of DNA copies that harbour the mutation).
-This information provides the allele-specific configuration of the
-mutant locus.
+$`(i)`$ the total copy number at the mutant locus, and $`(ii)`$ the
+mutation multiplicity (i.e., the number of DNA copies that harbour the
+mutation). This information provides the allele-specific configuration
+of the mutant locus.
 
-INCOMMON takes input read counts data for $n$ mutations
-$X = \{ x_{1},\ldots,x_{n}\}$ to develop the joint likelihood}
-$$p(X \mid \Theta) = \prod\limits_{x_{i} \in X}p\left( x_{i} \mid \Theta \right) = \prod\limits_{x_{i} \in X}p\left( d_{i} \mid \Theta \right)\, p\left( r_{i} \mid d_{i},\Theta \right)\,.$$
+INCOMMON takes input read counts data for $`n`$ mutations
+$`X=\{x_1, \ldots, x_n\}`$ to develop the joint likelihood}
+``` math
+\begin{equation}
+{p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
+=
+\prod_{x_i\in X} p(d_i \mid \Theta)\, p(r_i \mid d_i, \Theta)
+\,.}
+\end{equation}
+```
 
-For every mutation $x_{i} = \langle r_{i},d_{i}\rangle$, INCOMMON uses
-the number of reads $r_{i}$ with the alternative allele and the total
-reads $d_{i}$ (depth of sequencing). The model infers two
-sample-specific parameters, ($i$) the sample purity ($0 < \pi \leq 1$),
-and ($ii$) the rate of reads per chromosome copy
-($\eta \in {\mathbb{R}}^{+}$), and two mutation-specific parameters,
-($iii$) the tumour total copy number at the locus
-($k_{i} \in {\mathbb{Z}}^{+}$) and ($iv$) the mutation multiplicty
-($m_{i} \in {\mathbb{Z}}^{+}$, $m_{i} \leq k_{i}$).
+For every mutation $`x_i=\langle r_i, d_i\rangle`$, INCOMMON uses the
+number of reads $`r_i`$ with the alternative allele and the total reads
+$`d_i`$ (depth of sequencing). The model infers two sample-specific
+parameters, ($`i`$) the sample purity ($`0 < \pi \leq 1`$), and ($`ii`$)
+the rate of reads per chromosome copy ($`\eta \in \mathbb{R}^+`$), and
+two mutation-specific parameters, ($`iii`$) the tumour total copy number
+at the locus ($`k_i\in \mathbb{Z}^+`$) and ($`iv`$) the mutation
+multiplicty ($`m_i\in \mathbb{Z}^+`$, $`m_i\leq k_i`$).
 
 The model adopted by INCOMMON relates copy number to coverage linearly,
-so the expected number of reads for $k$ chromosome copies is $k\eta$.
+so the expected number of reads for $`k`$ chromosome copies is
+$`k\eta`$.
 
 INCOMMON links the number of reads to the multiplicity and total copy
-number considering tumour/ normal admixing $$\begin{aligned}
-{p\left( d_{i} \mid \pi,\eta,k_{i} \right)} & {= \text{Poisson}\left( d_{i} \mid \lambda \right)} & & {\lambda = (1 - \pi)2\eta + \pi\eta k_{i}} \\
-{p\left( r_{i} \mid \pi,k_{i},m_{i} \right)} & {= \text{Binomial}\left( r_{i} \mid d_{i},\varphi \right)} & & {\varphi = \frac{m_{i}\pi}{2(1 - \pi) + k_{i}\pi}}
-\end{aligned}$$
+number considering tumour/ normal admixing
+``` math
+\begin{align}
+p(d_i\mid \pi, \eta, k_i) &
+= \text{Poisson}(d_i \mid \lambda)
+&& 
+\lambda  = (1-\pi)2\eta + \pi \eta k_i  \label{eq:likelihood_pois}\\
+p(r_i\mid  \pi, k_i, m_i) &
+= \text{Binomial}(r_i \mid d_i, \varphi)
+&&
+\varphi = \frac{m_i\pi}{2\left(1-\pi\right)+k_i\pi}\label{eq:likelihood_binom}
+\end{align}
+```
 
 The sequencing depth follows a Poisson distribution with an expected
-number of reads $\lambda$ defined by combining tumour and normal
+number of reads $`\lambda`$ defined by combining tumour and normal
 readouts. Given the depth, the number of mutant reads follows a Binomial
-distribution with success probability $\varphi$ determined by the mixing
-of tumour and normal success rates.
+distribution with success probability $`\varphi`$ determined by the
+mixing of tumour and normal success rates.
 
 INCOMMON uses Markov Chain Monte Carlo (implemented in `stan`) sampling
-to estimate a posterior distribution over $m$, $k$, $\eta$ and $\pi$. To
-leverage the massive amount of public WGS data of human tumours and gain
-precision with targeted assays, by default INCOMMON uses [a biologically
-informed prior distribution for copy number and multiplicity
-configurations from the PCAWG and HMF
+to estimate a posterior distribution over $`m`$, $`k`$, $`\eta`$ and
+$`\pi`$. To leverage the massive amount of public WGS data of human
+tumours and gain precision with targeted assays, by default INCOMMON
+uses [a biologically informed prior distribution for copy number and
+multiplicity configurations from the PCAWG and HMF
 cohorts](caravagnalab.github.io/INCOMMON/articles/a1_priors_k_m.md).
 
 To support orthogonal estimation of tumour purity (e.g. from
@@ -79,8 +96,8 @@ histopathological evaluation) but resist potential error in the input
 estimate, INCOMMON centres a prior around the purity measurements
 provided with each sample. After posterior inference, INCOMMON uses
 posterior predictive checks to monitor the discrepancy between observed
-values and inferred posterior distributions on $k$, $m$, $\eta$ and
-$\pi$.
+values and inferred posterior distributions on $`k`$, $`m`$, $`\eta`$
+and $`\pi`$.
 
 ## Input format
 
@@ -119,6 +136,7 @@ in the correct format. The following example shows how this input is
 pre-processed by INCOMMON:
 
 ``` r
+
 data(MSK_genomic_data)
 data(MSK_clinical_data)
 data(cancer_gene_census)
@@ -198,10 +216,14 @@ mutant copy gain).
 Mutant dosage classes (low, balanced and high) are derived from the
 fraction of alleles carrying the mutation (FAM)
 
-$$\text{FAM}_{g,t} = \sum\limits_{k = 1}^{k_{max}}\sum\limits_{m = 1}^{k}\frac{m}{k}p\left( m,k\ |\ X_{g,t} \right)\,,$$
+``` math
+\begin{equation}\label{e:expected_fma}
+    \text{FAM}_{g,t}=\sum\limits_{k=1}^{k_{max}}\sum_{m=1}^k\frac{m}{k}p(m,k\:|\: X_{g,t})\, ,
+\end{equation}
+```
 
 which is derived from the full posterior distribution of
-$p\left( m,k\ |\ X_{g,t} \right)$, computed by INCOMMON.
+$`p(m,k\:|\: X_{g,t})`$, computed by INCOMMON.
 
 ## Survival analysis
 

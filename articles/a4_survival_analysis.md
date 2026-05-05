@@ -1,6 +1,7 @@
 # 4. Survival analysis of MSK-MetTropism
 
 ``` r
+
 library(INCOMMON)
 #> Warning: replacing previous import 'cli::num_ansi_colors' by
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
@@ -30,6 +31,7 @@ we first need to classify all the mutations in these samples.
 First we read the example classified data:
 
 ``` r
+
 data("MSK_PAAD_output")
 print(MSK_PAAD_output)
 #> ── [ INCOMMON ]  7839 PASS mutations across 1779 samples,
@@ -72,6 +74,7 @@ classes (Mutant with/without LOH, Mutant with/without AMP, Tier-2)
 interpreted mutations found in the sample.
 
 ``` r
+
 MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
 #> Joining with `by = join_by(id)`
 ```
@@ -83,6 +86,7 @@ We first look at the distribution of mutant dosage across PAAD samples
 for KRAS, using function `plot_class_fraction`:
 
 ``` r
+
 plot_class_fraction(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS')
 ```
 
@@ -101,6 +105,7 @@ Kaplan-Meier estimator. Notice that we must choose the variables from
 (‘OS_MONTHS’ and ‘OS_STATUS’ in this case).
 
 ``` r
+
 MSK_PAAD_output = kaplan_meier_fit(
   x = MSK_PAAD_output, 
   tumor_type = 'PAAD', 
@@ -140,6 +145,7 @@ asthreshold. Here, we set it to “\>10” to stick to the mentioned best
 practices.
 
 ``` r
+
 MSK_PAAD_output = cox_fit(x = MSK_PAAD_output,
         tumor_type = 'PAAD',
         gene = 'KRAS',
@@ -189,7 +195,7 @@ patients with increasing mutant dosage of KRAS. The evaluated hazard
 ratios increase from 2.04 for Low Dosage, to 2.29 for Balanced Dosage,
 up to 3.20 for High Dosage. The pairwise analysis reveals that the
 outcome difference between High and Balanced dosage is significant
-(P-value $P = 9.93 \times 10^{- 5}$), confirming the effectiveness of
+(P-value $`P=9.93\times10^{-5}`$), confirming the effectiveness of
 mutant dosage as an outcome predictive factor for overall survival.
 
 ### 4.2.4 Visualising survival analysis
@@ -199,6 +205,7 @@ visualized straightforwardly using the `plot_survival_analysis`
 function:
 
 ``` r
+
 plot_survival_analysis(x = MSK_PAAD_output,
                        tumor_type = 'PAAD',
                        gene = 'KRAS')

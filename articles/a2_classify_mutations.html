@@ -236,7 +236,7 @@ the rate of read counts per chromosome copy
 To guide the inference of this parameter, we use a Gamma prior
 distribution. The only a priori information that we have access to is on
 the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(k,m)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(k,m)</annotation></semantics></math>
 configurations of mutant genes. We use this to compute a prior
 distribution over
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
@@ -341,7 +341,7 @@ indicate the input purity estimate, used as the mean of the
 distribution.</p>
 <p>We are now ready to run the classification step through function
 <code>classify</code>, using the priors we obtained for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>m</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(k,m)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(k,m)</annotation></semantics></math>
 configurations, read count rate per chromosome copy
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>η</mi><annotation encoding="application/x-tex">\eta</annotation></semantics></math>
 and sample purity

@@ -1,6 +1,7 @@
 # 5. Analysis of metastatic patterns of MSK-MetTropism
 
 ``` r
+
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -32,6 +33,7 @@ genome, with the mutant gene without CNA (here, Mutant TP53 without LOH)
 as reference.
 
 ``` r
+
 data("MSK_PAAD_output")
 MSK_PAAD_output = met_propensity(x = MSK_PAAD_output, tumor_type = 'PAAD', gene = 'CDKN2A')
 #> Joining with `by = join_by(id)`
@@ -53,6 +55,7 @@ We extend this analysis to multiple genes, focusing on the 10 most
 frequently mutated ones.
 
 ``` r
+
 top_genes = MSK_PAAD_output$input %>% 
   dplyr::group_by(gene) %>% 
   dplyr::reframe(N = length(unique(sample))) %>% 
@@ -73,6 +76,7 @@ INCOMMON provides the function `plot_met_volcano` to visualise
 metastatic propensity odds ratios in a volcano plot.
 
 ``` r
+
 plot_met_volcano(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 
@@ -98,6 +102,7 @@ towards a specific metastatic site (here the Liver, as example), based
 on the mutant gene dosage, with the balanced dosage as reference.
 
 ``` r
+
 MSK_PAAD_output = met_tropism(MSK_PAAD_output, tumor_type = 'PAAD', gene = 'KRAS', metastatic_site = 'Liver')
 #> Waiting for profiling to be done...
 #> Waiting for profiling to be done...
@@ -117,6 +122,7 @@ We extend this analysis to multiple genes, focusing on the 10 most
 frequently mutated ones and the top 10 most frequent metastatic sites.
 
 ``` r
+
 top_sites = MSK_PAAD_output$clinical_data %>% 
   dplyr::filter(METASTATIC_SITE != 'Unspecified') %>% 
   dplyr::group_by(METASTATIC_SITE) %>% 
@@ -138,6 +144,7 @@ INCOMMON provides the function `plot_tropism` to visualise metastatic
 tropism odds ratios by metastatic site.
 
 ``` r
+
 plot_tropism(x = MSK_PAAD_output, tumor_type = 'PAAD')
 ```
 

@@ -1,6 +1,7 @@
 # 1. Prior distribution of mutation copy number and multiplicity from PCAWG
 
 ``` r
+
 library(INCOMMON)
 #> Warning: replacing previous import 'cli::num_ansi_colors' by
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
@@ -10,8 +11,8 @@ library(DT)
 
 The inference of copy number and multiplicity of a mutation from read
 counts only can be much of a hard task, especially in cases where the
-sample purity $\pi$ or the sequencing depth $DP$ at the mutation site
-are low.
+sample purity $`\pi`$ or the sequencing depth $`DP`$ at the mutation
+site are low.
 
 For this reason, INCOMMON allows using a prior distribution to improve
 classifications.
@@ -20,15 +21,17 @@ classifications.
 
 For the inference of mutation copy number and multiplicity on a specific
 gene and in samples of a specific tumour type, a Dirichlet prior
-distribution $p(k,m) = p_{k,m}$, where $k$ is the total copy number and
-$m$ the mutation multiplicity, can be used to obtain more confident
-predictions, given that $p_{k,m}$ is obtained from reliable copy number
-calls. By default, INCOMMON relies on prior probability obtained from
-PCAWG and HMF whole genomes. From a set of high-confidence copy number
-calls validated by quality control, we obtained $p_{k,m}$ for each gene
-as the frequency of the corresponding INCOMMON class.
+distribution $`p\left(k,m\right)=p_{k,m}`$, where $`k`$ is the total
+copy number and $`m`$ the mutation multiplicity, can be used to obtain
+more confident predictions, given that $`p_{k,m}`$ is obtained from
+reliable copy number calls. By default, INCOMMON relies on prior
+probability obtained from PCAWG and HMF whole genomes. From a set of
+high-confidence copy number calls validated by quality control, we
+obtained $`p_{k,m}`$ for each gene as the frequency of the corresponding
+INCOMMON class.
 
 ``` r
+
 data("priors_pcawg_hmf")
 ```
 
@@ -66,6 +69,7 @@ similar data table.
 For example:
 
 ``` r
+
 my_priors = expand.grid(k=1:8, m = 1:8) %>% 
   dplyr::mutate(
     gene = 'my_gene',
@@ -89,6 +93,7 @@ classified MSK-MET data.
 For example:
 
 ``` r
+
 plot_prior(x = priors_pcawg_hmf, 
            gene = 'KRAS',
            tumor_type = 'PAAD')
@@ -98,9 +103,9 @@ plot_prior(x = priors_pcawg_hmf,
 
 This example shows that, from the analysis of PCAWG and HMF datasets,
 KRAS mutations in pancreatic adenocarcinoma (PAAD) are most frequently
-found with $(k = 2,m = 1)$ configurations ($N = 689$ samples), i.e. in
+found with $`(k=2,m=1)`$ configurations ($`N=689`$ samples), i.e. in
 heterozygous diploid configurations. A relatively high frequency is also
-found for configurations with gain of the mutant copy: $(k = 2,m = 2)$
-(CNLOH, $N = 81$ samples), $(k = 3,m = 2)$ (mutant gain in trisomy,
-$N = 106$ samples) and $(k = 3,m = 2)$ (mutant gain in tetrasomy,
-$N = 116$ samples).
+found for configurations with gain of the mutant copy: $`(k=2,m=2)`$
+(CNLOH, $`N=81`$ samples), $`(k=3,m=2)`$ (mutant gain in trisomy,
+$`N=106`$ samples) and $`(k=3,m=2)`$ (mutant gain in tetrasomy,
+$`N=116`$ samples).

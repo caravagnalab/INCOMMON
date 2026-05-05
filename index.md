@@ -17,6 +17,8 @@ Check out our preprint on
 
 #### Help and support
 
+Please find the instructions on how to run the package and vignettes at:
+
 ## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
 
 ## Installation
@@ -24,6 +26,7 @@ Check out our preprint on
 You can install the INCOMMON from [GitHub](https://github.com/) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("caravagnalab/INCOMMON")
 ```

@@ -1,6 +1,7 @@
 # 3. Gene mutant dosage
 
 ``` r
+
 library(INCOMMON)
 #> Warning: replacing previous import 'cli::num_ansi_colors' by
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
@@ -34,6 +35,7 @@ We have used INCOMMON to make the inference on all prostate cancer
 `MSK_PRAD_output`. The package provides these example data
 
 ``` r
+
 data("MSK_PAAD_output")
 print(MSK_PAAD_output$input)
 #> # A tibble: 7,839 × 186
@@ -73,10 +75,10 @@ iterations and `iter_sampling=2000` sampling iterations.
 ### 3.1.2 Gene mutant dosage
 
 For each gene mutation, the mutant dosage can be computed. INCOMMON
-exploits the full posterior distribution
-$p\left( k,m\;|\; X,\Theta \right)$ of `k` and `m` values to compute the
-mean Fraction of Alleles with the Mutation (FAM) as
-${\mathbb{E}}\left( \text{FAM} \right) = \sum\limits_{k = 1}^{k_{max}}\sum\limits_{m = 1}^{k}p\left( k,m\;|\; X,\Theta \right)\frac{m}{k}$.
+exploits the full posterior distribution $`p(k,m\;|\;X, \Theta)`$ of `k`
+and `m` values to compute the mean Fraction of Alleles with the Mutation
+(FAM) as
+$`\mathbb{E}(\text{FAM})=\sum\limits_{k=1}^{k_{max}}\sum\limits_{m=1}^kp(k,m\;|\;X, \Theta)\frac{m}{k}`$.
 This can be done through the function `compute_expectations`. Samples
 can be then classified with respect to a mutant gene as “Low Dosage”,
 “Balanced Dosage” or “High Dosage”, using gene-role specific thresholds.
@@ -84,6 +86,7 @@ By default, INCOMMON uses thresholds optimised for survival analysis, in
 function `mutant_dosage_classification`:
 
 ``` r
+
 MSK_PAAD_output = mutant_dosage_classification(MSK_PAAD_output)
 #> Joining with `by = join_by(id)`
 ```
@@ -92,6 +95,7 @@ The `FAM` column is now added to the object. We can take a look at the
 inferred FAM for KRAS mutations using the function `show_FAM`:
 
 ``` r
+
 show_FAM(MSK_PAAD_output, gene = 'KRAS') %>% dplyr::arrange(dplyr::desc(purity))
 #> # A tibble: 1,576 × 10
 #>    sample    gene  gene_role    NV    DP purity purity_map eta_map     FAM class
@@ -110,10 +114,10 @@ show_FAM(MSK_PAAD_output, gene = 'KRAS') %>% dplyr::arrange(dplyr::desc(purity))
 ```
 
 For example, for the first mutation, given an estimated purity
-$\pi = 87\%$ and total sequencing depth $\text{DP} = 505$, we would
-expect $0.87*505 = \simeq 440$ reads from tumour cells. The FAM
+$`\pi=87\%`$ and total sequencing depth $`\text{DP}=505`$, we would
+expect $`0.87*505=\simeq440`$ reads from tumour cells. The FAM
 corresponds to the fraction of tumour reads that carry the variant
-($\text{NV} = 268$), which is approximately $60\%$. For an oncogene,
+($`\text{NV}=268`$), which is approximately $`60\%`$. For an oncogene,
 such a value of FAMcorresponds to the “Balanced Dosage” class.
 
 ### 3.1.3 Visulasing the distribution of mutant dosage classes
@@ -124,6 +128,7 @@ gene and tumour type using the function `plot_class_fraction`.
 For instance, we can take a look at the distribution for KRAS mutations:
 
 ``` r
+
 plot_class_fraction(x = MSK_PAAD_output, gene = 'KRAS')
 ```
 
@@ -135,6 +140,7 @@ but interestingly, KRAS mutant dosage tends to increase in metastases.
 We can also look at TP53:
 
 ``` r
+
 plot_class_fraction(x = MSK_PAAD_output, gene = 'TP53')
 ```
 

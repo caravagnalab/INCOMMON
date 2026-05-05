@@ -1,4 +1,4 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
@@ -8,7 +8,7 @@ articles:
   a4_survival_analysis: a4_survival_analysis.html
   a5_metastasis_analysis: a5_metastasis_analysis.html
   INCOMMON: INCOMMON.html
-last_built: 2026-03-12T08:51Z
+last_built: 2026-05-05T12:07Z
 urls:
   reference: caravagnalab.github.io/INCOMMON/reference
   article: caravagnalab.github.io/INCOMMON/articles

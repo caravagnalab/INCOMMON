@@ -1,6 +1,7 @@
 # 2. Inference of mutation copy number and multiplicity
 
 ``` r
+
 library(INCOMMON)
 #> Warning: replacing previous import 'cli::num_ansi_colors' by
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
@@ -62,6 +63,7 @@ COSMIC Cancer Gene Census v.98. The required format is as following:
 We now can create the input INCOMMON object through the function `init`:
 
 ``` r
+
 x = init(genomic_data = MSK_genomic_data, 
          clinical_data = MSK_clinical_data, 
          gene_roles = cancer_gene_census)
@@ -134,23 +136,24 @@ variant, character gene names etc.
 
 In principle, INCOMMON can infer any configuration of total copy number
 `k` and mutation multiplicity `m`, given that both `k` and `m` are
-integer numbers and $m \leq k$. Since there is an infinite number of
+integer numbers and $`m\leq k`$. Since there is an infinite number of
 such possible configurations, a maximum value `k_max` of `k`, expected
 to be found in the dataset, must be set up prior to the classification
-task. By default, INCOMMON uses $k_{max} = 8$.
+task. By default, INCOMMON uses $`k_{max}=8`$.
 
 ### 2.2.1 Rate of read counts per chromosome copy
 
 INCOMMON is a Bayesian model that infers mutation copy number and
 multiplicity from read counts. An essential parameter of the model is
-the rate of read counts per chromosome copy $\eta$. To guide the
+the rate of read counts per chromosome copy $`\eta`$. To guide the
 inference of this parameter, we use a Gamma prior distribution. The only
-a priori information that we have access to is on the $(k,m)$
+a priori information that we have access to is on the $`(k,m)`$
 configurations of mutant genes. We use this to compute a prior
-distribution over $\eta$ from the dataset itself, using the
+distribution over $`\eta`$ from the dataset itself, using the
 function`compute_eta_prior`
 
 ``` r
+
 data('priors_pcawg_hmf')
 
 priors_eta = compute_eta_prior(x = x, priors_k_m = priors_pcawg_hmf)
@@ -173,14 +176,15 @@ print(priors_eta)
 ```
 
 For each tumour type in the dataset, we estimated the empirical mean and
-variance of $\eta$, which can be straightforwardly transformed into the
-shape parameters $\alpha_{\eta}$ and $\beta_{e}ta$ of a Gamma
+variance of $`\eta`$, which can be straightforwardly transformed into
+the shape parameters $`\alpha_\eta`$ and $`\beta_eta`$ of a Gamma
 distribution.
 
 We can visualise the prior distribution for each tumour type using the
 function `plot_eta_prior`:
 
 ``` r
+
 plot_eta_prior(x = x, priors_eta = priors_eta)
 ```
 
@@ -195,6 +199,7 @@ distribution of the rate of read counts per chromosome copy.
 We now focus on a specific sample:
 
 ``` r
+
 sample = 'P-0002081'
 
 x = subset_sample(x = x, sample_list = c(sample))
@@ -226,16 +231,17 @@ version 341, with an estimated purity of 0.6.
 
 INCOMMON models the sample purity probabilistically, centering a Beta
 prior around the estimate provided with each sample (usually from a
-histopathological assay). The variance $\sigma_{\pi}^{2}$ of the
+histopathological assay). The variance $`\sigma_{\pi}^2`$ of the
 distribution must be fixed prior to the classification task through the
 argument `purity_error`. By default, INCOMMON uses
-$\sigma_{\pi}^{2} = 0.05$, accounting for uncertainty values of around
-$\simeq 10\%$, depending on the mean.
+$`\sigma_{\pi}^2=0.05`$, accounting for uncertainty values of around
+$`\simeq 10\%`$, depending on the mean.
 
 The prior purity distribution for a sample can be visualised using the
 function `plot_purity_prior`.
 
 ``` r
+
 plot_purity_prior(x = x, sample = sample, purity_error = 0.05)
 #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
 #> ℹ Please use `linewidth` instead.
@@ -254,19 +260,20 @@ indicate the input purity estimate, used as the mean of the
 distribution.
 
 We are now ready to run the classification step through function
-`classify`, using the priors we obtained for $(k,m)$ configurations,
-read count rate per chromosome copy $\eta$ and sample purity $\pi$. We
-must provide the number of CPU cores `num_cores` we want to use for the
-parallel MCMC sampling chains, as well as the number of iterations for
-the warm-up (`iter_warmup`) and the proper sampling (`iter_sampling`)
-steps. We also must specify paths for the directories where we want to
-store the results (`results_dir`), the `stan` fit objects
-(`stan_fit_dir`) in case we want to store them (`stan_fit_dump = TRUE`)
-and, in case we want to generate a reporting summary plot
-(`generate_report_plot = TRUE`), the directory where to store the images
-(`reports_dir`).
+`classify`, using the priors we obtained for $`(k,m)`$ configurations,
+read count rate per chromosome copy $`\eta`$ and sample purity $`\pi`$.
+We must provide the number of CPU cores `num_cores` we want to use for
+the parallel MCMC sampling chains, as well as the number of iterations
+for the warm-up (`iter_warmup`) and the proper sampling
+(`iter_sampling`) steps. We also must specify paths for the directories
+where we want to store the results (`results_dir`), the `stan` fit
+objects (`stan_fit_dir`) in case we want to store them
+(`stan_fit_dump = TRUE`) and, in case we want to generate a reporting
+summary plot (`generate_report_plot = TRUE`), the directory where to
+store the images (`reports_dir`).
 
 ``` r
+
 out = classify(
   x = x,
   k_max = 8,
@@ -281,6 +288,7 @@ out = classify(
 ```
 
 ``` r
+
 print(out)
 #> ── [ INCOMMON ]  4 PASS mutations across 1 samples,
 #> with 4 mutant genes across 1
@@ -325,6 +333,7 @@ and multiplicity for the 4 mutant genes found in the analysed sample,
 using the function `plot_posterior_k_m`.
 
 ``` r
+
 plot_posterior_k_m(x = out, k_max = out$parameters$k_max)
 ```
 
