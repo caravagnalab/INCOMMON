@@ -25,7 +25,7 @@ Check out our preprint on
 
 #### Help and support
 
-Please find the instructions on how to run the package and vignettes at:
+Please find the instructions on how to run the package and browse vignettes at:
 
 ## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
 
