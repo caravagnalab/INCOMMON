@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/caravagnalab/INCOMMON/blob/2.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/caravagnalab/INCOMMON/blob/2.0.1/DESCRIPTION)
 
 Calonaci N, Caravagna G (2026). *INCOMMON: Inference of copy number and
 mutation multiplicity in oncology*. R package version 0.0.1.
