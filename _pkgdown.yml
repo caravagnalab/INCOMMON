@@ -54,7 +54,7 @@ reference:
   - compute_expectations
 
 - title: Survival analysis with INCOMMON classes
-  desc: Functions to perform survival analysis with patient stratificaiton based on INCOMMON classes
+  desc: Functions to perform survival analysis with patient stratification based on INCOMMON classes
   contents:
   - kaplan_meier_fit
   - cox_fit

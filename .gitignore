@@ -8,3 +8,7 @@ logo.ai
 /Meta/
 inst/cmdstan/*
 !inst/cmdstan/*.stan
+
+# RStudio / OS files
+*.Rproj
+.DS_Store

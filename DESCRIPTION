@@ -1,13 +1,12 @@
 Package: INCOMMON
-Title: Inference of copy number and mutation multiplicity in oncology
-Version: 0.0.1
-Author: Nicola Calonaci
+Title: INCOMMON: Inference of Copy Number and Mutation Multiplicity in Oncology
+Version: 0.1.0
 Maintainer: Nicola Calonaci <nicola.calonaci@gmail.com>
-Authors@R: 
+Authors@R:
     c(person("Nicola", "Calonaci", , "nicola.calonaci@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2721-4888")),
-    person("Giulio", "Caravagna", , "gcaravag@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "")))
+    person("Giulio", "Caravagna", , "gcaravagn@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0003-4240-3265")))
 Description: INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology. 
             INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, 
             and can be applied to classify mutations from large-size datasets in an efficient and fast way.
@@ -43,7 +42,7 @@ Suggests:
     cmdstanr
 Additional_repositories:
     https://mc-stan.org/r-packages/
-URL: caravagnalab.github.io/INCOMMON
+URL: https://caravagnalab.github.io/INCOMMON, https://github.com/caravagnalab/INCOMMON
 BugReports: https://github.com/caravagnalab/INCOMMON/issues
 VignetteBuilder: knitr
 Depends: 

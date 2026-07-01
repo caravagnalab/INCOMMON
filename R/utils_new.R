@@ -127,9 +127,12 @@ get_stan_input_priors = function(x, priors, N_mutations, k_max){
 
 
 get_stan_model = function(){
+  if (!requireNamespace("cmdstanr", quietly = TRUE))
+    stop("Package 'cmdstanr' is required to fit INCOMMON models. Install it with:\n  install.packages('cmdstanr', repos = c('https://mc-stan.org/r-packages/', getOption('repos')))\n  cmdstanr::install_cmdstan()", call. = FALSE)
+
   model_path = system.file("cmdstan", 'model.stan', package = "INCOMMON", mustWork = T)
   model = cmdstanr::cmdstan_model(model_path)
-  # tmp = utils::capture.output(suppressMessages(model <- cmdstanr::cmdstan_model(model_path)))
+  model
 }
 
 attach_fit_results = function(x, fit, k_max){
