@@ -14,16 +14,16 @@ stars](https://img.shields.io/github/stars/caravagnalab/INCOMMON?style=flat&colo
 
 # INCOMMON <a href='https://caravagnalab.github.io/INCOMMON'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
-The `INCOMMON` package implements the statistical model described in
+The `INCOMMON` package implements the statistical framework described in
 [Calonaci et al; medRxiv
-(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer the copy
-number and multiplicity of somatic mutations from tumor-only read count
-data. Mutations are classified as either Tier-1 (present in 100% of
-cells) without copy-number alterations (heterozygous mutant diploid),
-with loss of heterozygosity, copy-neutral loss of heterozygosity,
-amplification, or Tier-2 (subclonal or with high ploidy and low
-multiplicity), providing a fast genome-interpretation framework for
-large-scale tumor-only sequencing cohorts.
+(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer mutation
+copy number and multiplicity directly from tumor-only clinical targeted
+sequencing data, without requiring matched normal samples. This
+information is used to derive gene mutant dosage, an emergent property
+of the interplay between somatic mutations and copy-number alterations
+that is overlooked by standard binary mutant/wild-type models. INCOMMON
+stratifies patients by mutant dosage of oncogenes and tumor suppressor
+genes to identify biomarkers of prognosis and metastatic tropism.
 
 INCOMMON is also available as a user-friendly
 [ShinyApp](https://ncalonaci.shinyapps.io/incommon/) (see [this
