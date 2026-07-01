@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">INCOMMON</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,7 +24,9 @@
     <li><a class="dropdown-item" href="../articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
+    <li><a class="dropdown-item" href="../articles/a6_shiny_app.html">6. Interactive analysis with the INCOMMON web app</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/caravagnalab/INCOMMON/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -36,7 +38,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Classify mutations using a Beta-Binomial model-based test.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/2.0.1/R/classify.R" class="external-link"><code>R/classify.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/R/classify.R" class="external-link"><code>R/classify.R</code></a></small>
       <div class="d-none name"><code>classify.Rd</code></div>
     </div>
 
@@ -153,42 +155,42 @@ the classification data and parameters.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">INCOMMON inference of copy number and mutation multiplicity for sample </span><span style="color: #00BB00; font-weight: bold;">P-0002</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 30, column 18 to column 33:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 30, column 18 to column 33:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     write the division as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 34, column 19 to column 34:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 34, column 19 to column 34:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     write the division as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 51, column 11 to column 26:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 51, column 11 to column 26:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     write the division as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 65, column 18 to column 33:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 65, column 18 to column 33:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     write the division as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 67, column 18 to column 33:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 67, column 18 to column 33:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     write the division as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     If rounding is intended please use the integer division operator %/%.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 84, column 11 to column 26:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Warning in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 84, column 11 to column 26:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Found int division:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>         k_max * (k_max + 1) / 2</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     Values will be rounded towards zero. If rounding is not desired you can</span>
@@ -204,7 +206,7 @@ the classification data and parameters.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1 Iteration: 11 / 20 [ 55%]  (Sampling) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1 Iteration: 20 / 20 [100%]  (Sampling) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpVzPUKG/model-1c0e59d2caa2.stan', line 43, column 2 to column 29)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 Exception: gamma_lpdf: Random variable is inf, but must be positive finite! (in '/tmp/RtmpQoXY8G/model-1e62742ad83f.stan', line 43, column 2 to column 29)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 but if this warning occurs often then your model may be either severely ill-conditioned or misspecified.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Chain 1 </span>

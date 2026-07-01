@@ -27,8 +27,9 @@ performed with functions integrated in the package.
 > data from tumor-only assays, in paricular when alignment files (fastq,
 > sam/bam, etc.) are not availble. However, if one can access
 > higher-resolution whole-exome or whole-genome assays, specific
-> [deconvolution methodologies should be
-> used](https://caravagnalab.github.io/mobster,%20https://github.com/caravagnalab/CNAqc).
+> deconvolution methodologies should be used, such as
+> [mobster](https://caravagnalab.github.io/mobster) or
+> [CNAqc](https://github.com/caravagnalab/CNAqc).
 
 ## The INCOMMON mutation copy-number caller
 
@@ -39,13 +40,13 @@ mutation). This information provides the allele-specific configuration
 of the mutant locus.
 
 INCOMMON takes input read counts data for $`n`$ mutations
-$`X=\{x_1, \ldots, x_n\}`$ to develop the joint likelihood}
+$`X=\{x_1, \ldots, x_n\}`$ to develop the joint likelihood
 ``` math
 \begin{equation}
-{p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
+p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
 =
 \prod_{x_i\in X} p(d_i \mid \Theta)\, p(r_i \mid d_i, \Theta)
-\,.}
+\,.
 \end{equation}
 ```
 
@@ -265,3 +266,11 @@ INCOMMON provides the following functions for analysis of metastases:
   patients identified by the two mutational statuses of a `gene` (Mutant
   TSG with versus without LOH and Mutant oncogene with versus without
   amplification) for specific types of primary tumors `tumor_type`.
+
+## Web app
+
+All of the above is also available without writing any R code through
+the [INCOMMON web app](https://ncalonaci.shinyapps.io/incommon/); see
+the [dedicated
+vignette](caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.md) for
+a brief overview of what it offers.

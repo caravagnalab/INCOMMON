@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">INCOMMON</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,8 +44,10 @@
     <li><a class="dropdown-item" href="../articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="../articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="../articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
+    <li><a class="dropdown-item" href="../articles/a6_shiny_app.html">6. Interactive analysis with the INCOMMON web app</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -67,14 +69,14 @@
       <img src="../logo.png" class="logo" alt=""><h1>INCOMMON</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/2.0.1/vignettes/INCOMMON.Rmd" class="external-link"><code>vignettes/INCOMMON.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/caravagnalab/INCOMMON/blob/main/vignettes/INCOMMON.Rmd" class="external-link"><code>vignettes/INCOMMON.Rmd</code></a></small>
       <div class="d-none name"><code>INCOMMON.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">INCOMMON</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://caravagnalab.github.io/INCOMMON">INCOMMON</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: replacing previous import 'cli::num_ansi_colors' by</span></span>
 <span><span class="co">#&gt; 'crayon::num_ansi_colors' when loading 'INCOMMON'</span></span></code></pre></div>
 <p>INCOMMON is a tool for the INference of COpy number and Mutation
@@ -95,8 +97,8 @@ data such as targeted panels but, in principle, it can be used with any
 sequencing assay. INCOMMON is helpful also to analyse sequencing data
 from tumor-only assays, in paricular when alignment files (fastq,
 sam/bam, etc.) are not availble. However, if one can access
-higher-resolution whole-exome or whole-genome assays, specific <a href="https://caravagnalab.github.io/mobster,%20https://github.com/caravagnalab/CNAqc" class="external-link">deconvolution
-methodologies should be used</a>.</p>
+higher-resolution whole-exome or whole-genome assays, specific
+deconvolution methodologies should be used, such as <a href="https://caravagnalab.github.io/mobster" class="external-link">mobster</a> or <a href="https://github.com/caravagnalab/CNAqc" class="external-link">CNAqc</a>.</p>
 </blockquote>
 <div class="section level2">
 <h2 id="the-incommon-mutation-copy-number-caller">The INCOMMON mutation copy-number caller<a class="anchor" aria-label="anchor" href="#the-incommon-mutation-copy-number-caller"></a>
@@ -112,12 +114,12 @@ configuration of the mutant locus.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
 mutations
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">X=\{x_1, \ldots, x_n\}</annotation></semantics></math>
-to develop the joint likelihood}
+to develop the joint likelihood
 <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>∣</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∏</mo><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∈</mo><mi>X</mi></mrow></munder><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∏</mo><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∈</mo><mi>X</mi></mrow></munder><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>d</mi><mi>i</mi></msub><mo>∣</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>r</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>d</mi><mi>i</mi></msub><mo>,</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{equation}
-{p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
+p(X\mid \Theta) =  \prod_{x_i \in X} p(x_i \mid \Theta)
 =
 \prod_{x_i\in X} p(d_i \mid \Theta)\, p(r_i \mid d_i, \Theta)
-\,.}
+\,.
 \end{equation}</annotation></semantics></math></p>
 <p>For every mutation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">⟨</mo><msub><mi>r</mi><mi>i</mi></msub><mo>,</mo><msub><mi>d</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">⟩</mo></mrow><annotation encoding="application/x-tex">x_i=\langle r_i, d_i\rangle</annotation></semantics></math>,
@@ -356,6 +358,14 @@ mutational statuses of a <code>gene</code> (Mutant TSG with versus
 without LOH and Mutant oncogene with versus without amplification) for
 specific types of primary tumors <code>tumor_type</code>.</p></li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="web-app">Web app<a class="anchor" aria-label="anchor" href="#web-app"></a>
+</h2>
+<p>All of the above is also available without writing any R code through
+the <a href="https://ncalonaci.shinyapps.io/incommon/" class="external-link">INCOMMON web
+app</a>; see the <a href="a6_shiny_app.html">dedicated vignette</a> for
+a brief overview of what it offers.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

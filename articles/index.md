@@ -12,4 +12,6 @@
   MSK-MetTropism](caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.md):
 - [5. Analysis of metastatic patterns of
   MSK-MetTropism](caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.md):
+- [6. Interactive analysis with the INCOMMON web
+  app](caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.md):
 - [INCOMMON](caravagnalab.github.io/INCOMMON/articles/INCOMMON.md):

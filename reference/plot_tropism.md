@@ -126,7 +126,7 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> # A tibble: 1 × 7
 #>   gene  metastatic_site class          OR   low    up p.value
 #>   <chr> <chr>           <chr>       <dbl> <dbl> <dbl>   <dbl>
-#> 1 TP53  Bone            High Dosage 1.000    NA    NA   1.000
+#> 1 TP53  Bone            High Dosage  1.00    NA    NA   1.000
 #> Waiting for profiling to be done...
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -160,13 +160,13 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+#> Warning: glm.fit: algorithm did not converge
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> Warning: collapsing to unique 'x' values
 #> Waiting for profiling to be done...
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -201,13 +201,13 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+#> Warning: glm.fit: algorithm did not converge
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> Warning: collapsing to unique 'x' values
 #> # A tibble: 1 × 7
 #>   gene  metastatic_site class               OR   low    up p.value
@@ -265,7 +265,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: collapsing to unique 'x' values
-#> Warning: collapsing to unique 'x' values
 #> Waiting for profiling to be done...
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -305,7 +304,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> Warning: collapsing to unique 'x' values
 #> # A tibble: 1 × 7
 #>   gene  metastatic_site class               OR   low    up p.value
@@ -339,7 +337,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> Waiting for profiling to be done...
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -368,7 +365,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> # A tibble: 1 × 7
 #>   gene  metastatic_site class                 OR   low    up p.value
 #>   <chr> <chr>           <chr>              <dbl> <dbl> <dbl>   <dbl>
@@ -457,7 +453,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> Waiting for profiling to be done...
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
@@ -486,7 +481,6 @@ for(g in c('TP53', 'KRAS', 'CDKN2A')){for(m in c('Liver', 'Lymph', 'Bone', 'CNS/
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
 #> Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-#> Warning: collapsing to unique 'x' values
 #> # A tibble: 1 × 7
 #>   gene   metastatic_site class                  OR   low    up p.value
 #>   <chr>  <chr>           <chr>               <dbl> <dbl> <dbl>   <dbl>

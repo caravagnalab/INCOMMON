@@ -119,7 +119,7 @@ Functions to compute model likelihood and posterior distributions
 
 ## Survival analysis with INCOMMON classes
 
-Functions to perform survival analysis with patient stratificaiton based
+Functions to perform survival analysis with patient stratification based
 on INCOMMON classes
 
 - [`kaplan_meier_fit()`](caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.md)

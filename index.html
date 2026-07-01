@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Inference of copy number and mutation multiplicity in oncology • INCOMMON</title>
+<title>INCOMMON: Inference of Copy Number and Mutation Multiplicity in Oncology • INCOMMON</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Inference of copy number and mutation multiplicity in oncology">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="INCOMMON: Inference of Copy Number and Mutation Multiplicity in Oncology">
 <meta name="description" content="INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology. INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, and can be applied to classify mutations from large-size datasets in an efficient and fast way. Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations (heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity).">
 <meta property="og:description" content="INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology. INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, and can be applied to classify mutations from large-size datasets in an efficient and fast way. Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations (heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), or Tier-2 (subclonal or with high ploidy and low multiplicity).">
 <meta property="og:image" content="caravagnalab.github.io/INCOMMON/logo.png">
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">INCOMMON</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,8 +47,10 @@
     <li><a class="dropdown-item" href="articles/a3_mutant_dosage.html">3. Gene mutant dosage</a></li>
     <li><a class="dropdown-item" href="articles/a4_survival_analysis.html">4. Survival analysis of MSK-MetTropism</a></li>
     <li><a class="dropdown-item" href="articles/a5_metastasis_analysis.html">5. Analysis of metastatic patterns of MSK-MetTropism</a></li>
+    <li><a class="dropdown-item" href="articles/a6_shiny_app.html">6. Interactive analysis with the INCOMMON web app</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -62,43 +64,45 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
+  <main id="main" class="col-md-9">
+<div class="section level1">
 <div class="page-header">
 <img src="logo.png" class="logo" alt=""><h1 id="incommon-">INCOMMON 
 <a class="anchor" aria-label="anchor" href="#incommon-"></a>
 </h1>
 </div>
-<!-- badges: start -->
-
 <p>INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology. INCOMMON infers the copy number and multiplicity of somatic mutations from tumor-only read count data, and can be applied to classify mutations from large-size datasets in an efficient and fast way.</p>
-<p>INCOMMON is also available as a user-friendly <a href="https://ncalonaci.shinyapps.io/incommon/" class="external-link">ShinyApp</a>.</p>
+<p>INCOMMON is also available as a user-friendly <a href="https://ncalonaci.shinyapps.io/incommon/" class="external-link">ShinyApp</a> (see <a href="https://caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.html">this vignette</a> for a brief overview of what it offers).</p>
 <p>You can download the results of our analysis from <a href="https://zenodo.org/records/12547426" class="external-link">Zenodo</a>.</p>
-<p>Check out our preprint on <a href="https://www.medrxiv.org/content/10.1101/2024.05.13.24307238v3" class="external-link">medRxiv</a>!</p>
+<div class="section level4">
+<h4 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h4>
+<p>Check out our preprint on <a href="https://doi.org/10.1101/2024.05.13.24307238" class="external-link">medRxiv</a>!</p>
+<p><a href="https://doi.org/10.1101/2024.05.13.24307238" class="external-link"><img src="https://img.shields.io/badge/doi-10.1101/2024.05.13.24307238-red.svg"></a></p>
+</div>
 <div class="section level4">
 <h4 id="help-and-support">Help and support<a class="anchor" aria-label="anchor" href="#help-and-support"></a>
 </h4>
-<p>Please find the instructions on how to run the package and browse vignettes at:</p>
+<p><a href="https://caravagnalab.github.io/INCOMMON"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg"></a></p>
+<hr>
 </div>
-<div class="section level2">
-<h2 id="section">
-<a href="https://caravagnalab.github.io/INCOMMON"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg"></a><a class="anchor" aria-label="anchor" href="#section"></a>
-</h2>
-</div>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the INCOMMON from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
+<p>You can install INCOMMON from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"caravagnalab/INCOMMON"</span><span class="op">)</span></span></code></pre></div>
+<hr>
 <div class="section level4">
 <h4 id="copyright-and-contacts">Copyright and contacts<a class="anchor" aria-label="anchor" href="#copyright-and-contacts"></a>
 </h4>
-<p>Cancer Data Science (CDS) Laboratory.</p>
+<p>Cancer Data Science (CDS) Laboratory. University of Trieste, Italy.</p>
 <p><a href="https://github.com/caravagnalab" class="external-link"><img src="https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg"></a> <a href="https://www.caravagnalab.org/" class="external-link"><img src="https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg"></a></p>
 </div>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
@@ -127,7 +131,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Nicola Calonaci <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-2721-4888" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Giulio Caravagna <br><small class="roles"> Author, maintainer </small>   </li>
+<li>Giulio Caravagna <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4240-3265" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -135,6 +139,10 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/caravagnalab/INCOMMON/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/caravagnalab/INCOMMON/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/caravagnalab/INCOMMON/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://www.semanticscholar.org/paper/2d5318baf1a79d491822e5d98a1e06028f521fbc" class="external-link"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.semanticscholar.org%2Fgraph%2Fv1%2Fpaper%2FDOI%3A10.1101%2F2024.05.13.24307238%3Ffields%3DcitationCount&amp;query=%24.citationCount&amp;label=citations&amp;color=blue" alt="Citations"></a></li>
+<li><a href="https://github.com/caravagnalab/INCOMMON/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/caravagnalab/INCOMMON?style=flat&amp;color=yellow" alt="GitHub stars"></a></li>
 </ul>
 </div>
 

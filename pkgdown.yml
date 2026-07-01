@@ -7,8 +7,9 @@ articles:
   a3_mutant_dosage: a3_mutant_dosage.html
   a4_survival_analysis: a4_survival_analysis.html
   a5_metastasis_analysis: a5_metastasis_analysis.html
+  a6_shiny_app: a6_shiny_app.html
   INCOMMON: INCOMMON.html
-last_built: 2026-05-22T17:10Z
+last_built: 2026-07-01T09:09Z
 urls:
   reference: caravagnalab.github.io/INCOMMON/reference
   article: caravagnalab.github.io/INCOMMON/articles

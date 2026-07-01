@@ -7,24 +7,29 @@ can be applied to classify mutations from large-size datasets in an
 efficient and fast way.
 
 INCOMMON is also available as a user-friendly
-[ShinyApp](https://ncalonaci.shinyapps.io/incommon/).
+[ShinyApp](https://ncalonaci.shinyapps.io/incommon/) (see [this
+vignette](https://caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.html)
+for a brief overview of what it offers).
 
 You can download the results of our analysis from
 [Zenodo](https://zenodo.org/records/12547426).
 
+#### Citation
+
 Check out our preprint on
-[medRxiv](https://www.medrxiv.org/content/10.1101/2024.05.13.24307238v3)!
+[medRxiv](https://doi.org/10.1101/2024.05.13.24307238)!
+
+[![](https://img.shields.io/badge/doi-10.1101/2024.05.13.24307238-red.svg)](https://doi.org/10.1101/2024.05.13.24307238)
 
 #### Help and support
 
-Please find the instructions on how to run the package and browse
-vignettes at:
+[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
 
-## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/INCOMMON/-yellow.svg)](https://caravagnalab.github.io/INCOMMON)
+------------------------------------------------------------------------
 
-## Installation
+### Installation
 
-You can install the INCOMMON from [GitHub](https://github.com/) with:
+You can install INCOMMON from [GitHub](https://github.com/) with:
 
 ``` r
 
@@ -32,9 +37,11 @@ You can install the INCOMMON from [GitHub](https://github.com/) with:
 devtools::install_github("caravagnalab/INCOMMON")
 ```
 
+------------------------------------------------------------------------
+
 #### Copyright and contacts
 
-Cancer Data Science (CDS) Laboratory.
+Cancer Data Science (CDS) Laboratory. University of Trieste, Italy.
 
 [![](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab)
 [![](https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg)](https://www.caravagnalab.org/)
@@ -160,7 +167,7 @@ Functions to compute model likelihood and posterior distributions
 
 ## Survival analysis with INCOMMON classes
 
-Functions to perform survival analysis with patient stratificaiton based
+Functions to perform survival analysis with patient stratification based
 on INCOMMON classes
 
 - [`kaplan_meier_fit()`](caravagnalab.github.io/INCOMMON/reference/kaplan_meier_fit.md)
@@ -196,4 +203,6 @@ INCOMMON interpreted tumor genomes
   MSK-MetTropism](caravagnalab.github.io/INCOMMON/articles/a4_survival_analysis.md):
 - [5. Analysis of metastatic patterns of
   MSK-MetTropism](caravagnalab.github.io/INCOMMON/articles/a5_metastasis_analysis.md):
+- [6. Interactive analysis with the INCOMMON web
+  app](caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.md):
 - [INCOMMON](caravagnalab.github.io/INCOMMON/articles/INCOMMON.md):
