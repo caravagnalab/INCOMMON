@@ -7,12 +7,15 @@ Authors@R:
            comment = c(ORCID = "0000-0003-2721-4888")),
     person("Giulio", "Caravagna", , "gcaravagn@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0003-4240-3265")))
-Description: INCOMMON is a tool for the INference of COpy number and Mutation Multiplicity in ONcology. 
-            INCOMMON infers the copy number and multiplicity of somatic mutations from tumour-only read count data, 
-            and can be applied to classify mutations from large-size datasets in an efficient and fast way.
-            Mutations are classified as either Tier-1 (present in 100% cells) without copy-number alterations 
-            (heterozygous mutant diploid HMD), with loss of heterozygosity (LOH), copy-neutral LOH (CNLOH), amplification (AM), 
-            or Tier-2 (subclonal or with high ploidy and low multiplicity).
+Description: Implements the statistical model described in Calonaci et al.
+    (2024) <doi:10.1101/2024.05.13.24307238> to infer the copy number and
+    multiplicity of somatic mutations from tumour-only read count data.
+    Mutations are classified as either Tier-1 (present in 100% of cells)
+    without copy-number alterations (heterozygous mutant diploid), with loss
+    of heterozygosity, copy-neutral loss of heterozygosity, amplification, or
+    Tier-2 (subclonal or with high ploidy and low multiplicity), providing a
+    fast genome-interpretation framework for large-scale tumour-only
+    sequencing cohorts.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
