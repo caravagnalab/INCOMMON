@@ -7,14 +7,14 @@ library(INCOMMON)
 #> 'crayon::num_ansi_colors' when loading 'INCOMMON'
 ```
 
-The `INCOMMON` package implements the statistical model described in
+The `INCOMMON` package implements the statistical framework described in
 [Calonaci et al; medRxiv
-(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer the copy
-number and multiplicity of somatic mutations from tumor-only read count
-data, in an efficient and fast way. For each mutation in a sample,
-INCOMMON computes a probability distribution over all the possible
-combinations of total copy number and multiplicity, and choses the one
-with maximum probability.
+(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer mutation
+copy number and multiplicity directly from tumor-only clinical targeted
+sequencing data, without requiring matched normal samples. For each
+mutation in a sample, INCOMMON computes a probability distribution over
+all the possible combinations of total copy number and multiplicity, and
+choses the one with maximum probability.
 
 In addition, INCOMMON offers a genome interpretation framework, in which
 the tumour genome is classified based on the mutant dosage of oncogenes
