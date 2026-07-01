@@ -272,6 +272,16 @@ objects (`stan_fit_dir`) in case we want to store them
 summary plot (`generate_report_plot = TRUE`), the directory where to
 store the images (`reports_dir`).
 
+> `classify` fits the model with
+> [`cmdstanr`](https://mc-stan.org/cmdstanr/), which is not installed
+> automatically with INCOMMON. If you haven’t set it up yet, run
+> `install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))`
+> followed by
+> [`cmdstanr::install_cmdstan()`](https://mc-stan.org/cmdstanr/reference/install_cmdstan.html)
+> before continuing, or use the [INCOMMON web
+> app](https://ncalonaci.shinyapps.io/incommon/) instead, which requires
+> no local installation.
+
 ``` r
 
 out = classify(

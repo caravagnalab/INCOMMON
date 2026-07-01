@@ -87,7 +87,7 @@ Functions to plot INCOMMON classification results
   : Plot posterior predictive check for tumour purity
 
 - [`plot_report()`](caravagnalab.github.io/INCOMMON/reference/plot_report.md)
-  : Generate report of the fit
+  : Generate a diagnostic report of an INCOMMON model fit
 
 ## Getter Functions
 

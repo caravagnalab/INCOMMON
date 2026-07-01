@@ -16,10 +16,13 @@ You can download the results of our analysis from
 
 #### Citation
 
-Check out our preprint on
-[medRxiv](https://doi.org/10.1101/2024.05.13.24307238)!
-
 [![](https://img.shields.io/badge/doi-10.1101/2024.05.13.24307238-red.svg)](https://doi.org/10.1101/2024.05.13.24307238)
+
+If you use `INCOMMON`, please cite our preprint:
+
+- Calonaci, N., Krasniqi, E., Čolić, D. et al. *Gene mutant dosage is
+  associated with prognosis and metastatic tropism in 60,000 clinical
+  cancer samples.* medRxiv (2024).
 
 #### Help and support
 
@@ -36,6 +39,23 @@ You can install INCOMMON from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("caravagnalab/INCOMMON")
 ```
+
+If you want to run INCOMMON classification
+([`classify()`](caravagnalab.github.io/INCOMMON/reference/classify.md))
+yourself, you also need [`cmdstanr`](https://mc-stan.org/cmdstanr/) and
+a working Stan toolchain, which are not installed automatically:
+
+``` r
+
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+cmdstanr::install_cmdstan()
+```
+
+Alternatively, the [INCOMMON web
+app](https://ncalonaci.shinyapps.io/incommon/) (see [this
+vignette](https://caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.html))
+runs the same model in your browser, with no local Stan installation
+required.
 
 ------------------------------------------------------------------------
 
@@ -135,7 +155,7 @@ Functions to plot INCOMMON classification results
   : Plot posterior predictive check for tumour purity
 
 - [`plot_report()`](caravagnalab.github.io/INCOMMON/reference/plot_report.md)
-  : Generate report of the fit
+  : Generate a diagnostic report of an INCOMMON model fit
 
 ## Getter Functions
 

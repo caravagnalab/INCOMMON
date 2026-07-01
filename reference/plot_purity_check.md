@@ -29,3 +29,15 @@ plot_purity_check(posterior_purity_rep, prior_purity_rep, bayes_p)
 A `ggplot2` histogram showing prior and posterior predictive
 distributions with median reference lines and Bayesian p-value
 annotation.
+
+## Examples
+
+``` r
+set.seed(123)
+posterior_purity_rep = rbeta(1000, 8, 2)
+prior_purity_rep = rbeta(1000, 5, 5)
+plot_purity_check(posterior_purity_rep, prior_purity_rep, bayes_p = 0.31)
+#> Warning: Removed 4 rows containing missing values or values outside the scale range
+#> (`geom_bar()`).
+
+```

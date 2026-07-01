@@ -29,3 +29,13 @@ plot_eta_check(posterior_eta_rep, prior_eta_rep, bayes_p)
 A `ggplot2` histogram comparing prior and posterior predictive
 distributions with vertical median reference lines and the Bayesian
 p-value.
+
+## Examples
+
+``` r
+set.seed(123)
+posterior_eta_rep = rnorm(1000, mean = 50, sd = 5)
+prior_eta_rep = rnorm(1000, mean = 45, sd = 8)
+plot_eta_check(posterior_eta_rep, prior_eta_rep, bayes_p = 0.42)
+
+```

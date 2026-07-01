@@ -76,6 +76,6 @@ plot_eta_prior(x = x, priors_eta = priors_eta)
 #> Warning: Unknown or uninitialised column: `cohort`.
 #> Warning: Unknown or uninitialised column: `cohort`.
 #> Picking joint bandwidth of 35.4
-#> Warning: Removed 2362 rows containing non-finite outside the scale range
+#> Warning: Removed 2360 rows containing non-finite outside the scale range
 #> (`stat_density_ridges()`).
 ```

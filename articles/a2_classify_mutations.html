@@ -358,6 +358,15 @@ for the directories where we want to store the results
 (<code>stan_fit_dump = TRUE</code>) and, in case we want to generate a
 reporting summary plot (<code>generate_report_plot = TRUE</code>), the
 directory where to store the images (<code>reports_dir</code>).</p>
+<blockquote>
+<p><code>classify</code> fits the model with <a href="https://mc-stan.org/cmdstanr/" class="external-link"><code>cmdstanr</code></a>, which is
+not installed automatically with INCOMMON. If you haven’t set it up yet,
+run
+<code>install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))</code>
+followed by <code><a href="https://mc-stan.org/cmdstanr/reference/install_cmdstan.html" class="external-link">cmdstanr::install_cmdstan()</a></code> before continuing,
+or use the <a href="https://ncalonaci.shinyapps.io/incommon/" class="external-link">INCOMMON
+web app</a> instead, which requires no local installation.</p>
+</blockquote>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/classify.html">classify</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>

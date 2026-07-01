@@ -77,8 +77,11 @@
 <div class="section level4">
 <h4 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h4>
-<p>Check out our preprint on <a href="https://doi.org/10.1101/2024.05.13.24307238" class="external-link">medRxiv</a>!</p>
 <p><a href="https://doi.org/10.1101/2024.05.13.24307238" class="external-link"><img src="https://img.shields.io/badge/doi-10.1101/2024.05.13.24307238-red.svg"></a></p>
+<p>If you use <code>INCOMMON</code>, please cite our preprint:</p>
+<ul>
+<li>Calonaci, N., Krasniqi, E., Čolić, D. et al. <em>Gene mutant dosage is associated with prognosis and metastatic tropism in 60,000 clinical cancer samples.</em> medRxiv (2024).</li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="help-and-support">Help and support<a class="anchor" aria-label="anchor" href="#help-and-support"></a>
@@ -93,6 +96,11 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"caravagnalab/INCOMMON"</span><span class="op">)</span></span></code></pre></div>
+<p>If you want to run INCOMMON classification (<code><a href="reference/classify.html">classify()</a></code>) yourself, you also need <a href="https://mc-stan.org/cmdstanr/" class="external-link"><code>cmdstanr</code></a> and a working Stan toolchain, which are not installed automatically:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cmdstanr"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">cmdstanr</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/cmdstanr/reference/install_cmdstan.html" class="external-link">install_cmdstan</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, the <a href="https://ncalonaci.shinyapps.io/incommon/" class="external-link">INCOMMON web app</a> (see <a href="https://caravagnalab.github.io/INCOMMON/articles/a6_shiny_app.html">this vignette</a>) runs the same model in your browser, with no local Stan installation required.</p>
 <hr>
 <div class="section level4">
 <h4 id="copyright-and-contacts">Copyright and contacts<a class="anchor" aria-label="anchor" href="#copyright-and-contacts"></a>

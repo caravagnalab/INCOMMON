@@ -69,6 +69,64 @@
     <p>Nothing.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_genomic_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MSK_clinical_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sample</span> <span class="op">=</span> <span class="st">'P-0002081'</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="init.html">init</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  genomic_data <span class="op">=</span> <span class="va">MSK_genomic_data</span><span class="op">[</span><span class="va">MSK_genomic_data</span><span class="op">$</span><span class="va">sample</span> <span class="op">==</span> <span class="va">sample</span>,<span class="op">]</span>,</span></span>
+<span class="r-in"><span>  clinical_data <span class="op">=</span> <span class="va">MSK_clinical_data</span><span class="op">[</span><span class="va">MSK_clinical_data</span><span class="op">$</span><span class="va">sample</span> <span class="op">==</span> <span class="va">sample</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── INCOMMON - Inference of copy number and mutation multiplicity in oncology ───</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Genomic data</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">1</span> samples, with <span style="color: #00BB00;">4</span> mutations in <span style="color: #00BB00;">4</span> genes</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Clinical data</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Provided clinical features:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> sample (required for classification)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> purity (required for classification)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> tumor_type</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> OS_MONTHS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> OS_STATUS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> SAMPLE_TYPE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> MET_COUNT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> METASTATIC_SITE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> MET_SITE_COUNT</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> PRIMARY_SITE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> SUBTYPE_ABBREVIATION</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> GENE_PANEL</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> SEX</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> TMB_NONSYNONYMOUS</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> FGA</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> AGE_AT_SEQUENCING</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> RACE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Found <span style="color: #00BB00;">1</span> matching samples</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> No mismatched samples</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #000000; background-color: #BB00BB;">[ INCOMMON ] </span> <span style="color: #00BB00;">4</span> PASS mutations across <span style="color: #00BB00;">1</span> samples,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> with <span style="color: #00BB00;">4</span> mutant genes across <span style="color: #00BB00;">1</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Average sample purity: <span style="color: #00BB00;">0.6</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Average sequencing depth: <span style="color: #00BB00;">380</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4 × 27</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sample    tumor_type purity chr      from     to ref   alt      DP    NV   VAF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> P-0002081 LUAD          0.6 chr12  2.54<span style="color: #949494;">e</span>7 2.54<span style="color: #949494;">e</span>7 C     A       743   378 0.509</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> P-0002081 LUAD          0.6 chr17  7.58<span style="color: #949494;">e</span>6 7.58<span style="color: #949494;">e</span>6 G     A       246   116 0.472</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> P-0002081 LUAD          0.6 chr19  1.22<span style="color: #949494;">e</span>6 1.22<span style="color: #949494;">e</span>6 C     A       260   122 0.469</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> P-0002081 LUAD          0.6 chr19  1.11<span style="color: #949494;">e</span>7 1.11<span style="color: #949494;">e</span>7 -     C       271   133 0.491</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 16 more variables: gene &lt;chr&gt;, gene_role &lt;chr&gt;, OS_MONTHS &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   OS_STATUS &lt;dbl&gt;, SAMPLE_TYPE &lt;chr&gt;, MET_COUNT &lt;dbl&gt;, METASTATIC_SITE &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MET_SITE_COUNT &lt;dbl&gt;, PRIMARY_SITE &lt;chr&gt;, SUBTYPE_ABBREVIATION &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   GENE_PANEL &lt;chr&gt;, SEX &lt;chr&gt;, TMB_NONSYNONYMOUS &lt;dbl&gt;, FGA &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   AGE_AT_SEQUENCING &lt;dbl&gt;, RACE &lt;chr&gt;</span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
