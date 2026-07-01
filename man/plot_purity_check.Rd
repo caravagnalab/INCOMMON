@@ -21,3 +21,10 @@ distributions with median reference lines and Bayesian p-value annotation.
 Compares prior and posterior predictive distributions of tumour purity
 (\eqn{\pi}) and reports the Bayesian p-value for the posterior predictive check.
 }
+\examples{
+set.seed(123)
+posterior_purity_rep = rbeta(1000, 8, 2)
+prior_purity_rep = rbeta(1000, 5, 5)
+plot_purity_check(posterior_purity_rep, prior_purity_rep, bayes_p = 0.31)
+
+}

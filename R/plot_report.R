@@ -1,7 +1,32 @@
-#' Generate report of the fit
-#' @param x An object of class INCOMMON.
-#' @return An object or a list of objects of class \code{'ggplot2'}.
+#' Generate a diagnostic report of an INCOMMON model fit
+#'
+#' Combines, for a single sample, the posterior predictive checks for the
+#' Poisson (depth) and Binomial (variant reads) sub-models, the eta and
+#' purity posterior predictive checks, and the prior/posterior distributions
+#' of copy number and multiplicity into one composite figure.
+#'
+#' @param x A classified object of class INCOMMON (see \code{\link{classify}}).
+#' @return A composite \code{ggplot2}/\code{patchwork} object with the full
+#' diagnostic report for the sample.
 #' @export
+#' @examples
+#' \dontrun{
+#' # plot_report requires a classified INCOMMON object (see ?classify)
+#' data(MSK_genomic_data)
+#' data(MSK_clinical_data)
+#' data(priors_pcawg_hmf)
+#' data(priors_eta)
+#' sample = 'P-0002081'
+#' x = init(
+#'   genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,],
+#'   clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,]
+#' )
+#' x = classify(
+#'   x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta,
+#'   num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1
+#' )
+#' plot_report(x)
+#' }
 #' @importFrom dplyr filter mutate rename select %>% tibble intersect
 #' @importFrom stats rgamma
 

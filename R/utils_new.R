@@ -420,6 +420,12 @@ posterior_predictive_p_value = function(x, posterior_rep, observed_quantity){
 #'
 #' @export
 #'
+#' @examples
+#' set.seed(123)
+#' posterior_eta_rep = rnorm(1000, mean = 50, sd = 5)
+#' prior_eta_rep = rnorm(1000, mean = 45, sd = 8)
+#' plot_eta_check(posterior_eta_rep, prior_eta_rep, bayes_p = 0.42)
+#'
 #' @importFrom dplyr tibble mutate
 #' @importFrom ggplot2 ggplot geom_histogram aes scale_alpha_manual geom_vline
 #' @importFrom ggplot2 scale_x_continuous scale_y_continuous theme labs geom_text
@@ -488,6 +494,12 @@ plot_eta_check = function(posterior_eta_rep, prior_eta_rep, bayes_p){
 #' distributions with median reference lines and Bayesian p-value annotation.
 #'
 #' @export
+#'
+#' @examples
+#' set.seed(123)
+#' posterior_purity_rep = rbeta(1000, 8, 2)
+#' prior_purity_rep = rbeta(1000, 5, 5)
+#' plot_purity_check(posterior_purity_rep, prior_purity_rep, bayes_p = 0.31)
 #'
 #' @importFrom dplyr tibble
 #' @importFrom ggplot2 ggplot geom_histogram aes scale_alpha_manual geom_vline
@@ -587,6 +599,25 @@ plot_priors_k = function(x, sample, k_max){
 #' distribution of copy number and multiplicity for each mutation.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # plot_prior_k_m requires a classified INCOMMON object (see ?classify)
+#' data(MSK_genomic_data)
+#' data(MSK_clinical_data)
+#' data(priors_pcawg_hmf)
+#' data(priors_eta)
+#' sample = 'P-0002081'
+#' x = init(
+#'   genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,],
+#'   clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,]
+#' )
+#' x = classify(
+#'   x = x, priors_k_m = priors_pcawg_hmf, priors_eta = priors_eta,
+#'   num_cores = 1, iter_warmup = 10, iter_sampling = 10, num_chains = 1
+#' )
+#' plot_prior_k_m(priors_k_m = x$priors_k_m, x = x, k_max = 8)
+#' }
 #'
 #' @importFrom dplyr select left_join mutate group_by arrange slice_head
 #' @importFrom tidyr complete

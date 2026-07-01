@@ -3,6 +3,15 @@
 #' @param ... Default S3 method parameter.
 #'
 #' @return Nothing.
+#' @examples
+#' data(MSK_genomic_data)
+#' data(MSK_clinical_data)
+#' sample = 'P-0002081'
+#' x = init(
+#'   genomic_data = MSK_genomic_data[MSK_genomic_data$sample == sample,],
+#'   clinical_data = MSK_clinical_data[MSK_clinical_data$sample == sample,]
+#' )
+#' print(x)
 #' @import cli
 #' @import crayon
 #' @importFrom dplyr filter mutate rename select %>%

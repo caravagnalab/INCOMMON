@@ -22,3 +22,10 @@ Visualises the posterior and prior predictive distributions of the
 expected counts per allele (\eqn{\eta}) and reports the Bayesian p-value
 from the posterior predictive check.
 }
+\examples{
+set.seed(123)
+posterior_eta_rep = rnorm(1000, mean = 50, sd = 5)
+prior_eta_rep = rnorm(1000, mean = 45, sd = 8)
+plot_eta_check(posterior_eta_rep, prior_eta_rep, bayes_p = 0.42)
+
+}
