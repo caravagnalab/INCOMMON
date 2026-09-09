@@ -1,10 +1,10 @@
 # INCOMMON
 
 The `INCOMMON` package implements the statistical framework described in
-[Calonaci et al; medRxiv
-(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer mutation
-copy number and multiplicity directly from tumor-only clinical targeted
-sequencing data, without requiring matched normal samples. This
+[Calonaci, Krasniqi et al; Nature Genetics
+(2026)](https://www.nature.com/articles/s41588-026-02666-z) to infer
+mutation copy number and multiplicity directly from tumor-only clinical
+targeted sequencing data, without requiring matched normal samples. This
 information is used to derive gene mutant dosage, an emergent property
 of the interplay between somatic mutations and copy-number alterations
 that is overlooked by standard binary mutant/wild-type models. INCOMMON
