@@ -15,8 +15,8 @@ stars](https://img.shields.io/github/stars/caravagnalab/INCOMMON?style=flat&colo
 # INCOMMON <a href='https://caravagnalab.github.io/INCOMMON'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 The `INCOMMON` package implements the statistical framework described in
-[Calonaci et al; medRxiv
-(2024)](https://doi.org/10.1101/2024.05.13.24307238) to infer mutation
+[Calonaci, Krasniqi et al; Nature Genetics
+(2026)](https://www.nature.com/articles/s41588-026-02666-z) to infer mutation
 copy number and multiplicity directly from tumor-only clinical targeted
 sequencing data, without requiring matched normal samples. This
 information is used to derive gene mutant dosage, an emergent property
