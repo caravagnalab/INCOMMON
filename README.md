@@ -63,7 +63,7 @@ also need [`cmdstanr`](https://mc-stan.org/cmdstanr/) and a working Stan
 toolchain, which are not installed automatically:
 
 ``` r
-install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+install.packages("cmdstanr", repos = c("https://stan-dev.r-universe.dev/", getOption("repos")))
 cmdstanr::install_cmdstan()
 ```
 
